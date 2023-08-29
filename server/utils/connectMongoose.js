@@ -6,6 +6,7 @@ const options = {
   useUnifiedTopology: true,
   useNewUrlParser: true,
 }
+
 const connectMongoose = () => {
     mongoose.connect(mongoUri, options)
             .then(() => console.log('connected to databases', mongoUri))
