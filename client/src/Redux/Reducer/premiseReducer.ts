@@ -1,6 +1,6 @@
 // Import the `Reducer` and `Dispatch` interfaces from Redux.
 import { Reducer, Dispatch } from "redux";
-// import { initialState, initialStateProps } from "./initialState"; // for future when initalState and props are moved to its own file
+import { initialState, initialStateProps } from "./initialState"; // for future when initalState and props are moved to its own file
 
 
 // All data here is dummy for testing reducer and actions it shows the structure an how to build reducers
@@ -31,21 +31,10 @@ export const updateCounter = () => {
     };
 };
 
-// Initial state
-// This is the initial state of the reducer.
-const initialState = {
-    value: 0
-};
-
-// InitialState interface
-// This defines the interface for the initial state of the reducer.
-interface InitialStateProps {
-    value: number;
-}
 
 // Main reducer
 // This is the main reducer that updates the state of the reducer based on the actions that are dispatched to it.
-const premiseReducer: Reducer<InitialStateProps> = (state = initialState,action:Action) => {
+const premiseReducer: Reducer<initialStateProps> = (state = initialState,action:Action) => {
     switch (action.type) {
       case ActionType.UPDATE_COUNTER:
         return {

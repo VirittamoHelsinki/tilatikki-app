@@ -10,20 +10,17 @@ import { store } from "./Redux/store";
 // This import the store variable from the Redux/store.js file.
 // This variable contains the Redux store for the application.
 
-import TestComponent from './components/testComponent/testComponent';
-
 
 
 
 function App() {
-
 
   return (
     <Provider store={store}>
       <BrowserRouter>
         <Routes>
           {/* Add route for pages */}
-          <Route path="/" index element={<TestComponent/>}/>
+          //<Route path="/" index element=""/>
         </Routes>
       </BrowserRouter>
     </Provider>
