@@ -20,7 +20,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           {/* Add route for pages */}
-          //<Route path="/" index element=""/>
+          <Route path="/" index element=""/>
         </Routes>
       </BrowserRouter>
     </Provider>

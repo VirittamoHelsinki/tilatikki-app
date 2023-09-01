@@ -7,13 +7,13 @@ import { initialState, initialStateProps } from "./initialState"; // for future 
 
 // Action types
 // This defines the different types of actions that can be dispatched to the reducer.
-enum ActionType {
+export enum ActionType {
     UPDATE_COUNTER = "UPDATE_COUNTER" // example dummy data 
 }
 
 // Action interface
 // This defines the interface for all actions that can be dispatched to the reducer.
-interface UpdateCounterAction {
+export interface UpdateCounterAction {
     type: typeof ActionType.UPDATE_COUNTER; //example dummy data
 }
 
