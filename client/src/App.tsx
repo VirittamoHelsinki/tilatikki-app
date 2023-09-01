@@ -1,34 +1,34 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+// This import the BrowserRouter, Routes, and Route components from the react-router-dom library.
+// These components are used to create a routing system for the application.
+
+import { Provider } from '../node_modules/react-redux/es/exports';
+// This import the Provider component from the react-redux library.
+// This component is used to connect the Redux store to the React application.
+
+import { store } from "./Redux/store";
+// This import the store variable from the Redux/store.js file.
+// This variable contains the Redux store for the application.
+
+import TestComponent from './components/testComponent/testComponent';
+
+
+
 
 function App() {
-  const [count, setCount] = useState(0)
+
 
   return (
-      <div className='flex flex-col flex-grow justify-center items-center'>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1 className='text-xl'>Vite + React</h1>
-      <div className="flex flex-col">
-        <button className='px-3 py-1 bg-orange-300' onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p>
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
+    <Provider store={store}>
+      <BrowserRouter>
+        <Routes>
+          {/* Add route for pages */}
+          <Route path="/" index element={<TestComponent/>}/>
+        </Routes>
+      </BrowserRouter>
+    </Provider>
   )
 }
 
-export default App
+
+export default App;
