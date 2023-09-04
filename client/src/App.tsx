@@ -1,4 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Header from './components/Header';
+import Dashboard from './pages/Dashboard';
+import Login from './pages/Login';
+import Register from './pages/Register';
 // This import the BrowserRouter, Routes, and Route components from the react-router-dom library.
 // These components are used to create a routing system for the application.
 
@@ -18,10 +22,14 @@ function App() {
   return (
     <Provider store={store}>
       <BrowserRouter>
-        <Routes>
-          {/* Add route for pages */}
-          <Route path="/" index element=""/>
+      <div className="container">
+      <Header />
+       <Routes>
+        <Route path='/' element={<Dashboard />} />
+        <Route path='/login' element={<Login />} />
+        <Route path='/register' element={<Register />} />
         </Routes>
+        </div>
       </BrowserRouter>
     </Provider>
   )
