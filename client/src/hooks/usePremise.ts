@@ -12,5 +12,5 @@ export const usePremiseAction = () => {
   const dispatch = useDispatch();
 
   // Bind the action creators to the `dispatch` function.
-  return bindActionCreators(actionCreators, dispatch);
+  return bindActionCreators(actionCreators as any, dispatch);
 };

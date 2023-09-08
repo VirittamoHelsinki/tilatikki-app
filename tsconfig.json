@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "es2016",                                 
+
+
+    /* Modules */
+    "module": "commonjs",                                
+    "rootDir": "./server",                                  
+     "outDir": "./build",                                 
+    "esModuleInterop": true,                            
+    "forceConsistentCasingInFileNames": true,            
+
+    /* Type Checking */
+    "strict": true,                                      
+    "skipLibCheck": true                                
+  },
+  "exclude": ["client",".env"]
+}

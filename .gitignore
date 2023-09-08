@@ -4,6 +4,6 @@
 **/package-lock.json
 **/*.code.workspace*
 
-build/
+/build/
 client/build/
 
