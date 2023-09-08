@@ -19,8 +19,7 @@ if (node_env === 'development') app.use(cors());
 
 // Middlewares that need to be applied before adding routes.
 app.use(express.json());
-app.use(express.static('../client/dist'));
-console.log(app.use(express.static('client/dist')))
+app.use(express.static('client/dist'));
 app.use(requestLogger);
 
 // Add routes
