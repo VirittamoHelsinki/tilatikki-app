@@ -41,39 +41,14 @@ const spaceSchema = new Schema<ISpace>({
     type: Schema.Types.ObjectId,
     required: true,
   },
-  availabilities: [
-    {
-      user_id: {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-      },
-      startdate: {
-        type: Date,
-        required: true,
-      },
-      enddate: {
-        type: Date,
-        required: true,
-      },
-    },
-  ],
-  reservations: [
-    {
-      user_id: {
-        type: Schema.Types.ObjectId,
-        required: true,
-        ref: 'User',
-      },
-      startdate: {
-        type: Date,
-        required: true,
-      },
-      enddate: {
-        type: Date,
-        required: true,
-      },
-    },
-  ],
+  availabilities: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Availability',
+  }],
+  reservations: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Reservation',
+  }]
 });
 
 const Space: Model<ISpaceModel> = model<ISpaceModel>('Space', spaceSchema);

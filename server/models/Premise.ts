@@ -29,35 +29,23 @@ const premiseSchema = new Schema<IPremise>({
     minlength: 1,
     maxlength: 50,
   },
-  spaces: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: 'Space',
-    },
-  ],
-  buildings: [
-    {
-      _id: {
-        type: String,
+  spaces: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Space',
+  }],
+  buildings: [{
+    floors: [{
+      floor: {
+        type: Number,
         required: true,
       },
-      floors: [
-        {
-          floor: {
-            type: Number,
-            required: true,
-          },
-          blueprint_url: String,
-        },
-      ],
-    },
-  ],
-  users: [
-    {
+      blueprint_url: String,
+    }],
+  }],
+  users: [{
       type: Schema.Types.ObjectId,
       ref: 'User',
-    },
-  ],
+  }],
 });
 
 const Premise: Model<IPremiseModel> = model<IPremiseModel>('Premise', premiseSchema);
