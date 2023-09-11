@@ -3,8 +3,8 @@ import { Document, Schema, Model, model } from 'mongoose';
 interface ISpace {
   name: string;
   area?: number;
-  premise_id: Schema.Types.ObjectId;
-  building_id: string;
+  premise: Schema.Types.ObjectId;
+  building: Schema.Types.ObjectId;
   floor: Schema.Types.ObjectId;
   availabilities: {
     user_id?: Schema.Types.ObjectId;
@@ -28,18 +28,18 @@ const spaceSchema = new Schema<ISpace>({
     maxlength: 50,
   },
   area: Number,
-  premise_id: {
+  premise: {
     type: Schema.Types.ObjectId,
     required: true,
     ref: 'Premise',
   },
-  building_id: {
-    type: String,
-    required: true,
+  building: {
+    type: Schema.Types.ObjectId,
+    required: true
   },
   floor: {
-    type: Schema.Types.ObjectId,
-    required: true,
+    type: Number,
+    required: true
   },
   availabilities: [{
     type: Schema.Types.ObjectId,

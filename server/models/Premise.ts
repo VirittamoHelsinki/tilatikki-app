@@ -21,19 +21,31 @@ const premiseSchema = new Schema<IPremise>({
     type: String,
     required: true,
     minlength: 1,
-    maxlength: 50,
+    maxlength: 100,
   },
   address: {
     type: String,
     required: true,
     minlength: 1,
-    maxlength: 50,
+    maxlength: 100,
   },
+  users: [{
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+  }],
   spaces: [{
     type: Schema.Types.ObjectId,
     ref: 'Space',
   }],
   buildings: [{
+    name: {
+      // Can also be a number or letter. Something that
+      // identifies the building for the users.
+      type: String,
+      required: true,
+      minlength: 1,
+      maxlength: 50,
+    },
     floors: [{
       floor: {
         type: Number,
@@ -41,11 +53,7 @@ const premiseSchema = new Schema<IPremise>({
       },
       blueprint_url: String,
     }],
-  }],
-  users: [{
-      type: Schema.Types.ObjectId,
-      ref: 'User',
-  }],
+  }]
 });
 
 const Premise: Model<IPremiseModel> = model<IPremiseModel>('Premise', premiseSchema);
