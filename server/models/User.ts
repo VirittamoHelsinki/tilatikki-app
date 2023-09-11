@@ -5,7 +5,7 @@ export interface IUser {
   firstname: string;
   lastname: string;
   email: string;
-  password: string;
+  passwordHash: string;
   premises: Schema.Types.ObjectId[];
   availabilities: Schema.Types.ObjectId[];
   reservations: Schema.Types.ObjectId[];
@@ -30,7 +30,7 @@ const userSchema = new Schema<IUser>({
       'Please add a valid email'
     ],
   },
-  password: {
+  passwordHash: {
     type: String,
     required: [true, 'Please add a password'],
     minlength: 6,
@@ -62,8 +62,8 @@ const userSchema = new Schema<IUser>({
 userSchema.pre('save', async function(next) {
   const user = this as IUserModel;
   const salt = await bcrypt.genSalt(10);
-  const hash = await bcrypt.hash(user.password, salt);
-  user.password = hash;
+  const hash = await bcrypt.hash(user.passwordHash, salt);
+  user.passwordHash = hash;
   next();
 });
 

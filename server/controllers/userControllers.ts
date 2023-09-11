@@ -56,6 +56,6 @@ export const deleteUser = async (
     }
     res.status(200).json({ success: true, data: {} });
   } catch (error) {
-    next(error)
+    res.status(500).json({ success: false, error: "Server Error" });
   }
 };
