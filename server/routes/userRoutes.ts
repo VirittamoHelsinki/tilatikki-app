@@ -7,7 +7,6 @@ import {
 
 const router = express.Router();
 
-router.use("")
 
 router.route("/").get(getUsers);
 router.route("/:id").get(getUsers).put(updateUser).delete(deleteUser);
