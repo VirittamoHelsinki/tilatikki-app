@@ -13,24 +13,7 @@ export const getUsers = async (
     const users = await User.find();
     res.status(200).json({ success: true, data: users });
   } catch (error) {
-    res.status(500).json({ success: false, error: "Server Error" });
-  }
-};
-
-// Desc: Create new User
-// @route POST /api/users
-// @access Private
-export const createUser = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const newUser: IUser = req.body;
-    const user = await User.create(newUser);
-    res.status(201).json({ success: true, data: user });
-  } catch (error) {
-    res.status(500).json({ success: false, error: "Server Error" });
+    next(error)
   }
 };
 
@@ -53,7 +36,7 @@ export const updateUser = async (
     }
     res.status(200).json({ success: true, data: user });
   } catch (error) {
-    res.status(500).json({ success: false, error: "Server Error" });
+    next(error)
   }
 };
 
@@ -73,6 +56,6 @@ export const deleteUser = async (
     }
     res.status(200).json({ success: true, data: {} });
   } catch (error) {
-    res.status(500).json({ success: false, error: "Server Error" });
+    next(error)
   }
 };

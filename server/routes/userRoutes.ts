@@ -1,12 +1,13 @@
 import express from "express";
 import {
-  getSpace,
-  createSpace,
-  updateSpace,
-  deleteSpace,
-} from "../controllers/spaceControllers";
+  getUsers,
+  updateUser,
+  deleteUser,
+} from "../controllers/userControllers";
 
 const router = express.Router();
 
-router.route("/").get(getSpace).post(createSpace);
-router.route("/:id").get(getSpace).put(updateSpace).delete(deleteSpace);
+router.route("/").get(getUsers);
+router.route("/:id").get(getUsers).put(updateUser).delete(deleteUser);
+
+export default router;

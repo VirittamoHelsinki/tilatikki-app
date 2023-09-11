@@ -1,10 +1,11 @@
-import { Document, Schema, Model, model } from 'mongoose';
+import { Document, Schema, Model, model } from "mongoose";
+import bcrypt from "bcrypt";
 
 export interface IUser {
   firstname: string;
   lastname: string;
   email: string;
-  passwordHash: string;
+  password: string;
   premises: Schema.Types.ObjectId[];
   availabilities: Schema.Types.ObjectId[];
   reservations: Schema.Types.ObjectId[];
@@ -24,28 +25,48 @@ const userSchema = new Schema<IUser>({
   email: {
     type: String,
     required: true,
+    match: [
+      /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+      'Please add a valid email'
+    ],
   },
-  passwordHash: {
+  password: {
     type: String,
-    required: true,
+    required: [true, 'Please add a password'],
+    minlength: 6,
+    select: false
   },
-  premises: [{
+  premises: [
+    {
       // Premises that the user has access to.
       type: Schema.Types.ObjectId,
-      ref: 'Premise',
-  }],
-  availabilities: [{
+      ref: "Premise",
+    },
+  ],
+  availabilities: [
+    {
       // Availabilities that the user has created.
       type: Schema.Types.ObjectId,
-      ref: 'Availability',
-  }],
-  reservations: [{
+      ref: "Availability",
+    },
+  ],
+  reservations: [
+    {
       // Reservations that the user has created.
       type: Schema.Types.ObjectId,
-      ref: 'Reservation',
-  }]
+      ref: "Reservation",
+    },
+  ],
 });
 
-const User: Model<IUserModel> = model<IUserModel>('User', userSchema);
+userSchema.pre('save', async function(next) {
+  const user = this as IUserModel;
+  const salt = await bcrypt.genSalt(10);
+  const hash = await bcrypt.hash(user.password, salt);
+  user.password = hash;
+  next();
+});
+
+const User: Model<IUserModel> = model<IUserModel>("User", userSchema);
 
 export default User;
