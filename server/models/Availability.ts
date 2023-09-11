@@ -1,6 +1,6 @@
 import { Document, Schema, Model, model } from 'mongoose';
 
-interface IAvailability {
+export interface IAvailability {
   creator: Schema.Types.ObjectId;
   startdate: Date;
   enddate: Date;

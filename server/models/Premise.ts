@@ -1,6 +1,6 @@
 import { Document, Schema, Model, model } from 'mongoose';
 
-interface IPremise {
+export interface IPremise {
   name: string;
   address: string;
   spaces: Schema.Types.ObjectId[];

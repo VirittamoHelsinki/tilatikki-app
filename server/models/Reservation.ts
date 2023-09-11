@@ -1,6 +1,6 @@
 import { Document, Schema, Model, model } from 'mongoose';
 
-interface IReservation {
+export interface IReservation {
   creator: Schema.Types.ObjectId;
   startdate: Date;
   enddate: Date;

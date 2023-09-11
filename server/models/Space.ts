@@ -1,6 +1,6 @@
 import { Document, Schema, Model, model } from 'mongoose';
 
-interface ISpace {
+export interface ISpace {
   name: string;
   area?: number;
   premise: Schema.Types.ObjectId;

@@ -4,6 +4,7 @@ import {
   createAvailability,
   updateAvailability,
   deleteAvailability,
+  getAvailabilitiesWithPremiseId
 } from "../controllers/availabilityControllers";
 
 const router = express.Router();
@@ -14,5 +15,7 @@ router
   .get(getAvailability)
   .put(updateAvailability)
   .delete(deleteAvailability);
+
+router.route("/premise/:id").post(getAvailabilitiesWithPremiseId)
 
 export default router;
