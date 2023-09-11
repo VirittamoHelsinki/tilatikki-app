@@ -30,7 +30,7 @@ export const createReservation = async (
                                    .populate('reservations');
 
   if (!availability) {
-    return res.status(404).json({ error: `Availability not found with id: ${availabilityId}` });
+    return res.status(404).json({ error: `Availability not found with id: ${availability}` });
   }
 
   // (In progress) ToDo:

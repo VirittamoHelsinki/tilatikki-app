@@ -3,7 +3,6 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import path from 'path';
 import cookieParser from 'cookie-parser';
-import dotenv from 'dotenv';
 import { node_env } from './utils/config';
 import { requestLogger, unknownEndpoint, errorHandler } from './utils/middleware';
 

@@ -1,6 +1,7 @@
 import { Document, Schema, Model, model, SchemaTypes } from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import {jwtSecret, jwtExpire} from "../utils/config";
 
 export interface IUser extends Document {
   firstname: string;
@@ -74,8 +75,8 @@ userSchema.pre<IUser>("save", async function (next) {
 // Sign JWT and return
 userSchema.methods.getSignedJwtToken = function () {
   const user = this;
-  return jwt.sign({ id: user._id }, process.env.JWT_SECRET || "blablabla", {
-    expiresIn: process.env.JWT_EXPIRE || "30",
+  return jwt.sign({ id: user._id }, jwtSecret, {
+    expiresIn: jwtExpire,
   });
 };
 
