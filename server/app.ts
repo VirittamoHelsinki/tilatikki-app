@@ -39,7 +39,7 @@ app.use('/api/availability', availabilityRoutes);
 app.use('/api/premise', premiseRoutes);
 app.use('/api/reservation', reservationRoutes);
 app.use('/api/space', spaceRoutes);
-app.use('/api/user', userRoutes);
+// app.use('/api/user', userRoutes);
 
 
 app.use(errorHandler);
