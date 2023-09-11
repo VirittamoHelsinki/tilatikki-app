@@ -2,7 +2,9 @@ import express, { Application } from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import path from 'path';
-import { port, node_env } from './utils/config';
+import cookieParser from 'cookie-parser';
+import dotenv from 'dotenv';
+import { node_env } from './utils/config';
 import { requestLogger, unknownEndpoint, errorHandler } from './utils/middleware';
 
 // Configure and connect the database.
@@ -10,6 +12,8 @@ import connectMongoose from './utils/connectMongoose';
 
 
 const app = express();
+
+app.use(cookieParser());
 
 import availabilityRoutes from './routes/availabilityRoutes';
 import premiseRoutes from './routes/premiseRoutes';
@@ -39,7 +43,7 @@ app.use('/api/availability', availabilityRoutes);
 app.use('/api/premise', premiseRoutes);
 app.use('/api/reservation', reservationRoutes);
 app.use('/api/space', spaceRoutes);
-// app.use('/api/user', userRoutes);
+app.use('/api/user', userRoutes);
 
 
 app.use(errorHandler);

@@ -1,5 +1,5 @@
 import app from './app'
-import { port } from './utils/config'
+import { port,mongoUri } from './utils/config'
 import connectDB from './configs/connectDB';
 
 
