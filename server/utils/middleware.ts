@@ -43,23 +43,33 @@ const errorHandler = (
 const protect = asyncErrorHandler(async (req: Request, res: Response, next: NextFunction) => {
   let token;
 
+  // Check if the request contains an "Authorization" header with a "Bearer" token
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     token = req.headers.authorization.split(' ')[1];
   }
 
+  // If there's no token, return a 401 (Unauthorized) response
   if (!token) {
     return res.status(401).json({ error: 'Not authorized, no token' });
   }
 
+  // Verify the token and extract the user's ID
   const decoded = jwt.verify(token, jwtSecret) as { id: string };
 
+  // Find the user in the database by their ID, excluding their password
   req.user = await User.findById(decoded.id).select('-password');
+
+  // Log the user object for debugging purposes
   console.log(req.user);
+
+  // Continue to the next middleware or route handler
   next();
 });
 
+// Middleware function to authorize specific user roles for routes
 export const authorize = (...roles: string[]) => {
   return (req: Request, res: Response, next: NextFunction) => {
+    // Check if the user's role is included in the allowed roles
     if (!roles.includes(req.user.role)) {
       return next(
         new Error(
@@ -67,6 +77,8 @@ export const authorize = (...roles: string[]) => {
         )
       );
     }
+
+    // Continue to the next middleware or route handler
     next();
   };
 };
