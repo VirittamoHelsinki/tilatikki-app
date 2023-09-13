@@ -12,8 +12,8 @@ export interface IUser extends Document {
   premises: Schema.Types.ObjectId[];
   availabilities: Schema.Types.ObjectId[];
   reservations: Schema.Types.ObjectId[];
-  resetPasswordToken: string;
-  resetPasswordExpire: Date;
+  resetPasswordToken: string | undefined;
+  resetPasswordExpire: Date | undefined;
   credentials: Schema.Types.ObjectId;
   getSignedJwtToken(): string;
   matchPassword(enteredPassword: string): Promise<boolean>;

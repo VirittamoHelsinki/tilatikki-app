@@ -9,7 +9,6 @@ import { requestLogger, unknownEndpoint, errorHandler } from './utils/middleware
 // Configure and connect the database.
 import connectMongoose from './utils/connectMongoose';
 
-
 const app = express();
 
 app.use(cookieParser());
