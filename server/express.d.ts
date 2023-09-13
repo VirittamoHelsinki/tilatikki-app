@@ -7,3 +7,23 @@ declare namespace Express {
       user?: IUser; 
     }
   }
+
+  declare namespace Express {
+    interface Response {
+      advancedResults?: {
+        success: boolean;
+        count: number;
+        pagination: {
+          next?: {
+            page: number;
+            limit: number;
+          };
+          prev?: {
+            page: number;
+            limit: number;
+          };
+        };
+        data: any;
+      };
+    }
+  }

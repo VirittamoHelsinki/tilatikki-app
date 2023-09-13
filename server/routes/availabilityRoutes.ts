@@ -11,12 +11,12 @@ import {protect} from "../utils/middleware";
 
 const router = express.Router();
 
-router.route("/").get(getAvailability).post(protect,createAvailability);
+router.route("/").get(protect,getAvailability).post(protect,createAvailability);
 router
-  .route("/:id")
-  .get(getAvailability)
-  .put(updateAvailability)
-  .delete(deleteAvailability);
+  .route("/:id").all(protect)
+  .get(protect,getAvailability)
+  .put(protect,updateAvailability)
+  .delete(protect,deleteAvailability)
 
 router.route("/premise/:id").post(getAvailabilitiesWithPremiseId)
 

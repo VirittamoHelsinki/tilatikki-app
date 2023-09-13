@@ -58,4 +58,17 @@ const protect = asyncErrorHandler(async (req: Request, res: Response, next: Next
   next();
 });
 
+export const authorize = (...roles: string[]) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    if (!roles.includes(req.user.role)) {
+      return next(
+        new Error(
+          `User role ${req.user.role} is not authorized to access this route`
+        )
+      );
+    }
+    next();
+  };
+};
+
 export { unknownEndpoint, errorHandler, requestLogger, protect };

@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import crypto from "crypto";
 import asyncErrorHandler from "../utils/asyncErrorHandler";
 import User, { IUser } from "../models/User";
 import { jwtExpire, node_env } from "../utils/config";
@@ -52,6 +53,64 @@ export const login = asyncErrorHandler(
     sendTokenResponse(user, 200, res);
   }
 );
+
+//@desc Get current logged in user
+//@route POST /api/auth/me
+//@access Private
+
+export const getMe = asyncErrorHandler(async (req: Request, res: Response, next: NextFunction) => {
+  const user = await User.findById(req.user.id);
+
+  res.status(200).json({
+    success: true,
+    data: user
+  });
+});
+
+//@desc Update user details
+//@route PUT /api/auth/updatedetails
+//@access Private
+
+export const updateDetails = asyncErrorHandler(async (req: Request, res: Response, next: NextFunction) => {
+const fieldsToUpdate = {
+  firstname: req.body.firstname,
+  lastname: req.body.lastname,
+  email: req.body.email
+}
+
+
+  const user = await User.findByIdAndUpdate(req.user.id, fieldsToUpdate, {
+    new: true,
+    runValidators: true
+  });
+  
+
+  res.status(200).json({
+    success: true,
+    data: user
+  });
+});
+
+//@desc Update password
+//@route PUT /api/auth/updatepassword
+//@access Private
+
+export const updatePassword = asyncErrorHandler(async (req, res, next) => {
+  const user = await User.findById(req.user.id).select('+password');
+  if (!user) {
+    return next(new Error('User not found'));
+  }
+  // Check current password
+  if (!(await user.matchPassword(req.body.currentPassword))) {
+    return next(new Error('Password is incorrect'));
+  }
+  
+
+  user.password = req.body.newPassword;
+  await user.save();
+
+  sendTokenResponse(user, 200, res);
+});
 
 // Get token from model, create cookie and send response
 export const sendTokenResponse = (user: IUser, statusCode: number, res: Response) => {
@@ -112,4 +171,30 @@ export const forgotPassword = asyncErrorHandler(async (req: Request, res: Respon
   }
 }
 );
+
+// @desc Reset password
+// @route PUT /api/auth/resetpassword/:resettoken
+// @access Public
+
+export const resetPassword = asyncErrorHandler(async (req: Request, res: Response, next: NextFunction) => {
+  // Get hashed token
+  const resetPasswordToken = crypto.createHash('sha256').update(req.params.resettoken).digest('hex');
+
+  const user = await User.findOne({ resetPasswordToken: resetPasswordToken, resetPasswordExpire: { $gt: Date.now() } });
+
+  if (!user) {
+    return next(new Error('Invalid token'));
+  }
+
+  // Set new password
+  user.password = req.body.password;
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpire = undefined;
+
+  await user.save();
+
+  sendTokenResponse(user, 200, res);
+
+});
+
 
