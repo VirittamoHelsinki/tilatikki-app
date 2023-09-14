@@ -41,12 +41,14 @@ const errorHandler = (
 
 // Protect routes
 const protect = asyncErrorHandler(async (req: Request, res: Response, next: NextFunction) => {
-  let token;
-
+  let token
   // Check if the request contains an "Authorization" header with a "Bearer" token
+
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     token = req.headers.authorization.split(' ')[1];
   }
+  
+  console.log("THIS IS TOKEN ---->",token)
 
   // If there's no token, return a 401 (Unauthorized) response
   if (!token) {

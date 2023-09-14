@@ -1,20 +1,35 @@
-import { useState} from 'react'
-import { FaSignInAlt } from 'react-icons/fa'
-
-
+import { useState } from 'react';
+import { FaSignInAlt } from 'react-icons/fa';
+import { useUserAction } from "../hooks/useUser";
+import { useTypedSelector } from '../hooks/useTypedSelector';
 
 function Login() {
-  const [formData] = useState({
+  const [credentials, setCredentials] = useState({
     email: '',
     password: '',
-  })
+  });
 
-  const { email, password } = formData
+  const { email, password } = credentials;
+  const { loginUser, getAllUsers } = useUserAction();
 
- 
-  const onChange = () => {}
+  const onChange = (e:any) => {
+    setCredentials({ ...credentials, [e.target.name]: e.target.value });
+  };
 
-  const onSubmit = () => {}
+  const onSubmit = async (e:any) => {
+    e.preventDefault(); // Prevent the default form submission behavior
+
+    try {
+      // Call the loginUser action with email and password
+      await loginUser({ email, password });
+
+      // Optionally, you can perform redirection or other actions after successful login
+    } catch (error) {
+      // Handle login failure here, e.g., display an error message to the user
+      console.error('Login failed:', error);
+      // You can set an error state here and display it to the user
+    }
+  };
 
   return (
     <>
@@ -52,13 +67,16 @@ function Login() {
 
           <div className='form-group'>
             <button type='submit' className='btn btn-block'>
-            Lähetä
+              Lähetä
             </button>
           </div>
         </form>
+        <button className='btn btn-block' onClick={() => getAllUsers()}>
+          Get all users
+        </button>
       </section>
     </>
-  )
+  );
 }
 
-export default Login
+export default Login;
