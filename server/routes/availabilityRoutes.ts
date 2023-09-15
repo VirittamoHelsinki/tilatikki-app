@@ -18,6 +18,7 @@ router
   .put(protect,updateAvailability)
   .delete(protect,deleteAvailability)
 
+// use post request instead of get so the client can add startdate and enddate in the body.
 router.route("/premise/:id").post(getAvailabilitiesWithPremiseId)
 
 export default router;

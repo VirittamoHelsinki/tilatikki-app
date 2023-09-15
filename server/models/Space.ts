@@ -40,15 +40,7 @@ const spaceSchema = new Schema<ISpace>({
   floor: {
     type: Number,
     required: true
-  },
-  availabilities: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Availability',
-  }],
-  reservations: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Reservation',
-  }]
+  }
 });
 
 const Space: Model<ISpaceModel> = model<ISpaceModel>('Space', spaceSchema);
