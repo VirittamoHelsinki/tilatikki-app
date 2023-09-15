@@ -66,6 +66,8 @@ export const createAvailability = asyncErrorHandler(
 
     if (!space) return res.status(404).json({ error: `Space not found with id: ${spaceId}` })
 
+    // TBD Check that spaces dont have intersecting availabilities.
+
     const premise = await Premise.findById(space.premise)
 
     if (!premise) {
@@ -109,6 +111,8 @@ export const updateAvailability = asyncErrorHandler(
     if (!availability) {
       return res.status(404).json({ error: `Availability not found with id: ${id}` });
     }
+
+    // TBD Check that spaces dont have intersecting availabilities.
 
     const premise = await Premise.findById(availability.premise)
 
