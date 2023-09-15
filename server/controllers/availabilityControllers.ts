@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 
 import Availability, { IAvailability } from "../models/Availability";
+import Reservation, { IReservation } from "../models/Reservation";
 import Premise, { IPremise} from "../models/Premise";
 import Space, { ISpace } from "../models/Space";
 
@@ -42,13 +43,12 @@ export const getAvailabilitiesWithPremiseId = asyncErrorHandler(
 // Desc: Get all availabilities
 // @route GET /api/availabilities
 // @access Public
-export const getAvailability = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  res.status(200).json({ success: true, msg: "Show all availabilities" });
-};
+export const getAvailability = asyncErrorHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+
+    res.status(200).json({ success: true, msg: "Show all availabilities" });
+  }
+);
 
 // Desc: Create new availability
 // @route POST /api/availabilities
@@ -68,8 +68,12 @@ export const createAvailability = asyncErrorHandler(
 
     const premise = await Premise.findById(space.premise)
 
+    if (!premise) {
+      return res.status(404).json({ error: `Premise not found with id: ${space.premise}` });
+    }
+
     // Check if the user is authorized to create an availability for this premise.
-    if (!premise?.users.find(uid => user._id.equals(uid))) {
+    if (!premise.users.find(uid => user._id.equals(uid))) {
       return res.status(401).json({
         error: `You are not authorized to create availabilities for premise: ${spaceId}`
       })
@@ -85,34 +89,84 @@ export const createAvailability = asyncErrorHandler(
 
     availability = await availability.save()
 
-    res.status(200).json(availability);
+    res.status(201).json(availability);
   }
 );
 
-// Desc: Update availability
-// @route PUT /api/availabilities/:id
-// @access Private
+// Change Availability startdate and/or enddate 
+export const updateAvailability = asyncErrorHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { startdate, enddate } = req.body;
+    const { user } = res.locals; // Make sure this points to correct user location.
+    const { id } = req.params;
 
-export const updateAvailability = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  res
-    .status(200)
-    .json({ success: true, msg: `Update availability ${req.params.id}` });
-};
+    if (!startdate && !enddate) {
+      return res.status(400).json({ error: 'Both startdate and enddate are missing.' })
+    }
+
+    const availability = await Availability.findById(id)
+
+    if (!availability) {
+      return res.status(404).json({ error: `Availability not found with id: ${id}` });
+    }
+
+    const premise = await Premise.findById(availability.premise)
+
+    if (!premise) {
+      return res.status(404).json({ error: `Premise not found with id: ${availability.premise}` });
+    }
+
+    // Check if the user is authorized edit an availability on this premise.
+    if (!premise.users.find(uid => user._id.equals(uid))) {
+      return res.status(401).json({
+        error: `You are not authorized to create availabilities for premise: ${premise._id}`
+      })
+    }
+
+    // Update the existing fields.
+    if(startdate) availability.startdate = startdate
+    if(enddate) availability.enddate = enddate
+    
+    const updatedAavailability = await availability.save()
+
+    res.status(200).json(updatedAavailability);
+  }
+);
 
 // Desc: Delete availability
 // @route DELETE /api/availabilities/:id
 // @access Private
 
-export const deleteAvailability = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  res
-    .status(200)
-    .json({ success: true, msg: `Delete availability ${req.params.id}` });
-};
+export const deleteAvailability = asyncErrorHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+    const { user } = res.locals; // Make sure this points to correct user location.
+    
+    const availability = await Availability.findById(id)
+
+    if (!availability) {
+      return res.status(404).json({ error: `Availability not found with id: ${id}` });
+    }
+
+    const premise = await Premise.findById(availability.premise)
+
+    if (!premise) {
+      return res.status(404).json({ error: `Premise not found with id: ${availability.premise}` });
+    }
+
+    // Check if the user is authorized to remove availability from this premise.
+    if (!premise.users.find(uid => user._id.equals(uid))) {
+      return res.status(401).json({
+        error: `You are not authorized to remove availabilities from premise: ${premise._id}`
+      })
+    }
+
+    availability.reservations.forEach(async reservation_id => {
+      await Reservation.findByIdAndRemove(reservation_id)
+    })
+
+    await Availability.findByIdAndRemove(id)
+
+    res.status(204).json({ message: 'Availability deleted' });
+  }
+);
