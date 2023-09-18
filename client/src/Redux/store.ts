@@ -6,16 +6,13 @@ import thunk from "redux-thunk";
 import logger from 'redux-logger';
 
 // Import the `rootReducer` reducer from the `index` file.
-import rootReducer from "./Reducer/index";
+import rootReducer from "./Reducers/index";
 
 // Create an array of middleware, including thunk.
 const middleware = [thunk,logger];
 
 //Check if the environment is development.
-if (process.env.NODE_ENV === "development") {
-  // Add the logger middleware to the middleware array.
-  middleware.push(logger);
-}
+
 
 // Create the Redux store.
 export const store = createStore(

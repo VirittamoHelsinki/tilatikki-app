@@ -1,0 +1,9 @@
+export enum ActionType {
+    DISPLAY_ALERT = "DISPLAY_ALERT",
+    CLEAR_ALERT = "CLEAR_ALERT",
+
+    HANDLE_CHANGE = "HANDLE_CHANGE",
+    CLEAR_VALUES = "CLEAR_VALUES",
+}
+
+

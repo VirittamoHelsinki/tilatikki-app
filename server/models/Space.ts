@@ -43,11 +43,11 @@ const spaceSchema = new Schema<ISpace>({
   },
   availabilities: [{
     type: Schema.Types.ObjectId,
-    ref: 'Availability',
+    ref: 'Availability'
   }],
   reservations: [{
     type: Schema.Types.ObjectId,
-    ref: 'Reservation',
+    ref: 'Reservation'
   }]
 });
 

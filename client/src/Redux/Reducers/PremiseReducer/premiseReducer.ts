@@ -1,6 +1,6 @@
 // Import the `Reducer` and `Dispatch` interfaces from Redux.
 import { Reducer, Dispatch } from "redux";
-import { initialState, initialStateProps } from "./initialState"; // for future when initalState and props are moved to its own file
+import { initialState, initialStateProps } from "../initialState"; // for future when initalState and props are moved to its own file
 
 
 // start from ActionTypes, Action interface, Action creator's and then reducer
@@ -38,7 +38,6 @@ const premiseReducer: Reducer<initialStateProps> = (state = initialState,action:
       case ActionType.UPDATE_COUNTER:
         return {
           ...state,
-          value: state.value + 1
         };
   
       default:

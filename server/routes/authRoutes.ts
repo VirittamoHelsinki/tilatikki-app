@@ -9,6 +9,7 @@ import {
   getMe,
   updateDetails,
   updatePassword,
+  logout
 } from "../controllers/authControllers";
 
 // Import protect middleware for authentication
@@ -21,6 +22,10 @@ router.post("/register", register);
 
 // Route for user login
 router.post("/login", login);
+
+// Route for user logout
+router.get("/logout", logout);
+
 
 // Route for handling forgotten passwords
 router.post("/forgotpassword", forgotPassword);

@@ -2,11 +2,13 @@
 import { combineReducers } from "redux";
 
 // Import the `reducer` function from the `premiseReducer` file.
-import reducer from "./premiseReducer";
+import premiseReducer from "./PremiseReducer/premiseReducer";
+import userReducer from "./UserReducer/userReducer";
 
 // Create a new reducer called `rootReducer`.
 const rootReducer = combineReducers({
-  Data: reducer
+  premise: premiseReducer,
+  user: userReducer
 });
 
 // Export the `rootReducer` function.

@@ -19,12 +19,12 @@ import { protect, authorize } from "../utils/middleware";
 import advancedResults from "../utils/advancedResults";
 
 const router = express.Router();
-
 // Use the protect middleware to ensure authentication for all routes below
 router.use(protect);
 
 // Use the authorize middleware to ensure only admins can access routes below
 router.use(authorize("admin"));
+
 
 // Define routes for handling user data
 router.route("/")

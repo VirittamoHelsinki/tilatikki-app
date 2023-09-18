@@ -22,12 +22,11 @@ export const createReservation = async (
   res: Response,
   next: NextFunction
 ) => {
-  let { startdate, enddate, premise, space, availability } = req.body;
-  // Still need to make sure the user is found this way(or change this).
-  const { user } = res.locals;
+  let { startdate, enddate, premise, space, availabilityId } = req.body;
+  const { user } = res.locals; // Make sure this points to correct user location.
 
-  availability = await Availability.findById(availability)
-                                   .populate('reservations');
+  const availability = await Availability.findById(availabilityId)
+                                         .populate('reservations');
 
   if (!availability) {
     return res.status(404).json({ error: `Availability not found with id: ${availability}` });
