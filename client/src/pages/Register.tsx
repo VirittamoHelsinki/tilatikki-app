@@ -1,8 +1,19 @@
-import { useState } from "react";
+import { useState, ChangeEvent, FormEvent } from "react";
 import { FaUser } from "react-icons/fa";
+import { useUserAction } from "../hooks/useUser";
 
 function Register() {
-  const [formData] = useState({
+  // Define the type for your form data
+  interface FormData {
+    lastname: string;
+    email: string;
+    password: string;
+    password2: string;
+    firstname: string;
+  }
+  const { registerUser } = useUserAction();
+  // Initialize the state with the FormData type
+  const [formData, setFormData] = useState<FormData>({
     lastname: "",
     email: "",
     password: "",
@@ -10,11 +21,25 @@ function Register() {
     firstname: "",
   });
 
-  const { lastname,firstname, email, password, password2 } = formData;
+  const { lastname, firstname, email, password, password2 } = formData;
 
-  const onChange = () => {};
+  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+    // Update the state when input values change
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
-  const onSubmit = () => {};
+  const onSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+
+    // Check if passwords match
+    if (password !== password2) {
+      alert("Passwords do not match.");
+      return; // Prevent form submission if passwords don't match
+    }
+    try {
+      await registerUser({ email, password, firstname, lastname });
+    } catch (error) {}
+  };
 
   return (
     <>

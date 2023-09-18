@@ -93,13 +93,28 @@ const userReducer = (
       };
     case ActionType.LOGOUT_USER_SUCCESS:
       return {
-        ...state,
-        token: "",
-        isLoading: false,
-        alertType: "success",
-        alertText: action.payload.message,
+        ...initialState,
       };
     case ActionType.LOGOUT_USER_FAILURE:
+      return {
+        ...state,
+        isLoading: false,
+        alertType: "danger",
+        alertText: action.payload.message,
+      };
+
+    case ActionType.GET_ME_BEGINS:
+      return {
+        ...state,
+        isLoading: true,
+      };
+    case ActionType.GET_ME_SUCCESS:
+      return {
+        ...state,
+        currentUser: action.payload,
+        isLoading: false,
+      };
+    case ActionType.GET_ME_FAILURE:
       return {
         ...state,
         isLoading: false,

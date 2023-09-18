@@ -25,6 +25,8 @@ export const register = asyncErrorHandler(
   }
 );
 
+
+
 // @desc    Login user
 // @route   POST /api/auth/login
 // @access  Public
@@ -54,6 +56,22 @@ export const login = asyncErrorHandler(
     sendTokenResponse(user, 200, res);
   }
 );
+
+//desc Log user out / clear cookie
+//@route GET /api/auth/logout
+//@access Private
+export const logout = asyncErrorHandler(async (req: Request, res: Response, next: NextFunction) => {
+  // Set the cookie to an empty string with an expiration date in the past
+  res.cookie('token', 'none', {
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true
+  });
+  res.status(200).json({
+    success: true,
+    data: {}
+  });
+  
+});
 
 //@desc Get current logged in user
 //@route POST /api/auth/me
@@ -202,5 +220,4 @@ export const resetPassword = asyncErrorHandler(async (req: Request, res: Respons
   sendTokenResponse(user, 200, res);
 
 });
-
 

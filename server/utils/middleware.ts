@@ -1,9 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import asyncErrorHandler from "./asyncErrorHandler";
-import User, {IUser} from "../models/User";
-import {jwtSecret } from "./config";
-
+import User, { IUser } from "../models/User";
+import { jwtSecret } from "./config";
 
 const requestLogger = (
   req: Request,
@@ -20,7 +19,6 @@ const requestLogger = (
 const unknownEndpoint = (req: Request, res: Response): void => {
   res.status(404).send({ error: "unknown endpoint" });
 };
-
 
 const errorHandler = (
   error: Error,
@@ -40,33 +38,41 @@ const errorHandler = (
 };
 
 // Protect routes
-const protect = asyncErrorHandler(async (req: Request, res: Response, next: NextFunction) => {
-  let token
-  // Check if the request contains an "Authorization" header with a "Bearer" token
+const protect = asyncErrorHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    let token;
+    // Check if the request contains an "Authorization" header with a "Bearer" token
 
-  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-    token = req.headers.authorization.split(' ')[1];
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith("Bearer")
+    ) {
+      token = req.headers.authorization.split(" ")[1];
+    } else if (req.cookies.token) {
+      // If there's no "Authorization" header, check if the request contains a cookie with a JWT
+      token = req.cookies.token;
+    }
+
+    
+
+    // If there's no token, return a 401 (Unauthorized) response
+    if (!token) {
+      return res.status(401).json({ error: "Not authorized, no token" });
+    }
+
+    // Verify the token and extract the user's ID
+    const decoded = jwt.verify(token, jwtSecret) as { id: string };
+
+    // Find the user in the database by their ID, excluding their password
+    req.user = await User.findById(decoded.id).select("-password");
+
+    // Log the user object for debugging purposes
+    console.log(req.user);
+
+    // Continue to the next middleware or route handler
+    next();
   }
-  
-  console.log("THIS IS TOKEN ---->",token)
-
-  // If there's no token, return a 401 (Unauthorized) response
-  if (!token) {
-    return res.status(401).json({ error: 'Not authorized, no token' });
-  }
-
-  // Verify the token and extract the user's ID
-  const decoded = jwt.verify(token, jwtSecret) as { id: string };
-
-  // Find the user in the database by their ID, excluding their password
-  req.user = await User.findById(decoded.id).select('-password');
-
-  // Log the user object for debugging purposes
-  console.log(req.user);
-
-  // Continue to the next middleware or route handler
-  next();
-});
+);
 
 // Middleware function to authorize specific user roles for routes
 export const authorize = (...roles: string[]) => {

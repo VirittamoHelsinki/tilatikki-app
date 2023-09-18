@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { FaSignInAlt } from 'react-icons/fa';
 import { useUserAction } from "../hooks/useUser";
-import { useTypedSelector } from '../hooks/useTypedSelector';
 
 function Login() {
   const [credentials, setCredentials] = useState({
@@ -10,24 +9,17 @@ function Login() {
   });
 
   const { email, password } = credentials;
-  const { loginUser, getAllUsers } = useUserAction();
+  const { loginUser, getAllUsers, logoutUser,getMe } = useUserAction();
 
-  const onChange = (e:any) => {
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
 
-  const onSubmit = async (e:any) => {
-    e.preventDefault(); // Prevent the default form submission behavior
-
+  const onSubmit = async (e:React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     try {
-      // Call the loginUser action with email and password
       await loginUser({ email, password });
-
-      // Optionally, you can perform redirection or other actions after successful login
     } catch (error) {
-      // Handle login failure here, e.g., display an error message to the user
-      console.error('Login failed:', error);
-      // You can set an error state here and display it to the user
     }
   };
 
@@ -67,12 +59,18 @@ function Login() {
 
           <div className='form-group'>
             <button type='submit' className='btn btn-block'>
-              Lähetä
+              Kirjaudu
             </button>
           </div>
         </form>
         <button className='btn btn-block' onClick={() => getAllUsers()}>
           Get all users
+        </button>
+        <button className='btn btn-block' onClick={() => logoutUser()}>
+          Kirjaudu Ulos
+        </button>
+        <button className='btn btn-block' onClick={() => getMe()}>
+          get user data
         </button>
       </section>
     </>
