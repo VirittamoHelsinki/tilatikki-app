@@ -1,52 +1,94 @@
 import { Request, Response, NextFunction } from "express";
+import Space, { ISpace } from "../models/Space";
+import asyncErrorHandler from "../utils/asyncErrorHandler";
+import Premise, { IPremise } from "../models/Premise";
+import Availability, { IAvailability } from "../models/Availability";
+import Reservation, { IReservation } from "../models/Reservation";
 
-// Desc: Get all availabilities
-// @route GET /api/availabilities
+// Desc: Get all spaces
+// @route GET /api/spaces
 // @access Public
-export const getSpace = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  res.status(200).json({ success: true, msg: "Show all Space" });
-};
+export const getAllSpace = asyncErrorHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const spaces = await Space.find();
+    res.status(200).json({ success: true, data: spaces });
+  }
+);
 
-// Desc: Create new Space
-// @route POST /api/availabilities
+// Desc: Create new space
+// @route POST /api/spaces
 // @access Private
-export const createSpace = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  res.status(200).json({ success: true, msg: "Create new Space" });
-};
+export const createSpace = asyncErrorHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const {
+      name,area,floor,
+      premiseId,availabilities,reservations,
+      buildingId,
+    } = req.body;
 
-// Desc: Update Space
-// @route PUT /api/availabilities/:id
+    // Add validation here if needed
+    if (!name) return res.status(400).json({ error: "Name is required" });
+    if (!area) return res.status(400).json({ error: "Area is required" });
+    if (!floor) return res.status(400).json({ error: "Floor is required" });
+
+    // Check if for values to exists
+    const premise = await Premise.findById(premiseId);
+    if (!premise) return res.status(404).json({ error: `Premise not found with id: ${premiseId}` });
+    
+    const building = await premise.buildings.find(b => b._id.toString === buildingId);
+    if (!building)return res.status(404).json({ error: "Building not found with id: ${building}" });
+
+    const space = new Space({
+      name,
+      area,
+      floor,
+      premise: premise,
+      building: building
+    });
+
+    const newSpace = await space.save();
+    res.status(201).json({ success: true, data: newSpace });
+  }
+);
+
+// Desc: Get a specific space by ID
+// @route GET /api/spaces/:id
+// @access Public
+export const getSpaceById = asyncErrorHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const space = await Space.findById(req.params.id);
+    if (!space) {
+      return res.status(404).json({ success: false, error: "Space not found" });
+    }
+    res.status(200).json({ success: true, data: space });
+  }
+);
+
+// Desc: Update a space by ID
+// @route PUT /api/spaces/:id
 // @access Private
+export const updateSpaceById = asyncErrorHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const space = await Space.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    if (!space) {
+      return res.status(404).json({ success: false, error: "Space not found" });
+    }
+    res.status(200).json({ success: true, data: space });
+  }
+);
 
-export const updateSpace = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  res
-    .status(200)
-    .json({ success: true, msg: `Update Space ${req.params.id}` });
-};
-
-// Desc: Delete Space
-// @route DELETE /api/availabilities/:id
+// Desc: Delete a space by ID
+// @route DELETE /api/spaces/:id
 // @access Private
-
-export const deleteSpace = (
-    req: Request,
-    res: Response,
-    next: NextFunction
-) => {
-    res
-        .status(200)
-        .json({ success: true, msg: `Delete Space ${req.params.id}` });
-}
-
+export const deleteSpaceById = asyncErrorHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const space = await Space.findByIdAndRemove(req.params.id);
+    if (!space) {
+      return res.status(404).json({ success: false, error: "Space not found" });
+    }
+    res.status(204).json();
+  }
+);

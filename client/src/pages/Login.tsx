@@ -16,7 +16,7 @@ import { toast } from '@/components/ui/use-toast'
 import { Toaster } from '@/components/ui/toaster'
 import { Link } from 'react-router-dom'
 import { cn } from "@/lib/utils"
-
+import {useUserAction} from "../hooks/useUser"
 
 const formSchema = z.object({
     email: z.string()
@@ -36,12 +36,18 @@ export default function Login() {
             email: "",
         },
     })
+    const {loginUser} = useUserAction()
 
     // 2. Define a submit handler.
     function onSubmit(values: z.infer<typeof formSchema>) {
         // Do something with the form values.
         // ✅ This will be type-safe and validated.
-        console.log(values)
+        const { email, password } = values
+
+        const data = {email,password}
+        
+        loginUser(data)
+
         toast({
             title: "You submitted the following values:",
             description: (
@@ -50,6 +56,7 @@ export default function Login() {
                 </pre>
             ),
         });
+
     }
 
 
