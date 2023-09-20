@@ -1,5 +1,5 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Header from './components/Header';
+import { Outlet, createBrowserRouter, RouterProvider, useNavigation, useLocation, redirect } from "react-router-dom";
+import {Header} from './components/Header';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -11,23 +11,75 @@ import { Provider } from "react-redux";
 // This component is used to connect the Redux store to the React application.
 
 import { store } from "./Redux/store";
+import { getMe } from "./Redux/Reducers/UserReducer/userActions";
+import { Premise } from "./pages/Premise";
 // This import the store variable from the Redux/store.js file.
 // This variable contains the Redux store for the application.
 
+const loader = async () => {
+    const user = getMe();
+    console.log('user', user)
+    if (!user) {
+        return redirect("/login");
+    }
+    return null;
+};
 
+const router = createBrowserRouter([
+    {
+        path: "/",
+        element: <Layout />,
+        loader,
+        children: [
+            {
+                index: true,
+                element: <Dashboard />,
+            },
+            {
+                path: "login",
+                element: <Login />,
+            },
+            {
+                path: "register",
+                element: <Register />,
+            },
+            {
+                path: ":slug",
+                children: [
+                    {
+                        index: true,
+                        element: <Premise />
+                    }
+                ]
+            }
+        ],
+    },
+]);
 
+function Layout() {
+    const navigation = useNavigation()
+    const { pathname } = useLocation()
+    return (
+        <>
+            {pathname === "/login" || pathname === "/register" ?
+                <Outlet /> :
+                (
+                    <div className="flex flex-col flex-1 px-20 py-[50px]">
+                        <Header />
+                        {navigation.state !== "idle" && <p>Navigation in progress...</p>}
+                        <Outlet />
+                    </div>
+                )
+            }
+        </>
+    )
+}
 
 export default function App() {
-  return (
-    <Provider store={store}>
-      <BrowserRouter>
-       <Routes>
-       <Route path='/' element={<> <Header/><Dashboard /></>} />
-        <Route path='/login' element={<Login />} />
-        <Route path='/register' element={<Register />} />
-        </Routes>
-      </BrowserRouter>
-    </Provider>
-  )
+    return (
+        <Provider store={store}>
+            <RouterProvider router={router} fallbackElement={<p>Loading...</p>} />
+        </Provider>
+    )
 }
 

@@ -12,5 +12,5 @@ export const useUserAction = () => {
   const dispatch = useDispatch();
 
   // Bind the action creators to the `dispatch` function.
-  return bindActionCreators(userActionCreators as any, dispatch);
+  return bindActionCreators(userActionCreators, dispatch);
 };

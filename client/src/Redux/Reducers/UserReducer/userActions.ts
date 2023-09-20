@@ -84,7 +84,7 @@ export const loginUser = (credentials: { email: string; password: string }) => {
         type: ActionType.LOGIN_USER_SUCCESS,
         payload: userData,
       });
-      
+
       // After successful login, call getMe
       await getMe()(dispatch);
     } catch (error) {
@@ -109,12 +109,12 @@ export const logoutUser = () => {
         type: ActionType.LOGOUT_USER_SUCCESS,
         payload: userData,
       });
-      
+
       // After successful logout, call getMe
     } catch (error) {
       dispatch({
         type: ActionType.LOGOUT_USER_FAILURE,
-        payload: error as any,
+        payload: error,
       });
     }
   };
@@ -137,7 +137,7 @@ export const logoutUser = () => {
     } catch (error) {
       dispatch({
         type: ActionType.GET_ME_FAILURE,
-        payload: error as any,
+        payload: error,
       });
     }
   };
@@ -160,7 +160,7 @@ export const registerUser = (credentials: RegisterUser) => {
     } catch (error) {
       dispatch({
         type: ActionType.CREATE_USER_FAILURE,
-        payload: error as any,
+        payload: error,
       });
     }
   };

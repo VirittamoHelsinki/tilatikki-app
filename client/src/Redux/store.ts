@@ -1,5 +1,5 @@
 // Import the `createStore` and `applyMiddleware` functions from Redux.
-import { createStore, applyMiddleware } from "redux";
+import { legacy_createStore as createStore, applyMiddleware } from "redux";
 
 // Import the `thunk` and `logger` middleware from Redux middleware libraries.
 import thunk from "redux-thunk";

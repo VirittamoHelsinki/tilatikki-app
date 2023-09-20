@@ -9,7 +9,7 @@ import sendEmail from "../utils/sendEmail";
 // @route   POST /api/auth/register
 // @access  Public
 export const register = asyncErrorHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, _next: NextFunction) => {
     // Extract user information from the request body
     const { firstname, lastname, email, password } = req.body;
     // Create a new user
@@ -60,7 +60,7 @@ export const login = asyncErrorHandler(
 //desc Log user out / clear cookie
 //@route GET /api/auth/logout
 //@access Private
-export const logout = asyncErrorHandler(async (req: Request, res: Response, next: NextFunction) => {
+export const logout = asyncErrorHandler(async (_req: Request, res: Response, _next: NextFunction) => {
   // Set the cookie to an empty string with an expiration date in the past
   res.cookie('token', 'none', {
     expires: new Date(Date.now() + 10 * 1000),
@@ -70,13 +70,13 @@ export const logout = asyncErrorHandler(async (req: Request, res: Response, next
     success: true,
     data: {}
   });
-  
+
 });
 
 //@desc Get current logged in user
 //@route POST /api/auth/me
 //@access Private
-export const getMe = asyncErrorHandler(async (req: Request, res: Response, next: NextFunction) => {
+export const getMe = asyncErrorHandler(async (req: Request, res: Response, _next: NextFunction) => {
   // Find and send the currently authenticated user
   const user = await User.findById(req.user.id);
 
@@ -89,7 +89,7 @@ export const getMe = asyncErrorHandler(async (req: Request, res: Response, next:
 //@desc Update user details
 //@route PUT /api/auth/updatedetails
 //@access Private
-export const updateDetails = asyncErrorHandler(async (req: Request, res: Response, next: NextFunction) => {
+export const updateDetails = asyncErrorHandler(async (req: Request, res: Response, _next: NextFunction) => {
   // Define fields to update based on the request body
   const fieldsToUpdate = {
     firstname: req.body.firstname,
@@ -123,7 +123,7 @@ export const updatePassword = asyncErrorHandler(async (req, res, next) => {
   if (!(await user.matchPassword(req.body.currentPassword))) {
     return next(new Error('Password is incorrect'));
   }
-  
+
   // Set the new password and save the user document
   user.password = req.body.newPassword;
   await user.save();
@@ -181,7 +181,7 @@ export const forgotPassword = asyncErrorHandler(async (req: Request, res: Respon
       subject: 'Password reset token',
       message: message
     });
-  
+
     res.status(200).json({ success: true, data: 'Email sent' });
   } catch (error) {
     console.log(error);

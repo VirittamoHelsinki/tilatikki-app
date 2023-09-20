@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 
 // Import the action creators from the Redux store.
-import { actionCreators } from "../Redux/index";
+import { userActionCreators } from "../Redux";
 
 // Export the `usePremiseAction` hook.
 export const usePremiseAction = () => {
@@ -12,5 +12,5 @@ export const usePremiseAction = () => {
   const dispatch = useDispatch();
 
   // Bind the action creators to the `dispatch` function.
-  return bindActionCreators(actionCreators as any, dispatch);
+  return bindActionCreators(userActionCreators, dispatch);
 };
