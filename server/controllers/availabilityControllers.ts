@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 
-import Availability, { IAvailability } from "../models/Availability";
+import Availability, { IAvailability, LAvailability } from "../models/Availability";
 import Reservation, { IReservation } from "../models/Reservation";
 import Premise, { IPremise} from "../models/Premise";
 import Space, { ISpace } from "../models/Space";
@@ -71,9 +71,9 @@ export const createAvailability = asyncErrorHandler(
 
     // Check that the new availability does not overlap with other availabilities
     // on the same space.
-    if (intersectingTimespans(startdate, enddate, space.availabilities)) {
-      return res.status(400).json({ error: 'Availabilities cannot overlap.' })
-    }
+    // if (intersectingTimespans(startdate, enddate, space.availabilities)) {
+    //   return res.status(400).json({ error: 'Availabilities cannot overlap.' })
+    // }
 
     const premise = await Premise.findById(space.premise)
 
@@ -131,13 +131,19 @@ export const updateAvailability = asyncErrorHandler(
       });
     }
 
-    // let availabilities: <IAvailability>[] = space.availabilities
+    //let availabilities: LAvailability[] = space.availabilities
 
-    // // Check that the availability does not overlap with other availabilities
-    // // on the same space.
+    // let availabilities: LAvailability[] = []
+
+    // space.availabilities.forEach(
+    //   availability =>  availabilities.push(availability)
+    // )
+
+    // Check that the availability does not overlap with other availabilities
+    // on the same space.
     // if (intersectingTimespans(
     //   //startdate, enddate, space.availabilities.filter(a => String(a._id) !== id)
-    //   //startdate, enddate, availabilities.filter(a => String(a._id) !== id)
+    //   startdate, enddate, availabilities.filter(a => String(a._id) !== id)
     // )) {
     //   return res.status(400).json({ error: 'Availabilities cannot overlap.' })
     // }
