@@ -5,6 +5,8 @@ import Reservation, { IReservation } from "../models/Reservation";
 import Premise, { IPremise} from "../models/Premise";
 import Space, { ISpace } from "../models/Space";
 
+import { intersectingTimespans } from "../utils/dateFunctions";
+
 import asyncErrorHandler from "../utils/asyncErrorHandler"; 
 
 // Get all availabilities on the premise that are partially or totally
@@ -63,10 +65,15 @@ export const createAvailability = asyncErrorHandler(
     if (!spaceId) return res.status(400).json({ error: 'spaceId missing from body' })
 
     const space = await Space.findById(spaceId)
+                             .populate('availabilities')
 
     if (!space) return res.status(404).json({ error: `Space not found with id: ${spaceId}` })
 
-    // TBD Check that spaces dont have intersecting availabilities.
+    // Check that the new availability does not overlap with other availabilities
+    // on the same space.
+    if (intersectingTimespans(startdate, enddate, space.availabilities)) {
+      return res.status(400).json({ error: 'Availabilities cannot overlap.' })
+    }
 
     const premise = await Premise.findById(space.premise)
 
@@ -112,7 +119,28 @@ export const updateAvailability = asyncErrorHandler(
       return res.status(404).json({ error: `Availability not found with id: ${id}` });
     }
 
-    // TBD Check that spaces dont have intersecting availabilities.
+    const space = await Space.findById(availability.space)
+                             .populate('availabilities')
+    
+    if (!space) {
+      // This should never happen, but typescript complained about space
+      // migth being null so it was included.
+      return res.status(404).json({
+        error: `The space with id: ${availability.space} that was
+                associated with availability: ${id} was not found.`
+      });
+    }
+
+    // let availabilities: <IAvailability>[] = space.availabilities
+
+    // // Check that the availability does not overlap with other availabilities
+    // // on the same space.
+    // if (intersectingTimespans(
+    //   //startdate, enddate, space.availabilities.filter(a => String(a._id) !== id)
+    //   //startdate, enddate, availabilities.filter(a => String(a._id) !== id)
+    // )) {
+    //   return res.status(400).json({ error: 'Availabilities cannot overlap.' })
+    // }
 
     const premise = await Premise.findById(availability.premise)
 
@@ -120,7 +148,7 @@ export const updateAvailability = asyncErrorHandler(
       return res.status(404).json({ error: `Premise not found with id: ${availability.premise}` });
     }
 
-    // Check if the user is authorized edit an availability on this premise.
+    // Check if the user is authorized to edit an availability on this premise.
     if (!premise.users.find(uid => user._id.equals(uid))) {
       return res.status(401).json({
         error: `You are not authorized to create availabilities for premise: ${premise._id}`
