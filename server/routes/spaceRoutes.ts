@@ -1,14 +1,15 @@
 import express from "express";
 import {
-  getSpace,
+  getAllSpace,
   createSpace,
-  updateSpace,
-  deleteSpace,
+  updateSpaceById,
+  deleteSpaceById,
+  getSpaceById,
 } from "../controllers/spaceControllers";
 
 const router = express.Router();
 
-router.route("/").get(getSpace).post(createSpace);
-router.route("/:id").get(getSpace).put(updateSpace).delete(deleteSpace);
+router.route("/").get(getAllSpace).post(createSpace);
+router.route("/:id").get(getSpaceById).put(updateSpaceById).delete(deleteSpaceById);
 
 export default router;

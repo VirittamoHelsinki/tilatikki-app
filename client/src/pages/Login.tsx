@@ -18,7 +18,6 @@ import { Link } from 'react-router-dom'
 import { cn } from "@/lib/utils"
 import { useUserAction } from '@/hooks/useUser'
 
-
 const formSchema = z.object({
     email: z.string()
     .min(2, { message: "email must be at least 2 characters."}),
@@ -45,7 +44,13 @@ export default function Login() {
     function onSubmit(values: z.infer<typeof formSchema>) {
         // Do something with the form values.
         // ✅ This will be type-safe and validated.
-        loginUser({email:values.email, password: values.password})
+
+        const { email, password } = values
+
+        const data = {email,password}
+
+        loginUser(data)
+
         toast({
             title: "You submitted the following values:",
             description: (
@@ -54,6 +59,7 @@ export default function Login() {
                 </pre>
             ),
         });
+
     }
 
 
