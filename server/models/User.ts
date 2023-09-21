@@ -3,16 +3,20 @@ import crypto from "crypto";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { jwtSecret, jwtExpire } from "../utils/config";
+import { IReservation } from "./Reservation";
+import { IAvailability } from "./Availability";
+import { IPremise } from "./Premise";
 
-export interface IUser extends Document {
+// For internal model definition only.
+export interface SchemaUser extends Document {
   firstname: string;
   lastname: string;
   email: string;
   password: string;
   role: string;
-  premises: Schema.Types.ObjectId[];
-  availabilities: Schema.Types.ObjectId[];
-  reservations: Schema.Types.ObjectId[];
+  premises: Schema.Types.ObjectId[] | IPremise[];
+  availabilities: Schema.Types.ObjectId[] | IAvailability[];
+  reservations: Schema.Types.ObjectId[] | IReservation[];
   resetPasswordToken: string | undefined;
   resetPasswordExpire: Date | undefined;
   credentials: Schema.Types.ObjectId;
@@ -21,7 +25,18 @@ export interface IUser extends Document {
   getResetPasswordToken(): string;
 }
 
-const userSchema = new Schema<IUser>(
+// Use this interface for objects of this type. (adds _id field)
+export interface IUser extends SchemaUser, Document {}
+
+// Typeguard to check if the value is of type IUser[].
+export function isUserList(value: any): value is IUser[] {
+  return (
+    Array.isArray(value) &&
+    value.every(element => element instanceof User)
+  );
+}
+
+const userSchema = new Schema<SchemaUser>(
   {
     firstname: {
       type: String,

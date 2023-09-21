@@ -1,9 +1,12 @@
 import { Document, Schema, Model, model } from 'mongoose';
+import { ISpace } from './Space';
+import { IUser } from './User';
 
-export interface IPremise {
+// For internal model definition only.
+interface SchemaPremise {
   name: string;
   address: string;
-  spaces: Schema.Types.ObjectId[];
+  spaces: Schema.Types.ObjectId[] | ISpace[];
   buildings: {
     _id: string;
     floors: {
@@ -11,12 +14,21 @@ export interface IPremise {
       blueprint_url?: string;
     }[];
   }[];
-  users: Schema.Types.ObjectId[];
+  users: Schema.Types.ObjectId[] | IUser[];
 }
 
-interface IPremiseModel extends IPremise, Document {}
+// Use this interface for objects of this type. (adds _id field)
+export interface IPremise extends SchemaPremise, Document {}
 
-const premiseSchema = new Schema<IPremise>({
+// Typeguard to check if the value is of type IPremise[].
+export function isPremiseList(value: any): value is IPremise[] {
+  return (
+    Array.isArray(value) &&
+    value.every(element => element instanceof Premise)
+  );
+}
+
+const premiseSchema = new Schema<SchemaPremise>({
   name: {
     type: String,
     required: true,
@@ -56,6 +68,6 @@ const premiseSchema = new Schema<IPremise>({
   }]
 });
 
-const Premise: Model<IPremiseModel> = model<IPremiseModel>('Premise', premiseSchema);
+const Premise: Model<IPremise> = model<IPremise>('Premise', premiseSchema);
 
 export default Premise;

@@ -1,17 +1,31 @@
 import { Document, Schema, Model, model } from 'mongoose';
+import { IUser } from './User';
+import { IPremise } from './Premise';
+import { ISpace } from './Space';
+import { IAvailability } from './Availability';
 
-export interface IReservation {
-  creator: Schema.Types.ObjectId;
+// For internal model definition only.
+interface SchemaReservation {
+  creator: Schema.Types.ObjectId | IUser;
   startdate: Date;
   enddate: Date;
-  premise: Schema.Types.ObjectId;
-  space: Schema.Types.ObjectId;
-  availability: Schema.Types.ObjectId;
+  premise: Schema.Types.ObjectId | IPremise;
+  space: Schema.Types.ObjectId | ISpace;
+  availability: Schema.Types.ObjectId | IAvailability;
 }
 
-interface IReservationModel extends IReservation, Document {}
+// Use this interface for objects of this type. (adds _id field)
+export interface IReservation extends SchemaReservation, Document {}
 
-const reservationSchema = new Schema<IReservation>({
+// Typeguard to check if the value is of type IReservation[].
+export function isReservationList(value: any): value is IReservation[] {
+  return (
+    Array.isArray(value) &&
+    value.every(element => element instanceof Reservation)
+  );
+}
+
+const reservationSchema = new Schema<SchemaReservation>({
   // Creator is only required for availabilities created by users.
   // Availabilities that might be added from APIs dont need a creator.
   creator: {
@@ -40,6 +54,6 @@ const reservationSchema = new Schema<IReservation>({
   }
 });
 
-const Reservation: Model<IReservationModel> = model<IReservationModel>('Reservation', reservationSchema);
+const Reservation: Model<IReservation> = model<IReservation>('Reservation', reservationSchema);
 
 export default Reservation;

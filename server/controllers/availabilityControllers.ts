@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 
-import Availability, { IAvailability } from "../models/Availability";
+import Availability, { IAvailability, isAvailabilityList } from "../models/Availability";
 import Reservation, { IReservation } from "../models/Reservation";
 import Premise, { IPremise} from "../models/Premise";
 import Space, { ISpace } from "../models/Space";
@@ -69,6 +69,13 @@ export const createAvailability = asyncErrorHandler(
 
     if (!space) return res.status(404).json({ error: `Space not found with id: ${spaceId}` })
 
+    // Check that the availabilities field of space is an Availability list.
+    if (!isAvailabilityList(space.availabilities)) {
+      return res.status(500).json({
+        error: `The availabilities field of space: ${space._id} is not an object list.`
+      })
+    }
+
     // Check that the new availability does not overlap with other availabilities
     // on the same space.
     if (intersectingTimespans(startdate, enddate, space.availabilities)) {
@@ -97,6 +104,8 @@ export const createAvailability = asyncErrorHandler(
     })
 
     availability = await availability.save()
+
+    user.availabilities.push(availability._id)
 
     res.status(201).json(availability);
   }
@@ -131,16 +140,20 @@ export const updateAvailability = asyncErrorHandler(
       });
     }
 
-    // let availabilities: <IAvailability>[] = space.availabilities
+    // Check that the availabilities field of space is an Availability list.
+    if (!isAvailabilityList(space.availabilities)) {
+      return res.status(500).json({
+        error: `The availabilities field of space: ${space._id} is not an object list.`
+      })
+    }
 
-    // // Check that the availability does not overlap with other availabilities
-    // // on the same space.
-    // if (intersectingTimespans(
-    //   //startdate, enddate, space.availabilities.filter(a => String(a._id) !== id)
-    //   //startdate, enddate, availabilities.filter(a => String(a._id) !== id)
-    // )) {
-    //   return res.status(400).json({ error: 'Availabilities cannot overlap.' })
-    // }
+    // Check that the availability does not overlap with other availabilities
+    // on the same space.
+    if (intersectingTimespans(
+      startdate, enddate, space.availabilities.filter(a => a._id.equals(id))
+    )) {
+      return res.status(400).json({ error: 'Availabilities cannot overlap.' })
+    }
 
     const premise = await Premise.findById(availability.premise)
 
