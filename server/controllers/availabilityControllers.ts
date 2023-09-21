@@ -69,7 +69,8 @@ export const createAvailability = asyncErrorHandler(
 
     if (!space) return res.status(404).json({ error: `Space not found with id: ${spaceId}` })
 
-    // Check that the availabilities field of space is an Availability list.
+    // Make sure the space.availabilities field is an Availability list
+    // by using the typeguard function: isAvailabilityList.
     if (!isAvailabilityList(space.availabilities)) {
       return res.status(500).json({
         error: `The availabilities field of space: ${space._id} is not an object list.`
@@ -140,7 +141,8 @@ export const updateAvailability = asyncErrorHandler(
       });
     }
 
-    // Check that the availabilities field of space is an Availability list.
+    // Make sure the space.availabilities field is an Availability list
+    // by using the typeguard function: isAvailabilityList.
     if (!isAvailabilityList(space.availabilities)) {
       return res.status(500).json({
         error: `The availabilities field of space: ${space._id} is not an object list.`

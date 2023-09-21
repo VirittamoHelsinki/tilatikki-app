@@ -4,7 +4,7 @@ import { IAvailability } from './Availability';
 import { IReservation } from './Reservation';
 
 // For internal model definition only.
-export interface ISpace {
+interface SchemaSpace {
   name: string;
   area?: number;
   premise: Schema.Types.ObjectId | IPremise;
@@ -15,7 +15,7 @@ export interface ISpace {
 }
 
 // Use this interface for objects of this type. (adds _id field)
-interface ISpaceModel extends ISpace, Document {}
+export interface ISpace extends SchemaSpace, Document {}
 
 // Typeguard to check if the value is of type ISpace[].
 export function isSpaceList(value: any): value is ISpace[] {
@@ -25,7 +25,7 @@ export function isSpaceList(value: any): value is ISpace[] {
   );
 }
 
-const spaceSchema = new Schema<ISpace>({
+const spaceSchema = new Schema<SchemaSpace>({
   name: {
     type: String,
     required: true,
@@ -56,6 +56,6 @@ const spaceSchema = new Schema<ISpace>({
   }]
 });
 
-const Space: Model<ISpaceModel> = model<ISpaceModel>('Space', spaceSchema);
+const Space: Model<ISpace> = model<ISpace>('Space', spaceSchema);
 
 export default Space;
