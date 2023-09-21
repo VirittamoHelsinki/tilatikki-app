@@ -11,3 +11,12 @@ export const intersectingTimespans = (
 
     return false
 }
+
+export const duringTimespan = (
+    startdate: Date, enddate: Date, timespan: IAvailability | IReservation
+) => {
+    if (startdate < timespan.startdate) return false
+    if (timespan.enddate < enddate)     return false
+
+    return true
+}

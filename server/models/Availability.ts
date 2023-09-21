@@ -1,13 +1,17 @@
 import { Document, Schema, Model, model } from 'mongoose';
+import User, { IUser } from './User';
+import { IPremise } from './Premise';
+import { ISpace } from './Space';
+import { IReservation } from './Reservation';
 
 // For internal model definition only.
 interface SchemaAvailability {
-  creator: Schema.Types.ObjectId;
+  creator: Schema.Types.ObjectId | IUser;
   startdate: Date;
   enddate: Date;
-  premise: Schema.Types.ObjectId;
-  space: Schema.Types.ObjectId;
-  reservations: Schema.Types.ObjectId[];
+  premise: Schema.Types.ObjectId | IPremise;
+  space: Schema.Types.ObjectId | ISpace;
+  reservations: Schema.Types.ObjectId[] | IReservation[];
 }
 
 // Use this interface for objects of this type. (adds _id field)

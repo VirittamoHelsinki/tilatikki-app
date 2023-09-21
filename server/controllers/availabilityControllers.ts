@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 
-import Availability, { IAvailability, isAvailabilityList } from "../models/Availability";
-import Reservation, { IReservation } from "../models/Reservation";
-import Premise, { IPremise} from "../models/Premise";
-import Space, { ISpace } from "../models/Space";
+import Availability, { isAvailabilityList } from "../models/Availability";
+import Reservation from "../models/Reservation";
+import Premise from "../models/Premise";
+import Space from "../models/Space";
 
 import { intersectingTimespans } from "../utils/dateFunctions";
 
@@ -58,7 +58,7 @@ export const getAvailability = asyncErrorHandler(
 export const createAvailability = asyncErrorHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const { startdate, enddate, spaceId } = req.body;
-    const { user } = res.locals; // Make sure this points to correct user location.
+    const user = req.user;
 
     if (!startdate) return res.status(400).json({ error: 'startdate missing from body' })
     if (!enddate) return res.status(400).json({ error: 'enddate missing from body' })
@@ -73,7 +73,7 @@ export const createAvailability = asyncErrorHandler(
     // by using the typeguard function: isAvailabilityList.
     if (!isAvailabilityList(space.availabilities)) {
       return res.status(500).json({
-        error: `The availabilities field of space: ${space._id} is not an object list.`
+        error: `The availabilities field of space: ${space._id} is not of type IAvailability[]`
       })
     }
 
@@ -90,7 +90,7 @@ export const createAvailability = asyncErrorHandler(
     }
 
     // Check if the user is authorized to create an availability for this premise.
-    if (!premise.users.find(uid => user._id.equals(uid))) {
+    if (!premise.users.some(uid => user._id.equals(uid))) {
       return res.status(401).json({
         error: `You are not authorized to create availabilities for premise: ${spaceId}`
       })
@@ -108,6 +108,8 @@ export const createAvailability = asyncErrorHandler(
 
     user.availabilities.push(availability._id)
 
+    await user.save()
+
     res.status(201).json(availability);
   }
 );
@@ -116,7 +118,7 @@ export const createAvailability = asyncErrorHandler(
 export const updateAvailability = asyncErrorHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const { startdate, enddate } = req.body;
-    const { user } = res.locals; // Make sure this points to correct user location.
+    const user = req.user;
     const { id } = req.params;
 
     if (!startdate && !enddate) {
@@ -145,7 +147,7 @@ export const updateAvailability = asyncErrorHandler(
     // by using the typeguard function: isAvailabilityList.
     if (!isAvailabilityList(space.availabilities)) {
       return res.status(500).json({
-        error: `The availabilities field of space: ${space._id} is not an object list.`
+        error: `The availabilities field of space: ${space._id} is not of type IAvailability[]`
       })
     }
 
@@ -164,7 +166,7 @@ export const updateAvailability = asyncErrorHandler(
     }
 
     // Check if the user is authorized to edit an availability on this premise.
-    if (!premise.users.find(uid => user._id.equals(uid))) {
+    if (!premise.users.some(uid => user._id.equals(uid))) {
       return res.status(401).json({
         error: `You are not authorized to create availabilities for premise: ${premise._id}`
       })
@@ -187,7 +189,7 @@ export const updateAvailability = asyncErrorHandler(
 export const deleteAvailability = asyncErrorHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
-    const { user } = res.locals; // Make sure this points to correct user location.
+    const user = req.user;
     
     const availability = await Availability.findById(id)
 
@@ -202,12 +204,13 @@ export const deleteAvailability = asyncErrorHandler(
     }
 
     // Check if the user is authorized to remove availability from this premise.
-    if (!premise.users.find(uid => user._id.equals(uid))) {
+    if (!premise.users.some(uid => user._id.equals(uid))) {
       return res.status(401).json({
         error: `You are not authorized to remove availabilities from premise: ${premise._id}`
       })
     }
 
+    // Remove the reservartions associated with this availability.
     availability.reservations.forEach(async reservation_id => {
       await Reservation.findByIdAndRemove(reservation_id)
     })
