@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ChevronDown } from 'lucide-react'
+import Cookies from "universal-cookie";
+const cookies = new Cookies();
 
 import { Button } from "@/components/ui/button"
 import {
@@ -13,8 +15,12 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import React from 'react'
+import { useTypedSelector } from '@/hooks/useTypedSelector'
+import { useUserAction } from '@/hooks/useUser';
+
 
 function SignOut({ children }: { children: React.ReactNode }) {
+    const {logoutUser,getMe} = useUserAction()
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -37,7 +43,7 @@ function SignOut({ children }: { children: React.ReactNode }) {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
-                    <Link to="/login">Log out</Link>
+                    <Link to="/login" onClick={()=> logoutUser()}>Log out</Link>
                     <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
                 </DropdownMenuItem>
             </DropdownMenuContent>

@@ -6,16 +6,8 @@ export interface ISpace {
   premise: Schema.Types.ObjectId;
   building: Schema.Types.ObjectId;
   floor: Schema.Types.ObjectId;
-  availabilities: {
-    user_id?: Schema.Types.ObjectId;
-    startdate: Date;
-    enddate: Date;
-  }[];
-  reservations: {
-    user_id: Schema.Types.ObjectId;
-    startdate: Date;
-    enddate: Date;
-  }[];
+  availabilities:Schema.Types.ObjectId[];
+  reservations:Schema.Types.ObjectId[];
 }
 
 interface ISpaceModel extends ISpace, Document {}

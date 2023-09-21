@@ -10,7 +10,6 @@ import {protect} from "../utils/middleware";
 
 
 const router = express.Router();
-router.use(protect)
 router.route("/").get(getAvailability).post(createAvailability);
 router
   .route("/:id").all()

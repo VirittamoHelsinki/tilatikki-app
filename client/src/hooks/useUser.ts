@@ -13,4 +13,4 @@ export const useUserAction = () => {
 
   // Bind the action creators to the `dispatch` function.
   return bindActionCreators(userActionCreators, dispatch);
-};
+}

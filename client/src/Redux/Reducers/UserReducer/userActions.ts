@@ -1,6 +1,7 @@
 import { Dispatch } from "redux";
 import axios from "axios";
-import { ActionType } from "./userTypes"; // Assuming you have your action types defined in a separate file
+import { ActionType } from "./userTypes";
+import Cookies from "universal-cookie";
 
 // Define the User interface
 export interface User {
@@ -36,9 +37,15 @@ interface RegisterUser {
 //   common: "/api",
 // };
 
-let token: any = null;
+const cookies = new Cookies();
 
-const config = () => {
+// Save the token as a cookie.
+
+let token: string = "";
+
+export const setToken = (newToken: string) => token = newToken;
+
+export const config = () => {
   return {
     headers: { Authorization: `Bearer ${token}` },
   };
@@ -56,7 +63,6 @@ export const getAllUsers = () => {
       );
 
       const userData = response.data;
-      console.log("users : ", userData);
       dispatch({
         type: ActionType.GET_ALL_USERS_SUCCESS,
         payload: userData,
@@ -80,13 +86,17 @@ export const loginUser = (credentials: { email: string; password: string }) => {
       );
       const userData = response.data;
       token = userData.token;
+      cookies.set("tilatikkiToken", token, {
+        // Cookie expires in 3 days.
+
+        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 3),
+
+        path: "/",
+      });
       dispatch({
         type: ActionType.LOGIN_USER_SUCCESS,
         payload: userData,
       });
-
-      // After successful login, call getMe
-      await getMe()(dispatch);
     } catch (error) {
       dispatch({
         type: ActionType.LOGIN_USER_FAILURE,
@@ -105,6 +115,7 @@ export const logoutUser = () => {
         config()
       );
       const userData = response.data;
+      cookies.remove("tilatikkiToken");
       dispatch({
         type: ActionType.LOGOUT_USER_SUCCESS,
         payload: userData,
@@ -120,7 +131,8 @@ export const logoutUser = () => {
   };
 };
 
- export const getMe = () => {
+export const getMe = () => {
+  
   return async (dispatch: Dispatch<UserAction<ActionType, any>>) => {
     dispatch({ type: ActionType.GET_ME_BEGINS });
     try {
@@ -129,11 +141,14 @@ export const logoutUser = () => {
         config()
       );
       const userData = response.data;
-      console.log("user : ", userData)
+      
       dispatch({
         type: ActionType.GET_ME_SUCCESS,
         payload: userData,
       });
+      
+      return userData;
+    
     } catch (error) {
       dispatch({
         type: ActionType.GET_ME_FAILURE,
@@ -142,7 +157,6 @@ export const logoutUser = () => {
     }
   };
 };
-
 
 export const registerUser = (credentials: RegisterUser) => {
   return async (dispatch: Dispatch<UserAction<ActionType, any>>) => {

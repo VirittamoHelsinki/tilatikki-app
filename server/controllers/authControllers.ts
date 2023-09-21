@@ -78,6 +78,7 @@ export const logout = asyncErrorHandler(async (_req: Request, res: Response, _ne
 //@access Private
 export const getMe = asyncErrorHandler(async (req: Request, res: Response, _next: NextFunction) => {
   // Find and send the currently authenticated user
+  console.log("user id ________________>",req.user.id)
   const user = await User.findById(req.user.id);
 
   res.status(200).json({
