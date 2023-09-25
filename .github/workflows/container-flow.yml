@@ -1,11 +1,14 @@
 #This means that whenever code is pushed to the main branch, this workflow will be executed.
 on: push
 jobs:
-  first-job:
+  build-node:
     runs-on: ubuntu-latest
     container: node:17.6.0
     steps:
       - run: node --version
       - run: npm --version
+      - uses: actions/checkout@v3
+      - run: npm setup:project
+      - run: npm run docker:build
 
     
