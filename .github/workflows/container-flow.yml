@@ -8,7 +8,7 @@ jobs:
       - run: node --version
       - run: npm --version
       - uses: actions/checkout@v3
-      - run: npm install && tsc && cd client && npm install && npm run build && cd ..
+      - run: npm install
       - run: npm run tsc
       - run: cd client && npm install && npm run build && cd ..
       - run: npm run docker build -t tilitikki .
