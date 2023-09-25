@@ -1,10 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 
 import Availability, { IAvailability } from "../models/Availability";
-import Reservation, { IReservation } from "../models/Reservation";
-import Premise, { IPremise } from "../models/Premise";
-import Space, { ISpace } from "../models/Space";
+import Reservation, { isReservationList } from "../models/Reservation";
+import Premise from "../models/Premise";
 
+import { intersectingTimespans, duringTimespan } from "../utils/dateFunctions";
+
+import asyncErrorHandler from "../utils/asyncErrorHandler"; 
 
 export const getReservation = (
   req: Request,
@@ -17,60 +19,175 @@ export const getReservation = (
 };
 
 // Reserve a space during an availability.
-export const createReservation = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  let { startdate, enddate, premise, space, availabilityId } = req.body;
-  const { user } = res.locals; // Make sure this points to correct user location.
-
-  const availability = await Availability.findById(availabilityId)
-                                         .populate('reservations');
-
-  if (!availability) {
-    return res.status(404).json({ error: `Availability not found with id: ${availability}` });
-  }
-
-  // (In progress) ToDo:
-  // 1. Check if the space exists and add premise id from that object
-  // 2. Check if there are reservations that overlap with the new reservation.
-
-  // Create the reservation
-  const reservation: IAvailability = new Availability({
-    startdate,
-    enddate,
-    premise,
-    creator: user._id,
-  });
+export const createReservation = asyncErrorHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
   
-  res.status(201).json(reservation);
-};
+    let { startdate, enddate, availabilityId } = req.body;
+    const user = req.user;
+
+    const availability = await Availability.findById(availabilityId)
+                                           .populate('reservations');
+
+    if (!availability) {
+      return res.status(404).json({ error: `Availability not found with id: ${availability}` });
+    }
+
+    // Check that the reservations timespan is contained within the
+    // timespan of the availability it is connected to.
+    if (!duringTimespan(startdate, enddate, availability)) {
+      return res.status(400).json({
+        error: 'Reservation time falls outside the scope of the availability' 
+      })
+    }
+
+    // Make sure the space.availabilities field is a Reservation list
+    // by using the typeguard function: isReservationList.
+    if (!isReservationList(availability.reservations)) {
+      return res.status(500).json({
+        error: `The reservations field of availability: ${availability._id} is not of type IReservation[]`
+      })
+    }
+
+    // Check that the new reservation does not overlap with other reservations
+    // on the same availability.
+    if (intersectingTimespans(startdate, enddate, availability.reservations)) {
+      return res.status(400).json({ error: 'Availabilities cannot overlap.' })
+    }
+
+    const premise = await Premise.findById(availability.premise)
+
+    if (!premise) {
+      return res.status(404).json({ error: `Premise not found with id: ${availability.premise}` });
+    }
+
+    // Check that the user is authorized to create reservations for this premise.
+    if (!premise.users.some(uid => user._id.equals(uid))) {
+      return res.status(401).json({
+        error: `You are not authorized to create reservations for premise: ${availability.premise}`
+      })
+    }
+
+    // Create the reservation
+    let reservation: IAvailability = new Availability({
+      startdate,
+      enddate,
+      availability: availability._id,
+      premise: availability.premise,
+      space: availability.space,
+      creator: user._id,
+    });
+
+    reservation = await reservation.save();
+
+    user.reservations.push(reservation._id);
+
+    await user.save();
+  
+    res.status(201).json(reservation);
+  }
+);
+
 
 // Desc: Update Reservation
 // @route PUT /api/availabilities/:id
 // @access Private
-export const updateReservation = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  res
-    .status(200)
-    .json({ success: true, msg: `Update Reservation ${req.params.id}` });
-};
+export const updateReservation = asyncErrorHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { startdate, enddate } = req.body;
+    const { id } = req.params;
+    const user = req.user;
+
+    if (!startdate) return res.status(400).json({ error: 'startdate missing from body' })
+    if (!enddate) return res.status(400).json({ error: 'enddate missing from body' })
+
+    let reservation = await Reservation.findById(id)
+
+    if (!reservation) {
+      return res.status(404).json({ error: `Reservation not found with id: ${id}` });
+    }
+
+    const availability = await Availability.findById(reservation.availability)
+                                           .populate('reservations');
+
+    if (!availability) {
+      return res.status(404).json({ error: `Availability not found with id: ${reservation.availability}` });
+    }
+
+    // Check that the reservation timespan is contained within the
+    // timespan of the availability it is connected to.
+    if (!duringTimespan(startdate, enddate, availability)) {
+      return res.status(400).json({
+        error: 'Reservation time falls outside the scope of the availability' 
+      })
+    }
+
+    // Make sure the availability.reservations field is a Reservation list
+    // by using the typeguard function: isReservationList.
+    if (!isReservationList(availability.reservations)) {
+      return res.status(500).json({
+        error: `The reservations field of availability: ${availability._id} is not of type IReservation[]`
+      })
+    }
+
+    // Check that the new reservation does not overlap with other reservations
+    if (intersectingTimespans(startdate, enddate,
+      availability.reservations.filter(r => !r._id.equals(id))
+    )) {
+      return res.status(400).json({ error: 'Reservations cannot overlap.' })
+    }
+
+    const premise = await Premise.findById(availability.premise)
+
+    if (!premise) {
+      return res.status(404).json({ error: `Premise not found with id: ${availability.premise}` });
+    }
+
+    // Check that the user is authorized to create reservations for this premise.
+    if (!premise.users.some(uid => user._id.equals(uid))) {
+      return res.status(401).json({
+        error: `You are not authorized to create reservations for premise: ${availability.premise}`
+      })
+    }
+
+    reservation.startdate = startdate;
+    reservation.enddate = enddate;
+
+    reservation = await reservation.save();
+
+    res.status(200).json(reservation);
+  }
+);
 
 // Desc: Delete Reservation
 // @route DELETE /api/availabilities/:id
 // @access Private
 
-export const deleteReservation = (
-    req: Request,
-    res: Response,
-    next: NextFunction
-) => {
-    res
-        .status(200)
-        .json({ success: true, msg: `Delete Reservation ${req.params.id}` });
-}
+export const deleteReservation = asyncErrorHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+    const user = req.user;
+    
+    const reservation = await Reservation.findById(id)
 
+    if (!reservation) {
+      return res.status(404).json({ error: `Reservation not found with id: ${id}` });
+    }
+
+    const premise = await Premise.findById(reservation.premise)
+
+    if (!premise) {
+      return res.status(404).json({ error: `Premise not found with id: ${reservation.premise}` });
+    }
+
+    // Check if the user is authorized to remove a reservation from this premise.
+    if (!premise.users.some(uid => user._id.equals(uid))) {
+      return res.status(401).json({
+        error: `You are not authorized to remove availabilities from premise: ${premise._id}`
+      })
+    }
+
+    await Reservation.findByIdAndRemove(id)
+
+    res.status(204).json({ message: 'Reservation deleted' });
+  }
+);
