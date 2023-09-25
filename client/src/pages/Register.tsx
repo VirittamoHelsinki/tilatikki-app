@@ -48,7 +48,6 @@ export default function Register() {
     function onSubmit(values: z.infer<typeof formSchema>) {
         // Do something with the form values.
         // ✅ This will be type-safe and validated.
-        console.log(values)
         const {firstname, lastname, email, password } = values
         const data ={firstname,lastname,email,password}
         registerUser(data)

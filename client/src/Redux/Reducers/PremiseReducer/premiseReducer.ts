@@ -25,7 +25,6 @@ export type Action =
 // These functions create actions that can be dispatched to the reducer.
 export const updateCounter = () => { // example dummy Action creator
     return async (dispatch: Dispatch<UpdateCounterAction>) => {
-        console.log("updateCounter active");
         dispatch({ type: ActionType.UPDATE_COUNTER });
     };
 };

@@ -8,7 +8,8 @@
     "rootDir": "./server",                                  
      "outDir": "./build",                                 
     "esModuleInterop": true,                            
-    "forceConsistentCasingInFileNames": true,            
+    "forceConsistentCasingInFileNames": true,    
+    "typeRoots": ["./global.d.ts", "./node_modules/@types"],      
 
     /* Type Checking */
     "strict": true,                                      

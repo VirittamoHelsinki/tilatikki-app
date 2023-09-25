@@ -36,7 +36,6 @@ interface RegisterUser {
 //   login: "/api/auth",
 //   common: "/api",
 // };
-
 const cookies = new Cookies();
 
 // Save the token as a cookie.
@@ -79,7 +78,9 @@ export const getAllUsers = () => {
 export const loginUser = (credentials: { email: string; password: string }) => {
   return async (dispatch: Dispatch<UserAction<ActionType, any>>) => {
     dispatch({ type: ActionType.LOGIN_USER_BEGINS });
+
     try {
+      
       const response = await axios.post(
         "http://localhost:5000/api/auth/login",
         credentials
@@ -93,10 +94,13 @@ export const loginUser = (credentials: { email: string; password: string }) => {
 
         path: "/",
       });
+      
       dispatch({
         type: ActionType.LOGIN_USER_SUCCESS,
         payload: userData,
       });
+
+      await getMe();
     } catch (error) {
       dispatch({
         type: ActionType.LOGIN_USER_FAILURE,
@@ -140,8 +144,7 @@ export const getMe = () => {
         "http://localhost:5000/api/auth/me",
         config()
       );
-      const userData = response.data;
-      
+      const userData = response.data;      
       dispatch({
         type: ActionType.GET_ME_SUCCESS,
         payload: userData,

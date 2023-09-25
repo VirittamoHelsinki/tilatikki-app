@@ -1,6 +1,5 @@
 import mongoose, { ConnectOptions } from 'mongoose';
 import logger from '../configs/logger.config';
-import { mongoUri } from './config';
 
 interface CustomConnectOptions extends ConnectOptions {
   useUnifiedTopology: boolean;
@@ -12,10 +11,12 @@ const options: CustomConnectOptions = {
   useNewUrlParser: true,
 };
 
+const mongoURI = process.env.MONGODB_DEV_URI || '';
+
 const connectMongoose = () => {
   mongoose
-    .connect(mongoUri, options)
-    .then(() => logger.info('connected to databases', mongoUri))
+    .connect(mongoURI, options)
+    .then(() => logger.info('connected to databases', mongoURI))
     .catch((err) => logger.error('connecting to MongoDB failed', err));
 };
 

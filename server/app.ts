@@ -3,11 +3,11 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import path from 'path';
 import cookieParser from 'cookie-parser';
-import { node_env } from './utils/config';
 import { requestLogger, unknownEndpoint, errorHandler } from './utils/middleware';
+import dotenv from 'dotenv';
 
-// Configure and connect the database.
-import connectMongoose from './utils/connectMongoose';
+dotenv.config()
+
 
 const app = express();
 
@@ -24,11 +24,11 @@ import auth from './routes/authRoutes';
 // the backend. In production, the frontend and backend are served from
 // the same domain so cors is not needed. Unless other website frontends
 // on different domains need to use the API.
-if (node_env === 'development') app.use(cors());
+if (process.env.NODE_ENV === 'development') app.use(cors());
 
 // Middlewares that need to be applied before adding routes.
 app.use(express.json());
-app.use(express.static('client/dist'));
+app.use(express.static('../client/dist'));
 app.use(requestLogger);
 
 // Add routes

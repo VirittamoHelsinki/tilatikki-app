@@ -1,14 +1,15 @@
 import app from './app'
-import { port,mongoUri } from './utils/config'
 import connectDB from './configs/connectDB';
+
+
 
 
 // Start the server.
 const start = async () => {
     try {
-      await connectDB("mongodb+srv://ale:AsJR5bYOEqGgW8Mx@tilatikkicluster.su13ojp.mongodb.net/");
-      app.listen(port, () => {
-        console.log(`Server is listening on port ${port}...`);
+      await connectDB(process.env.MONGODB_DEV_URI || '');
+      app.listen(process.env.PORT, () => {
+        console.log(`Server is listening on port ${process.env.PORT}...`);
       });
     } catch (error) {
       console.log(error);

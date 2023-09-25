@@ -1,8 +1,5 @@
 import { Link } from 'react-router-dom'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { ChevronDown } from 'lucide-react'
-import Cookies from "universal-cookie";
-const cookies = new Cookies();
 
 import { Button } from "@/components/ui/button"
 import {
@@ -15,12 +12,13 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import React from 'react'
-import { useTypedSelector } from '@/hooks/useTypedSelector'
 import { useUserAction } from '@/hooks/useUser';
+import { useTypedSelector } from '@/hooks/useTypedSelector'
 
 
 function SignOut({ children }: { children: React.ReactNode }) {
-    const {logoutUser,getMe} = useUserAction()
+    const {logoutUser} = useUserAction()
+    const {firstname,lastname,email} = useTypedSelector((state) => state.user.currentUser);
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -35,9 +33,9 @@ function SignOut({ children }: { children: React.ReactNode }) {
             <DropdownMenuContent className="w-56" align="end" forceMount>
                 <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
-                        <p className="text-sm font-medium leading-none">Arto Aitta</p>
+                        <p className="text-sm font-medium leading-none">{firstname} {lastname}</p>
                         <p className="text-xs leading-none text-muted-foreground">
-                            arto.aitta@hel.fi
+                            {email}
                         </p>
                     </div>
                 </DropdownMenuLabel>

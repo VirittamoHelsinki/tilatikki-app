@@ -2,7 +2,6 @@
 import nodemailer from 'nodemailer';
 
 // Import SMTP and email configuration values from the "config" module
-import { smtpHost, smtpPort, smtpPassword, smtpUserName, fromEmail, fromName } from "./config";
 
 // Define an interface for EmailOptions, specifying the required email parameters
 interface EmailOptions {
@@ -11,13 +10,15 @@ interface EmailOptions {
   message: string;
 }
 
+const port = parseInt(process.env.SMTP_PORT || "");
+
 // Create a nodemailer transport object with SMTP configuration
 const transport = nodemailer.createTransport({
-    host: smtpHost, // SMTP server host
-    port: smtpPort, // SMTP server port
+    host: process.env.SMTP_HOST, // SMTP server host
+    port: port, // SMTP server port
     auth: {
-      user: smtpUserName, // SMTP username
-      pass: smtpPassword // SMTP password
+      user: process.env.SMTP_USERNAME, // SMTP username
+      pass: process.env.SMTP_PASSWORD // SMTP password
     }
   });
 
@@ -26,7 +27,7 @@ const sendEmail = async (options: EmailOptions): Promise<void> => {
   
   // Construct the email message object with sender, recipient, subject, and message body
   const message = {
-    from: `${fromName || ''} <${fromEmail || ''}>`, // Sender's name and email
+    from: `${process.env.FROM_NAME || ''} <${process.env.FROM_EMAIL || ''}>`, // Sender's name and email
     to: options.email, // Recipient's email
     subject: options.subject, // Email subject
     text: options.message, // Email message body

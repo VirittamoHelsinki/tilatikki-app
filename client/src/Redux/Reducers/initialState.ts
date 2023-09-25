@@ -2,12 +2,17 @@
 // this interface will define the properties of the initial state
 export interface initialStateProps {
   users: [{}];
-  currentUser: {};
-  token:string;
+  currentUser: {
+    _id: string;
+    firstname: string;
+    lastname: string;
+    email: string;
+  };
+  token: string;
   isLoading: boolean;
   showAlert: boolean;
-  alertText: string,
-  alertType: string,
+  alertText: string;
+  alertType: string;
 }
 
 // export a constant called initialState
@@ -28,19 +33,8 @@ export const initialState: initialStateProps = {
       updatedAt: "",
     },
   ],
-  currentUser: {
-    _id: "",
-    firstname: "",
-    lastname: "",
-    email: "",
-    premises: [],
-    role: "",
-    availabilities: [],
-    reservations: [],
-    createdAt: "",
-    updatedAt: "",
-  },
-  token:"",
+  currentUser: { _id: "", firstname: "", lastname: "", email: "" },
+  token: "",
   isLoading: false,
   showAlert: false,
   alertText: "",

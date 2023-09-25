@@ -28,7 +28,6 @@ const userReducer = (
         alertText: "",
       };
     default:
-      console.log(`Unhandled action type: ${action.type}`);
       // For any other action types or when no action type matches, return the current state
       return state;
   }

@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import asyncErrorHandler from "./asyncErrorHandler";
 import User, { IUser } from "../models/User";
-import { jwtSecret } from "./config";
 
 const requestLogger = (
   req: Request,
@@ -60,8 +59,9 @@ const protect = asyncErrorHandler(
       return res.status(401).json({ error: "Not authorized, no token" });
     }
 
+
     // Verify the token and extract the user's ID
-    const decoded = jwt.verify(token, jwtSecret) as { id: string };
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || '') as { id: string };
 
     // Find the user in the database by their ID, excluding their password
     req.user = await User.findById(decoded.id).select("-password");

@@ -6,11 +6,13 @@ COPY . .
 
 
 RUN npm install
-RUN npm run install-client
-RUN npm run build-client
+
+RUN cd client  && npm install && npm run build:docker
+
 
 COPY . /app
+ADD . /app
 
 EXPOSE 5000
 
-CMD ["npm", "run", "docker-build"]
+CMD ["npm", "run", "docker:build"]

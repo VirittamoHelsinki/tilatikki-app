@@ -1,8 +1,7 @@
-import { Document, Schema, Model, model, SchemaTypes } from "mongoose";
+import { Document, Schema, Model, model } from "mongoose";
 import crypto from "crypto";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { jwtSecret, jwtExpire } from "../utils/config";
 import { IReservation } from "./Reservation";
 import { IAvailability } from "./Availability";
 import { IPremise } from "./Premise";
@@ -63,7 +62,7 @@ const userSchema = new Schema<SchemaUser>(
     premises: [
       {
         // Premises that the user has access to.
-        type: SchemaTypes.ObjectId,
+        type: Schema.ObjectId,
         ref: "Premise",
       },
     ],
@@ -75,14 +74,14 @@ const userSchema = new Schema<SchemaUser>(
     availabilities: [
       {
         // Availabilities that the user has created.
-        type: SchemaTypes.ObjectId,
+        type: Schema.ObjectId,
         ref: "Availability",
       },
     ],
     reservations: [
       {
         // Reservations that the user has created.
-        type: SchemaTypes.ObjectId,
+        type: Schema.ObjectId,
         ref: "Reservation",
       },
     ],
@@ -90,7 +89,7 @@ const userSchema = new Schema<SchemaUser>(
     resetPasswordExpire: Date,
     credentials: {
       // Credentials that the user has created.
-      type: SchemaTypes.ObjectId,
+      type: Schema.ObjectId,
       ref: "Credential",
     },
   },
@@ -98,28 +97,37 @@ const userSchema = new Schema<SchemaUser>(
 );
 
 userSchema.pre<IUser>("save", async function (next) {
+  
   if (!this.isModified("password")) next();
 
   const user = this;
+
   const salt = await bcrypt.genSalt(10);
+
   const hash = await bcrypt.hash(user.password, salt);
+
   user.password = hash;
+
   next();
 });
 
 // Sign JWT and return
 userSchema.methods.getSignedJwtToken = function () {
   const user = this;
-  return jwt.sign({ id: user._id }, jwtSecret, {
-    expiresIn: jwtExpire,
+  const JWTS = process.env.JWT_SECRET || 'undefined'
+  return jwt.sign({ id: user._id }, JWTS, {
+    expiresIn: process.env.JWT_EXPIRES
   });
+
 };
 
 // Match user entered password to hashed password in the database
 userSchema.methods.matchPassword = async function (
   enteredPassword: string
 ): Promise<boolean> {
+
   const user = this;
+
   return await bcrypt.compare(enteredPassword, user.password);
 };
 
@@ -127,12 +135,16 @@ userSchema.methods.matchPassword = async function (
 
 userSchema.methods.getResetPasswordToken = function () {
   // Generate token
-  const resetToken = crypto.randomBytes(20).toString("hex");
+  const resetToken = crypto
+                .randomBytes(20)
+                .toString("hex");
+
   // Hash token and set to resetPasswordToken field
   this.resetPasswordToken = crypto
-    .createHash("sha256")
-    .update(resetToken)
-    .digest("hex");
+                .createHash("sha256")
+                .update(resetToken)
+                .digest("hex");
+
   // Set expire
   this.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
 

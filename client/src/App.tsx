@@ -1,16 +1,15 @@
-import { useEffect } from "react";
 import {
   Outlet,
   createBrowserRouter,
   RouterProvider,
   useNavigation,
   useLocation,
-  redirect,
 } from "react-router-dom";
 import { Header } from "./components/Header";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+
 // This import the BrowserRouter, Routes, and Route components from the react-router-dom library.
 // These components are used to create a routing system for the application.
 
@@ -20,7 +19,7 @@ import { Provider } from "react-redux";
 
 import { store } from "./Redux/store";
 import { Premise } from "./pages/Premise";
-import AuthChecker from "./components/AutoChecker";
+import {AuthChecker} from "./components/AutoChecker";
 // This import the store variable from the Redux/store.js file.
 // This variable contains the Redux store for the application.
 const loader = async () => {
