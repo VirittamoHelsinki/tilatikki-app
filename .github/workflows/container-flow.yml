@@ -1,11 +1,31 @@
 on: push
+#stage 1
 jobs:
   build-node:
     runs-on: ubuntu-latest
     container: node:17.6.0
     steps:
+      - run: node --version
+      - run: npm --version
       - uses: actions/checkout@v3
-      - run: npm install
-      - run: npm run tsc:build
-      - run: cd client && npm install && npm run build && cd ..
-      - run: npm run docker build -t tilitikki .
+      - uses: azure/docker-login@v1
+       # with:
+         # login-server: '<login server>' # default: index.docker.io
+         # username: tilatikki
+         # password: '<password>' # github secret ? if so  ${{ secrets.REGISTRY_PEE }}
+      - run: docker build -t tilitikki .
+           # docker build -t tilatikki.azurecr.io/tilatikki${{ github.sha }} 
+           # docker push tilatikki.azurecr.io/tilatikki${{ github.sha }}
+ # deploy:
+       # runs-on: ubuntu-latest
+       # needs: build
+#stage 2
+   # steps:
+     # - name: 'Deploying Container to ACR'
+     #  uses: azure/webapps-deploy@v2
+     #  id: deploy-to-webapp
+     #   with:
+          # miusta vaihtaa ajankohtaiseks
+     #     app-name: 'maailmanvaihto'
+     #     publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+     #     images: 'maailmanregistry.azurecr.io/maailmanvaihto:${{ github.sha }}'
