@@ -7,13 +7,13 @@ jobs:
     steps:
       - run: node --version
       - run: npm --version
-      - uses: actions/checkout@v3
+    # - uses: actions/checkout@v3
     # - uses: azure/docker-login@v1
        # with:
          # login-server: '<login server>' # default: index.docker.io
          # username: tilatikki
          # password: '<password>' # github secret ? if so  ${{ secrets.REGISTRY_PEE }}
-      - run: docker build -t tilitikki .
+    # - run: docker build -t tilitikki .
            # docker build -t tilatikki.azurecr.io/tilatikki${{ github.sha }} 
            # docker push tilatikki.azurecr.io/tilatikki${{ github.sha }}
  # deploy:

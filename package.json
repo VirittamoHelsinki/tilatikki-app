@@ -6,14 +6,11 @@
   "scripts": {
     "test": "cross-env NODE_ENV=test jest --verbose --runInBand",
     "setup:project": "npm install && tsc && cd client && npm install && npm run build",
-    "tsc:watch": "tsc -w",
+    "tsc": "tsc -w",
     "tsc:build": "tsc",
     "server:dev": "nodemon build/index.js --ignore client",
     "client:dev": "npm run dev --prefix client",
-    "start:dev": "cross-env NODE_ENV=development concurrently --kill-others-on-fail \" npm run server:dev\" \" npm run client:dev\"",
-    "docker:build": "cd build && node index.js", 
-    "docker:img": "docker build -t tilatikki .",
-    "docker:run": "docker run -p 5000:5000 tilatikki"
+    "start:dev": "cross-env NODE_ENV=development concurrently --kill-others-on-fail \" npm run server:dev\" \" npm run client:dev\""
   },
   "author": "",
   "dependencies": {
