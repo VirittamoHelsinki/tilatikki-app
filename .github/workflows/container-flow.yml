@@ -6,6 +6,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: npm install
-             npm run tsc:build
-             cd client && npm install && npm run build && cd ..
-             npm run docker build -t tilitikki .
+      - run: npm run tsc:build
+      - run: cd client && npm install && npm run build && cd ..
+      - run: npm run docker build -t tilitikki .
