@@ -5,6 +5,8 @@ import jwt from "jsonwebtoken";
 import { IReservation } from "./Reservation";
 import { IAvailability } from "./Availability";
 import { IPremise } from "./Premise";
+import * as config from '../utils/config';
+
 
 // For internal model definition only.
 export interface SchemaUser extends Document {
@@ -114,9 +116,8 @@ userSchema.pre<IUser>("save", async function (next) {
 // Sign JWT and return
 userSchema.methods.getSignedJwtToken = function () {
   const user = this;
-  const JWTS = process.env.JWT_SECRET || 'undefined'
-  return jwt.sign({ id: user._id }, JWTS, {
-    expiresIn: process.env.JWT_EXPIRES
+  return jwt.sign({ id: user._id }, config.jwtSecret, {
+    expiresIn: config.jwtExpire
   });
 
 };

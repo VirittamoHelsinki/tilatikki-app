@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import asyncErrorHandler from "./asyncErrorHandler";
 import User, { IUser } from "../models/User";
+import * as config from "./config";
 
 const requestLogger = (
   req: Request,
@@ -61,7 +62,7 @@ const protect = asyncErrorHandler(
 
 
     // Verify the token and extract the user's ID
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || '') as { id: string };
+    const decoded = jwt.verify(token, config.jwtSecret || '') as { id: string };
 
     // Find the user in the database by their ID, excluding their password
     req.user = await User.findById(decoded.id).select("-password");
