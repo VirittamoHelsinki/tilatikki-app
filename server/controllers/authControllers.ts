@@ -3,6 +3,8 @@ import crypto from "crypto";
 import asyncErrorHandler from "../utils/asyncErrorHandler";
 import User, { IUser } from "../models/User";
 import sendEmail from "../utils/sendEmail";
+import * as config from '../utils/config';
+
 
 // @desc    Register user
 // @route   POST /api/auth/register
@@ -14,6 +16,13 @@ export const register = asyncErrorHandler(async (
   ) => {
     // Extract user information from the request body
     const { firstname, lastname, email, password } = req.body;
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      // Throw an error if the user already exists
+      throw new Error('User already exists!');
+    }
+
     // Create a new user
     const user: IUser = await User.create({
 
@@ -186,13 +195,13 @@ export const sendTokenResponse = (
     secure?: boolean 
   } = {
 
-    expires: new Date(Date.now() + (parseInt(process.env.JWT_EXPIRES || '10') * 24 * 60 * 60 * 1000)),
+    expires: new Date(Date.now() + config.jwtExpire * 24 * 60 * 60 * 1000),
     httpOnly: true,
 
   };
 
   // If in production, enable secure flag for HTTPS
-  if (process.env.NODE_ENV === 'production') {
+  if (config.node_env === 'production') {
     options.secure = true;
   }
 

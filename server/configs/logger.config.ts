@@ -1,4 +1,5 @@
 import winston from 'winston';
+import * as config from '../utils/config';
 
 const enumrateErrorFormat = winston.format((info: any) => {
     if (info instanceof Error) {
@@ -8,7 +9,7 @@ const enumrateErrorFormat = winston.format((info: any) => {
   });
 
 const logger = winston.createLogger({
-  level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+  level: config.node_env === 'production' ? 'info' : 'debug',
   format: winston.format.combine(
     enumrateErrorFormat(),
     winston.format.colorize(),
