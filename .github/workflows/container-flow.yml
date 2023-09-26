@@ -8,7 +8,7 @@ jobs:
       - run: node --version
       - run: npm --version
       - uses: actions/checkout@v3
-      - uses: azure/docker-login@v1
+    # - uses: azure/docker-login@v1
        # with:
          # login-server: '<login server>' # default: index.docker.io
          # username: tilatikki
