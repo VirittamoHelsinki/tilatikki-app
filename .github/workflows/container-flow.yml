@@ -4,15 +4,8 @@ jobs:
     runs-on: ubuntu-latest
     container: node:17.6.0
     steps:
-      - run: node --version
-      - run: npm --version
       - uses: actions/checkout@v3
-<<<<<<< HEAD
-      - run: npm run setup:project 
-      - run: npm run docker:build
-=======
-      - run: npm install
-      - run: cd client && npm install && npm run build && cd ..
-      - run: npm run tsc --build && npm run docker:build
-      - run: npm run docker build -t tilitikki .
->>>>>>> b8af0c23e378a9fcd44d83bf24057b7311f3f1ba
+      - run: npm install && tsc && cd client && npm install && npm run build && cd ..
+             npm run tsc
+             cd client && npm install && npm run build && cd ..
+             npm run docker build -t tilitikki .
