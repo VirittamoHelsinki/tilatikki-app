@@ -7,7 +7,7 @@
     "test": "cross-env NODE_ENV=test jest --verbose --runInBand",
     "setup:project": "npm install && tsc && cd client && npm install && npm run build",
     "tsc:watch": "tsc -w",
-    "tsc:build": "tsc --build",
+    "tsc:build": "tsc",
     "server:dev": "nodemon build/index.js --ignore client",
     "client:dev": "npm run dev --prefix client",
     "start:dev": "cross-env NODE_ENV=development concurrently --kill-others-on-fail \" npm run server:dev\" \" npm run client:dev\"",
