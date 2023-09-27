@@ -1,10 +1,8 @@
 
 **/node_modules/
-**/.env*
+**/.env
 **/package-lock.json
 **/*.code.workspace*
 
 /build/
 client/build/
-/.github\workflows/
-
