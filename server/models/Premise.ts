@@ -3,7 +3,7 @@ import { ISpace } from './Space';
 import { IUser } from './User';
 
 // For internal model definition only.
-interface SchemaPremise {
+export interface IPremise extends Document {
   name: string;
   address: string;
   spaces: Schema.Types.ObjectId[] | ISpace[];
@@ -17,9 +17,6 @@ interface SchemaPremise {
   users: Schema.Types.ObjectId[] | IUser[];
 }
 
-// Use this interface for objects of this type. (adds _id field)
-export interface IPremise extends SchemaPremise, Document {}
-
 // Typeguard to check if the value is of type IPremise[].
 export function isPremiseList(value: any): value is IPremise[] {
   return (
@@ -28,7 +25,7 @@ export function isPremiseList(value: any): value is IPremise[] {
   );
 }
 
-const premiseSchema = new Schema<SchemaPremise>({
+const premiseSchema = new Schema<IPremise>({
   name: {
     type: String,
     required: true,

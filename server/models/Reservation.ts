@@ -5,7 +5,7 @@ import { ISpace } from './Space';
 import { IAvailability } from './Availability';
 
 // For internal model definition only.
-interface SchemaReservation {
+export interface IReservation extends Document {
   creator: Schema.Types.ObjectId | IUser;
   startdate: Date;
   enddate: Date;
@@ -13,9 +13,6 @@ interface SchemaReservation {
   space: Schema.Types.ObjectId | ISpace;
   availability: Schema.Types.ObjectId | IAvailability;
 }
-
-// Use this interface for objects of this type. (adds _id field)
-export interface IReservation extends SchemaReservation, Document {}
 
 // Typeguard to check if the value is of type IReservation[].
 export function isReservationList(value: any): value is IReservation[] {
@@ -25,7 +22,7 @@ export function isReservationList(value: any): value is IReservation[] {
   );
 }
 
-const reservationSchema = new Schema<SchemaReservation>({
+const reservationSchema = new Schema<IReservation>({
   // Creator is only required for availabilities created by users.
   // Availabilities that might be added from APIs dont need a creator.
   creator: {
