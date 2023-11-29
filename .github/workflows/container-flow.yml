@@ -10,7 +10,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18
-          cache: "npm"
+          # cache: "npm" if we want to cache node_modules with package-lock.json faster test
       - name: Install Depedencies
         run: |
           npm run lint
