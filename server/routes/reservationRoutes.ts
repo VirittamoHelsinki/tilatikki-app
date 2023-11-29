@@ -1,5 +1,5 @@
 import express from 'express';
-import { getReservation, createReservation,updateReservation,deleteReservation } from '../controllers/reservationControllers';
+import { getReservation, createReservation, updateReservation, deleteReservation } from '../controllers/reservationControllers.js';
 
 const router = express.Router();
 

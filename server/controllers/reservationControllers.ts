@@ -1,32 +1,22 @@
-import { Request, Response, NextFunction } from "express";
+import { type Request, type Response } from "express";
+import Availability, { IAvailability } from "../models/Availability.js";
+import Reservation, { isReservationList } from "../models/Reservation.js";
+import Premise from "../models/Premise.js";
+import { intersectingTimespans, duringTimespan } from "../utils/dateFunctions.js";
+import asyncErrorHandler from "../utils/asyncErrorHandler.js";
 
-import Availability, { IAvailability } from "../models/Availability";
-import Reservation, { isReservationList } from "../models/Reservation";
-import Premise from "../models/Premise";
-
-import { intersectingTimespans, duringTimespan } from "../utils/dateFunctions";
-
-import asyncErrorHandler from "../utils/asyncErrorHandler"; 
-
-export const getReservation = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  res
-    .status(200)
-    .json({ success: true, msg: 'incomplete' });
+export const getReservation = (_req: Request, res: Response) => {
+  res.status(200).json({ success: true, msg: 'incomplete' });
 };
 
 // Reserve a space during an availability.
 export const createReservation = asyncErrorHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
-  
+  async (req: Request, res: Response) => {
+
     let { startdate, enddate, availabilityId } = req.body;
     const user = req.user;
 
-    const availability = await Availability.findById(availabilityId)
-                                           .populate('reservations');
+    const availability = await Availability.findById(availabilityId).populate('reservations');
 
     if (!availability) {
       return res.status(404).json({ error: `Availability not found with id: ${availability}` });
@@ -36,7 +26,7 @@ export const createReservation = asyncErrorHandler(
     // timespan of the availability it is connected to.
     if (!duringTimespan(startdate, enddate, availability)) {
       return res.status(400).json({
-        error: 'Reservation time falls outside the scope of the availability' 
+        error: 'Reservation time falls outside the scope of the availability'
       })
     }
 
@@ -82,7 +72,7 @@ export const createReservation = asyncErrorHandler(
     user.reservations.push(reservation._id);
 
     await user.save();
-  
+
     res.status(201).json(reservation);
   }
 );
@@ -92,7 +82,7 @@ export const createReservation = asyncErrorHandler(
 // @route PUT /api/availabilities/:id
 // @access Private
 export const updateReservation = asyncErrorHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response) => {
     const { startdate, enddate } = req.body;
     const { id } = req.params;
     const user = req.user;
@@ -107,7 +97,7 @@ export const updateReservation = asyncErrorHandler(
     }
 
     const availability = await Availability.findById(reservation.availability)
-                                           .populate('reservations');
+      .populate('reservations');
 
     if (!availability) {
       return res.status(404).json({ error: `Availability not found with id: ${reservation.availability}` });
@@ -117,7 +107,7 @@ export const updateReservation = asyncErrorHandler(
     // timespan of the availability it is connected to.
     if (!duringTimespan(startdate, enddate, availability)) {
       return res.status(400).json({
-        error: 'Reservation time falls outside the scope of the availability' 
+        error: 'Reservation time falls outside the scope of the availability'
       })
     }
 
@@ -161,12 +151,11 @@ export const updateReservation = asyncErrorHandler(
 // Desc: Delete Reservation
 // @route DELETE /api/availabilities/:id
 // @access Private
-
 export const deleteReservation = asyncErrorHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response) => {
     const { id } = req.params;
     const user = req.user;
-    
+
     const reservation = await Reservation.findById(id)
 
     if (!reservation) {

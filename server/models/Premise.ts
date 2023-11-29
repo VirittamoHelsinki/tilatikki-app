@@ -1,6 +1,6 @@
-import { Document, Schema, Model, model } from 'mongoose';
-import { ISpace } from './Space';
-import { IUser } from './User';
+import { type Document, Schema, type Model, model } from 'mongoose';
+import { type ISpace } from './Space.js';
+import { type IUser } from './User.js';
 
 // For internal model definition only.
 export interface IPremise extends Document {
@@ -18,6 +18,7 @@ export interface IPremise extends Document {
 }
 
 // Typeguard to check if the value is of type IPremise[].
+// TODO: Fix value typed any
 export function isPremiseList(value: any): value is IPremise[] {
   return (
     Array.isArray(value) &&
@@ -26,26 +27,10 @@ export function isPremiseList(value: any): value is IPremise[] {
 }
 
 const premiseSchema = new Schema<IPremise>({
-  name: {
-    type: String,
-    required: true,
-    minlength: 1,
-    maxlength: 100,
-  },
-  address: {
-    type: String,
-    required: true,
-    minlength: 1,
-    maxlength: 100,
-  },
-  users: [{
-    type: Schema.Types.ObjectId,
-    ref: 'User',
-  }],
-  spaces: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Space',
-  }],
+  name: { type: String, required: true, minlength: 1, maxlength: 100, },
+  address: { type: String, required: true, minlength: 1, maxlength: 100, },
+  users: [{ type: Schema.Types.ObjectId, ref: 'User', }],
+  spaces: [{ type: Schema.Types.ObjectId, ref: 'Space', }],
   buildings: [{
     name: {
       // Can also be a number or letter. Something that
@@ -56,10 +41,7 @@ const premiseSchema = new Schema<IPremise>({
       maxlength: 50,
     },
     floors: [{
-      floor: {
-        type: Number,
-        required: true,
-      },
+      floor: { type: Number, required: true, },
       blueprint_url: String,
     }],
   }]

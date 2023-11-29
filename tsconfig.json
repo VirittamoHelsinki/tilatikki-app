@@ -1,19 +1,23 @@
 {
   "compilerOptions": {
-    "target": "es2016",                                 
-
-
-    /* Modules */
-    "module": "commonjs",                                
-    "rootDir": "./server",                                  
-     "outDir": "./build",                                 
-    "esModuleInterop": true,                            
-    "forceConsistentCasingInFileNames": true,    
-    "typeRoots": ["./global.d.ts", "./node_modules/@types"],      
-
-    /* Type Checking */
-    "strict": true,                                      
-    "skipLibCheck": true                                
+    /* Base Options: */
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "target": "es2022",
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "moduleDetection": "force",
+    /* Strictness */
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    /* If transpiling with TypeScript: */
+    "moduleResolution": "NodeNext",
+    "module": "NodeNext",
+    "outDir": "build",
+    "sourceMap": true,
+    "rootDir": "server",
+    /* If your code doesn't run in the DOM: */
+    "lib": ["es2022"]
   },
-  "exclude": ["client",".env"]
+  "exclude": ["node_modules", "client", "tests", "build"]
 }

@@ -1,7 +1,7 @@
-import { Document, Schema, Model, model } from 'mongoose';
-import { IPremise } from './Premise';
-import { IAvailability } from './Availability';
-import { IReservation } from './Reservation';
+import { type Document, Schema, type Model, model } from 'mongoose';
+import { type IPremise } from './Premise.js';
+import { type IAvailability } from './Availability.js';
+import { type IReservation } from './Reservation.js';
 
 // For internal model definition only.
 export interface ISpace extends Document {
@@ -15,6 +15,7 @@ export interface ISpace extends Document {
 }
 
 // Typeguard to check if the value is of type ISpace[].
+// TODO: Fix value typed any
 export function isSpaceList(value: any): value is ISpace[] {
   return (
     Array.isArray(value) &&
@@ -23,34 +24,13 @@ export function isSpaceList(value: any): value is ISpace[] {
 }
 
 const spaceSchema = new Schema<ISpace>({
-  name: {
-    type: String,
-    required: true,
-    minlength: 1,
-    maxlength: 50,
-  },
+  name: { type: String, required: true, minlength: 1, maxlength: 50, },
   area: Number,
-  premise: {
-    type: Schema.Types.ObjectId,
-    required: true,
-    ref: 'Premise',
-  },
-  building: {
-    type: Schema.Types.ObjectId,
-    required: true
-  },
-  floor: {
-    type: Number,
-    required: true
-  },
-  availabilities: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Availability'
-  }],
-  reservations: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Reservation'
-  }]
+  premise: { type: Schema.Types.ObjectId, required: true, ref: 'Premise', },
+  building: { type: Schema.Types.ObjectId, required: true },
+  floor: { type: Number, required: true },
+  availabilities: [{ type: Schema.Types.ObjectId, ref: 'Availability' }],
+  reservations: [{ type: Schema.Types.ObjectId, ref: 'Reservation' }]
 });
 
 const Space: Model<ISpace> = model<ISpace>('Space', spaceSchema);

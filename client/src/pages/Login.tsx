@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -6,6 +8,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -13,18 +16,30 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Toaster } from "@/components/ui/toaster";
-import { Link, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useUserAction } from "@/hooks/useUser";
 import { useTypedSelector } from "@/hooks/useTypedSelector";
-import { useEffect } from "react";
 
 const formSchema = z.object({
-  email: z.string().min(2, { message: "email must be at least 2 characters." }),
-  //.refine((val) => /^[a-z0-9](\.?[a-z0-9]){5,}@(edu.hel|hel)\.com$/.test(val), 'email does not match'),
-  password: z.string().min(2, {
-    message: "Password must be at least 2 characters.",
-  }),
+  email: z
+    .string()
+    .regex(
+      /^[a-zA-Z]+\.+[a-zA-Z]+@(edu\.)?hel\.fi$/,
+      "Invalid email format first.last@hel.fi or @edu.hel.fi",
+    )
+    .min(2, {
+      message: "email must be at least 2 characters.",
+    })
+    .email("This is not a valid email."),
+  password: z
+    .string()
+    .min(10, "Password must be at least 10 characters long")
+    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+    .regex(
+      /[^A-Za-z0-9]/,
+      "Password must contain at least one special character",
+    ),
 });
 
 export default function Login() {
@@ -39,47 +54,39 @@ export default function Login() {
     },
   });
 
-
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
-
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-
-    const { email, password } = values;
-
-    const data = { email, password };
-
-    await loginUser(data);
-    await getMe();
-    if(user) navigate("/");
+    loginUser({ email: values.email, password: values.password });
+    getMe();
+    if (user) navigate("/");
   }
 
   const cookies = new Cookies();
   const tilatikkiCookie = cookies.get("tilatikkiToken");
 
-  useEffect (() => {
-
-  if (tilatikkiCookie) {
-    navigate("/");
-  }
-    }, []);
+  useEffect(() => {
+    if (tilatikkiCookie) {
+      navigate("/");
+    }
+  }, [tilatikkiCookie, navigate]);
 
   return (
     <>
-      <div className="container relative hidden flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
+      <main className="container relative hidden flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
         <Link
           to="/register"
           className={cn(
             buttonVariants({ variant: "ghost" }),
-            "absolute right-4 top-4 md:right-8 md:top-8"
+            "absolute right-4 top-4 md:right-8 md:top-8",
           )}
         >
           Rekisteröidy
         </Link>
         <div className="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex">
           <div className="absolute inset-0 bg-neutral-900" />
-          <h1 className='z-20 text-4xl font-["Archivo"] font-black'>
+          <h1 className='z-20 font-["Archivo"] text-4xl font-black'>
             TilaTikki
           </h1>
           <p className="z-20 mt-auto text-lg">Varaa Opetustila Helposti</p>
@@ -87,13 +94,12 @@ export default function Login() {
 
         <div className="lg:p-8">
           <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
-            <div className="flex flex-col space-y-2 text-center">
+            <div className="flex flex-col space-y-2">
               <h1 className="text-2xl font-semibold tracking-tight">
-                Kirjaudu Sisään
+                Kirjaudu Sisään TilaTikkiin
               </h1>
               <p className="text-sm text-muted-foreground">
-                Muista käyttää etunimi.sukunimi@hel.fi tai @edu.hel.fi
-                sähköpostia
+                Helsingin kaupungin tilavarausjärjestelmä opetustiloille.
               </p>
             </div>
             <Form {...form}>
@@ -114,6 +120,9 @@ export default function Login() {
                           {...field}
                         />
                       </FormControl>
+                      <FormDescription>
+                        Sähköposti pitää olla @hel.fi tai @edu.hel.fi
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -131,6 +140,9 @@ export default function Login() {
                           {...field}
                         />
                       </FormControl>
+                      <FormDescription>
+                        Salasana pitää olla vähintään 10 merkkiä pitkä
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -140,7 +152,7 @@ export default function Login() {
             </Form>
           </div>
         </div>
-      </div>
+      </main>
       <Toaster />
     </>
   );

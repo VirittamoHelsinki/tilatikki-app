@@ -4,10 +4,10 @@ import {
   createPremise,
   updatePremise,
   deletePremise,
-} from "../controllers/premiseControllers";
-import { protect } from "../utils/middleware";
+} from "../controllers/premiseControllers.js";
 
 const router = express.Router();
+
 //router.use(protect)
 router.route("/").get(getPremise).post(createPremise);
 router.route("/:id").get(getPremise).put(updatePremise).delete(deletePremise);

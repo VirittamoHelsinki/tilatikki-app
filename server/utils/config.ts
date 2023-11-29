@@ -2,9 +2,7 @@
 import dotenv from "dotenv";
 
 // Load environment variables from the .env file in the root of the project
-dotenv.config({ path: process.cwd() + '/.env' });
-
-console.log(require('dotenv').config())
+dotenv.config();
 // Retrieve the value of the NODE_ENV environment variable
 const node_env = process.env.NODE_ENV;
 // Log the value of NODE_ENV for debugging purposes

@@ -1,31 +1,51 @@
+name: Test, Build and Deploy to Azure
 on: push
-#stage 1
 jobs:
-  build-node:
+  test:
     runs-on: ubuntu-latest
-    container: node:17.6.0
     steps:
-      - run: node --version
-      - run: npm --version
-    # - uses: actions/checkout@v3
-    # - uses: azure/docker-login@v1
-       # with:
-         # login-server: '<login server>' # default: index.docker.io
-         # username: tilatikki
-         # password: '<password>' # github secret ? if so  ${{ secrets.REGISTRY_PEE }}
-    # - run: docker build -t tilitikki .
-           # docker build -t tilatikki.azurecr.io/tilatikki${{ github.sha }} 
-           # docker push tilatikki.azurecr.io/tilatikki${{ github.sha }}
- # deploy:
-       # runs-on: ubuntu-latest
-       # needs: build
-#stage 2
-   # steps:
-     # - name: 'Deploying Container to ACR'
-     #  uses: azure/webapps-deploy@v2
-     #  id: deploy-to-webapp
-     #   with:
-          # miusta vaihtaa ajankohtaiseks
-     #     app-name: 'maailmanvaihto'
-     #     publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-     #     images: 'maailmanregistry.azurecr.io/maailmanvaihto:${{ github.sha }}'
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: "npm"
+      - name: Install Depedencies
+        run: |
+          npm run lint
+          npm run test
+
+  build:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      # - name: Login to Docker Hub
+      #   uses: docker/login-action@v3
+      #   with:
+      #     registry: https://virittamo.azurecr.io/
+      #     username: ${{ secrets.AzureAppService_ContainerUsername_49abf5e34a6d4975914435a0fdf397a2 }}
+      #     password: ${{ secrets.AzureAppService_ContainerPassword_1bdbc1ae6c9a47249c618e3506d6294f }}
+      # - name: Set up Docker Buildx
+      #   uses: docker/setup-buildx-action@v3
+      # - run: |
+      #     docker build . --push --tag virittamo.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_49abf5e34a6d4975914435a0fdf397a2 }}/virittamodev:${{ github.sha }}
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    # environment:
+    #   name: production
+    #   url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+    # steps:
+    #   - uses: actions/checkout@v2
+    #   - name: Deploy to Azure Web App
+    #     id: deploy-to-webapp
+    #     uses: azure/webapps-deploy@v2
+    #     with:
+    #       app-name: virittamotest
+    #       slot-name: production
+    # publish-profile: ${{ secrets.AzureAppService_PublishProfile_4c0513b5c75f46e8a4be8576f6c1686b }}
+    # images: virittamo.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_49abf5e34a6d4975914435a0fdf397a2 }}/virittamodev:${{ github.sha }}

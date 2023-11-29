@@ -5,14 +5,12 @@ import {
   updateAvailability,
   deleteAvailability,
   getAvailabilitiesWithPremiseId
-} from "../controllers/availabilityControllers";
-import {protect} from "../utils/middleware";
-
+} from "../controllers/availabilityControllers.js";
 
 const router = express.Router();
+
 router.route("/").get(getAvailability).post(createAvailability);
-router
-  .route("/:id").all()
+router.route("/:id").all()
   .get(getAvailability)
   .put(updateAvailability)
   .delete(deleteAvailability)

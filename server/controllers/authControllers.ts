@@ -1,169 +1,127 @@
-import { Request, Response, NextFunction } from "express";
+import { type Request, type Response } from "express";
 import crypto from "crypto";
-import asyncErrorHandler from "../utils/asyncErrorHandler";
-import User, { IUser } from "../models/User";
-import sendEmail from "../utils/sendEmail";
-import * as config from '../utils/config';
-
+import asyncErrorHandler from "../utils/asyncErrorHandler.js";
+import User, { IUser } from "../models/User.js";
+import sendEmail from "../utils/sendEmail.js";
+import * as config from '../utils/config.js';
 
 // @desc    Register user
 // @route   POST /api/auth/register
 // @access  Public
-export const register = asyncErrorHandler(async (
-  req: Request, 
-  res: Response,
-  next: NextFunction
-  ) => {
-    // Extract user information from the request body
-    const { firstname, lastname, email, password } = req.body;
+export const register = asyncErrorHandler(async (req: Request, res: Response) => {
+  // Extract user information from the request body
+  const { firstname, lastname, email, password } = req.body;
 
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      // Throw an error if the user already exists
-      throw new Error('User already exists!');
-    }
-
-    // Create a new user
-    const user: IUser = await User.create({
-
-      firstname,
-      lastname,
-      email,
-      password,
-
-    });
-
-    // Create a JWT token for the user and send it in the response
-    sendTokenResponse(user, 200, res);
-
+  const existingUser = await User.findOne({ email });
+  if (existingUser) {
+    // Throw an error if the user already exists
+    throw new Error('User already exists!');
   }
+
+  // Create a new user
+  const user: IUser = await User.create({
+    firstname,
+    lastname,
+    email,
+    password,
+  });
+
+  // Create a JWT token for the user and send it in the response
+  sendTokenResponse(user, 200, res);
+
+}
 );
 
 // @desc    Login user
 // @route   POST /api/auth/login
 // @access  Public
-export const login = asyncErrorHandler(async (
-  req: Request, 
-  res: Response, 
-  next: NextFunction) => {
+export const login = asyncErrorHandler(async (req: Request, res: Response) => {
 
-    const { email, password } = req.body;
+  const { email, password } = req.body;
 
-    // Validate email & password
-    if (!email || !password) {
-      return res.status(401).json({error:"Please provide an email and password"})
-    }
-
-    // Check for user with the provided email
-    const user = await User
-                          .findOne({ email })
-                          .select("+password");
-
-    if (!user) {
-    return res.status(401).json({ error: 'Invalid credentials' });
-    }
-
-    // Check if the provided password matches the user's password
-    const isMatch = await user.matchPassword(password);
-
-    if (!isMatch) {
-      return  res.status(401).json({ error: 'Invalid credentials' })
-    }
-
-    // Create a JWT token for the user and send it in the response
-    sendTokenResponse(user, 200, res);
-
+  // Validate email & password
+  if (!email || !password) {
+    return res.status(401).json({ error: "Please provide an email and password" })
   }
+
+  // Check for user with the provided email
+  const user = await User.findOne({ email }).select("+password");
+
+  if (!user) {
+    return res.status(401).json({ error: 'Invalid credentials' });
+  }
+
+  // Check if the provided password matches the user's password
+  const isMatch = await user.matchPassword(password);
+
+  if (!isMatch) {
+    return res.status(401).json({ error: 'Invalid credentials' })
+  }
+
+  // Create a JWT token for the user and send it in the response
+  sendTokenResponse(user, 200, res);
+
+}
 );
 
 //desc Log user out / clear cookie
 //@route GET /api/auth/logout
 //@access Private
-export const logout = asyncErrorHandler(async (
-  req: Request, 
-  res: Response, 
-  next: NextFunction
-  ) => {
+export const logout = asyncErrorHandler(async (_req: Request, res: Response) => {
   // Set the cookie to an empty string with an expiration date in the past
   res.cookie('token', 'none', {
-                                expires: new Date(Date.now() + 10 * 1000),
-                               httpOnly: true
-                              }
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true
+  }
   );
 
-  res.status(200).json({
-
-    success: true,
-    data: {}
-
-  });
-
+  res.status(200).json({ success: true, data: {} });
 });
 
 //@desc Get current logged in user
 //@route POST /api/auth/me
 //@access Private
-export const getMe = asyncErrorHandler(async (
-  req: Request, 
-  res: Response, 
-  next: NextFunction
-  ) => {
+export const getMe = asyncErrorHandler(async (req: Request, res: Response) => {
   // Find and send the currently authenticated user
   const user = await User.findById(req.user.id);
 
   res.status(200).json(user);
-
 });
 
 //@desc Update user details
 //@route PUT /api/auth/updatedetails
 //@access Private
-export const updateDetails = asyncErrorHandler(async (
-  req: Request, 
-  res: Response, 
-  next: NextFunction
-  ) => {
+export const updateDetails = asyncErrorHandler(async (req: Request, res: Response) => {
+  const body = req.body;
   // Define fields to update based on the request body
   const fieldsToUpdate = {
-
-    firstname: req.body.firstname,
-    lastname: req.body.lastname,
-    email: req.body.email
-
+    firstname: body.firstname,
+    lastname: body.lastname,
+    email: body.email
   }
 
   // Find and update the user's details
   const user = await User.findByIdAndUpdate(
-    req.user.id, 
+    req.user.id,
     fieldsToUpdate, {
-                        new: true,
-                        runValidators: true
-                    }
-  );
+    new: true,
+    runValidators: true
+  });
 
   // Respond with the updated user data
-  res.status(200).json({
-    success: true,
-    data: user
-  });
+  res.status(200).json({ success: true, data: user });
 });
 
 //@desc Update password
 //@route PUT /api/auth/updatepassword
 //@access Private
-export const updatePassword = asyncErrorHandler(async (
-  req, 
-  res, 
-  next
-  ) => {
+export const updatePassword = asyncErrorHandler(async (req, res) => {
   // Find the user by ID and include the password field
-  const user = await User
-                        .findById(req.user.id)
-                        .select('+password');
+  const user = await User.findById(req.user.id).select('+password');
 
-if (!user) {
-return res.status(404).json({ error: 'User not found' });
-}
+  if (!user) {
+    return res.status(404).json({ error: 'User not found' });
+  }
 
   // Check if the current password matches
   if (!(await user.matchPassword(req.body.currentPassword))) {
@@ -172,7 +130,7 @@ return res.status(404).json({ error: 'User not found' });
 
   // Set the new password and save the user document
   user.password = req.body.newPassword;
-  
+
   await user.save();
 
   // Create a new JWT token for the user and send it in the response
@@ -180,19 +138,15 @@ return res.status(404).json({ error: 'User not found' });
 });
 
 // Get token from model, create a cookie, and send a response
-export const sendTokenResponse = (
-  user: IUser, 
-  statusCode: number, 
-  res: Response
-  ) => {
+export const sendTokenResponse = (user: IUser, statusCode: number, res: Response) => {
   // Create a JWT token
   const token: string = user.getSignedJwtToken();
 
   // Set options for the cookie
-  const options: { 
+  const options: {
     expires: Date;
-    httpOnly: boolean; 
-    secure?: boolean 
+    httpOnly: boolean;
+    secure?: boolean
   } = {
 
     expires: new Date(Date.now() + config.jwtExpire * 24 * 60 * 60 * 1000),
@@ -206,20 +160,13 @@ export const sendTokenResponse = (
   }
 
   // Send the response with the token and cookie
-  res
-    .status(statusCode)
-    .cookie("token", token, options)
-    .json({ success: true, token });
+  res.status(statusCode).cookie("token", token, options).json({ success: true, token });
 };
 
 // @desc forgot password
 // @route POST /api/auth/forgotpassword
 // @access Public
-export const forgotPassword = asyncErrorHandler(async (
-  req: Request, 
-  res: Response, 
-  next: NextFunction
-  ) => {
+export const forgotPassword = asyncErrorHandler(async (req: Request, res: Response) => {
   // Find a user by their email
   const user = await User.findOne({ email: req.body.email });
 
@@ -235,18 +182,18 @@ export const forgotPassword = asyncErrorHandler(async (
   // Create a reset URL for the user to use
   const resetUrl = `${req.protocol}://${req.get('host')}/api/auth/resetpassword/${resetToken}`;
 
-  const message = `You are receiving this email because you 
-  (or someone else) has requested the reset of a password. 
+  const message = `You are receiving this email because you
+  (or someone else) has requested the reset of a password.
   Please make a PUT request to: \n\n ${resetUrl}`;
 
   try {
     // Send an email with the reset instructions
     await sendEmail({
-      email: user.email,
+      to: user.email,
       subject: 'Password reset token',
-      message: message,
+      text: message,
     });
-  
+
     return res.status(200).json({ success: true, data: 'Email sent' });
 
   } catch (error) {
@@ -254,7 +201,7 @@ export const forgotPassword = asyncErrorHandler(async (
     // Clear the reset token and expiration if there's an error
     user.resetPasswordToken = undefined;
     user.resetPasswordExpire = undefined;
-  
+
     await user.save({ validateBeforeSave: false });
     return res.status(500).json({ error: 'Email could not be sent' });
   }
@@ -263,16 +210,9 @@ export const forgotPassword = asyncErrorHandler(async (
 // @desc Reset password
 // @route PUT /api/auth/resetpassword/:resettoken
 // @access Public
-export const resetPassword = asyncErrorHandler(async (
-  req: Request, 
-  res: Response,
-   next: NextFunction
-   ) => {
+export const resetPassword = asyncErrorHandler(async (req: Request, res: Response) => {
   // Get hashed token from the URL
-  const resetPasswordToken = crypto
-                                   .createHash('sha256')
-                                   .update(req.params.resettoken)
-                                   .digest('hex');
+  const resetPasswordToken = crypto.createHash('sha256').update(req.params.resettoken as crypto.BinaryLike).digest('hex');
 
   // Find a user by the reset token and expiration date
   const user = await User.findOne({ resetPasswordToken: resetPasswordToken, resetPasswordExpire: { $gt: Date.now() } });
@@ -289,8 +229,6 @@ export const resetPassword = asyncErrorHandler(async (
   await user.save();
 
   // Create a new JWT
-
   sendTokenResponse(user, 200, res);
-
 });
 

@@ -8,7 +8,6 @@ import {
     DropdownMenuItem,
     DropdownMenuLabel,
     DropdownMenuSeparator,
-    DropdownMenuShortcut,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import React from 'react'
@@ -16,9 +15,9 @@ import { useUserAction } from '@/hooks/useUser';
 import { useTypedSelector } from '@/hooks/useTypedSelector'
 
 
-function SignOut({ children }: { children: React.ReactNode }) {
-    const {logoutUser} = useUserAction()
-    const {firstname,lastname,email} = useTypedSelector((state) => state.user.currentUser);
+function SignOut({ children }: { children?: React.ReactNode }) {
+    const { logoutUser } = useUserAction()
+    const { firstname, lastname, email } = useTypedSelector((state) => state.user.currentUser);
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -41,8 +40,7 @@ function SignOut({ children }: { children: React.ReactNode }) {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
-                    <Link to="/login" onClick={()=> logoutUser()}>Log out</Link>
-                    <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+                    <Link to="/login" onClick={() => logoutUser()}>Log out</Link>
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
@@ -52,12 +50,10 @@ function SignOut({ children }: { children: React.ReactNode }) {
 
 export function Header() {
     return (
-        <header className='flex justify-between items-center'>
+        <header className='flex items-center justify-between px-4 pb-2 pt-6 sm:px-8 sm:py-8'>
             <Link className='text-4xl font-["Archivo"] font-black' to='/'>TilaTikki</Link>
             <nav className='flex gap-2 items-center'>
-                <SignOut>
-
-                </SignOut>
+                <SignOut />
             </nav>
         </header>
     )

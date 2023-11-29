@@ -1,18 +1,15 @@
-import { Request, Response, NextFunction } from "express";
-
-import Availability, { isAvailabilityList } from "../models/Availability";
-import Reservation from "../models/Reservation";
-import Premise from "../models/Premise";
-import Space from "../models/Space";
-
-import { intersectingTimespans } from "../utils/dateFunctions";
-
-import asyncErrorHandler from "../utils/asyncErrorHandler"; 
+import { type Request, type Response } from "express";
+import Availability, { isAvailabilityList } from "../models/Availability.js";
+import Reservation from "../models/Reservation.js";
+import Premise from "../models/Premise.js";
+import Space from "../models/Space.js";
+import { intersectingTimespans } from "../utils/dateFunctions.js";
+import asyncErrorHandler from "../utils/asyncErrorHandler.js";
 
 // Get all availabilities on the premise that are partially or totally
 // contained between startdate and enddate time parameters received in the body.
 export const getAvailabilitiesWithPremiseId = asyncErrorHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response) => {
     const { startdate, enddate } = req.body
     const { premiseId } = req.params
 
@@ -32,7 +29,7 @@ export const getAvailabilitiesWithPremiseId = asyncErrorHandler(
     availabilities = availabilities.filter(availability => {
 
       if (startdate <= availability.startdate < enddate) return true
-      if (startdate <  availability.enddate  <= enddate) return true
+      if (startdate < availability.enddate <= enddate) return true
       if (availability.startdate <= startdate && enddate <= availability.enddate) return true
 
       return false
@@ -46,7 +43,7 @@ export const getAvailabilitiesWithPremiseId = asyncErrorHandler(
 // @route GET /api/availabilities
 // @access Public
 export const getAvailability = asyncErrorHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (_req: Request, res: Response) => {
 
     res.status(200).json({ success: true, msg: "Show all availabilities" });
   }
@@ -56,7 +53,7 @@ export const getAvailability = asyncErrorHandler(
 // @route POST /api/availabilities
 // @access Private
 export const createAvailability = asyncErrorHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response) => {
     const { startdate, enddate, spaceId } = req.body;
     const user = req.user;
 
@@ -65,7 +62,7 @@ export const createAvailability = asyncErrorHandler(
     if (!spaceId) return res.status(400).json({ error: 'spaceId missing from body' })
 
     const space = await Space.findById(spaceId)
-                             .populate('availabilities')
+      .populate('availabilities')
 
     if (!space) return res.status(404).json({ error: `Space not found with id: ${spaceId}` })
 
@@ -114,9 +111,9 @@ export const createAvailability = asyncErrorHandler(
   }
 );
 
-// Change Availability startdate and/or enddate 
+// Change Availability startdate and/or enddate
 export const updateAvailability = asyncErrorHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response) => {
     const { startdate, enddate } = req.body;
     const user = req.user;
     const { id } = req.params;
@@ -132,8 +129,8 @@ export const updateAvailability = asyncErrorHandler(
     }
 
     const space = await Space.findById(availability.space)
-                             .populate('availabilities')
-    
+      .populate('availabilities')
+
     if (!space) {
       // This should never happen, but typescript complained about space
       // migth being null so it was included.
@@ -173,9 +170,9 @@ export const updateAvailability = asyncErrorHandler(
     }
 
     // Update the existing fields.
-    if(startdate) availability.startdate = startdate
-    if(enddate) availability.enddate = enddate
-    
+    if (startdate) availability.startdate = startdate
+    if (enddate) availability.enddate = enddate
+
     const updatedAavailability = await availability.save()
 
     res.status(200).json(updatedAavailability);
@@ -187,10 +184,10 @@ export const updateAvailability = asyncErrorHandler(
 // @access Private
 
 export const deleteAvailability = asyncErrorHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response) => {
     const { id } = req.params;
     const user = req.user;
-    
+
     const availability = await Availability.findById(id)
 
     if (!availability) {

@@ -4,5 +4,7 @@
 **/package-lock.json
 **/*.code.workspace*
 
-/build/
-client/build/
+**/build/
+**/dist/
+.DS_Store
+

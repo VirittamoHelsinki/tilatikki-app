@@ -80,7 +80,7 @@ export const loginUser = (credentials: { email: string; password: string }) => {
     dispatch({ type: ActionType.LOGIN_USER_BEGINS });
 
     try {
-      
+
       const response = await axios.post(
         "http://localhost:5000/api/auth/login",
         credentials
@@ -94,13 +94,13 @@ export const loginUser = (credentials: { email: string; password: string }) => {
 
         path: "/",
       });
-      
+
       dispatch({
         type: ActionType.LOGIN_USER_SUCCESS,
         payload: userData,
       });
 
-      await getMe();
+      getMe();
     } catch (error) {
       dispatch({
         type: ActionType.LOGIN_USER_FAILURE,
@@ -136,7 +136,6 @@ export const logoutUser = () => {
 };
 
 export const getMe = () => {
-  
   return async (dispatch: Dispatch<UserAction<ActionType, any>>) => {
     dispatch({ type: ActionType.GET_ME_BEGINS });
     try {
@@ -144,14 +143,14 @@ export const getMe = () => {
         "http://localhost:5000/api/auth/me",
         config()
       );
-      const userData = response.data;      
+      const userData = response.data;
       dispatch({
         type: ActionType.GET_ME_SUCCESS,
         payload: userData,
       });
-      
+
       return userData;
-    
+
     } catch (error) {
       dispatch({
         type: ActionType.GET_ME_FAILURE,

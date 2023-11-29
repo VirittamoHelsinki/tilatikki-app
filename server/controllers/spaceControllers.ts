@@ -1,15 +1,13 @@
-import { Request, Response, NextFunction } from "express";
-import Space, { ISpace } from "../models/Space";
-import asyncErrorHandler from "../utils/asyncErrorHandler";
-import Premise, { IPremise } from "../models/Premise";
-import Availability, { IAvailability } from "../models/Availability";
-import Reservation, { IReservation } from "../models/Reservation";
+import { type Request, type Response } from "express";
+import Space from "../models/Space.js";
+import asyncErrorHandler from "../utils/asyncErrorHandler.js";
+import Premise from "../models/Premise.js";
 
 // Desc: Get all spaces
 // @route GET /api/spaces
 // @access Public
 export const getAllSpace = asyncErrorHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (_req: Request, res: Response) => {
     const spaces = await Space.find();
     res.status(200).json({ success: true, data: spaces });
   }
@@ -19,10 +17,10 @@ export const getAllSpace = asyncErrorHandler(
 // @route POST /api/spaces
 // @access Private
 export const createSpace = asyncErrorHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response) => {
     const {
-      name,area,floor,
-      premiseId,availabilities,reservations,
+      name, area, floor,
+      premiseId,
       buildingId,
     } = req.body;
 
@@ -34,9 +32,9 @@ export const createSpace = asyncErrorHandler(
     // Check if for values to exists
     const premise = await Premise.findById(premiseId);
     if (!premise) return res.status(404).json({ error: `Premise not found with id: ${premiseId}` });
-    
-    const building = await premise.buildings.find(b => b._id.toString === buildingId);
-    if (!building)return res.status(404).json({ error: "Building not found with id: ${building}" });
+
+    const building = premise.buildings.find(b => b._id.toString === buildingId);
+    if (!building) return res.status(404).json({ error: "Building not found with id: ${building}" });
 
     const space = new Space({
       name,
@@ -55,7 +53,7 @@ export const createSpace = asyncErrorHandler(
 // @route GET /api/spaces/:id
 // @access Public
 export const getSpaceById = asyncErrorHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response) => {
     const space = await Space.findById(req.params.id);
     if (!space) {
       return res.status(404).json({ success: false, error: "Space not found" });
@@ -68,7 +66,7 @@ export const getSpaceById = asyncErrorHandler(
 // @route PUT /api/spaces/:id
 // @access Private
 export const updateSpaceById = asyncErrorHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response) => {
     const space = await Space.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
@@ -84,7 +82,7 @@ export const updateSpaceById = asyncErrorHandler(
 // @route DELETE /api/spaces/:id
 // @access Private
 export const deleteSpaceById = asyncErrorHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response) => {
     const space = await Space.findByIdAndRemove(req.params.id);
     if (!space) {
       return res.status(404).json({ success: false, error: "Space not found" });

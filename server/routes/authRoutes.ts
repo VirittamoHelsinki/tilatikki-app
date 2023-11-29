@@ -10,10 +10,10 @@ import {
   updateDetails,
   updatePassword,
   logout
-} from "../controllers/authControllers";
+} from "../controllers/authControllers.js";
 
 // Import protect middleware for authentication
-import { protect } from "../utils/middleware";
+import { protect } from "../utils/middleware.js";
 
 const router = express.Router();
 

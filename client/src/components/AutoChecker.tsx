@@ -3,23 +3,23 @@ import Cookies from "universal-cookie";
 import { setToken } from "../Redux/Reducers/UserReducer/userActions";
 import { useUserAction } from "../hooks/useUser";
 
-export const AuthChecker = () => {
+export function AuthChecker() {
   const { getMe } = useUserAction();
   const cookies = new Cookies();
 
-  const autoLogin = async () => {
+  async function  autoLogin() {
     const tilatikkiCookie = cookies.get("tilatikkiToken");
     setToken(tilatikkiCookie);
 
     if (tilatikkiCookie) {
-      await getMe();
+      getMe();
     }
-  };
+  }
 
   useEffect(() => {
-    console.log("Cookie exists", cookies.get("tilatikkiToken") ? "yes" : "no");
+    console.log("Cookie exists", cookies.get("tilatikkiToken") ? "YES" : "NO");
     autoLogin();
   }, []);
 
   return null; // This component doesn't render anything
-};
+}

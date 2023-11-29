@@ -1,8 +1,8 @@
 import { Document, Schema, Model, model } from 'mongoose';
-import User, { IUser } from './User';
-import { IPremise } from './Premise';
-import { ISpace } from './Space';
-import { IReservation } from './Reservation';
+import { type IUser } from './User.js';
+import { type IPremise } from './Premise.js';
+import { type ISpace } from './Space.js';
+import { type IReservation } from './Reservation.js';
 
 // For internal model definition only.
 export interface IAvailability extends Document {
@@ -15,6 +15,7 @@ export interface IAvailability extends Document {
 }
 
 // Typeguard to check if the value is of type IAvailability.
+// TODO: Fix value typed any
 export function isAvailability(value: any): value is IAvailability {
   return (
     value &&
@@ -24,11 +25,12 @@ export function isAvailability(value: any): value is IAvailability {
     value.creator instanceof Schema.Types.ObjectId &&
     value.premise instanceof Schema.Types.ObjectId &&
     value.space instanceof Schema.Types.ObjectId &&
-    value.reservations.every((element:any) => element instanceof Schema.Types.ObjectId)
+    value.reservations.every((element: any) => element instanceof Schema.Types.ObjectId)
   )
 };
 
 // Typeguard to check if the value is of type IAvailability[].
+// TODO: Fix value typed any
 export function isAvailabilityList(value: any): value is IAvailability[] {
   return (
     Array.isArray(value) &&
@@ -39,30 +41,12 @@ export function isAvailabilityList(value: any): value is IAvailability[] {
 const availabilitySchema = new Schema<IAvailability>({
   // Creator is only required for availabilities created by users.
   // Availabilities that might be added from APIs dont need a creator.
-  creator: {
-    type: Schema.Types.ObjectId,
-    ref: 'User',
-  },
-  startdate: {
-    type: Date,
-    required: true,
-  },
-  enddate: {
-    type: Date,
-    required: true,
-  },
-  premise: {
-    type: Schema.Types.ObjectId,
-    ref: 'Premise',
-  },
-  space: {
-    type: Schema.Types.ObjectId,
-    ref: 'Space',
-  },
-  reservations: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Reservation',
-  }]
+  creator: { type: Schema.Types.ObjectId, ref: 'User' },
+  startdate: { type: Date, required: true, },
+  enddate: { type: Date, required: true, },
+  premise: { type: Schema.Types.ObjectId, ref: 'Premise', },
+  space: { type: Schema.Types.ObjectId, ref: 'Space', },
+  reservations: [{ type: Schema.Types.ObjectId, ref: 'Reservation', }]
 });
 
 const Availability: Model<IAvailability> = model<IAvailability>('Availability', availabilitySchema);
