@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "vitest --environment=TEST --reporter=verbose",
+    "test": "vitest --reporter=verbose",
     "setup:project": "npm install && npm run build && cd client && npm install && npm run build",
     "build:watch": "tsc -w",
     "build": "tsc",
