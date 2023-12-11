@@ -1,22 +1,29 @@
-import { type IAvailability, isAvailabilityList } from "../models/Availability.js"
-import { type IReservation, isReservationList } from "../models/Reservation.js"
+import { type IAvailability } from "../models/Availability.js";
+import { type IReservation } from "../models/Reservation.js";
 
 export const intersectingTimespans = (
-    startdate: Date, enddate: Date, timespans: IAvailability[] | IReservation[]) => {
-    timespans.forEach(timespan => {
-        if (startdate < timespan.startdate && timespan.startdate < enddate) return true
-        if (startdate < timespan.enddate && timespan.enddate < enddate) return true
-        if (timespan.startdate <= startdate && enddate <= timespan.enddate) return true
-    })
+  startdate: Date,
+  enddate: Date,
+  timespans: IAvailability[] | IReservation[]
+) => {
+  timespans.forEach((timespan) => {
+    if (startdate < timespan.startdate && timespan.startdate < enddate)
+      return true;
+    if (startdate < timespan.enddate && timespan.enddate < enddate) return true;
+    if (timespan.startdate <= startdate && enddate <= timespan.enddate)
+      return true;
+  });
 
-    return false
-}
+  return false;
+};
 
 export const duringTimespan = (
-    startdate: Date, enddate: Date, timespan: IAvailability | IReservation
+  startdate: Date,
+  enddate: Date,
+  timespan: IAvailability | IReservation
 ) => {
-    if (startdate < timespan.startdate) return false
-    if (timespan.enddate < enddate) return false
+  if (startdate < timespan.startdate) return false;
+  if (timespan.enddate < enddate) return false;
 
-    return true
-}
+  return true;
+};

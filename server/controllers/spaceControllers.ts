@@ -18,11 +18,7 @@ export const getAllSpace = asyncErrorHandler(
 // @access Private
 export const createSpace = asyncErrorHandler(
   async (req: Request, res: Response) => {
-    const {
-      name, area, floor,
-      premiseId,
-      buildingId,
-    } = req.body;
+    const { name, area, floor, premiseId, buildingId } = req.body;
 
     // Add validation here if needed
     if (!name) return res.status(400).json({ error: "Name is required" });
@@ -31,17 +27,25 @@ export const createSpace = asyncErrorHandler(
 
     // Check if for values to exists
     const premise = await Premise.findById(premiseId);
-    if (!premise) return res.status(404).json({ error: `Premise not found with id: ${premiseId}` });
+    if (!premise)
+      return res
+        .status(404)
+        .json({ error: `Premise not found with id: ${premiseId}` });
 
-    const building = premise.buildings.find(b => b._id.toString === buildingId);
-    if (!building) return res.status(404).json({ error: "Building not found with id: ${building}" });
+    const building = premise.buildings.find(
+      (b) => b._id.toString === buildingId
+    );
+    if (!building)
+      return res
+        .status(404)
+        .json({ error: "Building not found with id: ${building}" });
 
     const space = new Space({
       name,
       area,
       floor,
       premise: premise,
-      building: building
+      building: building,
     });
 
     const newSpace = await space.save();
@@ -83,7 +87,7 @@ export const updateSpaceById = asyncErrorHandler(
 // @access Private
 export const deleteSpaceById = asyncErrorHandler(
   async (req: Request, res: Response) => {
-    const space = await Space.findByIdAndRemove(req.params.id);
+    const space = await Space.findByIdAndDelete(req.params.id);
     if (!space) {
       return res.status(404).json({ success: false, error: "Space not found" });
     }

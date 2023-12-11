@@ -9,7 +9,9 @@
     "setup:project": "npm install && npm run build && cd client && npm install && npm run build",
     "build:watch": "tsc -w",
     "build": "tsc",
-    "lint": "eslint . --ext .ts --report-unused-disable-directives --max-warnings 0",
+    "lint:server": "eslint . --ext .ts --report-unused-disable-directives --max-warnings 0",
+    "lint:client": "cd client && npm run lint",
+    "lint": "npm run lint:server && npm run lint:client",
     "dev:server": "tsx watch build/index.js",
     "dev:client": "npm run dev --prefix client",
     "dev": "cross-env NODE_ENV=development concurrently --kill-others-on-fail \" npm run dev:server\" \" npm run dev:client\""
