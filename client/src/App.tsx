@@ -5,19 +5,15 @@ import {
   useNavigation,
   useLocation,
 } from "react-router-dom";
-import { Header } from "./components/Header";
-import Dashboard from "./pages/Dashboard";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
 import { Provider } from "react-redux";
-// This import the Provider component from the react-redux library.
-// This component is used to connect the Redux store to the React application.
-
-import { store } from "./Redux/store";
+import { Dashboard } from "./pages/Dashboard";
+import { Login } from "./pages/Login";
+import { Register } from "./pages/Register";
 import { Premise } from "./pages/Premise";
-import { AuthChecker } from "./components/AutoChecker";
-// This import the store variable from the Redux/store.js file.
-// This variable contains the Redux store for the application.
+import { Header } from "~/@/components/Header";
+
+import { store } from "~/Redux/store"
+import { AuthChecker } from "~/utils/AutoChecker";
 
 const router = createBrowserRouter([
   {

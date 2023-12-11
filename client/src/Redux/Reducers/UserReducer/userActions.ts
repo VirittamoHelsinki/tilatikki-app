@@ -3,15 +3,18 @@ import axios from "axios";
 import { ActionType } from "./userTypes";
 import Cookies from "universal-cookie";
 
-// Define the User interface
+// Define the User interface TODO: Fix any types
 export interface User {
   _id: string;
   firstname: string;
   lastname: string;
   email: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   premises: any[];
   role: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   availabilities: any[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   reservations: any[];
   createdAt: string;
   updatedAt: string;
@@ -42,7 +45,9 @@ const cookies = new Cookies();
 
 let token: string = "";
 
-export const setToken = (newToken: string) => token = newToken;
+export function setToken(newToken: string): string {
+  return (token = newToken);
+}
 
 export const config = () => {
   return {
@@ -52,13 +57,13 @@ export const config = () => {
 
 // Define the action creator for fetching all users
 export const getAllUsers = () => {
-  return async (dispatch: Dispatch<UserAction<ActionType, User[]>>) => {
+  return async (dispatch: Dispatch<UserAction<ActionType, User[] | Error>>) => {
     dispatch({ type: ActionType.GET_ALL_USERS_BEGINS });
     try {
       // Make an API call to fetch all user data from your backend
       const response = await axios.get(
         "http://localhost:5000/api/users",
-        config()
+        config(),
       );
 
       const userData = response.data;
@@ -69,21 +74,20 @@ export const getAllUsers = () => {
     } catch (error) {
       dispatch({
         type: ActionType.GET_ALL_USERS_FAILURE,
-        payload: error as any,
+        payload: error as Error,
       });
     }
   };
 };
 
 export const loginUser = (credentials: { email: string; password: string }) => {
-  return async (dispatch: Dispatch<UserAction<ActionType, any>>) => {
+  return async (dispatch: Dispatch<UserAction<ActionType, User[] | Error>>) => {
     dispatch({ type: ActionType.LOGIN_USER_BEGINS });
 
     try {
-
       const response = await axios.post(
         "http://localhost:5000/api/auth/login",
-        credentials
+        credentials,
       );
       const userData = response.data;
       token = userData.token;
@@ -104,19 +108,19 @@ export const loginUser = (credentials: { email: string; password: string }) => {
     } catch (error) {
       dispatch({
         type: ActionType.LOGIN_USER_FAILURE,
-        payload: error as any,
+        payload: error as Error,
       });
     }
   };
 };
 
 export const logoutUser = () => {
-  return async (dispatch: Dispatch<UserAction<ActionType, any>>) => {
+  return async (dispatch: Dispatch<UserAction<ActionType, User[] | Error>>) => {
     dispatch({ type: ActionType.LOGOUT_USER_BEGINS });
     try {
       const response = await axios.get(
         "http://localhost:5000/api/auth/logout",
-        config()
+        config(),
       );
       const userData = response.data;
       cookies.remove("tilatikkiToken");
@@ -129,19 +133,19 @@ export const logoutUser = () => {
     } catch (error) {
       dispatch({
         type: ActionType.LOGOUT_USER_FAILURE,
-        payload: error,
+        payload: error as Error,
       });
     }
   };
 };
 
 export const getMe = () => {
-  return async (dispatch: Dispatch<UserAction<ActionType, any>>) => {
+  return async (dispatch: Dispatch<UserAction<ActionType, User[] | Error>>) => {
     dispatch({ type: ActionType.GET_ME_BEGINS });
     try {
       const response = await axios.get(
         "http://localhost:5000/api/auth/me",
-        config()
+        config(),
       );
       const userData = response.data;
       dispatch({
@@ -150,23 +154,22 @@ export const getMe = () => {
       });
 
       return userData;
-
     } catch (error) {
       dispatch({
         type: ActionType.GET_ME_FAILURE,
-        payload: error,
+        payload: error as Error,
       });
     }
   };
 };
 
 export const registerUser = (credentials: RegisterUser) => {
-  return async (dispatch: Dispatch<UserAction<ActionType, any>>) => {
+  return async (dispatch: Dispatch<UserAction<ActionType, User[] | Error>>) => {
     dispatch({ type: ActionType.CREATE_USER_BEGINS });
     try {
       const response = await axios.post(
         "http://localhost:5000/api/auth/register",
-        credentials
+        credentials,
       );
       const userData = response.data;
       dispatch({
@@ -176,7 +179,7 @@ export const registerUser = (credentials: RegisterUser) => {
     } catch (error) {
       dispatch({
         type: ActionType.CREATE_USER_FAILURE,
-        payload: error,
+        payload: error as Error,
       });
     }
   };

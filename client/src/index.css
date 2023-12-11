@@ -77,5 +77,8 @@
 
 body {
   font-family: 'Inter', sans-serif;
-  @apply flex flex-col min-h-screen;
+}
+
+#root {
+  @apply flex flex-col h-screen;
 }

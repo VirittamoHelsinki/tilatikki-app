@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Cookies from "universal-cookie";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "~/@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -13,12 +13,12 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Toaster } from "@/components/ui/toaster";
-import { cn } from "@/lib/utils";
-import { useUserAction } from "@/hooks/useUser";
-import { useTypedSelector } from "@/hooks/useTypedSelector";
+} from "~/@/components/ui/form";
+import { Input } from "~/@/components/ui/input";
+import { Toaster } from "~/@/components/ui/toaster";
+import { cn } from "~/@/lib/utils";
+import { useUserAction } from "~/hooks/useUser";
+import { useTypedSelector } from "~/hooks/useTypedSelector";
 
 const formSchema = z.object({
   email: z
@@ -42,7 +42,7 @@ const formSchema = z.object({
     ),
 });
 
-export default function Login() {
+export function Login() {
   const { loginUser, getMe } = useUserAction();
   const navigate = useNavigate();
   const user = useTypedSelector((state) => state.user.currentUser);
@@ -74,7 +74,7 @@ export default function Login() {
 
   return (
     <>
-      <main className="container relative hidden flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
+      <main className="container relative hidden grow flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
         <Link
           to="/register"
           className={cn(
@@ -89,17 +89,22 @@ export default function Login() {
           <h1 className='z-20 font-["Archivo"] text-4xl font-black'>
             TilaTikki
           </h1>
-          <p className="z-20 mt-auto text-lg">Varaa Opetustila Helposti</p>
+          <div className="relative z-20 mt-auto">
+            <blockquote className="space-y-2">
+              <p className="text-lg">&ldquo;Varaa Opetustila Helposti.&rdquo;</p>
+              <footer className="text-sm">Helsingin kaupunki</footer>
+            </blockquote>
+          </div>
         </div>
 
         <div className="lg:p-8">
           <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
-            <div className="flex flex-col space-y-2">
+            <div className="flex flex-col space-y-2 text-center">
               <h1 className="text-2xl font-semibold tracking-tight">
-                Kirjaudu Sisään TilaTikkiin
+                Kirjaudu Sisään
               </h1>
               <p className="text-sm text-muted-foreground">
-                Helsingin kaupungin tilavarausjärjestelmä opetustiloille.
+                Tilavarausjärjestelmä opetustiloille.
               </p>
             </div>
             <Form {...form}>
@@ -147,7 +152,25 @@ export default function Login() {
                     </FormItem>
                   )}
                 />
-                <Button type="submit">Kirjaudu Sisään</Button>
+                <Button disabled={form.formState.isLoading}>
+                  {form.formState.isLoading && (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="mr-2 h-4 w-4 animate-spin"
+                    >
+                      <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                    </svg>
+                  )}
+                  Kirjaudu Sisään
+                </Button>
               </form>
             </Form>
           </div>

@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "~/@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -10,13 +10,13 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { toast } from "@/components/ui/use-toast";
-import { Toaster } from "@/components/ui/toaster";
+} from "~/@/components/ui/form";
+import { Input } from "~/@/components/ui/input";
+import { toast } from "~/@/components/ui/use-toast";
+import { Toaster } from "~/@/components/ui/toaster";
 import { Link } from "react-router-dom";
-import { cn } from "@/lib/utils";
-import { useUserAction } from "@/hooks/useUser";
+import { cn } from "~/@/lib/utils";
+import { useUserAction } from "~/hooks/useUser";
 
 const formSchema = z.object({
   firstname: z.string().min(2, {
@@ -46,7 +46,7 @@ const formSchema = z.object({
     ),
 });
 
-export default function Register() {
+export function Register() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -59,7 +59,7 @@ export default function Register() {
   const { registerUser } = useUserAction();
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     registerUser({
@@ -80,7 +80,7 @@ export default function Register() {
 
   return (
     <>
-      <div className="container relative hidden flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
+      <div className="container relative hidden grow h-full flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
         <Link
           to="/login"
           className={cn(
@@ -91,18 +91,23 @@ export default function Register() {
           Kirjaudu Sisään
         </Link>
         <div className="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex">
-          <div className="absolute inset-0 bg-zinc-900" />
+          <div className="absolute inset-0 bg-neutral-900" />
           <h1 className='z-20 font-["Archivo"] text-4xl font-black'>
             TilaTikki
           </h1>
-          <p className="z-20 mt-auto text-lg">Varaa Opetustila Helposti</p>
+          <div className="relative z-20 mt-auto">
+            <blockquote className="space-y-2">
+              <p className="text-lg">&ldquo;Varaa Opetustila Helposti.&rdquo;</p>
+              <footer className="text-sm">Helsingin kaupunki</footer>
+            </blockquote>
+          </div>
         </div>
 
         <div className="lg:p-8">
           <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
             <div className="flex flex-col space-y-2 text-center">
               <h1 className="text-2xl font-semibold tracking-tight">
-                Luo uusi käyttäjä TilaTikkiin
+                Luo uusi käyttäjä
               </h1>
               <p className="text-sm text-muted-foreground">
                 Muista käyttää etunimi.sukunimi@hel.fi sähköpostia
@@ -170,7 +175,7 @@ export default function Register() {
                     </FormItem>
                   )}
                 />
-                <Button type="submit">Rekisteröidy</Button>
+                <Button>Rekisteröidy</Button>
               </form>
             </Form>
           </div>

@@ -1,7 +1,7 @@
 // export an interface called initialStateProps
 // this interface will define the properties of the initial state
 export interface initialStateProps {
-  users: [{}];
+  users: [object];
   currentUser: {
     _id: string;
     firstname: string;

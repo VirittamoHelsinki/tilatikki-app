@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "~/@/components/ui/avatar"
 
-import { Button } from "@/components/ui/button"
+import { Button } from "~/@/components/ui/button"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -9,10 +9,10 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "~/@/components/ui/dropdown-menu"
 import React from 'react'
-import { useUserAction } from '@/hooks/useUser';
-import { useTypedSelector } from '@/hooks/useTypedSelector'
+import { useUserAction } from '~/hooks/useUser';
+import { useTypedSelector } from '~/hooks/useTypedSelector'
 
 
 function SignOut({ children }: { children?: React.ReactNode }) {

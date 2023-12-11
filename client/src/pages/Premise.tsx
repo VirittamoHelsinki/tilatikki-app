@@ -15,20 +15,20 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
+import { Button } from "~/@/components/ui/button";
+import { Calendar } from "~/@/components/ui/calendar";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "~/@/components/ui/card";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from "~/@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -37,8 +37,8 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { cn } from "@/lib/utils";
+} from "~/@/components/ui/select";
+import { cn } from "~/@/lib/utils";
 import {
   Form,
   FormControl,
@@ -47,8 +47,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+} from "~/@/components/ui/form";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/@/components/ui/tabs";
 
 extend({ SVGLoader });
 
@@ -62,6 +62,25 @@ const hoveredCursor =
 const defaultCursor =
   "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBjbGlwLXBhdGg9InVybCgjY2xpcDApIj48Y2lyY2xlIGN4PSIzMiIgY3k9IjMyIiByPSIyNi41IiBzdHJva2U9ImJsYWNrIi8+PHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0zMiAzMkw0MS4xOTI0IDQxLjE5MjRMNDEuODk5NSA0MC40ODUzTDMyLjcwNzEgMzEuMjkyOUw0MS4xOTI0IDIyLjgwNzZMNDAuNDg1MyAyMi4xMDA1TDMyIDMwLjU4NThMMjMuNTE0NyAyMi4xMDA1TDIyLjgwNzYgMjIuODA3NkwzMS4yOTI5IDMxLjI5MjlMMjIuMTAwNSA0MC40ODUzTDIyLjgwNzYgNDEuMTkyNEwzMiAzMloiIGZpbGw9ImJsYWNrIi8+PHBhdGggZD0iTTUuMzY3MTEgMTIuNzM3M0wyLjY2OTQyIDIuNjY5NDJMMTIuNzM3MyA1LjM2NzExTDUuMzY3MTEgMTIuNzM3M1oiIHN0cm9rZT0iYmxhY2siLz48L2c+PGRlZnM+PGNsaXBQYXRoIGlkPSJjbGlwMCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSJ3aGl0ZSIvPjwvY2xpcFBhdGg+PC9kZWZzPjwvc3ZnPg==";
 
+function RoomHover({ x, y }: { x: number, y: number }) {
+
+  return (
+    <Html
+      scale={100}
+      rotation={[Math.PI / 1, Math.PI /1, 0]}
+      position={[x - 50, y - 50, 1]}
+      transform
+      occlude
+      className="flex justify-center items-center"
+    >
+      <div className="flex flex-col grow justify-center items-center w-14 h-14 bg-lime-950 rounded-md">
+        <p className="text-lime-100 text-xs">x: {x}</p>
+        <p className="text-lime-100 text-xs">y: {y}</p>
+      </div>
+    </Html>
+  );
+}
+
 function Cell({
   color,
   shape,
@@ -71,6 +90,7 @@ function Cell({
   shape: Shape;
   fillOpacity: number;
 }) {
+  const [room, setRoom] = useState(false);
   const [hovered, hover] = useState(false);
   useEffect(() => {
     return void ((
@@ -83,7 +103,10 @@ function Cell({
     <mesh
       onPointerOver={() => hover(true)}
       onPointerOut={() => hover(false)}
-      onClick={() => console.log(`uuid: ${shape.uuid}, x: ${shape.getPoint(0).x}, y:${shape.getPoint(0).y}`)}
+      onClick={() => {
+        console.log(`uuid: ${shape.uuid}, x: ${shape.getPoint(0).x}, y:${shape.getPoint(0).y}`)
+        setRoom(!room)
+      }}
       rotation={[0, 0, Math.PI / 1]}
     >
       <meshBasicMaterial
@@ -93,6 +116,7 @@ function Cell({
         transparent
       />
       <shapeGeometry args={[shape]} />
+      {room && <RoomHover x={shape.getPoint(0).x} y={shape.getPoint(0).y} />}
     </mesh>
   );
 }
