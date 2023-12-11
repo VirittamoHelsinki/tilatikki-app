@@ -12,7 +12,9 @@ jobs:
           node-version: 18
           # cache: "npm" if we want to cache node_modules with package-lock.json faster test
       - name: Install Depedencies
-        run: npm install
+        run: |
+          npm install
+          cd client && npm install
       - name: Lint and Test
         run: |
           npm run lint
