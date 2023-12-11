@@ -17,7 +17,7 @@
     "sourceMap": true,
     "rootDir": "server",
     /* If your code doesn't run in the DOM: */
-    "lib": ["es2022"]
+    "lib": ["es2022", "DOM"]
   },
   "exclude": ["node_modules", "client", "tests", "build"]
 }
