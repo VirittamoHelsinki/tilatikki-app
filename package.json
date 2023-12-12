@@ -10,6 +10,7 @@
     "test:client": "cd client && npm run test",
     "test": "npm run test:server && npm run test:client",
     "build": "tsc",
+    "build-and-copy": "cd client && npm run build && cd .. && rm -rf server/build && cp -r client/dist server/build",
     "lint:server": "eslint . --ext .ts --report-unused-disable-directives --max-warnings 0",
     "lint:client": "cd client && npm run lint",
     "lint": "npm run lint:server && npm run lint:client",

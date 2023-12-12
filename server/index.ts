@@ -1,23 +1,20 @@
-import express from "express";
-import mongoose from "mongoose";
-import cors from "cors";
-import path from "path";
-import url from "url";
-import cookieParser from "cookie-parser";
-import {
-  requestLogger,
-  unknownEndpoint,
-  errorHandler,
-} from "./utils/middleware.js";
-import { node_env, port } from "./utils/config.js";
-import availabilityRoutes from "./routes/availabilityRoutes.js";
-import premiseRoutes from "./routes/premiseRoutes.js";
-import reservationRoutes from "./routes/reservationRoutes.js";
-import spaceRoutes from "./routes/spaceRoutes.js";
-import userRoutes from "./routes/userRoutes.js";
-import auth from "./routes/authRoutes.js";
-import logger from "./utils/logger.js";
-import { connectDb } from "./utils/connectDB.js";
+import express, {Request, Response} from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import path from 'path';
+import cookieParser from 'cookie-parser';
+import { requestLogger, unknownEndpoint, errorHandler } from './utils/middleware.js';
+import { node_env, port } from './utils/config.js';
+import availabilityRoutes from './routes/availabilityRoutes.js';
+import premiseRoutes from './routes/premiseRoutes.js';
+import reservationRoutes from './routes/reservationRoutes.js';
+import spaceRoutes from './routes/spaceRoutes.js';
+import userRoutes from './routes/userRoutes.js';
+import auth from './routes/authRoutes.js';
+import logger from './utils/logger.js';
+import { connectDb } from './utils/connectDB.js';
+import url from 'url';
+
 
 const app = express();
 
@@ -31,6 +28,7 @@ if (node_env === "development") app.use(cors());
 
 // Middlewares that need to be applied before adding routes.
 app.use(express.json());
+
 app.use(
   express.static(
     path.join(
@@ -39,6 +37,7 @@ app.use(
     )
   )
 );
+
 app.use(requestLogger);
 
 // Add routes
@@ -54,6 +53,7 @@ app.use("/api/users", userRoutes);
 
 app.use("/api/*", unknownEndpoint);
 app.use(errorHandler);
+
 
 // Paths that are not part of the API are handled by the frontend.
 app.get("*", (_req, res) => {

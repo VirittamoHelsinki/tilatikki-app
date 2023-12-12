@@ -1,4 +1,4 @@
-import { initialState, initialStateProps } from "../initialState";
+import { initialUserState, initialUserStateProps } from "../userState";
 import { ActionType } from "./userTypes";
 
 // Define the action interface for user-related actions
@@ -10,9 +10,9 @@ interface UserAction {
 
 // Main reducer
 const userReducer = (
-  state: initialStateProps = initialState,
+  state: initialUserStateProps = initialUserState,
   action: UserAction,
-): initialStateProps => {
+): initialUserStateProps => {
   switch (action.type) {
     case ActionType.LOGIN_USER_BEGINS:
       return {
@@ -94,7 +94,7 @@ const userReducer = (
       };
     case ActionType.LOGOUT_USER_SUCCESS:
       return {
-        ...initialState,
+        ...initialUserState,
       };
     case ActionType.LOGOUT_USER_FAILURE:
       return {
