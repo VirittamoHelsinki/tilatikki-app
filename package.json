@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "vitest --environment=TEST --reporter=verbose",
+    "test": "vitest --reporter=verbose",
     "setup:project": "npm install && npm run build && cd client && npm install && npm run build",
     "build:watch": "tsc -w",
     "build": "tsc",
@@ -15,7 +15,8 @@
     "lint": "npm run lint:server && npm run lint:client",
     "dev:server": "tsx watch server/index.ts",
     "dev:client": "npm run dev --prefix client",
-    "dev": "cross-env NODE_ENV=development concurrently --kill-others-on-fail \" npm run dev:server\" \" npm run dev:client\""
+    "dev": "cross-env NODE_ENV=development concurrently --kill-others-on-fail \" npm run dev:server\" \" npm run dev:client\"",
+    "start": "node build/index.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",

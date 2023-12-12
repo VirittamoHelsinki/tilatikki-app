@@ -62,7 +62,7 @@ export const getAllUsers = () => {
     try {
       // Make an API call to fetch all user data from your backend
       const response = await axios.get(
-        "http://localhost:5000/api/users",
+        "http://localhost:5050/api/users",
         config(),
       );
 
@@ -86,7 +86,7 @@ export const loginUser = (credentials: { email: string; password: string }) => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/auth/login",
+        "http://localhost:5050/api/auth/login",
         credentials,
       );
       const userData = response.data;
@@ -119,7 +119,7 @@ export const logoutUser = () => {
     dispatch({ type: ActionType.LOGOUT_USER_BEGINS });
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/auth/logout",
+        "http://localhost:5050/api/auth/logout",
         config(),
       );
       const userData = response.data;
@@ -144,7 +144,7 @@ export const getMe = () => {
     dispatch({ type: ActionType.GET_ME_BEGINS });
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/auth/me",
+        "http://localhost:5050/api/auth/me",
         config(),
       );
       const userData = response.data;
@@ -168,7 +168,7 @@ export const registerUser = (credentials: RegisterUser) => {
     dispatch({ type: ActionType.CREATE_USER_BEGINS });
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/auth/register",
+        "http://localhost:5050/api/auth/register",
         credentials,
       );
       const userData = response.data;

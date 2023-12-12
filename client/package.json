@@ -10,7 +10,7 @@
     "build:docker": "vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "test": "jest"
+    "test": "vitest"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.2",
@@ -54,11 +54,13 @@
     "@types/react": "^18.2.39",
     "@types/react-dom": "^18.2.17",
     "@types/redux-logger": "^3.0.12",
+    "@types/redux-mock-store": "^1.0.6",
     "@types/three": "^0.158.3",
     "@typescript-eslint/eslint-plugin": "^6.13.2",
     "@typescript-eslint/parser": "^6.13.2",
     "@vitejs/plugin-react-swc": "^3.5.0",
     "autoprefixer": "^10.4.16",
+    "axios-mock-adapter": "^1.22.0",
     "eslint": "8.55.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
@@ -66,6 +68,7 @@
     "prettier": "3.1.1",
     "prettier-plugin-tailwindcss": "^0.5.9",
     "redux-logger": "^3.0.6",
+    "redux-mock-store": "^1.5.4",
     "tailwindcss": "^3.3.6",
     "typescript": "^5.3.3",
     "vite": "5.0.7",
