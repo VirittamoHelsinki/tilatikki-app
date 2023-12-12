@@ -1,4 +1,4 @@
-import express from 'express';
+import express, {Request, Response} from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import path from 'path';
@@ -13,6 +13,7 @@ import userRoutes from './routes/userRoutes.js';
 import auth from './routes/authRoutes.js';
 import logger from './utils/logger.js';
 import { connectDb } from './utils/connectDB.js';
+import url from 'url';
 
 const app = express();
 
@@ -26,7 +27,13 @@ if (node_env === 'development') app.use(cors());
 
 // Middlewares that need to be applied before adding routes.
 app.use(express.json());
-app.use(express.static('../client/dist'));
+
+app.use(express.static( path.join(url.fileURLToPath(new URL(".", import.meta.url)),
+      "../client/dist/"
+    )
+  )
+);
+
 app.use(requestLogger);
 
 // Add routes
@@ -43,14 +50,17 @@ app.use('/api/users', userRoutes);
 app.use('/api/*', unknownEndpoint);
 app.use(errorHandler);
 
-// Paths that are not part of the API are handled by the frontend.
-app.get('*', (_req, res) => {
-  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
-});
+const __dirname = process.cwd()
 
-// Close the database connection when the app is closed.
-app.on('close', () => {
-  mongoose.connection.close()
+const indexFilePath = path.join(__dirname, '/client/dist/index.html');
+// Paths that are not part of the API are handled by the frontend.
+const serveIndexHtmlAsModule = (_req:Request, res:Response) => {
+  res.sendFile(indexFilePath);
+};
+
+app.get("*", (_req, res) => {
+  const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
+  res.sendFile(path.join(__dirname + "../client/dist/index.html"));
 });
 
 app.listen(port, async () => {

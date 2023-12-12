@@ -9,10 +9,11 @@
     "setup:project": "npm install && npm run build && cd client && npm install && npm run build",
     "build:watch": "tsc -w",
     "build": "tsc",
+    "build-and-copy": "cd client && npm run build && cd .. && rm -rf server/build && cp -r client/dist server/build",
     "lint:server": "eslint . --ext .ts --report-unused-disable-directives --max-warnings 0",
     "lint:client": "cd client && npm run lint",
     "lint": "npm run lint:server && npm run lint:client",
-    "dev:server": "tsx watch build/index.js",
+    "dev:server": "tsx watch server/index.ts",
     "dev:client": "npm run dev --prefix client",
     "dev": "cross-env NODE_ENV=development concurrently --kill-others-on-fail \" npm run dev:server\" \" npm run dev:client\""
   },
