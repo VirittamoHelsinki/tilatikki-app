@@ -4,8 +4,8 @@ import {initialPremiseState, initialPremiseStateProps } from "../premiseState"; 
 // Define the action interface for premise-related actions
 interface PremiseAction {
   type: PremiseActionTypes;
-  payload?: any;  // Define a more specific type if available
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  payload?: any;  // Define a more specific type if available
 }
 
 // Main reducer
@@ -40,7 +40,7 @@ const premiseReducer = (
         ...state,
         isLoading: true,
       };
-      
+
     case PremiseActionTypes.DELETE_PREMISE_SUCCESS:
         return {
           ...state,
@@ -84,7 +84,7 @@ const premiseReducer = (
         return {
           ...state,
           isLoading: true,
-        };  
+        };
 
     case PremiseActionTypes.CREATE_PREMISE_SUCCESS:
       return {

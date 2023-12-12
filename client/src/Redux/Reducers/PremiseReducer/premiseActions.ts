@@ -2,12 +2,13 @@ import axios from 'axios';
 import { Dispatch } from 'redux';
 import { PremiseActionTypes } from './premiseTypes';
 
-// Define the structure for a premise
+// Define the structure for a premise TODO:fix any type
 interface Premise {
   name: string;
   address: string;
   users: string[];  // Array of User ObjectIds
   spaces: string[];  // Array of Space ObjectIds
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   buildings: any[];  // Replace `any` with a more specific type if available
 }
 
