@@ -1,7 +1,8 @@
-import express, {Request, Response} from 'express';
+import express, { type Request, type Response } from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import path from 'path';
+import url from 'url';
 import cookieParser from 'cookie-parser';
 import { requestLogger, unknownEndpoint, errorHandler } from './utils/middleware.js';
 import { node_env, port } from './utils/config.js';
@@ -13,7 +14,6 @@ import userRoutes from './routes/userRoutes.js';
 import auth from './routes/authRoutes.js';
 import logger from './utils/logger.js';
 import { connectDb } from './utils/connectDB.js';
-import url from 'url';
 
 
 const app = express();
@@ -56,7 +56,7 @@ app.use(errorHandler);
 
 
 // Paths that are not part of the API are handled by the frontend.
-app.get("*", (_req, res) => {
+app.get("*", (_req: Request, res: Response) => {
   const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
   res.sendFile(path.join(__dirname + "../client/dist/index.html"));
 });
