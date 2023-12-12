@@ -5,16 +5,15 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "vitest --reporter=verbose",
-    "setup:project": "npm install && npm run build && cd client && npm install && npm run build",
-    "build:watch": "tsc -w",
+    "setup:project": "npm install && cd client && npm install && npm run build",
+    "test:server": "vitest --reporter=verbose",
+    "test:client": "cd client && npm run test",
+    "test": "npm run test:server && npm run test:client",
     "build": "tsc",
     "lint:server": "eslint . --ext .ts --report-unused-disable-directives --max-warnings 0",
     "lint:client": "cd client && npm run lint",
     "lint": "npm run lint:server && npm run lint:client",
-    "dev:server": "tsx watch server/index.ts",
-    "dev:client": "npm run dev --prefix client",
-    "dev": "cross-env NODE_ENV=development concurrently --kill-others-on-fail \" npm run dev:server\" \" npm run dev:client\"",
+    "dev": "tsx watch server/index.ts",
     "start": "node build/index.js"
   },
   "dependencies": {

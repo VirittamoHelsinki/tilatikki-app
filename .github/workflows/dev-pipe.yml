@@ -1,4 +1,4 @@
-name: Test, Build and Deploy to Azure
+name: Development pipeline
 on: push
 jobs:
   test:
@@ -13,8 +13,8 @@ jobs:
           # cache: "npm" if we want to cache node_modules with package-lock.json faster test
       - name: Install Depedencies
         run: |
-          npm install
-          cd client && npm install
+          npm ci
+          cd client && npm ci
       - name: Lint and Test
         run: |
           npm run lint
