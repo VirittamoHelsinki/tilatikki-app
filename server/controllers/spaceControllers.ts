@@ -1,7 +1,16 @@
 import { type Request, type Response } from "express";
 import Space from "../models/Space.js";
-import asyncErrorHandler from "../utils/asyncErrorHandler.js";
+import asyncErrorHandler from "../middleware/asyncErrorHandler.js";
 import Premise from "../models/Premise.js";
+
+interface IBuilding {
+  _id: string;
+  name: string;
+  floors: {
+    floor: number;
+    blueprint_url?: string;
+  }[];
+}
 
 // Desc: Get all spaces
 // @route GET /api/spaces

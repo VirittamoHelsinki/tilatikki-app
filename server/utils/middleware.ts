@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import asyncErrorHandler from "./asyncErrorHandler.js";
+import asyncErrorHandler from "../middleware/asyncErrorHandler.js";
 import UserModel from "../models/User.js";
 import { jwtSecret } from "./config.js";
 import logger from "./logger.js";

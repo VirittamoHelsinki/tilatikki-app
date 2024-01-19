@@ -1,0 +1,34 @@
+[
+    {
+        "_id": "6200ad77bc43fc001f4a0e21",
+        "name": "Sunrise Business Center",
+        "address": "123 Business Ave, Citytown",
+        "users": ["6200ad77bc43fc001f4a0e23"],
+        "spaces": ["6300ad77bc43fc001f4a0e25"],
+        "buildings": [
+          {
+            "_id": "6500ad77bc43fc001f4a0e30",
+            "name": "Building A",
+            "floors": [
+              {"floor": 1, "blueprint_url": "http://example.com/floor1.jpg"}
+            ]
+          }
+        ]
+      },
+      {
+        "_id": "7200ad77bc43fc001f4a0e32",
+        "name": "Green Tech Park",
+        "address": "456 Eco Lane, Greentown",
+        "users": ["7200ad77bc43fc001f4a0e31"],
+        "spaces": ["7300ad77bc43fc001f4a0e35"],
+        "buildings": [
+          {
+            "_id": "7500ad77bc43fc001f4a0e36",
+            "name": "Eco Building",
+            "floors": [
+              {"floor": 1, "blueprint_url": "http://example.com/eco/floor1.jpg"}
+            ]
+          }
+        ]
+      }
+]

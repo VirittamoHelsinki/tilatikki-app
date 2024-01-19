@@ -7,7 +7,7 @@ import Reservation from "../models/Reservation.js";
 import Premise from "../models/Premise.js";
 import Space from "../models/Space.js";
 import { intersectingTimespans } from "../utils/dateFunctions.js";
-import asyncErrorHandler from "../utils/asyncErrorHandler.js";
+import asyncErrorHandler from "../middleware/asyncErrorHandler.js";
 
 // Get all availabilities on the premise that are partially or totally
 // contained between startdate and enddate time parameters received in the body.

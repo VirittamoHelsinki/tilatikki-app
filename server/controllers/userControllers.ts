@@ -1,6 +1,6 @@
 import { type Request, type Response } from "express";
 import User from "../models/User.js";
-import asyncErrorHandler from "../utils/asyncErrorHandler.js";
+import asyncErrorHandler from "../middleware/asyncErrorHandler.js";
 
 // Desc: Get all Users
 // @route GET /api/auth/users

@@ -5,7 +5,7 @@ import path from 'path';
 import url from 'url';
 import cookieParser from 'cookie-parser';
 import { requestLogger, unknownEndpoint, errorHandler } from './utils/middleware.js';
-import { node_env, port } from './utils/config.js';
+import * as config from './utils/config.js';
 import availabilityRoutes from './routes/availabilityRoutes.js';
 import premiseRoutes from './routes/premiseRoutes.js';
 import reservationRoutes from './routes/reservationRoutes.js';
@@ -24,7 +24,7 @@ app.use(cookieParser());
 // the backend. In production, the frontend and backend are served from
 // the same domain so cors is not needed. Unless other website frontends
 // on different domains need to use the API.
-if (node_env === "development") app.use(cors());
+if (config.node_env === "development") app.use(cors());
 
 // Middlewares that need to be applied before adding routes.
 app.use(express.json());
@@ -66,8 +66,8 @@ app.on("close", () => {
   mongoose.connection.close();
 });
 
-app.listen(port, async () => {
-  logger.info(`users-server running on port: ${port}`);
+app.listen(config.port, async () => {
+  logger.info(`users-server running on port: ${config.port}`);
   await connectDb();
 });
 
