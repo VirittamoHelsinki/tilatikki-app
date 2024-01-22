@@ -14,9 +14,7 @@ export interface IBuilding extends Document {
     image: string;
   }[];
   facade: string[];
-  space: {
-    _id: Schema.Types.ObjectId[] | ISpace[];
-  }[];
+  space: {_id: Schema.Types.ObjectId[] | ISpace[]}[];
 }
 
 // Define the building schema.
@@ -47,9 +45,7 @@ const buildingSchema = new Schema<IBuilding>({
   }],
   facade: [], // Replace with the specific schema if the structure is known
   space: [{ 
-    type: Schema.Types.ObjectId, 
-    ref: "Space" 
-}]
+    type: Schema.Types.ObjectId, ref: "Space" }]
 });
 
 // Create the model.

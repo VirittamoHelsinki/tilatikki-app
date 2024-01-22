@@ -12,6 +12,7 @@ import Premise from "./models/Premise.js";
 import Reservation from "./models/Reservation.js";
 import Space from "./models/Space.js";
 import User from "./models/User.js";
+import Building from "./models/Building.js";
 
 // Function to connect to MongoDB and manage data import/destruction.
 const connectDB = async () => {
@@ -30,10 +31,11 @@ const connectDB = async () => {
     const users = JSON.parse(fs.readFileSync(`${__dirname}/_data/users.json`, 'utf-8'));
     const spaces = JSON.parse(fs.readFileSync(`${__dirname}/_data/spaces.json`, 'utf-8'));
     const reservations = JSON.parse(fs.readFileSync(`${__dirname}/_data/reservations.json`, 'utf-8'));
+    const buildings = JSON.parse(fs.readFileSync(`${__dirname}/_data/buildings.json`, 'utf-8'))
 
     // Check command line arguments to determine whether to import or destroy data.
     if (process.argv[2] === '-import') {
-      await importData(availabilitys, premises, users, spaces, reservations);
+      await importData(availabilitys, premises, users, spaces, reservations, buildings);
     } else if (process.argv[2] === '-destroy') {
       await destroyData();
     } else {
@@ -47,7 +49,7 @@ const connectDB = async () => {
 };
 
 // Function to import data into the database.
-const importData = async (availabilitys:any, premises:any, users:any, spaces:any, reservations:any) => {
+const importData = async (availabilitys:any, premises:any, users:any, spaces:any, reservations:any, buildings:any) => {
   logger.info('Importing data into database...');
   await Availability.create(availabilitys);
   logger.info('Availability Imported...');
@@ -63,6 +65,9 @@ const importData = async (availabilitys:any, premises:any, users:any, spaces:any
 
   await Reservation.create(reservations);
   logger.info('Reservation Imported...');
+
+  await Building.create(buildings);
+  logger.info('Building Imported...');
 
   logger.info('All data Imported...');
 };
@@ -84,6 +89,9 @@ const destroyData = async () => {
 
   await Reservation.deleteMany();
   logger.info('Reservation Data Destroyed...');
+
+  await Building.deleteMany();
+  logger.info('Building Data Destroyed...');
 
   logger.info('All data Destroyed...');
 };

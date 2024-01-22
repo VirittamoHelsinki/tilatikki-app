@@ -41,20 +41,20 @@ export const createSpace = asyncErrorHandler(
         .status(404)
         .json({ error: `Premise not found with id: ${premiseId}` });
 
-    const building = premise.buildings.find(
-      (b) => b._id.toString === buildingId
-    );
-    if (!building)
-      return res
-        .status(404)
-        .json({ error: "Building not found with id: ${building}" });
+    // const building = premise.buildings.find(
+    //   (b) => b._id.toString === buildingId
+    // );
+    // if (!building)
+    //   return res
+    //     .status(404)
+    //     .json({ error: "Building not found with id: ${building}" });
 
     const space = new Space({
       name,
       area,
       floor,
       premise: premise,
-      building: building,
+      // building: building,
     });
 
     const newSpace = await space.save();

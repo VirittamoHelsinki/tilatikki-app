@@ -11,6 +11,7 @@ import premiseRoutes from './routes/premiseRoutes.js';
 import reservationRoutes from './routes/reservationRoutes.js';
 import spaceRoutes from './routes/spaceRoutes.js';
 import userRoutes from './routes/userRoutes.js';
+import buildingRoutes from './routes/buildingRoutes.js';
 import auth from './routes/authRoutes.js';
 import logger from './utils/logger.js';
 import { connectDb } from './utils/connectDB.js';
@@ -50,6 +51,7 @@ app.use("/api/premise", premiseRoutes);
 app.use("/api/reservation", reservationRoutes);
 app.use("/api/space", spaceRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/building", buildingRoutes);
 
 app.use("/api/*", unknownEndpoint);
 app.use(errorHandler);

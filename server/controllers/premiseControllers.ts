@@ -78,7 +78,7 @@ export const createPremise = asyncHandler(async(req: Request, res: Response) => 
 // @route PUT /api/premise/:id
 // @access Private
 export const updatePremise = asyncHandler(async(req: Request, res: Response) => {
-  const premise = await Premise.findByIdAndUpdate(req.params.id);
+  const premise = await Premise.findByIdAndUpdate(req.params.id,req.body,{ new: true } )
     
         if (!premise) return res.status(404).json({ success: false, msg: "No Premise found" });
 
