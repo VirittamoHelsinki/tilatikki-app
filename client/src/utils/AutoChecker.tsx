@@ -20,5 +20,5 @@ export function AuthChecker() {
     autoLogin();
   }, [getMe]);
 
-  return null; // This component doesn't render anything
+  return null;
 }

@@ -4,6 +4,7 @@ import {
   RouterProvider,
   useNavigation,
   useLocation,
+  // redirect,
 } from "react-router-dom";
 import { Provider } from "react-redux";
 import { Dashboard } from "./pages/Dashboard";
@@ -12,13 +13,24 @@ import { Register } from "./pages/Register";
 import { Premise } from "./pages/Premise";
 import { Header } from "~/@/components/Header";
 
-import { store } from "~/Redux/store"
+import { store } from "~/Redux/store";
 import { AuthChecker } from "~/utils/AutoChecker";
+// import { useTypedSelector } from "./hooks/useTypedSelector";
+// import { getMe } from "~/Redux/Reducers/UserReducer/userActions";
 
+// async function Loader() {
+//   getMe();
+//   const user = useTypedSelector((state) => state.user.currentUser);
+//   if (!user) {
+//     return redirect("/login");
+//   }
+//   return;
+// }
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Layout />,
+    // loader: Loader,
     children: [
       {
         index: true,

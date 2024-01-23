@@ -48,10 +48,6 @@ export function Login() {
   const user = useTypedSelector((state) => state.user.currentUser);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
   });
 
   // 2. Define a submit handler.
@@ -91,7 +87,9 @@ export function Login() {
           </h1>
           <div className="relative z-20 mt-auto">
             <blockquote className="space-y-2">
-              <p className="text-lg">&ldquo;Varaa Opetustila Helposti.&rdquo;</p>
+              <p className="text-lg">
+                &ldquo;Varaa Opetustila Helposti.&rdquo;
+              </p>
               <footer className="text-sm">Helsingin kaupunki</footer>
             </blockquote>
           </div>

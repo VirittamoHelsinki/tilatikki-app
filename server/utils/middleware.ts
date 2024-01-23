@@ -37,17 +37,20 @@ const errorHandler = (
   }
 };
 
+function getAuthToken(req: Request) {
+  if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
+    return req.headers.authorization.split(" ")[1]
+  } else if (req.cookies.token) {
+    return req.cookies.token
+  } else {
+    return null
+  }
+}
+
 // Protect routes
 const protect = asyncErrorHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    let token;
-
-    // Check if the request contains an "Authorization" header with a "Bearer" token
-    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-      token = req.headers.authorization.split(' ')[1];
-    } else if (req.cookies.token) {
-      token = req.cookies.token;
-    }
+    const token = getAuthToken(req)
 
     // If there's no token, return a 401 (Unauthorized) response
     if (!token) {
