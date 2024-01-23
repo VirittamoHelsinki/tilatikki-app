@@ -1,5 +1,7 @@
 # Tilatikki
 
+Figma url: https://www.figma.com/file/Mkq2rjNwP50lYfI0qwXVc9/Tilatikki-Figma?type=whiteboard&node-id=0-1&t=fVfQKz3hftcHYhFg-0
+
 Room reservation and freeing system
 
 ```sh
