@@ -1,0 +1,20 @@
+[
+    {
+        "_id": "6400ad77bc43fc001f4a0e29",
+        "creator": "6200ad77bc43fc001f4a0e23",
+        "startdate": "2024-02-01T09:00:00.000Z",
+        "enddate": "2024-02-01T11:00:00.000Z",
+        "premise": "6200ad77bc43fc001f4a0e21",
+        "space": "6300ad77bc43fc001f4a0e25",
+        "availability": "6300ad77bc43fc001f4a0e28"
+      },
+      {
+        "_id": "7400ad77bc43fc001f4a0e34",
+        "creator": "7200ad77bc43fc001f4a0e31",
+        "startdate": "2024-03-05T10:00:00.000Z",
+        "enddate": "2024-03-05T12:00:00.000Z",
+        "premise": "7200ad77bc43fc001f4a0e32",
+        "space": "7300ad77bc43fc001f4a0e35",
+        "availability": "7300ad77bc43fc001f4a0e33"
+      }
+]

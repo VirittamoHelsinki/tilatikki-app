@@ -13,11 +13,12 @@ let mongoUri = process.env.MONGODB_DEV_URI || "";
 
 // Update the mongoUri based on the NODE_ENV environment variable
 if (node_env === "development") {
-  mongoUri = process.env.MONGODB_TEST_URI || "";
+  mongoUri = process.env.MONGODB_DEV_URI || "";
 } else if (node_env === "production") {
-  mongoUri = process.env.MONGODB_PRODUCTION_URI || "";
+  mongoUri = process.env.MONGODB_DEV_URI || "";
 }
 
+console.log("connected to: ",mongoUri)
 // Parse the PORT environment variable as an integer with a default of 5000
 const port = parseInt(process.env.PORT || "5000", 10);
 

@@ -1,7 +1,16 @@
 import { type Request, type Response } from "express";
 import Space from "../models/Space.js";
-import asyncErrorHandler from "../utils/asyncErrorHandler.js";
+import asyncErrorHandler from "../middleware/asyncErrorHandler.js";
 import Premise from "../models/Premise.js";
+
+interface IBuilding {
+  _id: string;
+  name: string;
+  floors: {
+    floor: number;
+    blueprint_url?: string;
+  }[];
+}
 
 // Desc: Get all spaces
 // @route GET /api/spaces
@@ -32,20 +41,20 @@ export const createSpace = asyncErrorHandler(
         .status(404)
         .json({ error: `Premise not found with id: ${premiseId}` });
 
-    const building = premise.buildings.find(
-      (b) => b._id.toString === buildingId
-    );
-    if (!building)
-      return res
-        .status(404)
-        .json({ error: "Building not found with id: ${building}" });
+    // const building = premise.buildings.find(
+    //   (b) => b._id.toString === buildingId
+    // );
+    // if (!building)
+    //   return res
+    //     .status(404)
+    //     .json({ error: "Building not found with id: ${building}" });
 
     const space = new Space({
       name,
       area,
       floor,
       premise: premise,
-      building: building,
+      // building: building,
     });
 
     const newSpace = await space.save();

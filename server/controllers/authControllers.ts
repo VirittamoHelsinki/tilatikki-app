@@ -1,6 +1,6 @@
 import { type Request, type Response } from "express";
 import crypto from "crypto";
-import asyncErrorHandler from "../utils/asyncErrorHandler.js";
+import asyncErrorHandler from "../middleware/asyncErrorHandler.js";
 import User, { IUser } from "../models/User.js";
 import sendEmail from "../utils/sendEmail.js";
 import * as config from '../utils/config.js';

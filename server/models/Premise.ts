@@ -1,20 +1,14 @@
 import { type Document, Schema, type Model, model } from "mongoose";
-import { type ISpace } from "./Space.js";
 import { type IUser } from "./User.js";
+import { type IBuilding } from "./Building.js";
 
 // For internal model definition only.
 export interface IPremise extends Document {
   name: string;
   address: string;
-  spaces: Schema.Types.ObjectId[] | ISpace[];
-  buildings: {
-    _id: string;
-    floors: {
-      floor: number;
-      blueprint_url?: string;
-    }[];
-  }[];
   users: Schema.Types.ObjectId[] | IUser[];
+  premise_facade: string[];
+  buildings: Schema.Types.ObjectId[] | IBuilding[]
 }
 
 // Typeguard to check if the value is of type IPremise[].
@@ -28,25 +22,7 @@ const premiseSchema = new Schema<IPremise>({
   name: { type: String, required: true, minlength: 1, maxlength: 100 },
   address: { type: String, required: true, minlength: 1, maxlength: 100 },
   users: [{ type: Schema.Types.ObjectId, ref: "User" }],
-  spaces: [{ type: Schema.Types.ObjectId, ref: "Space" }],
-  buildings: [
-    {
-      name: {
-        // Can also be a number or letter. Something that
-        // identifies the building for the users.
-        type: String,
-        required: true,
-        minlength: 1,
-        maxlength: 50,
-      },
-      floors: [
-        {
-          floor: { type: Number, required: true },
-          blueprint_url: String,
-        },
-      ],
-    },
-  ],
+  buildings: [{type: Schema.Types.ObjectId,ref: "Building"}],
 });
 
 const Premise: Model<IPremise> = model<IPremise>("Premise", premiseSchema);

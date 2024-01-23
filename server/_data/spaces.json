@@ -1,0 +1,22 @@
+[
+    {
+        "_id": "6300ad77bc43fc001f4a0e25",
+        "name": "Conference Room 101",
+        "area": 500,
+        "premise": "6200ad77bc43fc001f4a0e21",
+        "building": "6500ad77bc43fc001f4a0e30",
+        "floor": 1,
+        "availabilities": ["6300ad77bc43fc001f4a0e28"],
+        "reservations": ["6400ad77bc43fc001f4a0e29"]
+    },
+    {
+        "_id": "7300ad77bc43fc001f4a0e35",
+        "name": "Open Workspace",
+        "area": 600,
+        "premise": "7200ad77bc43fc001f4a0e32",
+        "building": "7500ad77bc43fc001f4a0e36",
+        "floor": 1,
+        "availabilities": ["7300ad77bc43fc001f4a0e33"],
+        "reservations": ["7400ad77bc43fc001f4a0e34"]
+      }
+  ]

@@ -9,7 +9,7 @@ import {
   intersectingTimespans,
   duringTimespan,
 } from "../utils/dateFunctions.js";
-import asyncErrorHandler from "../utils/asyncErrorHandler.js";
+import asyncErrorHandler from "../middleware/asyncErrorHandler.js";
 
 export function getReservation(_req: Request, res: Response) {
   res.status(200).json({ success: true, msg: "incomplete" });
