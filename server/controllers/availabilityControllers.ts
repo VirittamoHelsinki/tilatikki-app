@@ -52,7 +52,8 @@ export const getAvailabilitiesWithPremiseId = asyncErrorHandler(
 // @access Public
 export const getAvailability = asyncErrorHandler(
   async (_req: Request, res: Response) => {
-    res.status(200).json({ success: true, msg: "Show all availabilities" });
+    const availabilities = await Availability.find();
+    res.status(200).json({ success: true, msg: "Show all availabilities", availabilities});
   }
 );
 
@@ -72,6 +73,7 @@ export const createAvailability = asyncErrorHandler(
       return res.status(400).json({ error: "spaceId missing from body" });
 
     const space = await Space.findById(spaceId).populate("availabilities");
+
 
     if (!space)
       return res
@@ -99,6 +101,7 @@ export const createAvailability = asyncErrorHandler(
     }
 
     const premise = await Premise.findById(space.premise);
+    console.log(premise)
 
     if (!premise) {
       return res

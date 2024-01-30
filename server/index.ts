@@ -6,6 +6,8 @@ import url from 'url';
 import cookieParser from 'cookie-parser';
 import { requestLogger, unknownEndpoint, errorHandler } from './utils/middleware.js';
 import * as config from './utils/config.js';
+
+// Import routes
 import availabilityRoutes from './routes/availabilityRoutes.js';
 import premiseRoutes from './routes/premiseRoutes.js';
 import reservationRoutes from './routes/reservationRoutes.js';
@@ -13,6 +15,9 @@ import spaceRoutes from './routes/spaceRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import buildingRoutes from './routes/buildingRoutes.js';
 import auth from './routes/authRoutes.js';
+import group from './routes/groupRoutes.js';
+
+// Import utils
 import logger from './utils/logger.js';
 import { connectDb } from './utils/connectDB.js';
 
@@ -52,6 +57,7 @@ app.use("/api/reservation", reservationRoutes);
 app.use("/api/space", spaceRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/building", buildingRoutes);
+app.use("/api/group", group);
 
 app.use("/api/*", unknownEndpoint);
 app.use(errorHandler);

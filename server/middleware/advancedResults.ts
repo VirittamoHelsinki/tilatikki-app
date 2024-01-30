@@ -1,48 +1,30 @@
-import { Request, NextFunction } from 'express';
-import { CustomResponse } from '../types.js'
-import Premise from '../models/Premise.js';
+import mongoose from 'mongoose';
 
-export const advancedResults = async (req: Request, res: CustomResponse<any>, next: NextFunction) => {
-    let query;
-
-    // Copy req.query
-    const reqQuery = { ...req.query };
-
-    // Fields to exclude (these are not filtering fields)
-    const removeFields = ['select', 'sort', 'page', 'limit'];
-
-    // Loop over removeFields and delete them from reqQuery
-    removeFields.forEach(param => delete reqQuery[param]);
-
-    // Create query string
-    let queryStr = JSON.stringify(reqQuery);
-
-    // Create operators ($gt, $gte, etc)
-    queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
-
-    // Parse the query string to find premises with specific floor criteria
-    let parsedQuery = JSON.parse(queryStr);
-
-    // Modify the parsed query to filter through nested building floors
-    if (parsedQuery.buildings && parsedQuery.buildings.floors) {
-        const floors = parsedQuery.buildings.floors;
-        parsedQuery = { 'buildings.floors.floor': floors }; // Adjust this based on your schema
-    }
-
-    // Finding resource
-    query = Premise.find(parsedQuery);
-
-    // Executing query
-    const results = await query;
-
-    // Send response
-    res.advancedResults = {
-        success: true,
-        count: results.length,
-        data: results
-    };
-
-    next();
+type FilterParams = {
+  buildingId?: mongoose.Types.ObjectId;
+  spaceId?: mongoose.Types.ObjectId;
+  floor?: number;
+  name?: string;  // New field for space name filtering
+  reservedParam?: string;
 };
 
-export default advancedResults;
+//Aggregation stages used in the pipeline
+// $match = filter
+// $lookup = join
+// $unwind = flatten
+// $group = group
+// $project = format output
+
+
+
+export const createPremiseAggregationPipeline = (params: FilterParams): mongoose.PipelineStage[] => {
+  const { buildingId, spaceId, floor, name, reservedParam } = params;
+  const pipeline: mongoose.PipelineStage[] = [];
+
+
+
+  return pipeline;
+};
+
+
+//http://localhost:5050/api/premise/6200ad77bc43fc001f4a0e21?building=65afba6ad46dd7e414fce57a&floor=1

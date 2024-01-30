@@ -6,6 +6,8 @@ import {
   deleteSpaceById,
   getSpaceById,
 } from "../controllers/spaceControllers.js";
+import Space from "../models/Space.js";
+
 
 
 const router = express.Router();

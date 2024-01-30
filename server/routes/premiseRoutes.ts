@@ -7,6 +7,7 @@ import {
   deletePremise,
 } from "../controllers/premiseControllers.js";
 
+
 const router = express.Router();
 
 //router.use(protect)
