@@ -131,5 +131,3 @@ export const createPremiseAggregationPipeline = (params: FilterParams): mongoose
 
   return pipeline;
 };
-
-//http://localhost:5050/api/premise/6200ad77bc43fc001f4a0e21?building=65afba6ad46dd7e414fce57a&floor=1

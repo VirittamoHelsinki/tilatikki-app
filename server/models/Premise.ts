@@ -22,6 +22,7 @@ const premiseSchema = new Schema<IPremise>({
   name: { type: String, required: true, minlength: 1, maxlength: 100 },
   address: { type: String, required: true, minlength: 1, maxlength: 100 },
   users: [{ type: Schema.Types.ObjectId, ref: "User" }],
+  premise_facade: [],
   buildings: [{type: Schema.Types.ObjectId,ref: "Building"}],
 });
 

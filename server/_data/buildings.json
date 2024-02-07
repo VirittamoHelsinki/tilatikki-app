@@ -1,0 +1,56 @@
+[
+    {
+      "name": "Building A",
+      "floors": 5,
+      "rooms": 10,
+      "outlines": [
+        {
+          "floor": 1,
+          "image": "outline_image_floor_1.jpg"
+        },
+        {
+          "floor": 2,
+          "image": "outline_image_floor_2.jpg"
+        }
+      ],
+      "blueprint": [
+        {
+          "floor": 1,
+          "image": "blueprint_image_floor_1.jpg"
+        },
+        {
+          "floor": 2,
+          "image": "blueprint_image_floor_2.jpg"
+        }
+      ],
+      "facade": [
+        "facade_image_1.jpg",
+        "facade_image_2.jpg"
+      ],
+      "space": [
+        { "_id": "6300ad77bc43fc001f4a0e25" }      ]
+    },
+    {
+      "name": "Building B",
+      "floors": 3,
+      "rooms": 5,
+      "outlines": [
+        {
+          "floor": 1,
+          "image": "outline_image_b_floor_1.jpg"
+        }
+      ],
+      "blueprint": [
+        {
+          "floor": 1,
+          "image": "blueprint_image_b_floor_1.jpg"
+        }
+      ],
+      "facade": [
+        "facade_image_b_1.jpg"
+      ],
+      "space": [
+        { "_id": "7300ad77bc43fc001f4a0e35" }
+      ]
+    }
+  ]

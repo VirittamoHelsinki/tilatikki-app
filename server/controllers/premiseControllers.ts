@@ -1,38 +1,58 @@
 import { type Request, type Response, type NextFunction } from "express";
-import { CustomResponse } from '../types.d.js'
+import mongoose from "mongoose";
 import asyncHandler from "../middleware/asyncErrorHandler.js";
 import Premise from "../models/Premise.js";
+import { createPremiseAggregationPipeline } from "../middleware/advancedResults.js";
 
 // Desc: Get all availabilities
 // @route GET /api/premise
 // @access Public
-export const getPremise = asyncHandler( async(req: Request, res: CustomResponse<any>, next: NextFunction) => {
+export const getPremise = asyncHandler( async(req: Request, res: Response<any>, next: NextFunction) => {
   const premises = await Premise.find({});
-
-  if (res.advancedResults) {
-    return res.status(200).json(res.advancedResults);
-}
-
     if(!premises) res.status(404).json({ success: false, msg: "No Premise found" });
 
   res.status(200).json({ success: true, premises });
   }
-);
+)
+
+
 
 // Desc: Get single Premise
 // @route GET /api/premise/:id
 // @access Public
-export const getSinglePremise = asyncHandler( async(req: Request, res: Response) => {
-  const premise = await Premise.findById(req.params.id);
 
-    if (!premise) return res.status(404).json({ success: false, msg: "No Premise found" });
-  
+export const getSinglePremise = async (req: Request, res: Response) => {
+  try {
+    const premiseId = req.params.id;
+    
+    // Ensure correct extraction and conversion of query parameters
+    const buildingId = req.query.building ? new mongoose.Types.ObjectId(req.query.building as string) : undefined;
+    const floor = req.query.floor ? parseInt(req.query.floor as string, 10) : undefined;
+    const reservedParam = req.query.reservedParam ? req.query.reservedParam as string : undefined;
 
-  res.status(200).json({ success: true, premise });
+    // Create an aggregation pipeline with the provided filters
+    const pipeline = createPremiseAggregationPipeline({ buildingId, floor, reservedParam });
 
+    // Add the match for premise ID at the start of the pipeline
+    pipeline.unshift({ $match: { _id: new mongoose.Types.ObjectId(premiseId) } });
+
+    const result = await Premise.aggregate(pipeline);
+
+    if (result.length === 0) {
+      return res.status(404).json({ success: false, msg: "No Premise found" });
+    }
+
+    const responseData = {
+      success: true,
+      premise: result[0],
+    };
+
+    res.status(200).json(responseData);
+  } catch (error) {
+    console.error('Error fetching single premise:', error);
+    res.status(500).send({ success: false, message: 'Server error occurred while querying the premise.' });
   }
-
-);
+};
 
 // Desc: Create new Premise
 // @route POST /api/premise
