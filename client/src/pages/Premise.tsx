@@ -21,7 +21,6 @@ import {
   CircleIcon,
   TimerIcon,
   CheckCircleIcon,
-  HelpCircleIcon,
   XCircleIcon,
 } from "lucide-react";
 import { Button } from "~/@/components/ui/button";
@@ -74,6 +73,14 @@ import {
   CommandList,
   CommandSeparator,
 } from "~/@/components/ui/command";
+import { Separator } from "~/@/components/ui/separator";
+import { fi } from "date-fns/locale";
+import { Input } from "~/@/components/ui/input";
+import {
+  ResizablePanelGroup,
+  ResizablePanel,
+  ResizableHandle,
+} from "~/@/components/ui/resizable";
 
 extend({ SVGLoader });
 
@@ -237,24 +244,19 @@ function BackgroundLayer({ url, floor }: { url: string; floor: string }) {
 
 const options = [
   {
-    value: "backlog",
-    label: "Backlog",
-    icon: HelpCircleIcon,
+    value: "varattu",
+    label: "Varattu",
+    icon: CheckCircleIcon,
   },
   {
-    value: "todo",
-    label: "Todo",
+    value: "vapaa",
+    label: "Vapaa",
     icon: CircleIcon,
   },
   {
-    value: "in progress",
-    label: "In Progress",
+    value: "arto special",
+    label: "Arto Special",
     icon: TimerIcon,
-  },
-  {
-    value: "done",
-    label: "Done",
-    icon: CheckCircleIcon,
   },
   {
     value: "canceled",
@@ -263,45 +265,35 @@ const options = [
   },
 ];
 
-const facet = new Set<string>([
-  "backlog",
-  "todo",
-  "in progress",
-  "done",
-  "canceled",
-]);
-
 function FilterMe() {
-  const [selectedValues, setSelectedValues] = useState<Set<string>>(
-    new Set(facet),
-  );
-  // const selectedValues = new Set(facet);
+  const [selectedValues, setSelectedValues] = useState<string[]>([]);
+  const selectedValue = new Set(selectedValues as string[]);
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="sm" className="h-8 border-dashed">
+        <Button variant="outline" size="sm" className="my-4 h-8 border-dashed">
           <PlusCircleIcon className="mr-2 h-4 w-4" />
           Filtered by
-          {selectedValues?.size > 0 && (
+          {selectedValue.size > 0 && (
             <>
-              {/* <Separator orientation="vertical" className="mx-2 h-4" /> */}
+              <Separator orientation="vertical" className="mx-2 h-4" />
               <Badge
                 variant="secondary"
                 className="rounded-sm px-1 font-normal lg:hidden"
               >
-                {selectedValues.size}
+                {selectedValue.size}
               </Badge>
               <div className="hidden space-x-1 lg:flex">
-                {selectedValues.size > 2 ? (
+                {selectedValue.size > 2 ? (
                   <Badge
                     variant="secondary"
                     className="rounded-sm px-1 font-normal"
                   >
-                    {selectedValues.size} selected
+                    {selectedValues?.length} selected
                   </Badge>
                 ) : (
                   options
-                    // .filter((option) => selectedValues. ===(option.value))
+                    .filter((option) => selectedValue.has(option.value))
                     .map((option) => (
                       <Badge
                         variant="secondary"
@@ -324,26 +316,27 @@ function FilterMe() {
             <CommandEmpty>No results found.</CommandEmpty>
             <CommandGroup>
               {options.map((option) => {
-                const isSelected = selectedValues.has(option.value);
+                const isSelected = selectedValue.has(option.value);
                 return (
                   <CommandItem
                     key={option.value}
                     onSelect={() => {
                       if (isSelected) {
-                        selectedValues.delete(option.value);
+                        selectedValue.delete(option.value);
                       } else {
-                        selectedValues.add(option.value);
+                        selectedValue.add(option.value);
                       }
-                      const filterValues = Array.from<string>(selectedValues);
-                      setSelectedValues(
-                        filterValues.length ? filterValues[0] : undefined,
+                      const filterValues = Array.from(selectedValue);
+                      setSelectedValues(filterValues);
+                      console.log(
+                        filterValues.length ? filterValues : undefined,
                       );
                     }}
                   >
                     <div
                       className={cn(
                         "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
-                        !selectedValues
+                        isSelected
                           ? "bg-primary text-primary-foreground"
                           : "opacity-50 [&_svg]:invisible",
                       )}
@@ -363,12 +356,12 @@ function FilterMe() {
                 );
               })}
             </CommandGroup>
-            {selectedValues.size > 0 && (
+            {selectedValues?.length > 0 && (
               <>
                 <CommandSeparator />
                 <CommandGroup>
                   <CommandItem
-                    onSelect={() => setSelectedValues(undefined)}
+                    onSelect={() => setSelectedValues([])}
                     className="justify-center text-center"
                   >
                     Clear filters
@@ -422,100 +415,257 @@ export function Premise() {
   }
   return (
     <main className="flex flex-1 flex-col sm:min-h-0">
-      <div className="grid flex-1 grid-cols-1 grid-rows-3 gap-4 p-4 sm:min-h-0 sm:grid-cols-10 sm:grid-rows-1 sm:gap-8 sm:px-8 sm:py-4">
-        <Card className="col-span-1 row-span-3 sm:col-span-3 sm:row-span-1">
-          <CardHeader>
-            <CardTitle>{pathname} koulu</CardTitle>
-            <CardDescription>
-              Kolmikerrosinen koulu rakennus, jossa on noin 150 opetustilaa
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Tabs
-              value={floor}
-              onValueChange={setFloor}
-              className="w-full 2xl:w-[400px]"
-            >
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="1.kerros">1.kerros</TabsTrigger>
-                <TabsTrigger value="2.kerros">2.kerros</TabsTrigger>
-                <TabsTrigger value="3.kerros">3.kerros</TabsTrigger>
-              </TabsList>
-              <TabsContent value="1.kerros">
-                <FilterMe />
-                <Form {...form}>
-                  <form
-                    onSubmit={form.handleSubmit(onSubmit)}
-                    className="flex flex-col items-start gap-5"
-                  >
-                    <FormField
-                      control={form.control}
-                      name="roomName"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-col">
-                          <FormLabel>Opetustila</FormLabel>
-                          <FormControl>
-                            <Select
-                              value={field.value}
-                              onValueChange={field.onChange}
-                            >
-                              <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="Valitse Opetustila" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectGroup>
-                                  <SelectLabel>Opetustilat</SelectLabel>
-                                  <SelectItem value="A12345">A12345</SelectItem>
-                                  <SelectItem value="A12347">A12347</SelectItem>
-                                </SelectGroup>
-                              </SelectContent>
-                            </Select>
-                          </FormControl>
-                          <FormDescription>Opetustila mmm...</FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="dateTime"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-col">
-                          <FormLabel>Päivämäärä</FormLabel>
-                          <Popover>
-                            <PopoverTrigger asChild>
+      {/* <div className="grid flex-1 grid-cols-1 grid-rows-3 gap-4 p-4 sm:min-h-0 sm:grid-cols-10 sm:grid-rows-1 sm:gap-8 sm:px-8 sm:py-4"> */}
+      <ResizablePanelGroup
+        direction="horizontal"
+        className="h-full w-full rounded-lg border"
+      >
+        <ResizablePanel>
+          <Card className="h-full w-full">
+            {/* <Card className="col-span-1 row-span-3 sm:col-span-3 sm:row-span-1"> */}
+            <CardHeader>
+              <CardTitle>{pathname} koulu</CardTitle>
+              <CardDescription>
+                Kolmikerrosinen koulu rakennus, jossa on noin 150 opetustilaa
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Tabs
+                value={floor}
+                onValueChange={setFloor}
+                className="w-full 2xl:w-[400px]"
+              >
+                <TabsList className="grid w-full grid-cols-3">
+                  <TabsTrigger value="1.kerros">1.kerros</TabsTrigger>
+                  <TabsTrigger value="2.kerros">2.kerros</TabsTrigger>
+                  <TabsTrigger value="3.kerros">3.kerros</TabsTrigger>
+                </TabsList>
+                <TabsContent value="1.kerros">
+                  <FilterMe />
+                  <Form {...form}>
+                    <form
+                      onSubmit={form.handleSubmit(onSubmit)}
+                      className="flex flex-col items-start gap-5"
+                    >
+                      <FormField
+                        control={form.control}
+                        name="roomName"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-col">
+                            <FormLabel>Opetustila</FormLabel>
+                            <FormControl>
+                              <Select
+                                value={field.value}
+                                onValueChange={field.onChange}
+                              >
+                                <SelectTrigger className="w-[180px]">
+                                  <SelectValue placeholder="Valitse Opetustila" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectGroup>
+                                    <SelectLabel>Opetustilat</SelectLabel>
+                                    <SelectItem value="A12345">
+                                      A12345
+                                    </SelectItem>
+                                    <SelectItem value="A12347">
+                                      A12347
+                                    </SelectItem>
+                                  </SelectGroup>
+                                </SelectContent>
+                              </Select>
+                            </FormControl>
+                            <FormDescription>Opetustila mmm...</FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="dateTime"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-col">
+                            <FormLabel>Päivämäärä</FormLabel>
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <FormControl>
+                                  <Button
+                                    variant={"outline"}
+                                    className={cn(
+                                      "w-[280px] justify-start text-left font-normal",
+                                      !field.value && "text-muted-foreground",
+                                    )}
+                                  >
+                                    <CalendarIcon className="mr-2 h-4 w-4" />
+                                    {field.value ? (
+                                      format(field.value, "PP", { locale: fi })
+                                    ) : (
+                                      <span>Valitse päivämäärä</span>
+                                    )}
+                                  </Button>
+                                </FormControl>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-auto p-0">
+                                <Calendar
+                                  mode="single"
+                                  selected={field.value}
+                                  onSelect={field.onChange}
+                                  initialFocus
+                                  locale={fi}
+                                />
+                              </PopoverContent>
+                            </Popover>
+                            <FormDescription>Päivämäärä...</FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <div className="flex gap-2">
+                        <FormField
+                          control={form.control}
+                          name="startTime"
+                          render={({ field }) => (
+                            <FormItem className="flex flex-col">
+                              <FormLabel>Aloitusaika</FormLabel>
                               <FormControl>
-                                <Button
-                                  variant={"outline"}
-                                  className={cn(
-                                    "w-[280px] justify-start text-left font-normal",
-                                    !field.value && "text-muted-foreground",
-                                  )}
+                                <Select
+                                  value={field.value}
+                                  onValueChange={field.onChange}
                                 >
-                                  <CalendarIcon className="mr-2 h-4 w-4" />
-                                  {field.value ? (
-                                    format(field.value, "PP")
-                                  ) : (
-                                    <span>Valitse päivämäärä</span>
-                                  )}
-                                </Button>
+                                  <SelectTrigger className="w-32">
+                                    <SelectValue placeholder="Valitse Aloitusaika" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectGroup>
+                                      <SelectLabel>Aloitus</SelectLabel>
+                                      <SelectItem value="13:00">
+                                        13:00
+                                      </SelectItem>
+                                      <SelectItem value="15:00">
+                                        15:00
+                                      </SelectItem>
+                                    </SelectGroup>
+                                  </SelectContent>
+                                </Select>
                               </FormControl>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0">
-                              <Calendar
-                                mode="single"
-                                selected={field.value}
-                                onSelect={field.onChange}
-                                initialFocus
-                              />
-                            </PopoverContent>
-                          </Popover>
-                          <FormDescription>Päivämäärä...</FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <div className="flex gap-2">
+                              <FormDescription>Aloitusaika...</FormDescription>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="endTime"
+                          render={({ field }) => (
+                            <FormItem className="flex flex-col">
+                              <FormLabel>Lopetusaika</FormLabel>
+                              <FormControl>
+                                <Select
+                                  value={field.value}
+                                  onValueChange={field.onChange}
+                                >
+                                  <SelectTrigger className="w-32">
+                                    <SelectValue placeholder="Valitse Lopetusaika" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectGroup>
+                                      <SelectLabel>Lopetus</SelectLabel>
+                                      <SelectItem value="14:00">
+                                        14:00
+                                      </SelectItem>
+                                      <SelectItem value="16:00">
+                                        16:00
+                                      </SelectItem>
+                                    </SelectGroup>
+                                  </SelectContent>
+                                </Select>
+                              </FormControl>
+                              <FormDescription>Lopetusaika...</FormDescription>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      <Button>Varaa Aika</Button>
+                    </form>
+                  </Form>
+                </TabsContent>
+                <TabsContent value="2.kerros">
+                  <Form {...form}>
+                    <form
+                      onSubmit={form.handleSubmit(onSubmit)}
+                      className="flex flex-col items-start gap-5"
+                    >
+                      <FormField
+                        control={form.control}
+                        name="roomName"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-col">
+                            <FormLabel>Opetustila</FormLabel>
+                            <FormControl>
+                              <Select
+                                value={field.value}
+                                onValueChange={field.onChange}
+                              >
+                                <SelectTrigger className="w-[180px]">
+                                  <SelectValue placeholder="Valitse Opetustila" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectGroup>
+                                    <SelectLabel>Opetustilat</SelectLabel>
+                                    <SelectItem value="A12345">
+                                      A12345
+                                    </SelectItem>
+                                    <SelectItem value="A12347">
+                                      A12347
+                                    </SelectItem>
+                                  </SelectGroup>
+                                </SelectContent>
+                              </Select>
+                            </FormControl>
+                            <FormDescription>Opetustila mmm...</FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="dateTime"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-col">
+                            <FormLabel>Päivämäärä</FormLabel>
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <FormControl>
+                                  <Button
+                                    variant={"outline"}
+                                    className={cn(
+                                      "w-[280px] justify-start text-left font-normal",
+                                      !field.value && "text-muted-foreground",
+                                    )}
+                                  >
+                                    <CalendarIcon className="mr-2 h-4 w-4" />
+                                    {field.value ? (
+                                      format(field.value, "PP")
+                                    ) : (
+                                      <span>Valitse päivämäärä</span>
+                                    )}
+                                  </Button>
+                                </FormControl>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-auto p-0">
+                                <Calendar
+                                  mode="single"
+                                  selected={field.value}
+                                  onSelect={field.onChange}
+                                  initialFocus
+                                />
+                              </PopoverContent>
+                            </Popover>
+                            <FormDescription>Päivämäärä...</FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                       <FormField
                         control={form.control}
                         name="startTime"
@@ -527,7 +677,7 @@ export function Premise() {
                                 value={field.value}
                                 onValueChange={field.onChange}
                               >
-                                <SelectTrigger className="w-32">
+                                <SelectTrigger className="w-[180px]">
                                   <SelectValue placeholder="Valitse Aloitusaika" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -555,7 +705,7 @@ export function Premise() {
                                 value={field.value}
                                 onValueChange={field.onChange}
                               >
-                                <SelectTrigger className="w-32">
+                                <SelectTrigger className="w-[180px]">
                                   <SelectValue placeholder="Valitse Lopetusaika" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -572,302 +722,186 @@ export function Premise() {
                           </FormItem>
                         )}
                       />
-                    </div>
-                    <Button>Varaa Aika</Button>
-                  </form>
-                </Form>
-              </TabsContent>
-              <TabsContent value="2.kerros">
-                <Form {...form}>
-                  <form
-                    onSubmit={form.handleSubmit(onSubmit)}
-                    className="flex flex-col items-start gap-5"
-                  >
-                    <FormField
-                      control={form.control}
-                      name="roomName"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-col">
-                          <FormLabel>Opetustila</FormLabel>
-                          <FormControl>
-                            <Select
-                              value={field.value}
-                              onValueChange={field.onChange}
-                            >
-                              <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="Valitse Opetustila" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectGroup>
-                                  <SelectLabel>Opetustilat</SelectLabel>
-                                  <SelectItem value="A12345">A12345</SelectItem>
-                                  <SelectItem value="A12347">A12347</SelectItem>
-                                </SelectGroup>
-                              </SelectContent>
-                            </Select>
-                          </FormControl>
-                          <FormDescription>Opetustila mmm...</FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="dateTime"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-col">
-                          <FormLabel>Päivämäärä</FormLabel>
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <FormControl>
-                                <Button
-                                  variant={"outline"}
-                                  className={cn(
-                                    "w-[280px] justify-start text-left font-normal",
-                                    !field.value && "text-muted-foreground",
-                                  )}
-                                >
-                                  <CalendarIcon className="mr-2 h-4 w-4" />
-                                  {field.value ? (
-                                    format(field.value, "PP")
-                                  ) : (
-                                    <span>Valitse päivämäärä</span>
-                                  )}
-                                </Button>
-                              </FormControl>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0">
-                              <Calendar
-                                mode="single"
-                                selected={field.value}
-                                onSelect={field.onChange}
-                                initialFocus
-                              />
-                            </PopoverContent>
-                          </Popover>
-                          <FormDescription>Päivämäärä...</FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="startTime"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-col">
-                          <FormLabel>Aloitusaika</FormLabel>
-                          <FormControl>
-                            <Select
-                              value={field.value}
-                              onValueChange={field.onChange}
-                            >
-                              <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="Valitse Aloitusaika" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectGroup>
-                                  <SelectLabel>Aloitus</SelectLabel>
-                                  <SelectItem value="13:00">13:00</SelectItem>
-                                  <SelectItem value="15:00">15:00</SelectItem>
-                                </SelectGroup>
-                              </SelectContent>
-                            </Select>
-                          </FormControl>
-                          <FormDescription>Aloitusaika...</FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="endTime"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-col">
-                          <FormLabel>Lopetusaika</FormLabel>
-                          <FormControl>
-                            <Select
-                              value={field.value}
-                              onValueChange={field.onChange}
-                            >
-                              <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="Valitse Lopetusaika" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectGroup>
-                                  <SelectLabel>Lopetus</SelectLabel>
-                                  <SelectItem value="14:00">14:00</SelectItem>
-                                  <SelectItem value="16:00">16:00</SelectItem>
-                                </SelectGroup>
-                              </SelectContent>
-                            </Select>
-                          </FormControl>
-                          <FormDescription>Lopetusaika...</FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <Button>Varaa Aika</Button>
-                  </form>
-                </Form>
-              </TabsContent>
-              <TabsContent value="3.kerros">
-                <Form {...form}>
-                  <form
-                    onSubmit={form.handleSubmit(onSubmit)}
-                    className="flex flex-col items-start gap-5"
-                  >
-                    <FormField
-                      control={form.control}
-                      name="roomName"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-col">
-                          <FormLabel>Opetustila</FormLabel>
-                          <FormControl>
-                            <Select
-                              value={field.value}
-                              onValueChange={field.onChange}
-                            >
-                              <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="Valitse Opetustila" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectGroup>
-                                  <SelectLabel>Opetustilat</SelectLabel>
-                                  <SelectItem value="A12345">A12345</SelectItem>
-                                  <SelectItem value="A12347">A12347</SelectItem>
-                                </SelectGroup>
-                              </SelectContent>
-                            </Select>
-                          </FormControl>
-                          <FormDescription>Opetustila mmm...</FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="dateTime"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-col">
-                          <FormLabel>Päivämäärä</FormLabel>
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <FormControl>
-                                <Button
-                                  variant={"outline"}
-                                  className={cn(
-                                    "w-[280px] justify-start text-left font-normal",
-                                    !field.value && "text-muted-foreground",
-                                  )}
-                                >
-                                  <CalendarIcon className="mr-2 h-4 w-4" />
-                                  {field.value ? (
-                                    format(field.value, "PP")
-                                  ) : (
-                                    <span>Valitse päivämäärä</span>
-                                  )}
-                                </Button>
-                              </FormControl>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0">
-                              <Calendar
-                                mode="single"
-                                selected={field.value}
-                                onSelect={field.onChange}
-                                initialFocus
-                              />
-                            </PopoverContent>
-                          </Popover>
-                          <FormDescription>Päivämäärä...</FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="startTime"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-col">
-                          <FormLabel>Aloitusaika</FormLabel>
-                          <FormControl>
-                            <Select
-                              value={field.value}
-                              onValueChange={field.onChange}
-                            >
-                              <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="Valitse Aloitusaika" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectGroup>
-                                  <SelectLabel>Aloitus</SelectLabel>
-                                  <SelectItem value="13:00">13:00</SelectItem>
-                                  <SelectItem value="15:00">15:00</SelectItem>
-                                </SelectGroup>
-                              </SelectContent>
-                            </Select>
-                          </FormControl>
-                          <FormDescription>Aloitusaika...</FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="endTime"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-col">
-                          <FormLabel>Lopetusaika</FormLabel>
-                          <FormControl>
-                            <Select
-                              value={field.value}
-                              onValueChange={field.onChange}
-                            >
-                              <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="Valitse Lopetusaika" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectGroup>
-                                  <SelectLabel>Lopetus</SelectLabel>
-                                  <SelectItem value="14:00">14:00</SelectItem>
-                                  <SelectItem value="16:00">16:00</SelectItem>
-                                </SelectGroup>
-                              </SelectContent>
-                            </Select>
-                          </FormControl>
-                          <FormDescription>Lopetusaika...</FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <Button>Varaa Aika</Button>
-                  </form>
-                </Form>
-              </TabsContent>
-            </Tabs>
-          </CardContent>
-        </Card>
-        <Card
-          id="ref-body"
-          className="col-span-1 h-full w-full rounded sm:col-span-7 sm:row-span-1"
-        >
-          <Canvas
-            className="h-full w-full"
-            frameloop="demand"
-            orthographic
-            camera={{
-              position: [0, 0, 200],
-              zoom: 1,
-              up: [0, 0, 1],
-              far: 10000,
-            }}
+                      <Button>Varaa Aika</Button>
+                    </form>
+                  </Form>
+                </TabsContent>
+                <TabsContent value="3.kerros">
+                  <Form {...form}>
+                    <form
+                      onSubmit={form.handleSubmit(onSubmit)}
+                      className="flex flex-col items-start gap-5"
+                    >
+                      <FormField
+                        control={form.control}
+                        name="roomName"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-col">
+                            <FormLabel>Opetustila</FormLabel>
+                            <FormControl>
+                              <Select
+                                value={field.value}
+                                onValueChange={field.onChange}
+                              >
+                                <SelectTrigger className="w-[180px]">
+                                  <SelectValue placeholder="Valitse Opetustila" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectGroup>
+                                    <SelectLabel>Opetustilat</SelectLabel>
+                                    <SelectItem value="A12345">
+                                      A12345
+                                    </SelectItem>
+                                    <SelectItem value="A12347">
+                                      A12347
+                                    </SelectItem>
+                                  </SelectGroup>
+                                </SelectContent>
+                              </Select>
+                            </FormControl>
+                            <FormDescription>Opetustila mmm...</FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="dateTime"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-col">
+                            <FormLabel>Päivämäärä</FormLabel>
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <FormControl>
+                                  <Button
+                                    variant={"outline"}
+                                    className={cn(
+                                      "w-[280px] justify-start text-left font-normal",
+                                      !field.value && "text-muted-foreground",
+                                    )}
+                                  >
+                                    <CalendarIcon className="mr-2 h-4 w-4" />
+                                    {field.value ? (
+                                      format(field.value, "PP")
+                                    ) : (
+                                      <span>Valitse päivämäärä</span>
+                                    )}
+                                  </Button>
+                                </FormControl>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-auto p-0">
+                                <Calendar
+                                  mode="single"
+                                  selected={field.value}
+                                  onSelect={field.onChange}
+                                  initialFocus
+                                />
+                              </PopoverContent>
+                            </Popover>
+                            <FormDescription>Päivämäärä...</FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="startTime"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-col">
+                            <FormLabel>Aloitusaika</FormLabel>
+                            <FormControl>
+                              <Select
+                                value={field.value}
+                                onValueChange={field.onChange}
+                              >
+                                <SelectTrigger className="w-[180px]">
+                                  <SelectValue placeholder="Valitse Aloitusaika" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectGroup>
+                                    <SelectLabel>Aloitus</SelectLabel>
+                                    <SelectItem value="13:00">13:00</SelectItem>
+                                    <SelectItem value="15:00">15:00</SelectItem>
+                                  </SelectGroup>
+                                </SelectContent>
+                              </Select>
+                            </FormControl>
+                            <FormDescription>Aloitusaika...</FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="endTime"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-col">
+                            <FormLabel>Lopetusaika</FormLabel>
+                            <FormControl>
+                              <Select
+                                value={field.value}
+                                onValueChange={field.onChange}
+                              >
+                                <SelectTrigger className="w-[180px]">
+                                  <SelectValue placeholder="Valitse Lopetusaika" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectGroup>
+                                    <SelectLabel>Lopetus</SelectLabel>
+                                    <SelectItem value="14:00">14:00</SelectItem>
+                                    <SelectItem value="16:00">16:00</SelectItem>
+                                  </SelectGroup>
+                                </SelectContent>
+                              </Select>
+                            </FormControl>
+                            <FormDescription>Lopetusaika...</FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <Button>Varaa Aika</Button>
+                    </form>
+                  </Form>
+                </TabsContent>
+              </Tabs>
+            </CardContent>
+          </Card>
+        </ResizablePanel>
+        <ResizableHandle withHandle />
+        <ResizablePanel>
+          <Card className="h-full w-full">
+            {/* <Card className="col-span-1 row-span-3 sm:col-span-3 sm:row-span-1"> */}
+            <CardHeader>
+              <Input placeholder="search..." />
+            </CardHeader>
+            <CardContent>room A1234</CardContent>
+          </Card>
+        </ResizablePanel>
+        <ResizableHandle withHandle />
+        <ResizablePanel>
+          <Card
+            id="ref-body"
+            className="col-span-1 h-full w-full rounded sm:col-span-4 sm:row-span-1"
           >
-            <Suspense fallback={<Loader />}>
-              <BackgroundLayer url={premiseOutline()} floor={floor} />
-            </Suspense>
-            <MapControls enableRotate={false} />
-          </Canvas>
-        </Card>
-      </div>
+            <Canvas
+              className="h-full w-full"
+              frameloop="demand"
+              orthographic
+              camera={{
+                position: [0, 0, 200],
+                zoom: 1,
+                up: [0, 0, 1],
+                far: 10000,
+              }}
+            >
+              <Suspense fallback={<Loader />}>
+                <BackgroundLayer url={premiseOutline()} floor={floor} />
+              </Suspense>
+              <MapControls enableRotate={false} />
+            </Canvas>
+          </Card>
+        </ResizablePanel>
+      </ResizablePanelGroup>
     </main>
   );
 }
