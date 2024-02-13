@@ -62,6 +62,7 @@ export function Login() {
   const cookies = new Cookies();
   const tilatikkiCookie = cookies.get("tilatikkiToken");
 
+  // TODO:fix this useEffect by removing it
   useEffect(() => {
     if (tilatikkiCookie) {
       navigate("/");

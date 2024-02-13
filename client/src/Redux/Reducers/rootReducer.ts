@@ -6,13 +6,10 @@ import premiseReducer from "./PremiseReducer/premiseReducer";
 import userReducer from "./UserReducer/userReducer";
 
 // Create a new reducer called `rootReducer`.
-const rootReducer = combineReducers({
+export const rootReducer = combineReducers({
   premise: premiseReducer,
-  user: userReducer
+  user: userReducer,
 });
-
-// Export the `rootReducer` function.
-export default rootReducer;
 
 // Export the type of the Redux store state as `RootState`.
 export type RootState = ReturnType<typeof rootReducer>;

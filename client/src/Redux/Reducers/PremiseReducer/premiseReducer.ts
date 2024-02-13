@@ -1,17 +1,17 @@
-import { PremiseActionTypes } from "./premiseTypes";
-import {initialPremiseState, initialPremiseStateProps } from "../premiseState"; // Adjust the path as needed
+import { PremiseActionTypes, type PremiseActionType } from "./premiseTypes";
+import { initialPremiseState, initialPremiseStateProps } from "../premiseState"; // Adjust the path as needed
 
 // Define the action interface for premise-related actions
 interface PremiseAction {
-  type: PremiseActionTypes;
+  type: PremiseActionType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  payload?: any;  // Define a more specific type if available
+  payload?: any; // Define a more specific type if available
 }
 
 // Main reducer
 const premiseReducer = (
   state: initialPremiseStateProps = initialPremiseState,
-  action: PremiseAction
+  action: PremiseAction,
 ): initialPremiseStateProps => {
   switch (action.type) {
     case PremiseActionTypes.GET_PREMISES_BEGINS:
@@ -42,12 +42,12 @@ const premiseReducer = (
       };
 
     case PremiseActionTypes.DELETE_PREMISE_SUCCESS:
-        return {
-          ...state,
-          isLoading: false,
-          alertType: "success",
-          alertText: "Premise successfully deleted",
-        };
+      return {
+        ...state,
+        isLoading: false,
+        alertType: "success",
+        alertText: "Premise successfully deleted",
+      };
 
     case PremiseActionTypes.DELETE_PREMISE_FAILURE:
       return {
@@ -56,7 +56,6 @@ const premiseReducer = (
         alertType: "danger",
         alertText: action.payload?.message,
       };
-
 
     case PremiseActionTypes.UPDATE_PREMISE_BEGINS:
       return {
@@ -81,10 +80,10 @@ const premiseReducer = (
       };
 
     case PremiseActionTypes.CREATE_PREMISE_BEGINS:
-        return {
-          ...state,
-          isLoading: true,
-        };
+      return {
+        ...state,
+        isLoading: true,
+      };
 
     case PremiseActionTypes.CREATE_PREMISE_SUCCESS:
       return {

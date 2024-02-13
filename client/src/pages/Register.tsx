@@ -12,8 +12,6 @@ import {
   FormMessage,
 } from "~/@/components/ui/form";
 import { Input } from "~/@/components/ui/input";
-import { toast } from "~/@/components/ui/use-toast";
-import { Toaster } from "~/@/components/ui/toaster";
 import { Link } from "react-router-dom";
 import { cn } from "~/@/lib/utils";
 import { useUserAction } from "~/hooks/useUser";
@@ -68,19 +66,10 @@ export function Register() {
       email: values.email,
       password: values.password,
     });
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(values, null, 2)}</code>
-        </pre>
-      ),
-    });
   }
 
   return (
-    <>
-      <div className="container relative hidden grow h-full flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
+      <div className="container relative hidden h-full grow flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
         <Link
           to="/login"
           className={cn(
@@ -97,7 +86,9 @@ export function Register() {
           </h1>
           <div className="relative z-20 mt-auto">
             <blockquote className="space-y-2">
-              <p className="text-lg">&ldquo;Varaa Opetustila Helposti.&rdquo;</p>
+              <p className="text-lg">
+                &ldquo;Varaa Opetustila Helposti.&rdquo;
+              </p>
               <footer className="text-sm">Helsingin kaupunki</footer>
             </blockquote>
           </div>
@@ -181,7 +172,5 @@ export function Register() {
           </div>
         </div>
       </div>
-      <Toaster />
-    </>
   );
 }

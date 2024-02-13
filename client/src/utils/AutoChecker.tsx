@@ -16,7 +16,7 @@ export function AuthChecker() {
         getMe();
       }
     }
-    console.log("Cookie exists", cookies.get("tilatikkiToken") ? "YES" : "NO");
+    // console.log("Cookie exists", cookies.get("tilatikkiToken") ? "YES" : "NO");
     autoLogin();
   }, [getMe]);
 

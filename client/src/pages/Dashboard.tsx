@@ -8,7 +8,6 @@ import {
 import { Link } from "react-router-dom";
 
 export function Dashboard() {
-
   return (
     <main className="grid grid-cols-3 gap-5 px-4 pb-2 pt-6 sm:px-8 sm:py-8">
       {/*{Array.from({ length: 9 }, (_, i) => ( */}
@@ -46,7 +45,6 @@ export function Dashboard() {
           </CardContent>
         </Link>
       </Card>
-
 
       {/*  ))} */}
     </main>

@@ -3,11 +3,10 @@ import { useDispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 
 // Import the action creators from the Redux store.
-import { premiseActionCreators } from "../Redux/index";
+import { premiseActionCreators } from "../Redux/store";
 
 // Export the `usePremiseAction` hook.
 export const usePremiseAction = () => {
-
   // Get the `dispatch` function from the React Redux Provider.
   const dispatch = useDispatch();
 
