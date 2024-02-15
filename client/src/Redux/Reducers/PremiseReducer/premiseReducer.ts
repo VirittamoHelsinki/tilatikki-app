@@ -1,7 +1,6 @@
 import { PremiseActionTypes, type PremiseActionType } from "./premiseTypes";
-import { initialPremiseState, initialPremiseStateProps } from "../premiseState"; // Adjust the path as needed
+import { initialPremiseState, PremiseStateProps } from "../premiseState"; // Adjust the path as needed
 
-// Define the action interface for premise-related actions
 interface PremiseAction {
   type: PremiseActionType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -10,9 +9,9 @@ interface PremiseAction {
 
 // Main reducer
 const premiseReducer = (
-  state: initialPremiseStateProps = initialPremiseState,
+  state: PremiseStateProps = initialPremiseState,
   action: PremiseAction,
-): initialPremiseStateProps => {
+): PremiseStateProps => {
   switch (action.type) {
     case PremiseActionTypes.GET_PREMISES_BEGINS:
       return {
@@ -23,11 +22,53 @@ const premiseReducer = (
     case PremiseActionTypes.GET_PREMISES_SUCCESS:
       return {
         ...state,
-        premises: action.payload,
+        premisesData: action.payload,
         isLoading: false,
       };
 
     case PremiseActionTypes.GET_PREMISES_FAILURE:
+      return {
+        ...state,
+        isLoading: false,
+        alertType: "danger",
+        alertText: action.payload?.message,
+      };
+
+    case PremiseActionTypes.GET_PREMISE_BEGINS:
+      return {
+        ...state,
+        isLoading: true,
+      };
+
+    case PremiseActionTypes.GET_PREMISE_SUCCESS:
+      return {
+        ...state,
+        premiseData: action.payload,
+        isLoading: false,
+      };
+
+    case PremiseActionTypes.GET_PREMISE_FAILURE:
+      return {
+        ...state,
+        isLoading: false,
+        alertType: "danger",
+        alertText: action.payload?.message,
+      };
+
+    case PremiseActionTypes.GET_BUILDING_BEGINS:
+      return {
+        ...state,
+        isLoading: true,
+      };
+
+    case PremiseActionTypes.GET_BUILDING_SUCCESS:
+      return {
+        ...state,
+        currentBuilding: action.payload,
+        isLoading: false,
+      };
+
+    case PremiseActionTypes.GET_BUILDING_FAILURE:
       return {
         ...state,
         isLoading: false,

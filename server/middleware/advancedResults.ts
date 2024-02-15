@@ -4,7 +4,7 @@ type FilterParams = {
   buildingId?: mongoose.Types.ObjectId;
   spaceId?: mongoose.Types.ObjectId;
   floor?: number;
-  name?: string;  // New field for space name filtering
+  name?: string; // New field for space name filtering
   reservedParam?: string;
 };
 
@@ -15,9 +15,9 @@ type FilterParams = {
 // $group = group
 // $project = format output
 
-
-
-export const createPremiseAggregationPipeline = (params: FilterParams): mongoose.PipelineStage[] => {
+export const createPremiseAggregationPipeline = (
+  params: FilterParams
+): mongoose.PipelineStage[] => {
   const { buildingId, spaceId, floor, name, reservedParam } = params;
   const pipeline: mongoose.PipelineStage[] = [];
 
@@ -27,24 +27,24 @@ export const createPremiseAggregationPipeline = (params: FilterParams): mongoose
       from: 'buildings',
       localField: 'buildings',
       foreignField: '_id',
-      as: 'buildingDetails',
-    },
+      as: 'buildingDetails'
+    }
   });
 
   // Unwind the buildingDetails for further operations
   pipeline.push({
     $unwind: {
       path: '$buildingDetails',
-      preserveNullAndEmptyArrays: true,
-    },
+      preserveNullAndEmptyArrays: true
+    }
   });
 
   // If a buildingId is specified, filter the buildings
   if (buildingId) {
     pipeline.push({
       $match: {
-        'buildingDetails._id': buildingId,
-      },
+        'buildingDetails._id': buildingId
+      }
     });
   }
 
@@ -54,10 +54,9 @@ export const createPremiseAggregationPipeline = (params: FilterParams): mongoose
       from: 'spaces',
       localField: 'buildingDetails.space',
       foreignField: '_id',
-      as: 'spaceDetails',
-    },
+      as: 'spaceDetails'
+    }
   });
-  
 
   // Filter outlines, blueprints, and spaces if floor is specified
   if (floor !== undefined) {
@@ -67,66 +66,70 @@ export const createPremiseAggregationPipeline = (params: FilterParams): mongoose
           $filter: {
             input: '$buildingDetails.outlines',
             as: 'outline',
-            cond: { $eq: ['$$outline.floor', floor] },
-          },
+            cond: { $eq: ['$$outline.floor', floor] }
+          }
         },
         'buildingDetails.blueprint': {
           $filter: {
             input: '$buildingDetails.blueprint',
             as: 'blueprint',
-            cond: { $eq: ['$$blueprint.floor', floor] },
-          },
+            cond: { $eq: ['$$blueprint.floor', floor] }
+          }
         },
-        'spaceDetails': {
+        spaceDetails: {
           $filter: {
             input: '$spaceDetails',
             as: 'spaceDetail',
-            cond: { $eq: ['$$spaceDetail.floor', floor] },
-          },
-        },
-      },
+            cond: { $eq: ['$$spaceDetail.floor', floor] }
+          }
+        }
+      }
     });
   }
-  
 
   // Add filtered or unfiltered space details to buildingDetails
   pipeline.push({
     $addFields: {
       'buildingDetails.space': '$spaceDetails'
-    },
+    }
   });
 
   // If a spaceId is specified, filter the spaces after they've been populated
   if (spaceId) {
     pipeline.push({
       $match: {
-        'buildingDetails.space._id': spaceId,
-      },
+        'buildingDetails.space._id': spaceId
+      }
     });
   }
 
   // Adjusted grouping logic
   pipeline.push({
     $group: {
-      _id: '$_id',
+      _id: '$_id', // premise ID
+      name: { $first: '$name' }, // Preserving premise name
+      address: { $first: '$address' }, // Preserving premise address
+      users: { $first: '$users' }, // Preserving associated users
       premise_facade: { $first: '$premise_facade' },
-      buildingDetails: { $push: '$buildingDetails' }
-    },
+      buildingDetails: { $push: '$buildingDetails' } // Collecting building details
+    }
   });
 
   // Adjust the final projection to format the output
   pipeline.push({
     $project: {
       _id: 1,
+      name: 1,
+      address: 1,
       premise_facade: 1,
       buildings: {
         $cond: {
           if: { $eq: [buildingId, undefined] },
           then: '$buildingDetails',
-          else: { $arrayElemAt: ['$buildingDetails', 0] },
+          else: { $arrayElemAt: ['$buildingDetails', 0] }
         }
-      },
-    },
+      }
+    }
   });
 
   return pipeline;
