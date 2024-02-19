@@ -5,24 +5,26 @@ import UserModel from "../models/User.js";
 import { jwtSecret } from "./config.js";
 import logger from "./logger.js";
 
-const requestLogger = (req: Request, _res: Response, next: NextFunction): void => {
+function requestLogger(req: Request, _res: Response, next: NextFunction): void {
   logger.info(`Method: ${req.method}`);
   logger.info(`Path: ${req.path}`);
-  logger.info(`Body: { emaill: ${req.body.email} password: ${req.body.password} }`);
+  logger.info(
+    `Body: { emaill: ${req.body.email} password: ${req.body.password} }`,
+  );
   logger.info("---");
   next();
-};
+}
 
-const unknownEndpoint = (_req: Request, res: Response): void => {
+function unknownEndpoint(_req: Request, res: Response): void {
   res.status(404).send({ error: "unknown endpoint" });
-};
+}
 
-const errorHandler = (
+function errorHandler(
   error: Error,
   _req: Request,
   res: Response,
-  next: NextFunction
-): void => {
+  next: NextFunction,
+): void {
   logger.error(`Error: ${error.message}, Name: ${error.name}`);
 
   if (error.name === "CastError") {
@@ -35,22 +37,25 @@ const errorHandler = (
     logger.error(error.stack);
     next(error);
   }
-};
+}
 
 function getAuthToken(req: Request) {
-  if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
-    return req.headers.authorization.split(" ")[1]
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
+  ) {
+    return req.headers.authorization.split(" ")[1];
   } else if (req.cookies.token) {
-    return req.cookies.token
+    return req.cookies.token;
   } else {
-    return null
+    return null;
   }
 }
 
 // Protect routes
 const protect = asyncErrorHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const token = getAuthToken(req)
+    const token = getAuthToken(req);
 
     // If there's no token, return a 401 (Unauthorized) response
     if (!token) {
@@ -61,9 +66,9 @@ const protect = asyncErrorHandler(
       // Verify the token and extract the user's ID
       const decoded = jwt.verify(token, jwtSecret) as { id: string };
 
-      const user = await UserModel.findById(decoded.id).select('-password');
+      const user = await UserModel.findById(decoded.id).select("-password");
       if (!user) {
-        return res.status(401).json({ error: 'User not found' });
+        return res.status(401).json({ error: "User not found" });
       }
 
       req.user = user;
@@ -71,26 +76,26 @@ const protect = asyncErrorHandler(
       next();
     } catch (error) {
       logger.error(error);
-      return res.status(401).json({ error: 'Token verification failed' });
+      return res.status(401).json({ error: "Token verification failed" });
     }
-  }
+  },
 );
 
 // Middleware function to authorize specific user roles for routes
-export const authorize = (...roles: string[]) => {
+export function authorize(...roles: string[]) {
   return (req: Request, _res: Response, next: NextFunction) => {
     // Check if the user's role is included in the allowed roles
     if (!roles.includes(req.user.role)) {
       return next(
         new Error(
-          `User role ${req.user.role} is not authorized to access this route`
-        )
+          `User role ${req.user.role} is not authorized to access this route`,
+        ),
       );
     }
 
     // Continue to the next middleware or route handler
     next();
   };
-};
+}
 
 export { unknownEndpoint, errorHandler, requestLogger, protect };

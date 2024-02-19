@@ -43,6 +43,10 @@ function SignOut({ children }: { children?: React.ReactNode }) {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
+          <Link to="/settings">Hallinointi</Link>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>
           <Link to="/login" onClick={() => logoutUser()}>
             Log out
           </Link>

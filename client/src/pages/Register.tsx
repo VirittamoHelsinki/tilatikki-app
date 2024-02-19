@@ -69,108 +69,98 @@ export function Register() {
   }
 
   return (
-      <div className="container relative hidden h-full grow flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
-        <Link
-          to="/login"
-          className={cn(
-            buttonVariants({ variant: "ghost" }),
-            "absolute right-4 top-4 md:right-8 md:top-8",
-          )}
-        >
-          Kirjaudu Sisään
-        </Link>
-        <div className="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex">
-          <div className="absolute inset-0 bg-neutral-900" />
-          <h1 className='z-20 font-["Archivo"] text-4xl font-black'>
-            TilaTikki
-          </h1>
-          <div className="relative z-20 mt-auto">
-            <blockquote className="space-y-2">
-              <p className="text-lg">
-                &ldquo;Varaa Opetustila Helposti.&rdquo;
-              </p>
-              <footer className="text-sm">Helsingin kaupunki</footer>
-            </blockquote>
-          </div>
-        </div>
-
-        <div className="lg:p-8">
-          <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
-            <div className="flex flex-col space-y-2 text-center">
-              <h1 className="text-2xl font-semibold tracking-tight">
-                Luo uusi käyttäjä
-              </h1>
-              <p className="text-sm text-muted-foreground">
-                Muista käyttää etunimi.sukunimi@hel.fi sähköpostia
-              </p>
-            </div>
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="grid gap-2"
-              >
-                <div className="flex flex-col gap-2 md:flex-row">
-                  <FormField
-                    control={form.control}
-                    name="firstname"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Etunimi</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Arto" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="lastname"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Sukunimi</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Aitta" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Sähköposti</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="etunimi.sukunimi@hel.fi"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Salasana</FormLabel>
-                      <FormControl>
-                        <Input placeholder="virittamo" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <Button>Rekisteröidy</Button>
-              </form>
-            </Form>
-          </div>
+    <div className="container relative hidden h-full grow flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
+      <Link
+        to="/login"
+        className={cn(
+          buttonVariants({ variant: "ghost" }),
+          "absolute right-4 top-4 md:right-8 md:top-8",
+        )}
+      >
+        Kirjaudu Sisään
+      </Link>
+      <div className="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex">
+        <div className="absolute inset-0 bg-neutral-900" />
+        <h1 className='z-20 font-["Archivo"] text-4xl font-black'>TilaTikki</h1>
+        <div className="relative z-20 mt-auto">
+          <blockquote className="space-y-2">
+            <p className="text-lg">&ldquo;Varaa Opetustila Helposti.&rdquo;</p>
+            <footer className="text-sm">Helsingin kaupunki</footer>
+          </blockquote>
         </div>
       </div>
+
+      <div className="lg:p-8">
+        <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+          <div className="flex flex-col space-y-2 text-center">
+            <h1 className="text-2xl font-semibold tracking-tight">
+              Luo uusi käyttäjä
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              Muista käyttää etunimi.sukunimi@hel.fi sähköpostia
+            </p>
+          </div>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-2">
+              <div className="flex flex-col gap-2 md:flex-row">
+                <FormField
+                  control={form.control}
+                  name="firstname"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Etunimi</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Arto" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="lastname"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Sukunimi</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Aitta" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Sähköposti</FormLabel>
+                    <FormControl>
+                      <Input placeholder="etunimi.sukunimi@hel.fi" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Salasana</FormLabel>
+                    <FormControl>
+                      <Input placeholder="virittamo" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button>Rekisteröidy</Button>
+            </form>
+          </Form>
+        </div>
+      </div>
+    </div>
   );
 }

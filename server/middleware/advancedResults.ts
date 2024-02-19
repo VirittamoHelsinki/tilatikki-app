@@ -1,10 +1,10 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 type FilterParams = {
   buildingId?: mongoose.Types.ObjectId;
   spaceId?: mongoose.Types.ObjectId;
   floor?: number;
-  name?: string;  // New field for space name filtering
+  name?: string; // New field for space name filtering
   reservedParam?: string;
 };
 
@@ -15,35 +15,34 @@ type FilterParams = {
 // $group = group
 // $project = format output
 
-
-
-export const createPremiseAggregationPipeline = (params: FilterParams): mongoose.PipelineStage[] => {
-  const { buildingId, spaceId, floor, name, reservedParam } = params;
+export const createPremiseAggregationPipeline = (
+  params: FilterParams
+): mongoose.PipelineStage[] => {
   const pipeline: mongoose.PipelineStage[] = [];
 
   // Join with buildings to get detailed information
   pipeline.push({
     $lookup: {
-      from: 'buildings',
-      localField: 'buildings',
-      foreignField: '_id',
-      as: 'buildingDetails',
+      from: "buildings",
+      localField: "buildings",
+      foreignField: "_id",
+      as: "buildingDetails",
     },
   });
 
   // Unwind the buildingDetails for further operations
   pipeline.push({
     $unwind: {
-      path: '$buildingDetails',
+      path: "$buildingDetails",
       preserveNullAndEmptyArrays: true,
     },
   });
 
   // If a buildingId is specified, filter the buildings
-  if (buildingId) {
+  if (params.buildingId) {
     pipeline.push({
       $match: {
-        'buildingDetails._id': buildingId,
+        "buildingDetails._id": params.buildingId,
       },
     });
   }
@@ -51,56 +50,54 @@ export const createPremiseAggregationPipeline = (params: FilterParams): mongoose
   // Lookup for spaces
   pipeline.push({
     $lookup: {
-      from: 'spaces',
-      localField: 'buildingDetails.space',
-      foreignField: '_id',
-      as: 'spaceDetails',
+      from: "spaces",
+      localField: "buildingDetails.space",
+      foreignField: "_id",
+      as: "spaceDetails",
     },
   });
-  
 
   // Filter outlines, blueprints, and spaces if floor is specified
-  if (floor !== undefined) {
+  if (params.floor !== undefined) {
     pipeline.push({
       $addFields: {
-        'buildingDetails.outlines': {
+        "buildingDetails.outlines": {
           $filter: {
-            input: '$buildingDetails.outlines',
-            as: 'outline',
-            cond: { $eq: ['$$outline.floor', floor] },
+            input: "$buildingDetails.outlines",
+            as: "outline",
+            cond: { $eq: ["$$outline.floor", params.floor] },
           },
         },
-        'buildingDetails.blueprint': {
+        "buildingDetails.blueprint": {
           $filter: {
-            input: '$buildingDetails.blueprint',
-            as: 'blueprint',
-            cond: { $eq: ['$$blueprint.floor', floor] },
+            input: "$buildingDetails.blueprint",
+            as: "blueprint",
+            cond: { $eq: ["$$blueprint.floor", params.floor] },
           },
         },
-        'spaceDetails': {
+        spaceDetails: {
           $filter: {
-            input: '$spaceDetails',
-            as: 'spaceDetail',
-            cond: { $eq: ['$$spaceDetail.floor', floor] },
+            input: "$spaceDetails",
+            as: "spaceDetail",
+            cond: { $eq: ["$$spaceDetail.floor", params.floor] },
           },
         },
       },
     });
   }
-  
 
   // Add filtered or unfiltered space details to buildingDetails
   pipeline.push({
     $addFields: {
-      'buildingDetails.space': '$spaceDetails'
+      "buildingDetails.space": "$spaceDetails",
     },
   });
 
   // If a spaceId is specified, filter the spaces after they've been populated
-  if (spaceId) {
+  if (params.spaceId) {
     pipeline.push({
       $match: {
-        'buildingDetails.space._id': spaceId,
+        "buildingDetails.space._id": params.spaceId,
       },
     });
   }
@@ -108,9 +105,9 @@ export const createPremiseAggregationPipeline = (params: FilterParams): mongoose
   // Adjusted grouping logic
   pipeline.push({
     $group: {
-      _id: '$_id',
-      premise_facade: { $first: '$premise_facade' },
-      buildingDetails: { $push: '$buildingDetails' }
+      _id: "$_id",
+      premise_facade: { $first: "$premise_facade" },
+      buildingDetails: { $push: "$buildingDetails" },
     },
   });
 
@@ -121,10 +118,10 @@ export const createPremiseAggregationPipeline = (params: FilterParams): mongoose
       premise_facade: 1,
       buildings: {
         $cond: {
-          if: { $eq: [buildingId, undefined] },
-          then: '$buildingDetails',
-          else: { $arrayElemAt: ['$buildingDetails', 0] },
-        }
+          if: { $eq: [params.buildingId, undefined] },
+          then: "$buildingDetails",
+          else: { $arrayElemAt: ["$buildingDetails", 0] },
+        },
       },
     },
   });

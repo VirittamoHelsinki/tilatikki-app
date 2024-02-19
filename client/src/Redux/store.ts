@@ -12,10 +12,7 @@ import { rootReducer } from "./Reducers/rootReducer";
 const middleware = [thunk, logger];
 
 // Create the Redux store.
-export const store = createStore(
-    rootReducer,
-    applyMiddleware(...middleware)
-);
+export const store = createStore(rootReducer, applyMiddleware(...middleware));
 
 // Export all the action creators from the `premiseReducer` file as a named export called `actionCreators`.
 export * as userActionCreators from "./Reducers/UserReducer/userActions";

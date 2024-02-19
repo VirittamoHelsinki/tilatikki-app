@@ -1,5 +1,5 @@
 import { type Document, Schema, type Model, model } from "mongoose";
-import crypto from "crypto";
+import crypto from "node:crypto";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { type IReservation } from "./Reservation.js";
@@ -62,7 +62,7 @@ const userSchema = new Schema<IUser>(
     // Credentials that the user has created.
     credentials: { type: Schema.ObjectId, ref: "Credential" },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 userSchema.pre<IUser>("save", async function (next) {
@@ -87,7 +87,7 @@ userSchema.methods.getSignedJwtToken = function () {
 
 // Match user entered password to hashed password in the database
 userSchema.methods.matchPassword = async function (
-  enteredPassword: string
+  enteredPassword: string,
 ): Promise<boolean> {
   return await bcrypt.compare(enteredPassword, this.password);
 };

@@ -14,6 +14,8 @@ import { Header } from "~/@/components/Header";
 
 import { store } from "~/Redux/store";
 import { AuthChecker } from "~/utils/AutoChecker";
+import { Profile } from "./pages/Settings";
+import { Loader2 } from "lucide-react";
 
 const router = createBrowserRouter([
   {
@@ -40,6 +42,10 @@ const router = createBrowserRouter([
             element: <Premise />,
           },
         ],
+      },
+      {
+        path: "settings",
+        element: <Profile />,
       },
     ],
   },
@@ -75,7 +81,10 @@ export default function App() {
   return (
     <Provider store={store}>
       <AuthChecker />
-      <RouterProvider router={router} fallbackElement={<p>Loading...</p>} />
+      <RouterProvider
+        router={router}
+        fallbackElement={<Loader2 className="animate-spin" />}
+      />
     </Provider>
   );
 }
