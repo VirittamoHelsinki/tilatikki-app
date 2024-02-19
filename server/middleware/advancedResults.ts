@@ -105,9 +105,12 @@ export const createPremiseAggregationPipeline = (
   // Adjusted grouping logic
   pipeline.push({
     $group: {
-      _id: "$_id",
+      _id: "$_id", // premise ID
+      name: { $first: "$name" }, // Preserving premise name
+      address: { $first: "$address" }, // Preserving premise address
+      users: { $first: "$users" }, // Preserving associated users
       premise_facade: { $first: "$premise_facade" },
-      buildingDetails: { $push: "$buildingDetails" },
+      buildingDetails: { $push: "$buildingDetails" }, // Collecting building details
     },
   });
 
@@ -115,6 +118,8 @@ export const createPremiseAggregationPipeline = (
   pipeline.push({
     $project: {
       _id: 1,
+      name: 1,
+      address: 1,
       premise_facade: 1,
       buildings: {
         $cond: {

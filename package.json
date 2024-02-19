@@ -13,7 +13,7 @@
     "lint:server": "eslint . --ext .ts --report-unused-disable-directives --max-warnings 0",
     "lint:client": "cd client && npm run lint",
     "lint": "npm run lint:server && npm run lint:client",
-    "dev": "tsx watch server/index.ts",
+    "dev": "cd client && npm run build && cd .. && tsx watch server/index.ts",
     "start": "node build/index.js"
   },
   "dependencies": {

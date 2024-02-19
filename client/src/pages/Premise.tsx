@@ -65,7 +65,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "~/@/components/ui/tabs";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { Badge } from "~/@/components/ui/badge";
 import {
   Command,
@@ -96,6 +96,8 @@ import {
 } from "~/@/components/ui/dialog";
 import { Label } from "~/@/components/ui/label";
 import { Textarea } from "~/@/components/ui/textarea";
+import { useTypedSelector } from "~/hooks/useTypedSelector";
+import { usePremiseAction } from "~/hooks/usePremise";
 
 extend({ SVGLoader });
 
@@ -652,19 +654,95 @@ const premiseSchema = z.object({
   endTime: z.string(),
 });
 
+function formatPremiseNameForUrl(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/ä/g, "a")
+    .replace(/ö/g, "o")
+    .replace(/\s+/g, "-")
+    .replace(/[^\w-]+/g, "");
+}
+
 export function Premise() {
+  const { id } = useParams<{ id: string }>();
   const { pathname } = useLocation();
-  const [floor, _setFloor] = useState("1.kerros");
+  const { getPremiseById } = usePremiseAction();
+  const { isLoading, premiseData, currentBuilding } = useTypedSelector(
+    (state) => state.premise,
+  );
+  const [buildingId, setBuildingId] = useState<string | undefined>(undefined);
+  const [floor, setFloor] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    if (id) {
+      getPremiseById(id);
+    }
+  }, []);
+
   const form = useForm<z.infer<typeof premiseSchema>>({
     resolver: zodResolver(premiseSchema),
   });
-  function premiseOutline(): string {
-    if (floor === "1.kerros") {
-      return `/assets/${pathname}/kerros1-outline.svg`;
-    } else if (floor === "2.kerros") {
-      return `/assets/${pathname}/kerros2-outline.svg`;
+
+  const { watch } = form;
+
+  const watchedBuildingName = watch("buildingName");
+  const watchedFloor = watch("floorName");
+
+  useEffect(() => {
+    if (!watchedBuildingName) {
+      setBuildingId(undefined);
+      return;
+    }
+
+    const selectedBuilding = premiseData.buildings.find(
+      (building) => building.name === watchedBuildingName,
+    );
+
+    if (selectedBuilding) {
+      setBuildingId(selectedBuilding._id);
     } else {
-      return `/assets/${pathname}/kerros3-outline.svg`;
+      setBuildingId(undefined);
+    }
+  }, [watchedBuildingName, premiseData.buildings]);
+
+  useEffect(() => {
+    if (!watchedFloor) {
+      setFloor(undefined);
+      return;
+    }
+    setFloor(watchedFloor);
+  }, [watchedFloor]);
+
+  useEffect(() => {
+    const floorNumber = watchedFloor ? parseInt(watchedFloor, 10) : undefined;
+    // Ensure floorNumber is a number and not NaN before calling getPremiseById
+    if (buildingId && floorNumber !== undefined && !isNaN(floorNumber)) {
+      getPremiseById(id!, buildingId, floorNumber);
+    } else if (buildingId) {
+      // Call without floorNumber if buildingId is set but floorNumber is not a valid number
+      getPremiseById(id!, buildingId);
+    }
+  }, [buildingId, watchedFloor]);
+
+  // function premiseOutline(): string {
+  //   if (floor === "1") {
+  //     return `/assets/${pathname}/kerros1-outline.svg`;
+  //   } else if (floor === "2") {
+  //     return `/assets/${pathname}/kerros2-outline.svg`;
+  //   } else {
+  //     return `/assets/${pathname}/kerros3-outline.svg`;
+  //   }
+  // }
+  function premiseOutline(): string {
+    if (floor) {
+      console.log("floor", floor);
+      console.log(
+        `/assets/${formatPremiseNameForUrl(premiseData.name)}/kerros${floor}-outline.svg`,
+      );
+      return `/assets/${formatPremiseNameForUrl(premiseData.name)}/kerros${floor}-outline.svg`;
+    } else {
+      // Default outline if no floor is selected
+      return `/assets/${pathname}/default-outline.svg`;
     }
   }
 
@@ -681,6 +759,9 @@ export function Premise() {
   function onSubmit(data: z.infer<typeof premiseSchema>) {
     console.log(data);
   }
+
+  if (isLoading) return <div>Loading...</div>;
+
   return (
     <main className="flex flex-1 flex-col p-4 sm:min-h-0 sm:px-8 sm:py-4">
       {/* <div className="grid flex-1 grid-cols-1 grid-rows-3 gap-4 p-4 sm:min-h-0 sm:grid-cols-10 sm:grid-rows-1 sm:gap-8 sm:px-8 sm:py-4"> */}
@@ -692,7 +773,7 @@ export function Premise() {
           <div className="h-full w-full">
             {/* <Card className="col-span-1 row-span-3 sm:col-span-3 sm:row-span-1"> */}
             <CardHeader>
-              <CardTitle>{pathname} koulu</CardTitle>
+              <CardTitle>{premiseData.name}</CardTitle>
               <CardDescription>
                 Kolmikerrosinen koulu rakennus, jossa on noin 150 opetustilaa
               </CardDescription>
@@ -722,10 +803,16 @@ export function Premise() {
                               <SelectContent>
                                 <SelectGroup>
                                   <SelectLabel>Rakennus</SelectLabel>
-                                  <SelectItem value="kuntosali">
-                                    Kuntosali
-                                  </SelectItem>
-                                  <SelectItem value="gordon">Gordon</SelectItem>
+                                  {(premiseData.buildings ?? []).map(
+                                    (building, index) => (
+                                      <SelectItem
+                                        key={index}
+                                        value={building.name}
+                                      >
+                                        {building.name}
+                                      </SelectItem>
+                                    ),
+                                  )}
                                 </SelectGroup>
                               </SelectContent>
                             </Select>
@@ -745,6 +832,7 @@ export function Premise() {
                             <Select
                               value={field.value}
                               onValueChange={field.onChange}
+                              name="floorName"
                             >
                               <SelectTrigger className="w-[180px]">
                                 <SelectValue placeholder="Valitse Kerros" />
@@ -752,8 +840,18 @@ export function Premise() {
                               <SelectContent>
                                 <SelectGroup>
                                   <SelectLabel>Kerros</SelectLabel>
-                                  <SelectItem value="1">1</SelectItem>
-                                  <SelectItem value="2">2</SelectItem>
+                                  {currentBuilding &&
+                                    Array.from(
+                                      { length: currentBuilding.floors },
+                                      (_, i) => (
+                                        <SelectItem
+                                          key={i}
+                                          value={String(i + 1)}
+                                        >
+                                          {i + 1}
+                                        </SelectItem>
+                                      ),
+                                    )}
                                 </SelectGroup>
                               </SelectContent>
                             </Select>
@@ -781,8 +879,15 @@ export function Premise() {
                             <SelectContent>
                               <SelectGroup>
                                 <SelectLabel>Opetustilat</SelectLabel>
-                                <SelectItem value="A12345">A12345</SelectItem>
-                                <SelectItem value="A12347">A12347</SelectItem>
+                                {currentBuilding && currentBuilding.space ? (
+                                  currentBuilding.space.map((space, index) => (
+                                    <SelectItem key={index} value={space.name}>
+                                      {space.name}
+                                    </SelectItem>
+                                  ))
+                                ) : (
+                                  <div>No spaces available</div>
+                                )}
                               </SelectGroup>
                             </SelectContent>
                           </Select>
@@ -901,30 +1006,23 @@ export function Premise() {
         <ResizablePanel>
           <div className="flex h-full w-full flex-col gap-6 p-6">
             <Input placeholder="search..." />
-            <ReservationDialog>
-              <Card>
-                <CardHeader>
-                  <CardTitle>A1234</CardTitle>
-                  <CardDescription className="">
-                    interesting info about
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="flex gap-2">
-                  <Badge>Varattu</Badge>
-                  <Badge>Arto Aitta</Badge>
-                </CardContent>
-              </Card>
-            </ReservationDialog>
-            <Card>
-              <CardHeader>
-                <CardTitle>A1234</CardTitle>
-                <CardDescription className="">{"lll"}</CardDescription>
-              </CardHeader>
-              <CardContent className="flex gap-2">
-                <Badge>Varattu</Badge>
-                <Badge>Arto Aitta</Badge>
-              </CardContent>
-            </Card>
+            {currentBuilding && currentBuilding.space ? (
+              currentBuilding.space.map((space, index) => (
+                <ReservationDialog key={index}>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>{space.name}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="flex gap-2">
+                      <Badge>{`Area: ${space.area} sqm`}</Badge>
+                      {/* Additional badges or info based on space details */}
+                    </CardContent>
+                  </Card>
+                </ReservationDialog>
+              ))
+            ) : (
+              <div>No spaces available</div>
+            )}
           </div>
         </ResizablePanel>
         <ResizableHandle withHandle />
@@ -951,7 +1049,10 @@ export function Premise() {
                 }}
               >
                 <Suspense fallback={<Loader />}>
-                  <BackgroundLayer url={premiseOutline()} floor={floor} />
+                  <BackgroundLayer
+                    url={premiseOutline()}
+                    floor={floor || "defaultFloor"}
+                  />
                 </Suspense>
                 <MapControls enableRotate={false} />
               </Canvas>

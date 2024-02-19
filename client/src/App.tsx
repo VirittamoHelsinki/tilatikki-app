@@ -35,7 +35,7 @@ const router = createBrowserRouter([
         element: <Register />,
       },
       {
-        path: ":slug",
+        path: "premises/:id",
         children: [
           {
             index: true,

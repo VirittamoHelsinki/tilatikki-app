@@ -1,38 +1,79 @@
-// Define the structure for individual building floors
+interface ApiResponse<T> {
+  success: boolean;
+  premises: T;
+}
+
 interface Floor {
   floor: number;
   blueprint_url?: string;
 }
 
-// Define the structure for buildings
-interface Building {
-  name: string;
-  floors: Floor[];
+interface Blueprint {
+  floor: number;
+  image: string;
+  _id: string;
 }
 
-// Define the structure for a premise
-interface Premise {
+interface Outline {
+  floor: number;
+  image: string;
+  _id: string;
+}
+
+interface Space {
+  _id: string;
+  name: string;
+  area: number;
+  premise: string;
+  building: string;
+}
+
+interface BuildingDetails {
+  _id: string;
+  name: string;
+  floors: number;
+  rooms: number;
+  blueprint: Blueprint[];
+  facade: string[];
+  outlines: Outline[];
+  space: Space[];
+}
+
+export interface Premise {
+  _id: string;
   name: string;
   address: string;
-  users: string[]; // Array of User ObjectIds
-  spaces: string[]; // Array of Space ObjectIds
-  buildings: Building[];
+  users: string[];
+  premise_facade: string[];
+  buildings: BuildingDetails[];
 }
 
-// Define the structure for the premise state
-export interface initialPremiseStateProps {
-  premises: Premise[];
+export interface PremiseStateProps {
+  premisesData: ApiResponse<Premise[]>;
+  premiseData: Premise;
   currentPremise: Premise | null;
   isLoading: boolean;
   alertType: string | null;
   alertText: string | null;
+  currentBuilding: BuildingDetails | null;
 }
 
-// Initial state for premises
-export const initialPremiseState: initialPremiseStateProps = {
-  premises: [],
+export const initialPremiseState: PremiseStateProps = {
+  premisesData: {
+    success: false,
+    premises: [],
+  },
+  premiseData: {
+    _id: "",
+    name: "",
+    address: "",
+    users: [],
+    premise_facade: [],
+    buildings: [],
+  },
   currentPremise: null,
   isLoading: false,
   alertType: null,
   alertText: null,
+  currentBuilding: null,
 };
