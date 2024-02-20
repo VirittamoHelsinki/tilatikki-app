@@ -25,6 +25,7 @@ import {
   Users,
   Coffee,
   X,
+  Loader2,
 } from "lucide-react";
 import { Button } from "~/@/components/ui/button";
 import { Calendar } from "~/@/components/ui/calendar";
@@ -647,12 +648,306 @@ function ReservationDialog({ children }: { children: React.ReactNode }) {
 
 const premiseSchema = z.object({
   buildingName: z.string(),
-  floorName: z.string(),
-  roomName: z.string(),
-  dateTime: z.date(),
-  startTime: z.string(),
-  endTime: z.string(),
+  floorName: z.string().optional(),
+  roomName: z.string().optional(),
+  dateTime: z.date().optional(),
+  startTime: z.string().optional(),
+  endTime: z.string().optional(),
 });
+
+function PremiseFilter() {
+  const { id } = useParams();
+  const { pathname } = useLocation();
+  const { getPremiseById } = usePremiseAction();
+  const { premiseData, currentBuilding } = useTypedSelector(
+    (state) => state.premise,
+  );
+  const [buildingId, setBuildingId] = useState<string | undefined>(undefined);
+  const [floor, setFloor] = useState<string | undefined>(undefined);
+
+  const form = useForm<z.infer<typeof premiseSchema>>({
+    resolver: zodResolver(premiseSchema),
+  });
+
+  // function premiseOutline(): string {
+  //   if (floor) {
+  //     console.log("floor", floor);
+  //     console.log(
+  //       `/assets/${formatPremiseNameForUrl(premiseData.name)}/kerros${floor}-outline.svg`,
+  //     );
+  //     return `/assets/${formatPremiseNameForUrl(premiseData.name)}/kerros${floor}-outline.svg`;
+  //   } else {
+  //     // Default outline if no floor is selected
+  //     return `/assets/${pathname}/default-outline.svg`;
+  //   }
+  // }
+
+  function onSubmit(data: z.infer<typeof premiseSchema>) {
+    console.log(data);
+    const selectedBuilding = premiseData.buildings.find(
+      (building) => building.name === data.buildingName,
+    );
+    console.log("buildin", selectedBuilding);
+    console.log("max man");
+    setBuildingId(selectedBuilding?._id);
+    console.log("deez");
+    setFloor(data.floorName);
+    const floorNumber = data.floorName ? parseInt(floor!, 10) : undefined;
+
+    console.log("id", buildingId);
+    console.log("nutz");
+    // Ensure floorNumber is a number and not NaN before calling getPremiseById
+    if (buildingId && floorNumber !== undefined && !isNaN(floorNumber)) {
+      console.log("max win");
+      getPremiseById(id!, buildingId, floorNumber);
+    }
+    console.log("hmm");
+    if (id && buildingId) {
+      console.log("suck on deez");
+      // Call without floorNumber if buildingId is set but floorNumber is not a valid number
+      return getPremiseById(id, buildingId);
+    }
+    console.log("kkk");
+    form.reset();
+  }
+
+  return (
+    <ResizablePanel>
+      <div className="h-full w-full">
+        {/* <Card className="col-span-1 row-span-3 sm:col-span-3 sm:row-span-1"> */}
+        <CardHeader>
+          <CardTitle>{premiseData.name}</CardTitle>
+          <CardDescription>
+            Kolmikerrosinen koulu rakennus, jossa on noin 150 opetustilaa
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <FilterMe />
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="flex flex-col items-start gap-5"
+            >
+              <div className="flex gap-3">
+                <FormField
+                  control={form.control}
+                  name="buildingName"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>Rakennus</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Valitse Rakennus" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectLabel>Rakennus</SelectLabel>
+                            {premiseData.buildings.map((building, index) => (
+                              <SelectItem key={index} value={building.name}>
+                                {building.name}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                      <FormDescription>Opetustila mmm...</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="floorName"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>Kerros</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Valitse Kerros" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectLabel>Kerros</SelectLabel>
+                            {currentBuilding ? (
+                              Array.from(
+                                { length: currentBuilding.floors },
+                                (_, i) => (
+                                  <SelectItem key={i} value={String(i + 1)}>
+                                    {i + 1}
+                                  </SelectItem>
+                                ),
+                              )
+                            ) : (
+                              <p
+                                aria-disabled
+                                className="relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
+                              >
+                                No floors available
+                              </p>
+                            )}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                      <FormDescription>Opetustila mmm...</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <FormField
+                control={form.control}
+                name="roomName"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Opetustila</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger className="w-[180px]">
+                          <SelectValue placeholder="Valitse Opetustila" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>Opetustilat</SelectLabel>
+                          {currentBuilding && currentBuilding.space ? (
+                            currentBuilding.space.map((space, index) => (
+                              <SelectItem key={index} value={space.name}>
+                                {space.name}
+                              </SelectItem>
+                            ))
+                          ) : (
+                            <div
+                              aria-disabled
+                              className="relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
+                            >
+                              Ei ole tiloja saatavilla
+                            </div>
+                          )}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                    <FormDescription>Opetustila mmm...</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="dateTime"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Päivämäärä</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant={"outline"}
+                            className={cn(
+                              "w-[280px] justify-start text-left font-normal",
+                              !field.value && "text-muted-foreground",
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {field.value ? (
+                              format(field.value, "PP", { locale: fi })
+                            ) : (
+                              <span>Valitse päivämäärä</span>
+                            )}
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          selected={field.value}
+                          onSelect={field.onChange}
+                          initialFocus
+                          locale={fi}
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <FormDescription>Päivämäärä...</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="flex gap-2">
+                <FormField
+                  control={form.control}
+                  name="startTime"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>Aloitusaika</FormLabel>
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="w-32">
+                            <SelectValue placeholder="Valitse Aloitusaika" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectLabel>Aloitus</SelectLabel>
+                            <SelectItem value="13:00">13:00</SelectItem>
+                            <SelectItem value="15:00">15:00</SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                      <FormDescription>Aloitusaika...</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="endTime"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>Lopetusaika</FormLabel>
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="w-32">
+                            <SelectValue placeholder="Valitse Lopetusaika" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectLabel>Lopetus</SelectLabel>
+                            <SelectItem value="14:00">14:00</SelectItem>
+                            <SelectItem value="16:00">16:00</SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                      <FormDescription>Lopetusaika...</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <Button type="submit">Hae Tilat</Button>
+            </form>
+          </Form>
+        </CardContent>
+      </div>
+    </ResizablePanel>
+  );
+}
 
 function formatPremiseNameForUrl(name: string): string {
   return name
@@ -664,14 +959,12 @@ function formatPremiseNameForUrl(name: string): string {
 }
 
 export function Premise() {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams();
   const { pathname } = useLocation();
   const { getPremiseById } = usePremiseAction();
   const { isLoading, premiseData, currentBuilding } = useTypedSelector(
     (state) => state.premise,
   );
-  const [buildingId, setBuildingId] = useState<string | undefined>(undefined);
-  const [floor, setFloor] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     if (id) {
@@ -679,50 +972,49 @@ export function Premise() {
     }
   }, []);
 
-  const form = useForm<z.infer<typeof premiseSchema>>({
-    resolver: zodResolver(premiseSchema),
-  });
+  // const watchedBuildingName = form.watch("buildingName");
+  // const watchedFloor = form.watch("floorName");
 
-  const { watch } = form;
+  // useEffect(() => {
+  //   if (!watchedBuildingName) {
+  //     setBuildingId(undefined);
+  //     return;
+  //   }
 
-  const watchedBuildingName = watch("buildingName");
-  const watchedFloor = watch("floorName");
+  //   const selectedBuilding = premiseData.buildings.find(
+  //     (building) => building.name === watchedBuildingName,
+  //   );
 
-  useEffect(() => {
-    if (!watchedBuildingName) {
-      setBuildingId(undefined);
-      return;
-    }
+  //   if (selectedBuilding) {
+  //     setBuildingId(selectedBuilding._id);
+  //   } else {
+  //     setBuildingId(undefined);
+  //   }
+  // }, [watchedBuildingName, premiseData.buildings]);
 
-    const selectedBuilding = premiseData.buildings.find(
-      (building) => building.name === watchedBuildingName,
-    );
+  // useEffect(() => {
+  //   if (!watchedFloor) {
+  //     setFloor(undefined);
+  //     return;
+  //   }
+  //   setFloor(watchedFloor);
+  // }, [watchedFloor]);
 
-    if (selectedBuilding) {
-      setBuildingId(selectedBuilding._id);
-    } else {
-      setBuildingId(undefined);
-    }
-  }, [watchedBuildingName, premiseData.buildings]);
-
-  useEffect(() => {
-    if (!watchedFloor) {
-      setFloor(undefined);
-      return;
-    }
-    setFloor(watchedFloor);
-  }, [watchedFloor]);
-
-  useEffect(() => {
-    const floorNumber = watchedFloor ? parseInt(watchedFloor, 10) : undefined;
-    // Ensure floorNumber is a number and not NaN before calling getPremiseById
-    if (buildingId && floorNumber !== undefined && !isNaN(floorNumber)) {
-      getPremiseById(id!, buildingId, floorNumber);
-    } else if (buildingId) {
-      // Call without floorNumber if buildingId is set but floorNumber is not a valid number
-      getPremiseById(id!, buildingId);
-    }
-  }, [buildingId, watchedFloor]);
+  // useEffect(() => {
+  //   let floorNumber: number | undefined;
+  //   if (!watchedFloor) {
+  //     floorNumber = undefined;
+  //   } else {
+  //     floorNumber = parseInt(watchedFloor, 10);
+  //   }
+  //   // Ensure floorNumber is a number and not NaN before calling getPremiseById
+  //   if (buildingId && floorNumber !== undefined && !isNaN(floorNumber)) {
+  //     getPremiseById(id!, buildingId, floorNumber);
+  //   } else if (buildingId) {
+  //     // Call without floorNumber if buildingId is set but floorNumber is not a valid number
+  //     getPremiseById(id!, buildingId);
+  //   }
+  // }, [buildingId, watchedFloor]);
 
   // function premiseOutline(): string {
   //   if (floor === "1") {
@@ -733,18 +1025,6 @@ export function Premise() {
   //     return `/assets/${pathname}/kerros3-outline.svg`;
   //   }
   // }
-  function premiseOutline(): string {
-    if (floor) {
-      console.log("floor", floor);
-      console.log(
-        `/assets/${formatPremiseNameForUrl(premiseData.name)}/kerros${floor}-outline.svg`,
-      );
-      return `/assets/${formatPremiseNameForUrl(premiseData.name)}/kerros${floor}-outline.svg`;
-    } else {
-      // Default outline if no floor is selected
-      return `/assets/${pathname}/default-outline.svg`;
-    }
-  }
 
   // function premiseFloor(): string {
   //   if (floor === "1.kerros") {
@@ -756,11 +1036,9 @@ export function Premise() {
   //   }
   // }
 
-  function onSubmit(data: z.infer<typeof premiseSchema>) {
-    console.log(data);
-  }
+  console.log("currentbuildings", currentBuilding?.space);
 
-  if (isLoading) return <div>Loading...</div>;
+  // if (isLoading) return <div>Loading...</div>;
 
   return (
     <main className="flex flex-1 flex-col p-4 sm:min-h-0 sm:px-8 sm:py-4">
@@ -769,273 +1047,52 @@ export function Premise() {
         direction="horizontal"
         className="h-full w-full rounded-lg border"
       >
-        <ResizablePanel>
-          <div className="h-full w-full">
-            {/* <Card className="col-span-1 row-span-3 sm:col-span-3 sm:row-span-1"> */}
-            <CardHeader>
-              <CardTitle>{premiseData.name}</CardTitle>
-              <CardDescription>
-                Kolmikerrosinen koulu rakennus, jossa on noin 150 opetustilaa
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <FilterMe />
-              <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit)}
-                  className="flex flex-col items-start gap-5"
-                >
-                  <div className="flex gap-3">
-                    <FormField
-                      control={form.control}
-                      name="buildingName"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-col">
-                          <FormLabel>Rakennus</FormLabel>
-                          <FormControl>
-                            <Select
-                              value={field.value}
-                              onValueChange={field.onChange}
-                            >
-                              <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="Valitse Rakennus" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectGroup>
-                                  <SelectLabel>Rakennus</SelectLabel>
-                                  {(premiseData.buildings ?? []).map(
-                                    (building, index) => (
-                                      <SelectItem
-                                        key={index}
-                                        value={building.name}
-                                      >
-                                        {building.name}
-                                      </SelectItem>
-                                    ),
-                                  )}
-                                </SelectGroup>
-                              </SelectContent>
-                            </Select>
-                          </FormControl>
-                          <FormDescription>Opetustila mmm...</FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="floorName"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-col">
-                          <FormLabel>Kerros</FormLabel>
-                          <FormControl>
-                            <Select
-                              value={field.value}
-                              onValueChange={field.onChange}
-                              name="floorName"
-                            >
-                              <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="Valitse Kerros" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectGroup>
-                                  <SelectLabel>Kerros</SelectLabel>
-                                  {currentBuilding &&
-                                    Array.from(
-                                      { length: currentBuilding.floors },
-                                      (_, i) => (
-                                        <SelectItem
-                                          key={i}
-                                          value={String(i + 1)}
-                                        >
-                                          {i + 1}
-                                        </SelectItem>
-                                      ),
-                                    )}
-                                </SelectGroup>
-                              </SelectContent>
-                            </Select>
-                          </FormControl>
-                          <FormDescription>Opetustila mmm...</FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <FormField
-                    control={form.control}
-                    name="roomName"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col">
-                        <FormLabel>Opetustila</FormLabel>
-                        <FormControl>
-                          <Select
-                            value={field.value}
-                            onValueChange={field.onChange}
-                          >
-                            <SelectTrigger className="w-[180px]">
-                              <SelectValue placeholder="Valitse Opetustila" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectGroup>
-                                <SelectLabel>Opetustilat</SelectLabel>
-                                {currentBuilding && currentBuilding.space ? (
-                                  currentBuilding.space.map((space, index) => (
-                                    <SelectItem key={index} value={space.name}>
-                                      {space.name}
-                                    </SelectItem>
-                                  ))
-                                ) : (
-                                  <div>No spaces available</div>
-                                )}
-                              </SelectGroup>
-                            </SelectContent>
-                          </Select>
-                        </FormControl>
-                        <FormDescription>Opetustila mmm...</FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="dateTime"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col">
-                        <FormLabel>Päivämäärä</FormLabel>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <FormControl>
-                              <Button
-                                variant={"outline"}
-                                className={cn(
-                                  "w-[280px] justify-start text-left font-normal",
-                                  !field.value && "text-muted-foreground",
-                                )}
-                              >
-                                <CalendarIcon className="mr-2 h-4 w-4" />
-                                {field.value ? (
-                                  format(field.value, "PP", { locale: fi })
-                                ) : (
-                                  <span>Valitse päivämäärä</span>
-                                )}
-                              </Button>
-                            </FormControl>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0">
-                            <Calendar
-                              mode="single"
-                              selected={field.value}
-                              onSelect={field.onChange}
-                              initialFocus
-                              locale={fi}
-                            />
-                          </PopoverContent>
-                        </Popover>
-                        <FormDescription>Päivämäärä...</FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <div className="flex gap-2">
-                    <FormField
-                      control={form.control}
-                      name="startTime"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-col">
-                          <FormLabel>Aloitusaika</FormLabel>
-                          <FormControl>
-                            <Select
-                              value={field.value}
-                              onValueChange={field.onChange}
-                            >
-                              <SelectTrigger className="w-32">
-                                <SelectValue placeholder="Valitse Aloitusaika" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectGroup>
-                                  <SelectLabel>Aloitus</SelectLabel>
-                                  <SelectItem value="13:00">13:00</SelectItem>
-                                  <SelectItem value="15:00">15:00</SelectItem>
-                                </SelectGroup>
-                              </SelectContent>
-                            </Select>
-                          </FormControl>
-                          <FormDescription>Aloitusaika...</FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="endTime"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-col">
-                          <FormLabel>Lopetusaika</FormLabel>
-                          <FormControl>
-                            <Select
-                              value={field.value}
-                              onValueChange={field.onChange}
-                            >
-                              <SelectTrigger className="w-32">
-                                <SelectValue placeholder="Valitse Lopetusaika" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectGroup>
-                                  <SelectLabel>Lopetus</SelectLabel>
-                                  <SelectItem value="14:00">14:00</SelectItem>
-                                  <SelectItem value="16:00">16:00</SelectItem>
-                                </SelectGroup>
-                              </SelectContent>
-                            </Select>
-                          </FormControl>
-                          <FormDescription>Lopetusaika...</FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <Button>Hae Tilat</Button>
-                </form>
-              </Form>
-            </CardContent>
-          </div>
-        </ResizablePanel>
+        <PremiseFilter />
         <ResizableHandle withHandle />
         <ResizablePanel>
           <div className="flex h-full w-full flex-col gap-6 p-6">
             <Input placeholder="search..." />
-            {currentBuilding && currentBuilding.space ? (
-              currentBuilding.space.map((space, index) => (
-                <ReservationDialog key={index}>
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>{space.name}</CardTitle>
-                    </CardHeader>
-                    <CardContent className="flex gap-2">
-                      <Badge>{`Area: ${space.area} sqm`}</Badge>
-                      {/* Additional badges or info based on space details */}
-                    </CardContent>
-                  </Card>
-                </ReservationDialog>
-              ))
-            ) : (
-              <div>No spaces available</div>
-            )}
+            <Suspense fallback={<Loader2 className="animate-spin" />}>
+              {currentBuilding && currentBuilding.space.length >= 1 ? (
+                isLoading ? (
+                  <Loader2 className="animate-spin" />
+                ) : (
+                  currentBuilding?.space.map((space, index) => (
+                    <ReservationDialog key={index}>
+                      <Card>
+                        <CardHeader>
+                          <CardTitle>{space.name}</CardTitle>
+                        </CardHeader>
+                        <CardContent className="flex gap-2">
+                          <Badge>{`${space.area} m\u00b2`}</Badge>
+                          {/* Additional badges or info based on space details */}
+                        </CardContent>
+                      </Card>
+                    </ReservationDialog>
+                  ))
+                )
+              ) : (
+                <p className="text-sm text-muted-foreground">
+                  Ei ole tiloja saatavilla
+                </p>
+              )}
+            </Suspense>
           </div>
         </ResizablePanel>
         <ResizableHandle withHandle />
         <ResizablePanel>
-          <Tabs defaultValue="account" className="h-full w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="account">Account</TabsTrigger>
-              <TabsTrigger value="password">Password</TabsTrigger>
+          <Tabs
+            defaultValue="1floor"
+            className="flex h-full w-full flex-col items-start"
+          >
+            <TabsList className="flex items-start">
+              <TabsTrigger value="1floor">1.kerros</TabsTrigger>
+              <TabsTrigger value="2floor">2.kerros</TabsTrigger>
             </TabsList>
             <TabsContent
-              value="account"
+              value="1floor"
               id="ref-body"
-              className="col-span-1 h-full w-full sm:col-span-4 sm:row-span-1"
+              className="h-full w-full flex-1"
             >
               <Canvas
                 className="h-full w-full"
@@ -1049,15 +1106,15 @@ export function Premise() {
                 }}
               >
                 <Suspense fallback={<Loader />}>
-                  <BackgroundLayer
+                  {/*  <BackgroundLayer
                     url={premiseOutline()}
                     floor={floor || "defaultFloor"}
-                  />
+                  />*/}
                 </Suspense>
                 <MapControls enableRotate={false} />
               </Canvas>
             </TabsContent>
-            <TabsContent value="password">
+            <TabsContent value="2floor">
               <p>hmmm kauppa</p>
             </TabsContent>
           </Tabs>
