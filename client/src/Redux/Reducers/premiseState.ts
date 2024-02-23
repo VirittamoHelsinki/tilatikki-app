@@ -64,10 +64,6 @@ export interface Premise {
 export interface PremiseStateProps {
   premisesData: ApiResponse<Premise[]>;
   premiseData: Premise;
-  reservationsData: ApiResponse<Reservation[]>;
-  reservationData: Reservation;
-  spacesData: ApiResponse<Space[]>;
-  spaceData: ApiResponse<Space>;
   currentPremise: Premise | null;
   isLoading: boolean;
   alertType: string | null;
@@ -87,36 +83,6 @@ export const initialPremiseState: PremiseStateProps = {
     users: [],
     premise_facade: [],
     buildings: [],
-  },
-  reservationsData: {
-    success: false,
-    data: [],
-  },
-  reservationData: {
-    _id: "",
-    creator: "",
-    startdate: new Date(2021, 1, 1),
-    enddate: new Date(2021, 1, 1),
-    premise: "",
-    space: "",
-    availability: "",
-  },
-  spacesData: {
-    success: false,
-    data: [],
-  },
-  spaceData: {
-    success: false,
-    data: {
-      _id: "",
-      name: "",
-      area: 0,
-      premise: "",
-      building: "",
-      floor: 0,
-      availabilities: [],
-      reservations: [],
-    },
   },
   currentPremise: null,
   isLoading: false,

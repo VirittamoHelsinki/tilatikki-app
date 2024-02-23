@@ -2,7 +2,10 @@ import {
   ReservationActionTypes,
   type ReservationActionType,
 } from "./reservationTypes";
-import { initialPremiseState, PremiseStateProps } from "../premiseState"; // Adjust the path as needed
+import {
+  initialReservationState,
+  type ReservationStateProps,
+} from "../reservationState"; // Adjust the path as needed
 
 interface ReservationAction {
   type: ReservationActionType;
@@ -12,9 +15,9 @@ interface ReservationAction {
 
 // Main reducer
 const reservationReducer = (
-  state: PremiseStateProps = initialPremiseState,
+  state: ReservationStateProps = initialReservationState,
   action: ReservationAction,
-): PremiseStateProps => {
+): ReservationStateProps => {
   switch (action.type) {
     case ReservationActionTypes.GET_RESERVATION_BEGINS:
       return {

@@ -1,7 +1,19 @@
+type UserType = {
+  _id: string;
+  firstname: string;
+  lastname: string;
+  email: string;
+  premises: string[];
+  role: string;
+  availabilities: string[];
+  reservations: string[];
+  createdAt: string;
+  updatedAt: string;
+};
 // export an interface called initialStateProps
 // this interface will define the properties of the initial state
 export interface initialUserStateProps {
-  users: [object];
+  users: UserType[];
   currentUser: {
     _id: string;
     firstname: string;

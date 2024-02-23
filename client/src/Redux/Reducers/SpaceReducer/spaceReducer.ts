@@ -1,5 +1,5 @@
 import { SpaceActionTypes, type SpaceActionType } from "./spaceTypes";
-import { initialPremiseState, PremiseStateProps } from "../premiseState"; // Adjust the path as needed
+import { initialSpaceState, SpaceStateProps } from "../spaceState"; // Adjust the path as needed
 
 interface SpaceAction {
   type: SpaceActionType;
@@ -8,9 +8,9 @@ interface SpaceAction {
 }
 
 function spaceReducer(
-  state: PremiseStateProps = initialPremiseState,
+  state: SpaceStateProps = initialSpaceState,
   action: SpaceAction,
-): PremiseStateProps {
+): SpaceStateProps {
   switch (action.type) {
     case SpaceActionTypes.GET_SPACES_BEGINS:
       return {
