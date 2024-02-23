@@ -7,6 +7,7 @@ export interface initialUserStateProps {
     firstname: string;
     lastname: string;
     email: string;
+    reservations: string[];
   };
   token: string;
   isLoading: boolean;
@@ -33,7 +34,13 @@ export const initialUserState: initialUserStateProps = {
       updatedAt: "",
     },
   ],
-  currentUser: { _id: "", firstname: "", lastname: "", email: "" },
+  currentUser: {
+    _id: "",
+    firstname: "",
+    lastname: "",
+    email: "",
+    reservations: [],
+  },
   token: "",
   isLoading: false,
   showAlert: false,

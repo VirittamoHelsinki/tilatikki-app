@@ -13,8 +13,68 @@ import {
 import React from "react";
 import { useUserAction } from "~/hooks/useUser";
 import { useTypedSelector } from "~/hooks/useTypedSelector";
+import { ArchiveIcon } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { useReservationAction } from "~/hooks/useReservation";
+import { useSpaceAction } from "~/hooks/useSpace";
 
-function SignOut({ children }: { children?: React.ReactNode }) {
+function HistoryList() {
+  const { getReservation, getAllReservations } = useReservationAction();
+  const { getSpaceById } = useSpaceAction();
+  const { reservations } = useTypedSelector((state) => state.user.currentUser);
+  const reser = useTypedSelector((state) => state.reservation);
+  const space = useTypedSelector((state) => state.space);
+
+  console.log("user reser", reser.reservationData);
+  console.log("user spaceid", reser.reservationData.space);
+  console.log("space name", space.spaceData.data.name);
+  return (
+    <Popover>
+      <PopoverTrigger>
+        <Button
+          variant="outline"
+          size="icon"
+          className="rounded-full"
+          onClick={() => getAllReservations()}
+        >
+          <ArchiveIcon />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent>
+        <div className="flex flex-col">
+          <p> Place content for the popover here.</p>
+          <p>Max win</p>
+          <ul>
+            {reservations.map((reservation, idx) => (
+              <li key={idx}>
+                {/* {reservation.startdate} - {reservation.enddate} */}
+
+                <p>{reservation}</p>
+                <button
+                  onClick={() => {
+                    getReservation(reservation);
+                  }}
+                >
+                  Get reservation
+                </button>
+                <button
+                  onClick={() => {
+                    getSpaceById(reser.reservationData.space);
+                    // console.log("space name", space.spaceData.name);
+                  }}
+                >
+                  Get space
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
+function Profile({ children }: { children?: React.ReactNode }) {
   const { logoutUser } = useUserAction();
   const { firstname, lastname, email } = useTypedSelector(
     (state) => state.user.currentUser,
@@ -63,7 +123,8 @@ export function Header() {
         TilaTikki
       </Link>
       <nav className="flex items-center gap-2">
-        <SignOut />
+        <HistoryList />
+        <Profile />
       </nav>
     </header>
   );

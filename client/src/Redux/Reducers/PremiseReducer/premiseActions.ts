@@ -1,15 +1,15 @@
 import axios from "axios";
 import { Dispatch } from "redux";
 import { PremiseActionTypes } from "./premiseTypes";
+import { type BuildingDetails } from "~/Redux/Reducers/premiseState";
 
-// Define the structure for a premise TODO:fix any type
+// Define the structure for a premise
 interface Premise {
   name: string;
   address: string;
   users: string[]; // Array of User ObjectIds
   spaces: string[]; // Array of Space ObjectIds
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  buildings: any[]; // Replace `any` with a more specific type if available
+  buildings: BuildingDetails[];
 }
 
 // Base URL for your API

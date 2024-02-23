@@ -35,7 +35,7 @@ interface RegisterUser {
 }
 
 // Base URL for your API
-const API_BASE_URL = "http://localhost:5050"; // Adjust this as per your API's URL
+const API_BASE_URL = "http://localhost:5050/api"; // Adjust this as per your API's URL
 
 const cookies = new Cookies();
 
@@ -59,7 +59,7 @@ export const getAllUsers = () => {
     dispatch({ type: ActionTypes.GET_ALL_USERS_BEGINS });
     try {
       // Make an API call to fetch all user data from your backend
-      const response = await axios.get(`${API_BASE_URL}/api/users`, config());
+      const response = await axios.get(`${API_BASE_URL}/users`, config());
 
       const userData = response.data;
       dispatch({
@@ -74,13 +74,40 @@ export const getAllUsers = () => {
     }
   };
 };
+export function getUserById(id: string) {
+  return async function (dispatch: Dispatch) {
+    dispatch({ type: ActionTypes.GET_USER_BY_ID_BEGINS });
+    try {
+      // Make an API call to fetch all user data from your backend
+      const response = await fetch(`${API_BASE_URL}/users/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+      console.log(data);
+      dispatch({
+        type: ActionTypes.GET_USER_BY_ID_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      dispatch({
+        type: ActionTypes.GET_USER_BY_ID_FAILURE,
+        payload: error as Error,
+      });
+    }
+  };
+}
 
 export function loginUser(credentials: { email: string; password: string }) {
   return async (dispatch: Dispatch<UserAction<ActionType, User[] | Error>>) => {
     dispatch({ type: ActionTypes.LOGIN_USER_BEGINS });
     try {
       const response = await axios.post(
-        `${API_BASE_URL}/api/auth/login`,
+        `${API_BASE_URL}/auth/login`,
         credentials,
       );
       const userData = response.data;
@@ -110,10 +137,7 @@ export function logoutUser() {
   return async (dispatch: Dispatch<UserAction<ActionType, User[] | Error>>) => {
     dispatch({ type: ActionTypes.LOGOUT_USER_BEGINS });
     try {
-      const response = await axios.get(
-        `${API_BASE_URL}/api/auth/logout`,
-        config(),
-      );
+      const response = await axios.get(`${API_BASE_URL}/auth/logout`, config());
       const userData = response.data;
       cookies.remove("tilatikkiToken");
       dispatch({
@@ -135,7 +159,7 @@ export function getMe() {
   return async (dispatch: Dispatch<UserAction<ActionType, User[] | Error>>) => {
     dispatch({ type: ActionTypes.GET_ME_BEGINS });
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/auth/me`, config());
+      const response = await axios.get(`${API_BASE_URL}/auth/me`, config());
       const userData = response.data;
       dispatch({
         type: ActionTypes.GET_ME_SUCCESS,
@@ -159,7 +183,7 @@ export function registerUser(credentials: RegisterUser) {
     dispatch({ type: ActionTypes.CREATE_USER_BEGINS });
     try {
       const response = await axios.post(
-        `${API_BASE_URL}/api/auth/register`,
+        `${API_BASE_URL}/auth/register`,
         credentials,
       );
       const userData = response.data;

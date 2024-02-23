@@ -99,6 +99,8 @@ import { Label } from "~/@/components/ui/label";
 import { Textarea } from "~/@/components/ui/textarea";
 import { useTypedSelector } from "~/hooks/useTypedSelector";
 import { usePremiseAction } from "~/hooks/usePremise";
+import { useReservationAction } from "~/hooks/useReservation";
+import { useUserAction } from "~/hooks/useUser";
 
 extend({ SVGLoader });
 
@@ -465,11 +467,21 @@ function AddMember() {
   );
 }
 
-function ReservationDialog({ children }: { children: React.ReactNode }) {
+function ReservationDialog({
+  children,
+  availabilityId,
+}: {
+  children: React.ReactNode;
+  availabilityId: string;
+}) {
+  const user = useTypedSelector((state) => state.user.currentUser);
+  const { createReservation } = useReservationAction();
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
-  const [_start, setStart] = useState<string>();
-  const [_end, setEnd] = useState<string>();
+  const [start, setStart] = useState<string>();
+  const [end, setEnd] = useState<string>();
+  console.log("me", user._id);
+  console.log("avalability", availabilityId);
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
@@ -636,7 +648,10 @@ function ReservationDialog({ children }: { children: React.ReactNode }) {
         <DialogFooter className="sm:justify-start">
           <Button
             type="submit"
-            onClick={() => console.log("varaus onnistui W in the chat")}
+            onClick={() => {
+              createReservation(startDate!, endDate!, availabilityId);
+              console.log("max win");
+            }}
           >
             Varaa Tila
           </Button>
@@ -662,7 +677,7 @@ function PremiseFilter() {
   const { premiseData, currentBuilding } = useTypedSelector(
     (state) => state.premise,
   );
-  const [buildingId, setBuildingId] = useState<string | undefined>(undefined);
+  let [buildingId, setBuildingId] = useState<string | undefined>(undefined);
   const [floor, setFloor] = useState<string | undefined>(undefined);
 
   const form = useForm<z.infer<typeof premiseSchema>>({
@@ -687,27 +702,21 @@ function PremiseFilter() {
     const selectedBuilding = premiseData.buildings.find(
       (building) => building.name === data.buildingName,
     );
-    console.log("buildin", selectedBuilding);
-    console.log("max man");
-    setBuildingId(selectedBuilding?._id);
-    console.log("deez");
+    // force buildingid state change
+    buildingId = selectedBuilding?._id;
+    // setBuildingId(buildingId);
+
     setFloor(data.floorName);
     const floorNumber = data.floorName ? parseInt(floor!, 10) : undefined;
 
-    console.log("id", buildingId);
-    console.log("nutz");
     // Ensure floorNumber is a number and not NaN before calling getPremiseById
     if (buildingId && floorNumber !== undefined && !isNaN(floorNumber)) {
-      console.log("max win");
       getPremiseById(id!, buildingId, floorNumber);
     }
-    console.log("hmm");
     if (id && buildingId) {
-      console.log("suck on deez");
       // Call without floorNumber if buildingId is set but floorNumber is not a valid number
-      return getPremiseById(id, buildingId);
+      getPremiseById(id, buildingId);
     }
-    console.log("kkk");
     form.reset();
   }
 
@@ -1058,7 +1067,10 @@ export function Premise() {
                   <Loader2 className="animate-spin" />
                 ) : (
                   currentBuilding?.space.map((space, index) => (
-                    <ReservationDialog key={index}>
+                    <ReservationDialog
+                      key={index}
+                      availabilityId={space.availabilities[0]}
+                    >
                       <Card>
                         <CardHeader>
                           <CardTitle>{space.name}</CardTitle>

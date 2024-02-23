@@ -1,12 +1,12 @@
 interface ApiResponse<T> {
   success: boolean;
-  premises: T;
+  data: T;
 }
 
-interface Floor {
-  floor: number;
-  blueprint_url?: string;
-}
+// interface Floor {
+//   floor: number;
+//   blueprint_url?: string;
+// }
 
 interface Blueprint {
   floor: number;
@@ -20,15 +20,28 @@ interface Outline {
   _id: string;
 }
 
-interface Space {
+export interface Space {
   _id: string;
   name: string;
   area: number;
   premise: string;
   building: string;
+  floor: number;
+  availabilities: string[];
+  reservations: string[];
 }
 
-interface BuildingDetails {
+export interface Reservation {
+  _id: string;
+  creator: string;
+  startdate: Date;
+  enddate: Date;
+  premise: string;
+  space: string;
+  availability: string;
+}
+
+export interface BuildingDetails {
   _id: string;
   name: string;
   floors: number;
@@ -51,6 +64,10 @@ export interface Premise {
 export interface PremiseStateProps {
   premisesData: ApiResponse<Premise[]>;
   premiseData: Premise;
+  reservationsData: ApiResponse<Reservation[]>;
+  reservationData: Reservation;
+  spacesData: ApiResponse<Space[]>;
+  spaceData: ApiResponse<Space>;
   currentPremise: Premise | null;
   isLoading: boolean;
   alertType: string | null;
@@ -61,7 +78,7 @@ export interface PremiseStateProps {
 export const initialPremiseState: PremiseStateProps = {
   premisesData: {
     success: false,
-    premises: [],
+    data: [],
   },
   premiseData: {
     _id: "",
@@ -70,6 +87,36 @@ export const initialPremiseState: PremiseStateProps = {
     users: [],
     premise_facade: [],
     buildings: [],
+  },
+  reservationsData: {
+    success: false,
+    data: [],
+  },
+  reservationData: {
+    _id: "",
+    creator: "",
+    startdate: new Date(2021, 1, 1),
+    enddate: new Date(2021, 1, 1),
+    premise: "",
+    space: "",
+    availability: "",
+  },
+  spacesData: {
+    success: false,
+    data: [],
+  },
+  spaceData: {
+    success: false,
+    data: {
+      _id: "",
+      name: "",
+      area: 0,
+      premise: "",
+      building: "",
+      floor: 0,
+      availabilities: [],
+      reservations: [],
+    },
   },
   currentPremise: null,
   isLoading: false,
