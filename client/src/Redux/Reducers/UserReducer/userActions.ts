@@ -38,7 +38,7 @@ interface RegisterUser {
 
 const domain = 'tilatikki.azurewebsites.net'
 
-const API_BASE_URL = `https://${domain}:5050/api`;
+const API_BASE_URL = `https://${domain}/api`;
 
 const cookies = new Cookies();
 

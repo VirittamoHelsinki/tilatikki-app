@@ -15,7 +15,7 @@ interface Premise {
 // Base URL for your API
 const domain = 'tilatikki.azurewebsites.net'
 
-const API_BASE_URL = `https://${domain}:5050/api`; // Adjust this as per your API's URL
+const API_BASE_URL = `https://${domain}/api`; // Adjust this as per your API's URL
 
 // Action for getting all premises
 export const getAllPremises = () => async (dispatch: Dispatch) => {
