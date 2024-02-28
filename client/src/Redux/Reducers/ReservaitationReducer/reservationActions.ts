@@ -5,7 +5,9 @@ import { type Space } from "../premiseState";
 import Cookies from "universal-cookie";
 
 // Base URL for your API
-const API_BASE_URL = "http://localhost:5050/api"; // Adjust this as per your API's URL
+const domain = 'tilatikki.azurewebsites.net'
+
+const API_BASE_URL = `http://${domain}:5050/api`;; // Adjust this as per your API's URL
 
 const cookie = new Cookies();
 
