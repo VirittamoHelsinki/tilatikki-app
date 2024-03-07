@@ -11,9 +11,29 @@ import {
 } from "../utils/dateFunctions.js";
 import asyncErrorHandler from "../middleware/asyncErrorHandler.js";
 
-export function getReservation(_req: Request, res: Response) {
-  res.status(200).json({ success: true, msg: "incomplete" });
-}
+export const getReservation = asyncErrorHandler(async function (
+  req: Request,
+  res: Response
+) {
+  const reservation = await Reservation.findById(req.params.id);
+
+  if (!reservation) {
+    return res.status(404).json({ error: "Reservation not found" });
+  }
+  res.status(200).json(reservation);
+});
+
+export const getAllReservations = asyncErrorHandler(async function (
+  _req: Request,
+  res: Response
+) {
+  const reservations = await Reservation.find();
+
+  if (!reservations) {
+    return res.status(404).json({ error: "Reservations not found" });
+  }
+  res.status(200).json(reservations);
+});
 
 // Reserve a space during an availability.
 export const createReservation = asyncErrorHandler(
@@ -67,6 +87,7 @@ export const createReservation = asyncErrorHandler(
         .json({ error: `Premise not found with id: ${availability.premise}` });
     }
 
+    // current setup is that you HAVE assign manually(dev has to do dis) the user to a school be enable the ability to reserve rooms in any schools
     // Check that the user is authorized to create reservations for this premise.
     if (!premise.users.some((uid) => user._id.equals(uid))) {
       return res.status(401).json({

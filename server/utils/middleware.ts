@@ -8,9 +8,7 @@ import logger from "./logger.js";
 function requestLogger(req: Request, _res: Response, next: NextFunction): void {
   logger.info(`Method: ${req.method}`);
   logger.info(`Path: ${req.path}`);
-  logger.info(
-    `Body: { emaill: ${req.body.email} password: ${req.body.password} }`,
-  );
+  logger.info(`Body:  ${JSON.stringify(req.body)}`);
   logger.info("---");
   next();
 }
@@ -23,7 +21,7 @@ function errorHandler(
   error: Error,
   _req: Request,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ): void {
   logger.error(`Error: ${error.message}, Name: ${error.name}`);
 
@@ -78,7 +76,7 @@ const protect = asyncErrorHandler(
       logger.error(error);
       return res.status(401).json({ error: "Token verification failed" });
     }
-  },
+  }
 );
 
 // Middleware function to authorize specific user roles for routes
@@ -88,8 +86,8 @@ export function authorize(...roles: string[]) {
     if (!roles.includes(req.user.role)) {
       return next(
         new Error(
-          `User role ${req.user.role} is not authorized to access this route`,
-        ),
+          `User role ${req.user.role} is not authorized to access this route`
+        )
       );
     }
 

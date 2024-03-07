@@ -3,14 +3,14 @@ import Space from "../models/Space.js";
 import asyncErrorHandler from "../middleware/asyncErrorHandler.js";
 import Premise from "../models/Premise.js";
 
-interface IBuilding {
-  _id: string;
-  name: string;
-  floors: {
-    floor: number;
-    blueprint_url?: string;
-  }[];
-}
+// interface IBuilding {
+//   _id: string;
+//   name: string;
+//   floors: {
+//     floor: number;
+//     blueprint_url?: string;
+//   }[];
+// }
 
 // Desc: Get all spaces
 // @route GET /api/spaces
@@ -27,7 +27,7 @@ export const getAllSpace = asyncErrorHandler(
 // @access Private
 export const createSpace = asyncErrorHandler(
   async (req: Request, res: Response) => {
-    const { name, area, floor, premiseId, buildingId } = req.body;
+    const { name, area, floor, premiseId } = req.body;
 
     // Add validation here if needed
     if (!name) return res.status(400).json({ error: "Name is required" });

@@ -3,7 +3,6 @@ import dotenv from "dotenv";
 
 // Load environment variables from the .env file in the root of the project
 dotenv.config();
-console.log(dotenv.config());
 // Retrieve the value of the NODE_ENV environment variable
 const node_env = process.env.NODE_ENV;
 // Log the value of NODE_ENV for debugging purposes
@@ -18,7 +17,6 @@ if (node_env === "development") {
   mongoUri = process.env.MONGODB_DEV_URI || "";
 }
 
-console.log("connected to: ",mongoUri)
 // Parse the PORT environment variable as an integer with a default of 5000
 const port = parseInt(process.env.PORT || "5000", 10);
 
@@ -34,7 +32,6 @@ const smtpPort = parseInt(process.env.SMTP_PORT || "0", 10);
 const smtpUserName = process.env.SMTP_USERNAME || "";
 const smtpPassword = process.env.SMTP_PASSWORD || "";
 const smtpAuthMethod = process.env.SMTP_AUTH_METHOD || "";
-
 
 // Retrieve the FROM_EMAIL and FROM_NAME environment variables
 const fromEmail: string = process.env.FROM_EMAIL || "";
