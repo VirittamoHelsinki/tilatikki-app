@@ -7,11 +7,10 @@ help schools to acknowledge what rooms are used
 
 ```sh
 # Install all dependencies
-npm run setup:project
-# u need to rebuild frontend after making changes to it
-# cd client && npm run build
-# Start dev server
-npm run dev:server
+npm run setup
+
+# Start client & server concurrently
+npm run dev
 ```
 
 ```sh
