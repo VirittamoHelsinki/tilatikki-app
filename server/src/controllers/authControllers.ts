@@ -93,9 +93,13 @@ export const logout = asyncErrorHandler(
 //@access Private
 export const getMe = asyncErrorHandler(async (req: Request, res: Response) => {
   // Find and send the currently authenticated user
-  const user = await User.findById(req.user.id);
-
-  res.status(200).json(user);
+  try {
+    console.log("get me", req.user.id)
+    const user = await User.findById(req.user.id);
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ error });
+  }
 });
 
 //@desc Update user details

@@ -12,14 +12,11 @@ interface Premise {
   buildings: BuildingDetails[];
 }
 
-// Base URL for your API
-const API_BASE_URL = "http://localhost:5050/api"; // Adjust this as per your API's URL
-
 // Action for getting all premises
 export const getAllPremises = () => async (dispatch: Dispatch) => {
   dispatch({ type: PremiseActionTypes.GET_PREMISES_BEGINS });
   try {
-    const response = await axios.get(`${API_BASE_URL}/premise`);
+    const response = await axios.get("api/premise");
     dispatch({
       type: PremiseActionTypes.GET_PREMISES_SUCCESS,
       payload: response.data,
@@ -39,7 +36,7 @@ export const getPremiseById =
     dispatch({ type: prefix + "_BEGINS" });
 
     try {
-      let url = `${API_BASE_URL}/premise/${id}`;
+      let url = `api/premise/${id}`;
       const params = new URLSearchParams();
       if (buildingId) params.append("building", buildingId);
       if (floor !== undefined) params.append("floor", floor.toString());
@@ -65,7 +62,7 @@ export const createPremise =
   (premiseData: Premise) => async (dispatch: Dispatch) => {
     dispatch({ type: PremiseActionTypes.CREATE_PREMISE_BEGINS });
     try {
-      const response = await axios.post(`${API_BASE_URL}/premise`, premiseData);
+      const response = await axios.post("api/premise", premiseData);
       dispatch({
         type: PremiseActionTypes.CREATE_PREMISE_SUCCESS,
         payload: response.data,
@@ -84,7 +81,7 @@ export const updatePremise =
     dispatch({ type: PremiseActionTypes.UPDATE_PREMISE_BEGINS });
     try {
       const response = await axios.put(
-        `${API_BASE_URL}/premise/${id}`,
+        `api/premise/${id}`,
         updatedData,
       );
       dispatch({
@@ -103,7 +100,7 @@ export const updatePremise =
 export const deletePremise = (id: string) => async (dispatch: Dispatch) => {
   dispatch({ type: PremiseActionTypes.DELETE_PREMISE_BEGINS });
   try {
-    await axios.delete(`${API_BASE_URL}/premise/${id}`);
+    await axios.delete(`api/premise/${id}`);
     dispatch({ type: PremiseActionTypes.DELETE_PREMISE_SUCCESS });
   } catch (error) {
     dispatch({

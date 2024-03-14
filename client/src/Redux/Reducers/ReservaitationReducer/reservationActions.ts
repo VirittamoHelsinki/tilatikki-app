@@ -4,9 +4,6 @@ import axios from "axios";
 import { type Space } from "../premiseState";
 import Cookies from "universal-cookie";
 
-// Base URL for your API
-const API_BASE_URL = "http://localhost:5050/api"; // Adjust this as per your API's URL
-
 const cookie = new Cookies();
 
 const token = cookie.get("tilatikkiToken");
@@ -15,7 +12,7 @@ export function getReservation(id: string) {
   return async function (dispatch: Dispatch) {
     dispatch({ type: ReservationActionTypes.GET_RESERVATION_BEGINS });
     try {
-      const response = await fetch(`${API_BASE_URL}/reservation/${id}`, {
+      const response = await fetch(`api/reservation/${id}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -39,7 +36,7 @@ export function getAllReservations() {
   return async function (dispatch: Dispatch) {
     dispatch({ type: ReservationActionTypes.GET_ALL_RESERVATIONS_BEGINS });
     try {
-      const response = await fetch(`${API_BASE_URL}/reservation`, {
+      const response = await fetch("api/reservation", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -68,7 +65,7 @@ export function createReservation(
   return async function (dispatch: Dispatch) {
     dispatch({ type: ReservationActionTypes.CREATE_RESERVATION_BEGINS });
     try {
-      const response = await fetch(`${API_BASE_URL}/reservation`, {
+      const response = await fetch("api/reservation", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -99,7 +96,7 @@ export function updateReservation(id: string, updatedData: Space) {
     dispatch({ type: ReservationActionTypes.UPDATE_RESERVATION_BEGINS });
     try {
       const response = await axios.put(
-        `${API_BASE_URL}/reservation/${id}`,
+        `api/reservation/${id}`,
         updatedData,
       );
       dispatch({
@@ -120,7 +117,7 @@ export function deleteReservation(id: string) {
   return async function (dispatch: Dispatch) {
     dispatch({ type: ReservationActionTypes.DELETE_RESERVATION_BEGINS });
     try {
-      await axios.delete(`${API_BASE_URL}/reservation/${id}`);
+      await axios.delete(`api/reservation/${id}`);
       dispatch({ type: ReservationActionTypes.DELETE_RESERVATION_SUCCESS });
     } catch (error) {
       dispatch({
