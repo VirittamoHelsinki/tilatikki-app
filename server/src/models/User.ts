@@ -89,7 +89,17 @@ userSchema.methods.getSignedJwtToken = function () {
 userSchema.methods.matchPassword = async function (
   enteredPassword: string,
 ): Promise<boolean> {
-  return await bcrypt.compare(enteredPassword, this.password);
+  try {
+    if (!this.password) {
+      console.error("matchPassword error: password is undefined");
+      return false;
+    }
+    const result = await bcrypt.compare(enteredPassword, this.password);
+    return result;
+  } catch (error) {
+    console.error("matchPassword error:", error);
+    return false;
+  }
 };
 
 // Generate and hash password token
