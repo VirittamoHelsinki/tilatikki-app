@@ -6,7 +6,7 @@ export function getAllSpaces() {
   return async function (dispatch: Dispatch) {
     dispatch({ type: SpaceActionTypes.GET_SPACES_BEGINS });
     try {
-      const response = await fetch("api/space", {
+      const response = await fetch("/api/space", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -29,7 +29,7 @@ export function getSpaceById(id: string) {
   return async function (dispatch: Dispatch) {
     dispatch({ type: SpaceActionTypes.GET_SPACE_BEGINS });
     try {
-      const response = await fetch(`api/space/${id}`, {
+      const response = await fetch(`/api/space/${id}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

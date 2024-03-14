@@ -12,7 +12,7 @@ export function getReservation(id: string) {
   return async function (dispatch: Dispatch) {
     dispatch({ type: ReservationActionTypes.GET_RESERVATION_BEGINS });
     try {
-      const response = await fetch(`api/reservation/${id}`, {
+      const response = await fetch(`/api/reservation/${id}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -36,7 +36,7 @@ export function getAllReservations() {
   return async function (dispatch: Dispatch) {
     dispatch({ type: ReservationActionTypes.GET_ALL_RESERVATIONS_BEGINS });
     try {
-      const response = await fetch("api/reservation", {
+      const response = await fetch("/api/reservation", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -65,7 +65,7 @@ export function createReservation(
   return async function (dispatch: Dispatch) {
     dispatch({ type: ReservationActionTypes.CREATE_RESERVATION_BEGINS });
     try {
-      const response = await fetch("api/reservation", {
+      const response = await fetch("/api/reservation", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -96,7 +96,7 @@ export function updateReservation(id: string, updatedData: Space) {
     dispatch({ type: ReservationActionTypes.UPDATE_RESERVATION_BEGINS });
     try {
       const response = await axios.put(
-        `api/reservation/${id}`,
+        `/api/reservation/${id}`,
         updatedData,
       );
       dispatch({
@@ -117,7 +117,7 @@ export function deleteReservation(id: string) {
   return async function (dispatch: Dispatch) {
     dispatch({ type: ReservationActionTypes.DELETE_RESERVATION_BEGINS });
     try {
-      await axios.delete(`api/reservation/${id}`);
+      await axios.delete(`/api/reservation/${id}`);
       dispatch({ type: ReservationActionTypes.DELETE_RESERVATION_SUCCESS });
     } catch (error) {
       dispatch({
