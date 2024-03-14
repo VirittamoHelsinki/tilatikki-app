@@ -285,6 +285,8 @@ const options = [
   },
 ];
 
+// Filetered by nappi
+
 function FilterMe() {
   const [selectedValues, setSelectedValues] = useState<string[]>([]);
   const selectedValue = new Set(selectedValues as string[]);
@@ -396,11 +398,16 @@ function FilterMe() {
   );
 }
 
+// Lisää jäsen funktio varaus dialogin sisällä
+
 function AddMember() {
   const inputRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = React.useState(false);
   const [inputValue, setInputValue] = useState("");
   const [selectedValues, setSelectedValues] = useState<typeof options>([]);
+
+  console.log('add member')
+
   return (
     <Command className="overflow-visible bg-transparent">
       <div className="group rounded-md border border-dashed border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
@@ -467,6 +474,8 @@ function AddMember() {
   );
 }
 
+// reservaatio dialogi
+
 function ReservationDialog({
   children,
   availabilityId,
@@ -489,7 +498,7 @@ function ReservationDialog({
         <DialogHeader>
           <DialogTitle>A1234</DialogTitle>
           <DialogDescription>
-            Kolmikerrosinen koulu rakennus, jossa on noin 150 opetustilaa
+            Kolmikerrosinen koulurakennus, jossa on noin 150 opetustilaa
           </DialogDescription>
           <div className="flex gap-4">
             <div className="flex items-center gap-1 text-sm">
@@ -510,13 +519,13 @@ function ReservationDialog({
           </div>
           <div className="flex flex-col gap-4">
             <Label htmlFor="add-user" className="">
-              Lisaa jasen
+              Lisää jäsen
             </Label>
             <AddMember />
           </div>
           <div className="flex flex-col gap-4">
             <Label htmlFor="member-count" className="">
-              Ryhman koko
+              Ryhmän koko
             </Label>
             <Input id="member-count" placeholder="10" className="" />
           </div>
@@ -670,6 +679,8 @@ const premiseSchema = z.object({
   endTime: z.string().optional(),
 });
 
+// TODO: fix kerrokset ja opetustila ei renderöidy ennen hae tilat napin painamista
+
 function PremiseFilter() {
   const { id } = useParams();
   const { pathname } = useLocation();
@@ -683,6 +694,10 @@ function PremiseFilter() {
   const form = useForm<z.infer<typeof premiseSchema>>({
     resolver: zodResolver(premiseSchema),
   });
+
+  // useEffect(() => {
+  //   console.log('premiseDataTest: ', premiseData.premises);
+  // },[])
 
   // function premiseOutline(): string {
   //   if (floor) {
@@ -698,10 +713,11 @@ function PremiseFilter() {
   // }
 
   function onSubmit(data: z.infer<typeof premiseSchema>) {
-    console.log(data);
+
     const selectedBuilding = premiseData.buildings.find(
       (building) => building.name === data.buildingName,
     );
+
     // force buildingid state change
     buildingId = selectedBuilding?._id;
     // setBuildingId(buildingId);
@@ -727,7 +743,7 @@ function PremiseFilter() {
         <CardHeader>
           <CardTitle>{premiseData.name}</CardTitle>
           <CardDescription>
-            Kolmikerrosinen koulu rakennus, jossa on noin 150 opetustilaa
+            Kolmikerroksinen koulurakennus, jossa on noin 150 opetustilaa
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -1044,8 +1060,6 @@ export function Premise() {
   //     return `/assets/${pathname}/kerros3-rooms.svg`;
   //   }
   // }
-
-  console.log("currentbuildings", currentBuilding?.space);
 
   // if (isLoading) return <div>Loading...</div>;
 

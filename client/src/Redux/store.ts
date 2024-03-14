@@ -4,11 +4,10 @@ import {
   compose,
 } from "redux";
 import { thunk } from "redux-thunk";
-import logger from "redux-logger";
 import { rootReducer } from "./Reducers/rootReducer";
 
 // Create an array of middleware, including thunk.
-const middleware = [thunk, logger];
+const middleware = [thunk];
 // TODO: fix this error
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 

@@ -10,6 +10,7 @@ import { Dashboard } from "./pages/Dashboard";
 import { Login } from "./pages/Login";
 import { Register } from "./pages/Register";
 import { Premise } from "./pages/Premise";
+import FilterForm from "./pages/FilterForm";
 import { Header } from "~/@/components/Header";
 
 import { store } from "~/Redux/store";
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
             element: <Premise />,
           },
         ],
+      },
+      {
+        path: "filter",
+        element: <FilterForm />,
       },
       {
         path: "settings",
