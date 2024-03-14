@@ -18,7 +18,7 @@ export function Dashboard() {
     (state) => state.premise,
   );
 
-  console.log(premisesData);
+
   useEffect(() => {
     getAllPremises();
   }, []);

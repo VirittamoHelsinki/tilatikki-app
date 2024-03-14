@@ -147,8 +147,8 @@ function Cell({
     return void ((
       document.querySelector("#ref-body") as HTMLDivElement
     ).style.cursor = hovered
-      ? `url('${hoveredCursor}'), pointer`
-      : `url('${defaultCursor}'), auto`);
+        ? `url('${hoveredCursor}'), pointer`
+        : `url('${defaultCursor}'), auto`);
   }, [hovered]);
   return (
     <mesh
@@ -156,8 +156,7 @@ function Cell({
       onPointerOut={() => hover(false)}
       onClick={() => {
         console.log(
-          `uuid: ${shape.uuid}, x: ${shape.getPoint(0).x}, y:${
-            shape.getPoint(0).y
+          `uuid: ${shape.uuid}, x: ${shape.getPoint(0).x}, y:${shape.getPoint(0).y
           }`,
         );
         setRoom(!room);
@@ -444,7 +443,7 @@ function AddMember() {
       </div>
       <div className="relative mt-2">
         {open &&
-        options.filter((option) => !selectedValues?.includes(option)).length >
+          options.filter((option) => !selectedValues?.includes(option)).length >
           0 ? (
           <div className="absolute top-0 z-10 w-full rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in">
             <CommandGroup className="h-full overflow-auto">
@@ -681,13 +680,17 @@ const premiseSchema = z.object({
 
 // TODO: fix kerrokset ja opetustila ei renderöidy ennen hae tilat napin painamista
 
-function PremiseFilter() {
+const PremiseFilter = () => {
   const { id } = useParams();
   const { pathname } = useLocation();
   const { getPremiseById } = usePremiseAction();
-  const { premiseData, currentBuilding } = useTypedSelector(
+  const { premiseData } = useTypedSelector(
     (state) => state.premise,
   );
+
+  const [currentBuilding, setCurrentBuilding] = useState<string|null>(null);
+
+  // tällä hetkellä kova koodattu 0 
   let [buildingId, setBuildingId] = useState<string | undefined>(undefined);
   const [floor, setFloor] = useState<string | undefined>(undefined);
 
@@ -695,9 +698,6 @@ function PremiseFilter() {
     resolver: zodResolver(premiseSchema),
   });
 
-  // useEffect(() => {
-  //   console.log('premiseDataTest: ', premiseData.premises);
-  // },[])
 
   // function premiseOutline(): string {
   //   if (floor) {
@@ -761,7 +761,13 @@ function PremiseFilter() {
                     <FormItem className="flex flex-col">
                       <FormLabel>Rakennus</FormLabel>
                       <Select
-                        onValueChange={field.onChange}
+                        onValueChange={(value) => {
+                          field.onChange(value);
+                          const selectedBuilding = premiseData.buildings.find(
+                            (building) => building.name === value,
+                          );
+                          setCurrentBuilding(selectedBuilding);
+                        }}
                         defaultValue={field.value}
                       >
                         <FormControl>
@@ -772,8 +778,8 @@ function PremiseFilter() {
                         <SelectContent>
                           <SelectGroup>
                             <SelectLabel>Rakennus</SelectLabel>
-                            {premiseData.buildings.map((building, index) => (
-                              <SelectItem key={index} value={building.name}>
+                            {premiseData.buildings.map((building) => (
+                              <SelectItem key={building._id} value={building.name}>
                                 {building.name}
                               </SelectItem>
                             ))}
@@ -803,7 +809,7 @@ function PremiseFilter() {
                         <SelectContent>
                           <SelectGroup>
                             <SelectLabel>Kerros</SelectLabel>
-                            {currentBuilding ? (
+                           {currentBuilding ? (
                               Array.from(
                                 { length: currentBuilding.floors },
                                 (_, i) => (
