@@ -101,7 +101,6 @@ export const createAvailability = asyncErrorHandler(
     }
 
     const premise = await Premise.findById(space.premise);
-    console.log(premise)
 
     if (!premise) {
       return res

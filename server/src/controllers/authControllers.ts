@@ -5,30 +5,40 @@ import User, { IUser } from "../models/User";
 import sendEmail from "../utils/sendEmail";
 import * as config from "../utils/config";
 
+type RegisterUserForm = {
+  firstname: string|undefined;
+  lastname: string|undefined;
+  email: string|undefined;
+  password: string|undefined;
+};
+
 // @desc    Register user
 // @route   POST /api/auth/register
 // @access  Public
 export const register = asyncErrorHandler(
   async (req: Request, res: Response) => {
     // Extract user information from the request body
-    const { firstname, lastname, email, password } = req.body;
+    const { firstname, lastname, email, password }: RegisterUserForm = req.body;
 
-    const existingUser = await User.findOne({ email });
+    if (!firstname || !lastname || !email || !password) {
+      return res.status(400).json({ error: "Please enter all fields" });
+    }
+
+    const existingUser = await User.findOne({ email: email.toLowerCase() });
     if (existingUser) {
-      // Throw an error if the user already exists
-      throw new Error("User already exists!");
+      res.status(400).json({ error: "User already exists" });
     }
 
     // Create a new user
     const user: IUser = await User.create({
       firstname,
       lastname,
-      email,
+      email: email.toLowerCase(),
       password,
     });
 
     // Create a JWT token for the user and send it in the response
-    sendTokenResponse(user, 200, res);
+    sendTokenResponse(user, 201, res);
   },
 );
 
@@ -41,12 +51,12 @@ export const login = asyncErrorHandler(async (req: Request, res: Response) => {
   // Validate email & password
   if (!email || !password) {
     return res
-      .status(401)
+      .status(400)
       .json({ error: "Please provide an email and password" });
   }
 
   // Check for user with the provided email
-  const user = await User.findOne({ email }).select("+password");
+  const user = await User.findOne({ email: email.toLowerCase() }).select("+password")
 
   if (!user) {
     return res.status(401).json({ error: "Invalid credentials" });
@@ -143,29 +153,33 @@ export const sendTokenResponse = (
   statusCode: number,
   res: Response,
 ) => {
-  // Create a JWT token
-  const token: string = user.getSignedJwtToken();
-
-  // Set options for the cookie
-  const options: {
-    expires: Date;
-    httpOnly: boolean;
-    secure?: boolean;
-  } = {
-    expires: new Date(Date.now() + config.jwtExpire * 24 * 60 * 60 * 1000),
-    httpOnly: true,
-  };
-
-  // If in production, enable secure flag for HTTPS
-  if (config.node_env === "production") {
-    options.secure = true;
+  try {
+    // Create a JWT token
+    const token: string = user.getSignedJwtToken();
+  
+    // Set options for the cookie
+    const options: {
+      expires: Date;
+      httpOnly: boolean;
+      secure?: boolean;
+    } = {
+      expires: new Date(Date.now() + config.jwtExpire * 24 * 60 * 60 * 1000),
+      httpOnly: true,
+    };
+  
+    // If in production, enable secure flag for HTTPS
+    if (config.node_env === "production") {
+      options.secure = true;
+    }
+  
+    // Send the response with the token and cookie
+    res
+      .status(statusCode)
+      .cookie("token", token, options)
+      .json({ success: true, token });
+  } catch (error) {
+    console.error("sendTokenResponse error:", error);
   }
-
-  // Send the response with the token and cookie
-  res
-    .status(statusCode)
-    .cookie("token", token, options)
-    .json({ success: true, token });
 };
 
 // @desc forgot password
