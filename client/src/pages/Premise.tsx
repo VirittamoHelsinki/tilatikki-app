@@ -147,8 +147,8 @@ function Cell({
     return void ((
       document.querySelector("#ref-body") as HTMLDivElement
     ).style.cursor = hovered
-      ? `url('${hoveredCursor}'), pointer`
-      : `url('${defaultCursor}'), auto`);
+        ? `url('${hoveredCursor}'), pointer`
+        : `url('${defaultCursor}'), auto`);
   }, [hovered]);
   return (
     <mesh
@@ -156,8 +156,7 @@ function Cell({
       onPointerOut={() => hover(false)}
       onClick={() => {
         console.log(
-          `uuid: ${shape.uuid}, x: ${shape.getPoint(0).x}, y:${
-            shape.getPoint(0).y
+          `uuid: ${shape.uuid}, x: ${shape.getPoint(0).x}, y:${shape.getPoint(0).y
           }`,
         );
         setRoom(!room);
@@ -285,6 +284,8 @@ const options = [
   },
 ];
 
+// Filetered by nappi
+
 function FilterMe() {
   const [selectedValues, setSelectedValues] = useState<string[]>([]);
   const selectedValue = new Set(selectedValues as string[]);
@@ -396,11 +397,14 @@ function FilterMe() {
   );
 }
 
+// Lisää jäsen funktio varaus dialogin sisällä
+
 function AddMember() {
   const inputRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = React.useState(false);
   const [inputValue, setInputValue] = useState("");
   const [selectedValues, setSelectedValues] = useState<typeof options>([]);
+
   return (
     <Command className="overflow-visible bg-transparent">
       <div className="group rounded-md border border-dashed border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
@@ -437,7 +441,7 @@ function AddMember() {
       </div>
       <div className="relative mt-2">
         {open &&
-        options.filter((option) => !selectedValues?.includes(option)).length >
+          options.filter((option) => !selectedValues?.includes(option)).length >
           0 ? (
           <div className="absolute top-0 z-10 w-full rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in">
             <CommandGroup className="h-full overflow-auto">
@@ -467,6 +471,8 @@ function AddMember() {
   );
 }
 
+// reservaatio dialogi
+
 function ReservationDialog({
   children,
   availabilityId,
@@ -489,7 +495,7 @@ function ReservationDialog({
         <DialogHeader>
           <DialogTitle>A1234</DialogTitle>
           <DialogDescription>
-            Kolmikerrosinen koulu rakennus, jossa on noin 150 opetustilaa
+            Kolmikerrosinen koulurakennus, jossa on noin 150 opetustilaa
           </DialogDescription>
           <div className="flex gap-4">
             <div className="flex items-center gap-1 text-sm">
@@ -510,13 +516,13 @@ function ReservationDialog({
           </div>
           <div className="flex flex-col gap-4">
             <Label htmlFor="add-user" className="">
-              Lisaa jasen
+              Lisää jäsen
             </Label>
             <AddMember />
           </div>
           <div className="flex flex-col gap-4">
             <Label htmlFor="member-count" className="">
-              Ryhman koko
+              Ryhmän koko
             </Label>
             <Input id="member-count" placeholder="10" className="" />
           </div>
@@ -670,19 +676,26 @@ const premiseSchema = z.object({
   endTime: z.string().optional(),
 });
 
-function PremiseFilter() {
+// TODO: fix kerrokset ja opetustila ei renderöidy ennen hae tilat napin painamista
+
+const PremiseFilter = () => {
   const { id } = useParams();
   const { pathname } = useLocation();
   const { getPremiseById } = usePremiseAction();
-  const { premiseData, currentBuilding } = useTypedSelector(
+  const { premiseData } = useTypedSelector(
     (state) => state.premise,
   );
+
+  const [currentBuilding, setCurrentBuilding] = useState<string|null>(null);
+
+  // tällä hetkellä kova koodattu 0 
   let [buildingId, setBuildingId] = useState<string | undefined>(undefined);
   const [floor, setFloor] = useState<string | undefined>(undefined);
 
   const form = useForm<z.infer<typeof premiseSchema>>({
     resolver: zodResolver(premiseSchema),
   });
+
 
   // function premiseOutline(): string {
   //   if (floor) {
@@ -698,10 +711,11 @@ function PremiseFilter() {
   // }
 
   function onSubmit(data: z.infer<typeof premiseSchema>) {
-    console.log(data);
+
     const selectedBuilding = premiseData.buildings.find(
       (building) => building.name === data.buildingName,
     );
+
     // force buildingid state change
     buildingId = selectedBuilding?._id;
     // setBuildingId(buildingId);
@@ -727,7 +741,7 @@ function PremiseFilter() {
         <CardHeader>
           <CardTitle>{premiseData.name}</CardTitle>
           <CardDescription>
-            Kolmikerrosinen koulu rakennus, jossa on noin 150 opetustilaa
+            Kolmikerroksinen koulurakennus, jossa on noin 150 opetustilaa
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -745,7 +759,13 @@ function PremiseFilter() {
                     <FormItem className="flex flex-col">
                       <FormLabel>Rakennus</FormLabel>
                       <Select
-                        onValueChange={field.onChange}
+                        onValueChange={(value) => {
+                          field.onChange(value);
+                          const selectedBuilding = premiseData.buildings.find(
+                            (building) => building.name === value,
+                          );
+                          setCurrentBuilding(selectedBuilding);
+                        }}
                         defaultValue={field.value}
                       >
                         <FormControl>
@@ -756,8 +776,8 @@ function PremiseFilter() {
                         <SelectContent>
                           <SelectGroup>
                             <SelectLabel>Rakennus</SelectLabel>
-                            {premiseData.buildings.map((building, index) => (
-                              <SelectItem key={index} value={building.name}>
+                            {premiseData.buildings.map((building) => (
+                              <SelectItem key={building._id} value={building.name}>
                                 {building.name}
                               </SelectItem>
                             ))}
@@ -787,7 +807,7 @@ function PremiseFilter() {
                         <SelectContent>
                           <SelectGroup>
                             <SelectLabel>Kerros</SelectLabel>
-                            {currentBuilding ? (
+                           {currentBuilding ? (
                               Array.from(
                                 { length: currentBuilding.floors },
                                 (_, i) => (
@@ -1044,8 +1064,6 @@ export function Premise() {
   //     return `/assets/${pathname}/kerros3-rooms.svg`;
   //   }
   // }
-
-  console.log("currentbuildings", currentBuilding?.space);
 
   // if (isLoading) return <div>Loading...</div>;
 

@@ -25,9 +25,6 @@ function HistoryList() {
   const reser = useTypedSelector((state) => state.reservation);
   const space = useTypedSelector((state) => state.space);
 
-  console.log("user reser", reser.reservationData);
-  console.log("user spaceid", reser.reservationData.space);
-  console.log("space name", space.spaceData.data.name);
   return (
     <Popover>
       <PopoverTrigger>
