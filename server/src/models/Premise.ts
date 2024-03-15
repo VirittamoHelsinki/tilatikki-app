@@ -1,5 +1,5 @@
 import { Schema, type Model, model } from "mongoose";
-import { IPremise } from "@shared/types/api/premise";
+import { IPremise } from "@shared/types/entity/premise";
 
 // Typeguard to check if the value is of type IPremise[].
 export function isPremiseList(value: IPremise[]): value is IPremise[] {

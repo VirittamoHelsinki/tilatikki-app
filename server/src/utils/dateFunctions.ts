@@ -1,5 +1,5 @@
-import { type IAvailability } from "@shared/types/api/availability";
-import { type IReservation } from "@shared/types/api/reservation";
+import { type IAvailability } from "@shared/types/entity/availability";
+import { type IReservation } from "@shared/types/entity/reservation";
 
 export const intersectingTimespans = (
   startdate: Date,

@@ -3,7 +3,7 @@ import crypto from "node:crypto";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import * as config from "../utils/config";
-import { type IUser } from "@shared/types/api/user";
+import { type IUser } from "@shared/types/entity/user";
 
 // Typeguard to check if the value is of type IUser[].
 export function isUserList(value: IUser[]): value is IUser[] {

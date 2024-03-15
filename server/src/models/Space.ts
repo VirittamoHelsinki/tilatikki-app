@@ -1,5 +1,5 @@
 import { Schema, type Model, model } from "mongoose";
-import { type ISpace } from "@shared/types/api/space";
+import { type ISpace } from "@shared/types/entity/space";
 
 // Typeguard to check if the value is of type ISpace[].
 export function isSpaceList(value: ISpace[]): value is ISpace[] {

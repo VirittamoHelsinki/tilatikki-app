@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { type IGroup } from "@shared/types/api/group";
+import { type IGroup } from "@shared/types/entity/group";
 
 const groupSchema = new Schema<IGroup>({
     studentSize: { type: Number, required: true },

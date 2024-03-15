@@ -1,5 +1,5 @@
 import { Schema, Model, model } from "mongoose";
-import { type IAvailability } from "@shared/types/api/availability";
+import { type IAvailability } from "@shared/types/entity/availability";
 
 // Typeguard to check if the value is of type IAvailability.
 export function isAvailability(value: IAvailability): value is IAvailability {

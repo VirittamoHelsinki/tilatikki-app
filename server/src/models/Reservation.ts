@@ -1,5 +1,5 @@
 import { Schema, Model, model } from "mongoose";
-import { type IReservation } from "@shared/types/api/reservation";
+import { type IReservation } from "@shared/types/entity/reservation";
 
 // Typeguard to check if the value is of type IReservation[].
 export function isReservationList(

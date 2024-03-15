@@ -1,6 +1,6 @@
 import { type Request, type Response } from "express";
 import Availability, { isAvailabilityList } from "../models/Availability";
-import { type IAvailability } from "@shared/types/api/availability";
+import { type IAvailability } from "@shared/types/entity/availability";
 import Reservation from "../models/Reservation";
 import Premise from "../models/Premise";
 import Space from "../models/Space";

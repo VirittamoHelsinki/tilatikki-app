@@ -1,10 +1,10 @@
 import { type Request, type Response } from "express";
 import Availability from "../models/Availability";
-import { type IAvailability } from "@shared/types/api/availability";
+import { type IAvailability } from "@shared/types/entity/availability";
 import Reservation, {
   isReservationList,
 } from "../models/Reservation";
-import { type IReservation } from "@shared/types/api/reservation";
+import { type IReservation } from "@shared/types/entity/reservation";
 import Premise from "../models/Premise";
 import {
   intersectingTimespans,

@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { IBuilding } from "@shared/types/api/building";
+import { IBuilding } from "@shared/types/entity/building";
 
 // Define the building schema.
 const buildingSchema = new Schema<IBuilding>({
