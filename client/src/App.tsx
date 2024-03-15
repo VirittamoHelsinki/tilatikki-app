@@ -9,7 +9,7 @@ import { Provider } from "react-redux";
 import { Dashboard } from "./pages/Dashboard";
 import { Login } from "./pages/Login";
 import { Register } from "./pages/Register";
-import { Premise } from "./pages/Premise";
+import Premise from "./pages/Premise";
 import { Header } from "~/@/components/Header";
 
 import { store } from "~/Redux/store";
