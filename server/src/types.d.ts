@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Response as ExpressResponse } from 'express';
 
 declare module 'express-serve-static-core' {
@@ -5,8 +6,8 @@ declare module 'express-serve-static-core' {
     advancedResults?: {
       success: boolean;
       count: number;
-      pagination?: any;
-      data: any[];
+      pagination?: unknown;
+      data: unknown[];
     };
   }
 }

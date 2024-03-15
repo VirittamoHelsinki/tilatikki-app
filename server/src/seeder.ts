@@ -1,6 +1,5 @@
 // Imports
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 import fs from "node:fs";
 import mongoose from "mongoose";
 import * as config from "./utils/config";
@@ -74,14 +73,15 @@ const connectDB = async () => {
 };
 
 // Function to import data into the database.
+// TODO: Fix the any types
 const importData = async (
-  availabilitys: any,
-  premises: any,
-  users: any,
-  spaces: any,
-  reservations: any,
-  buildings: any,
-  groups: any,
+  availabilitys: unknown,
+  premises: unknown,
+  users: unknown,
+  spaces: unknown,
+  reservations: unknown,
+  buildings: unknown,
+  groups: unknown,
 ) => {
   logger.info("Importing data into database...");
   await Availability.create(availabilitys);

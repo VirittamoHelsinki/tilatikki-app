@@ -7,7 +7,7 @@ import { createPremiseAggregationPipeline } from "../middleware/advancedResults"
 // Desc: Get all availabilities
 // @route GET /api/premise
 // @access Public
-export const getPremise = asyncHandler( async(req: Request, res: Response<any>, /*next: NextFunction*/) => {
+export const getPremise = asyncHandler( async(req: Request, res: Response, /*next: NextFunction*/) => {
   const premises = await Premise.find({});
     if(!premises) res.status(404).json({ success: false, msg: "No Premise found" });
 
