@@ -37,7 +37,7 @@ if (config.node_env === "development") app.use(cors());
 // Middlewares that need to be applied before adding routes.
 app.use(express.json());
 // app.use(express.static(path.join(import.meta.dirname, "../client/dist/")));
-app.use(requestLogger);
+// app.use(requestLogger);
 
 connectDb()
 const db = mongoose.connection;

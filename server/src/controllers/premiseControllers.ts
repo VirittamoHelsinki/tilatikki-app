@@ -15,8 +15,6 @@ export const getPremise = asyncHandler( async(req: Request, res: Response<any>, 
   }
 )
 
-
-
 // Desc: Get single Premise
 // @route GET /api/premise/:id
 // @access Public

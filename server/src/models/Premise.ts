@@ -1,15 +1,5 @@
-import { type Document, Schema, type Model, model } from "mongoose";
-import { type IUser } from "./User";
-import { type IBuilding } from "./Building";
-
-// For internal model definition only.
-export interface IPremise extends Document {
-  name: string;
-  address: string;
-  users: Schema.Types.ObjectId[] | IUser[];
-  premise_facade: string[];
-  buildings: Schema.Types.ObjectId[] | IBuilding[]
-}
+import { Schema, type Model, model } from "mongoose";
+import { IPremise } from "@shared/types/api/premise";
 
 // Typeguard to check if the value is of type IPremise[].
 export function isPremiseList(value: IPremise[]): value is IPremise[] {

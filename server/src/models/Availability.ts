@@ -1,18 +1,5 @@
-import { Document, Schema, Model, model } from "mongoose";
-import { type IUser } from "./User";
-import { type IPremise } from "./Premise";
-import { type ISpace } from "./Space";
-import { type IReservation } from "./Reservation";
-
-// For internal model definition only.
-export interface IAvailability extends Document {
-  creator: Schema.Types.ObjectId | IUser;
-  startdate: Date;
-  enddate: Date;
-  premise: Schema.Types.ObjectId | IPremise;
-  space: Schema.Types.ObjectId | ISpace;
-  reservations: Schema.Types.ObjectId[] | IReservation[];
-}
+import { Schema, Model, model } from "mongoose";
+import { type IAvailability } from "@shared/types/api/availability";
 
 // Typeguard to check if the value is of type IAvailability.
 export function isAvailability(value: IAvailability): value is IAvailability {

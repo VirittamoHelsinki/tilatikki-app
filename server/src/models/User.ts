@@ -1,29 +1,9 @@
-import { type Document, Schema, type Model, model } from "mongoose";
+import { Schema, type Model, model } from "mongoose";
 import crypto from "node:crypto";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { type IReservation } from "./Reservation";
-import { type IAvailability } from "./Availability";
-import { type IPremise } from "./Premise";
 import * as config from "../utils/config";
-
-// For internal model definition only.
-export interface IUser extends Document {
-  firstname: string;
-  lastname: string;
-  email: string;
-  password: string;
-  role: string;
-  premises: Schema.Types.ObjectId[] | IPremise[];
-  availabilities: Schema.Types.ObjectId[] | IAvailability[];
-  reservations: Schema.Types.ObjectId[] | IReservation[];
-  resetPasswordToken: string | undefined;
-  resetPasswordExpire: Date | undefined;
-  credentials: Schema.Types.ObjectId;
-  getSignedJwtToken(): string;
-  matchPassword(enteredPassword: string): Promise<boolean>;
-  getResetPasswordToken(): string;
-}
+import { type IUser } from "@shared/types/api/user";
 
 // Typeguard to check if the value is of type IUser[].
 export function isUserList(value: IUser[]): value is IUser[] {

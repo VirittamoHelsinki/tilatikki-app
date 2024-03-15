@@ -1,15 +1,5 @@
-import { Schema, model, Document } from "mongoose";
-import { type IUser } from "./User";
-import { type IReservation } from "./Reservation";
-
-
-export interface IGroup extends Document {
-    studentSize: number;
-    teachers: Schema.Types.ObjectId[] | IUser[];
-    reservations: Schema.Types.ObjectId[] | IReservation[];
-
-}
-
+import { Schema, model } from "mongoose";
+import { type IGroup } from "@shared/types/api/group";
 
 const groupSchema = new Schema<IGroup>({
     studentSize: { type: Number, required: true },

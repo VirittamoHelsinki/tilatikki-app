@@ -1,9 +1,10 @@
 import { type Request, type Response } from "express";
 import crypto from "node:crypto";
 import asyncErrorHandler from "../middleware/asyncErrorHandler";
-import User, { IUser } from "../models/User";
+import User from "../models/User";
 import sendEmail from "../utils/sendEmail";
 import * as config from "../utils/config";
+import { IUser } from "@shared/types/api/user";
 
 type RegisterUserForm = {
   firstname: string|undefined;
@@ -98,6 +99,7 @@ export const getMe = asyncErrorHandler(async (req: Request, res: Response) => {
     const user = await User.findById(req.user.id);
     res.status(200).json(user);
   } catch (error) {
+    console.error("getMe error:", error);
     res.status(500).json({ error });
   }
 });
