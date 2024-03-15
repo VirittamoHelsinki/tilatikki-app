@@ -1,18 +1,5 @@
-import { type Document, Schema, type Model, model } from "mongoose";
-import { type IPremise } from "./Premise";
-import { type IAvailability } from "./Availability";
-import { type IReservation } from "./Reservation";
-
-// For internal model definition only.
-export interface ISpace extends Document {
-  name: string;
-  area?: number;
-  premise: Schema.Types.ObjectId | IPremise;
-  building: Schema.Types.ObjectId;
-  floor: Schema.Types.ObjectId;
-  availabilities: Schema.Types.ObjectId[] | IAvailability[];
-  reservations: Schema.Types.ObjectId[] | IReservation[];
-}
+import { Schema, type Model, model } from "mongoose";
+import { type ISpace } from "@shared/types/entity/space";
 
 // Typeguard to check if the value is of type ISpace[].
 export function isSpaceList(value: ISpace[]): value is ISpace[] {

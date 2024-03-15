@@ -1,21 +1,5 @@
-import { Schema, model, Document } from "mongoose";
-import { ISpace } from "./Space";
-
-export interface IBuilding extends Document {
-  name: string;
-  floors: number;
-  rooms: number 
-  outlines:{
-    floor: number;
-    image: string;
-  }[],
-  blueprint: {
-    floor: number;
-    image: string;
-  }[];
-  facade: string[];
-  space: {_id: Schema.Types.ObjectId[] | ISpace[]}[];
-}
+import { Schema, model } from "mongoose";
+import { IBuilding } from "@shared/types/entity/building";
 
 // Define the building schema.
 const buildingSchema = new Schema<IBuilding>({

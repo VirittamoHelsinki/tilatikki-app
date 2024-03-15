@@ -7,6 +7,9 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "outDir": "./dist",
-    "typeRoots": ["./types"]
+    "typeRoots": ["./types"],
+    "paths": {
+      "@shared/*": ["../shared/*"],
+    }
   }
 }

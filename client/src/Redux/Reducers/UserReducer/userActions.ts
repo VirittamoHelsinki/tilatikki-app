@@ -154,7 +154,7 @@ export function getMe() {
     dispatch({ type: ActionTypes.GET_ME_BEGINS });
     try {
       const response = await axios.get("/api/auth/me", config());
-      const userData = response.data;
+      const userData = response.data.data;
       dispatch({
         type: ActionTypes.GET_ME_SUCCESS,
         payload: userData,

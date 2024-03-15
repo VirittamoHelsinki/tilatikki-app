@@ -3,15 +3,6 @@ import Space from "../models/Space";
 import asyncErrorHandler from "../middleware/asyncErrorHandler";
 import Premise from "../models/Premise";
 
-// interface IBuilding {
-//   _id: string;
-//   name: string;
-//   floors: {
-//     floor: number;
-//     blueprint_url?: string;
-//   }[];
-// }
-
 // Desc: Get all spaces
 // @route GET /api/spaces
 // @access Public
