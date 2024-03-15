@@ -18,7 +18,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "~/@/components/ui/tabs";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Badge } from "~/@/components/ui/badge";
 import { Input } from "~/@/components/ui/input";
 import {
@@ -46,9 +46,9 @@ function formatPremiseNameForUrl(name: string): string {
 
 const Premise: React.FC = () => {
   const { id } = useParams();
-  const { pathname } = useLocation();
+  // const { pathname } = useLocation();
   const { getPremiseById } = usePremiseAction();
-  const { isLoading, premiseData, currentBuilding } = useTypedSelector(
+  const { isLoading, /*premiseData,*/ currentBuilding } = useTypedSelector(
     (state) => state.premise,
   );
 
