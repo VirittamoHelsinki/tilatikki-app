@@ -11,7 +11,10 @@
     "dev": "concurrently -n Client,Server \"npm run dev:client\" \"npm run dev:server\"",
     "setup:client": "cd client && npm install",
     "setup:server": "cd server && npm install",
-    "setup": "concurrently -n Client,Server \"npm run setup:client\" \"npm run setup:server\""
+    "setup": "concurrently -n Client,Server \"npm run setup:client\" \"npm run setup:server\"",
+    "lint:client": "cd client && npm run lint",
+    "lint:server": "cd server && npm run lint",
+    "lint": "concurrently -n Client,Server \"npm run lint:client\" \"npm run lint:server\""
   },
   "keywords": [],
   "author": "",
