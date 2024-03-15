@@ -405,8 +405,6 @@ function AddMember() {
   const [inputValue, setInputValue] = useState("");
   const [selectedValues, setSelectedValues] = useState<typeof options>([]);
 
-  console.log('add member')
-
   return (
     <Command className="overflow-visible bg-transparent">
       <div className="group rounded-md border border-dashed border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
