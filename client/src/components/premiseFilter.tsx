@@ -40,7 +40,7 @@ import {
   FormLabel,
   FormMessage,
 } from "~/@/components/ui/form";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { fi } from "date-fns/locale";
 import {
   ResizablePanel,
@@ -48,6 +48,7 @@ import {
 import { useTypedSelector } from "~/hooks/useTypedSelector";
 import { usePremiseAction } from "~/hooks/usePremise";
 import Filterme from "~/components/filterme";
+import { BuildingDetails } from "~/Redux/Reducers/premiseState";
 
 const premiseSchema = z.object({
   buildingName: z.string(),
@@ -60,16 +61,16 @@ const premiseSchema = z.object({
 
 const PremiseFilter: React.FC = () => {
   const { id } = useParams();
-  const { pathname } = useLocation();
+  // const { pathname } = useLocation();
   const { getPremiseById } = usePremiseAction();
   const { premiseData } = useTypedSelector(
     (state) => state.premise,
   );
 
-  const [currentBuilding, setCurrentBuilding] = useState<string | null>(null);
+  const [currentBuilding, setCurrentBuilding] = useState<BuildingDetails | undefined>(undefined);
 
   // tällä hetkellä kova koodattu 0 
-  let [buildingId, setBuildingId] = useState<string | undefined>(undefined);
+  let [buildingId] = useState<string | undefined>(undefined);
   const [floor, setFloor] = useState<string | undefined>(undefined);
 
   const form = useForm<z.infer<typeof premiseSchema>>({
