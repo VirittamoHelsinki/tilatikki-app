@@ -69,7 +69,6 @@ const PremiseFilter: React.FC = () => {
 
   const [currentBuilding, setCurrentBuilding] = useState<BuildingDetails | undefined>(undefined);
 
-  // tällä hetkellä kova koodattu 0 
   let [buildingId] = useState<string | undefined>(undefined);
   const [floor, setFloor] = useState<string | undefined>(undefined);
 
@@ -112,7 +111,7 @@ const PremiseFilter: React.FC = () => {
       // Call without floorNumber if buildingId is set but floorNumber is not a valid number
       getPremiseById(id, buildingId);
     }
-    form.reset();
+    // form.reset();
   }
   return (
     <ResizablePanel>
