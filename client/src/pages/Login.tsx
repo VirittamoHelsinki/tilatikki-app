@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -60,9 +60,15 @@ export function Login() {
   }
 
   const cookies = new Cookies();
-  const tilatikkiCookie = cookies.get("tilatikkiToken");
+  const [tilatikkiCookie, setTilatikkiCookie] = useState(cookies.get("tilatikkiToken"))
 
-  // TODO:fix this useEffect by removing it
+  cookies.addChangeListener((val) => {
+    console.log("Login page cookies updated", val)
+    if (val.name === "tilatikkiToken") {
+      setTilatikkiCookie(val.value)
+    }
+  })
+
   useEffect(() => {
     if (tilatikkiCookie) {
       navigate("/");
