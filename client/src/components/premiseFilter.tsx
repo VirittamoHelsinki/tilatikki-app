@@ -49,6 +49,7 @@ import { useTypedSelector } from "~/hooks/useTypedSelector";
 import { usePremiseAction } from "~/hooks/usePremise";
 import Filterme from "~/components/filterme";
 import { BuildingDetails } from "~/Redux/Reducers/premiseState";
+import { space } from "postcss/lib/list";
 
 const premiseSchema = z.object({
   buildingName: z.string(),
@@ -59,7 +60,12 @@ const premiseSchema = z.object({
   endTime: z.string().optional(),
 });
 
-const PremiseFilter: React.FC = () => {
+interface PremiseFilterProps {
+  setCurrentSpaceId: React.Dispatch<React.SetStateAction<string | null>>;
+  setCurrentFloor: React.Dispatch<React.SetStateAction<number | null>>;
+}
+
+const PremiseFilter: React.FC<PremiseFilterProps> = ({ setCurrentSpaceId, setCurrentFloor }) => {
   const { id } = useParams();
   // const { pathname } = useLocation();
   const { getPremiseById } = usePremiseAction();
@@ -75,6 +81,8 @@ const PremiseFilter: React.FC = () => {
   const form = useForm<z.infer<typeof premiseSchema>>({
     resolver: zodResolver(premiseSchema),
   });
+
+  const [spaceID, setSpaceID] = useState<string | null>(null);
 
 
   // function premiseOutline(): string {
@@ -96,6 +104,10 @@ const PremiseFilter: React.FC = () => {
       (building) => building.name === data.buildingName,
     );
 
+    console.log('data ', data)
+
+    setCurrentFloor(Number(data.floorName))
+
     // force buildingid state change
     buildingId = selectedBuilding?._id;
     // setBuildingId(buildingId);
@@ -112,6 +124,11 @@ const PremiseFilter: React.FC = () => {
       getPremiseById(id, buildingId);
     }
     // form.reset();
+
+
+    setCurrentSpaceId(spaceID!);
+
+
   }
   return (
     <ResizablePanel>
@@ -174,9 +191,11 @@ const PremiseFilter: React.FC = () => {
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
                       <FormLabel>Kerros</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
+                      <Select onValueChange={(value) => {
+                      field.onChange(value);
+                      // setCurrentFloor(Number(value));
+                      }}
+                      defaultValue={field.value}
                       >
                         <FormControl>
                           <SelectTrigger className="w-[180px]">
@@ -218,7 +237,16 @@ const PremiseFilter: React.FC = () => {
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
                     <FormLabel>Opetustila</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
+                    <Select onValueChange={(value) => {
+                      field.onChange(value);
+
+                      const selectedWorkSpace = currentBuilding?.space.find(( space ) => space.name === value);
+
+                      setSpaceID(selectedWorkSpace?._id!);
+
+                      // setCurrentSpaceId(selectedWorkSpace?._id!);
+                      }} 
+                      defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger className="w-[180px]">
                           <SelectValue placeholder="Valitse Opetustila" />

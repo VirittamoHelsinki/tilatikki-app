@@ -1,6 +1,7 @@
 import React, {
   Suspense,
   useEffect,
+  useState,
 } from "react";
 import { SVGLoader } from "three-stdlib";
 import { MapControls } from "@react-three/drei";
@@ -52,11 +53,17 @@ const Premise: React.FC = () => {
     (state) => state.premise,
   );
 
+  const [currentSpaceId, setCurrentSpaceId] = useState<string | null>(null)
+  const [currentFloor, setCurrentFloor] = useState<number | null>(null)
+
   useEffect(() => {
     if (id) {
       getPremiseById(id);
     }
   }, []);
+
+  useEffect(() => { console.log('currentSpaceId', currentSpaceId) }, [currentSpaceId])
+  useEffect(() => { console.log('currentFloor', currentFloor) }, [currentFloor])
 
   // const watchedBuildingName = form.watch("buildingName");
   // const watchedFloor = form.watch("floorName");
@@ -123,6 +130,7 @@ const Premise: React.FC = () => {
   // }
 
   // if (isLoading) return <div>Loading...</div>;
+  // TODO: Hakee tilat kun hae tilat nappia painetaan
 
   return (
     <main className="flex flex-1 flex-col p-4 sm:min-h-0 sm:px-8 sm:py-4">
@@ -131,7 +139,7 @@ const Premise: React.FC = () => {
         direction="horizontal"
         className="h-full w-full rounded-lg border"
       >
-        <PremiseFilter />
+        <PremiseFilter setCurrentSpaceId={setCurrentSpaceId} setCurrentFloor={setCurrentFloor} />
         <ResizableHandle withHandle />
         <ResizablePanel>
           <div className="flex h-full w-full flex-col gap-6 p-6">
@@ -141,11 +149,11 @@ const Premise: React.FC = () => {
                 isLoading ? (
                   <Loader2 className="animate-spin" />
                 ) : (
-                  currentBuilding?.space.map((space, index) => (
-                    <ReservationDialog
-                      key={index}
-                      availabilityId={space.availabilities[0]}
-                    >
+                  currentBuilding?.space.map((space) => (
+                    (currentSpaceId === space._id && currentFloor === space.floor?      
+                      (<ReservationDialog
+                      key={space._id}
+                      availabilityId={space.availabilities[0]}>
                       <Card>
                         <CardHeader>
                           <CardTitle>{space.name}</CardTitle>
@@ -155,7 +163,7 @@ const Premise: React.FC = () => {
                           {/* Additional badges or info based on space details */}
                         </CardContent>
                       </Card>
-                    </ReservationDialog>
+                    </ReservationDialog>) : null) 
                   ))
                 )
               ) : (
