@@ -150,26 +150,26 @@ const Premise: React.FC = () => {
                   <Loader2 className="animate-spin" />
                 ) : (
                   currentBuilding?.space.map((space) => (
-                    (currentSpaceId === space._id && currentFloor === space.floor?      
+                    (currentSpaceId === null || currentFloor === null || (currentSpaceId === space._id && currentFloor === space.floor)) ?
                       (<ReservationDialog
-                      key={space._id}
-                      availabilityId={space.availabilities[0]}>
-                      <Card>
-                        <CardHeader>
-                          <CardTitle>{space.name}</CardTitle>
-                        </CardHeader>
-                        <CardContent className="flex gap-2">
-                          <Badge>{`${space.area} m\u00b2`}</Badge>
-                          {/* Additional badges or info based on space details */}
-                        </CardContent>
-                      </Card>
-                    </ReservationDialog>) : null) 
+                        key={space._id}
+                        availabilityId={space.availabilities[0]}>
+                        <Card>
+                          <CardHeader>
+                            <CardTitle>{space.name}</CardTitle>
+                          </CardHeader>
+                          <CardContent className="flex gap-2">
+                            <Badge>{`${space.area} m\u00b2`}</Badge>
+                            {/* Additional badges or info based on space details */}
+                          </CardContent>
+                        </Card>
+                      </ReservationDialog>) : null)
                   ))
-                )
+              
               ) : (
-                <p className="text-sm text-muted-foreground">
-                  Ei ole tiloja saatavilla
-                </p>
+              <p className="text-sm text-muted-foreground">
+                Ei ole tiloja saatavilla
+              </p>
               )}
             </Suspense>
           </div>
