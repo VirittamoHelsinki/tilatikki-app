@@ -3,7 +3,8 @@
   <defs>
     <style>
       .cls-1 {
-        fill: #141111;
+<!--        fill: #141111;-->
+      fill: #6ea5ff; /* Blue color */
       }
 
       .cls-1, .cls-2 {
@@ -11,7 +12,8 @@
       }
 
       .cls-2 {
-        fill: #161515;
+<!--        fill: #161515;-->
+      fill: #ff8a5b; /* Orange color */
       }
     </style>
   </defs>

@@ -29,8 +29,9 @@ import {
 import {useTypedSelector} from "~/hooks/useTypedSelector";
 import {usePremiseAction} from "~/hooks/usePremise";
 import ReservationDialog from "~/components/reservationDialog";
-import Loader from "~/components/loader";
+import Loader from "~/components/visualization/loader.tsx";
 import PremiseFilter from "~/components/premiseFilter";
+import BackgroundLayer from "~/components/visualization/backgroundLayer.tsx";
 
 extend({SVGLoader});
 
@@ -62,72 +63,75 @@ const Premise: React.FC = () => {
         }
     }, []);
 
-    // const watchedBuildingName = form.watch("buildingName");
-    // const watchedFloor = form.watch("floorName");
+    /*    const watchedBuildingName = form.watch("buildingName");
+        const watchedFloor = form.watch("floorName");
 
-    // useEffect(() => {
-    //   if (!watchedBuildingName) {
-    //     setBuildingId(undefined);
-    //     return;
-    //   }
+        useEffect(() => {
+          if (!watchedBuildingName) {
+            setBuildingId(undefined);
+            return;
+          }
 
-    //   const selectedBuilding = premiseData.buildings.find(
-    //     (building) => building.name === watchedBuildingName,
-    //   );
+          const selectedBuilding = premiseData.buildings.find(
+            (building) => building.name === watchedBuildingName,
+          );
 
-    //   if (selectedBuilding) {
-    //     setBuildingId(selectedBuilding._id);
-    //   } else {
-    //     setBuildingId(undefined);
-    //   }
-    // }, [watchedBuildingName, premiseData.buildings]);
+          if (selectedBuilding) {
+            setBuildingId(selectedBuilding._id);
+          } else {
+            setBuildingId(undefined);
+          }
+        }, [watchedBuildingName, premiseData.buildings]);
 
-    // useEffect(() => {
-    //   if (!watchedFloor) {
-    //     setFloor(undefined);
-    //     return;
-    //   }
-    //   setFloor(watchedFloor);
-    // }, [watchedFloor]);
+        useEffect(() => {
+          if (!watchedFloor) {
+            setFloor(undefined);
+            return;
+          }
+          setFloor(watchedFloor);
+        }, [watchedFloor]);*/
 
-    // useEffect(() => {
-    //   let floorNumber: number | undefined;
-    //   if (!watchedFloor) {
-    //     floorNumber = undefined;
-    //   } else {
-    //     floorNumber = parseInt(watchedFloor, 10);
-    //   }
-    //   // Ensure floorNumber is a number and not NaN before calling getPremiseById
-    //   if (buildingId && floorNumber !== undefined && !isNaN(floorNumber)) {
-    //     getPremiseById(id!, buildingId, floorNumber);
-    //   } else if (buildingId) {
-    //     // Call without floorNumber if buildingId is set but floorNumber is not a valid number
-    //     getPremiseById(id!, buildingId);
-    //   }
-    // }, [buildingId, watchedFloor]);
+    /*    useEffect(() => {
+          let floorNumber: number | undefined;
+          if (!watchedFloor) {
+            floorNumber = undefined;
+          } else {
+            floorNumber = parseInt(watchedFloor, 10);
+          }
+          // Ensure floorNumber is a number and not NaN before calling getPremiseById
+          if (buildingId && floorNumber !== undefined && !isNaN(floorNumber)) {
+            getPremiseById(id!, buildingId, floorNumber);
+          } else if (buildingId) {
+            // Call without floorNumber if buildingId is set but floorNumber is not a valid number
+            getPremiseById(id!, buildingId);
+          }
+        }, [buildingId, watchedFloor]);*/
 
-    // function premiseOutline(): string {
-    //   if (floor === "1") {
-    //     return `/assets/${pathname}/kerros1-outline.svg`;
-    //   } else if (floor === "2") {
-    //     return `/assets/${pathname}/kerros2-outline.svg`;
-    //   } else {
-    //     return `/assets/${pathname}/kerros3-outline.svg`;
-    //   }
-    // }
+    function premiseOutline(pathname: string): string {
+        if (currentFloor === "1") {
+            return `/assets/${pathname}/kerros1-outline.svg`;
+        } else if (currentFloor === "2") {
+            return `/assets/${pathname}/kerros2-outline.svg`;
+        } else {
+            return `/assets/${pathname}/kerros3-outline.svg`;
+        }
+    }
 
-    // function premiseFloor(): string {
-    //   if (floor === "1.kerros") {
-    //     return `/assets/${pathname}/kerros1.svg`;
-    //   } else if (floor === "2.kerros") {
-    //     return `/assets/${pathname}/kerros2.svg`;
-    //   } else {
-    //     return `/assets/${pathname}/kerros3-rooms.svg`;
-    //   }
-    // }
+    function premiseFloor(pathname: string): string {
+        if (currentFloor === "1") {
+            return `/assets/${pathname}/kerros1-rooms.svg`;
+        } else if (currentFloor === "2") {
+            return `/assets/${pathname}/kerros2-rooms.svg`;
+        } else {
+            return `/assets/${pathname}/kerros3-rooms.svg`;
+        }
+    }
+
+    const handleFloorChange = (floor: string) => {
+        setCurrentFloor(floor)
+    }
 
     // if (isLoading) return <div>Loading...</div>;
-
     return (
         <main className="flex flex-1 flex-col p-4 sm:min-h-0 sm:px-8 sm:py-4">
             {/* <div className="grid flex-1 grid-cols-1 grid-rows-3 gap-4 p-4 sm:min-h-0 sm:grid-cols-10 sm:grid-rows-1 sm:gap-8 sm:px-8 sm:py-4"> */}
@@ -181,12 +185,14 @@ const Premise: React.FC = () => {
                 <ResizableHandle withHandle/>
                 <ResizablePanel>
                     <Tabs
-                        defaultValue="1floor"
+                        defaultValue="{currentFloor}"
+                        onValueChange={(value) => handleFloorChange(value)}
                         className="flex h-full w-full flex-col items-start"
                     >
                         <TabsList className="flex items-start">
                             <TabsTrigger value="1floor">1.kerros</TabsTrigger>
                             <TabsTrigger value="2floor">2.kerros</TabsTrigger>
+                            <TabsTrigger value="3floor">3.kerros</TabsTrigger>
                         </TabsList>
                         <TabsContent
                             value="1floor"
@@ -205,16 +211,72 @@ const Premise: React.FC = () => {
                                 }}
                             >
                                 <Suspense fallback={<Loader/>}>
-                                    {/*  <BackgroundLayer
-                    url={premiseOutline()}
-                    floor={floor || "defaultFloor"}
-                  />*/}
+                                    {
+                                        <BackgroundLayer
+                                            /*url="/assets/jatkasaaren-peruskoulu/kerros1-outline.svg"*/
+                                            url={premiseOutline("jatkasaaren-peruskoulu")}
+                                            floor={premiseFloor("jatkasaaren-peruskoulu")}
+                                        />
+                                    }
                                 </Suspense>
                                 <MapControls enableRotate={false}/>
                             </Canvas>
                         </TabsContent>
-                        <TabsContent value="2floor">
-                            <p>hmmm kauppa</p>
+                        <TabsContent
+                            value="2floor"
+                            id="ref-body"
+                            className="h-full w-full flex-1"
+                        >
+                            <Canvas
+                                className="h-full w-full"
+                                frameloop="demand"
+                                orthographic
+                                camera={{
+                                    position: [0, 0, 200],
+                                    zoom: 1,
+                                    up: [0, 0, 1],
+                                    far: 10000,
+                                }}
+                            >
+                                <Suspense fallback={<Loader/>}>
+                                    {
+                                        <BackgroundLayer
+                                            /*url="/assets/jatkasaaren-peruskoulu/kerros1-outline.svg"*/
+                                            url={premiseOutline("jatkasaaren-peruskoulu")}
+                                            floor={premiseFloor("jatkasaaren-peruskoulu")}
+                                        />
+                                    }
+                                </Suspense>
+                                <MapControls enableRotate={false}/>
+                            </Canvas>
+                        </TabsContent>
+                        <TabsContent
+                            value="3floor"
+                            id="ref-body"
+                            className="h-full w-full flex-1"
+                        >
+                            <Canvas
+                                className="h-full w-full"
+                                frameloop="demand"
+                                orthographic
+                                camera={{
+                                    position: [0, 0, 200],
+                                    zoom: 1,
+                                    up: [0, 0, 1],
+                                    far: 10000,
+                                }}
+                            >
+                                <Suspense fallback={<Loader/>}>
+                                    {
+                                        <BackgroundLayer
+                                            /*url="/assets/jatkasaaren-peruskoulu/kerros1-outline.svg"*/
+                                            url={premiseOutline("jatkasaaren-peruskoulu")}
+                                            floor={premiseFloor("jatkasaaren-peruskoulu")}
+                                        />
+                                    }
+                                </Suspense>
+                                <MapControls enableRotate={false}/>
+                            </Canvas>
                         </TabsContent>
                     </Tabs>
                 </ResizablePanel>

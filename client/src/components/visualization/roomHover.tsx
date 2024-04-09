@@ -12,7 +12,7 @@ const RoomHover: React.FC<RoomHoverProps> = ({ x, y }) => {
   return (
     <Html
       scale={100}
-      rotation={[Math.PI / 1, Math.PI / 1, 0]}
+      rotation={[Math.PI, Math.PI, 0]}
       position={[x - 50, y - 50, 1]}
       transform
       occlude

@@ -53,8 +53,6 @@ const ReservationDialog: React.FC<ReservationDialogProps> = ({ availabilityId, c
   const [start, setStart] = useState<string>();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [end, setEnd] = useState<string>();
-  console.log("me", user._id);
-  console.log("avalability", availabilityId);
 
   return (
     <Dialog>
@@ -224,7 +222,6 @@ const ReservationDialog: React.FC<ReservationDialogProps> = ({ availabilityId, c
             type="submit"
             onClick={() => {
               createReservation(startDate!, endDate!, availabilityId);
-              console.log("max win");
             }}
           >
             Varaa Tila
