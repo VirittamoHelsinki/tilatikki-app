@@ -58,7 +58,7 @@ export const createSpace = asyncErrorHandler(
 // @access Public
 export const getSpaceById = asyncErrorHandler(
   async (req: Request, res: Response) => {
-    const space = await Space.findById(req.params.id);
+    const space = await Space.findById(req.params.id).populate('building')
     if (!space) {
       return res.status(404).json({ success: false, error: "Space not found" });
     }
