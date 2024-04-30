@@ -131,6 +131,8 @@ const Premise: React.FC = () => {
         setCurrentFloor(floor)
     }
 
+
+
     // if (isLoading) return <div>Loading...</div>;
     return (
         <main className="flex flex-1 flex-col p-4 sm:min-h-0 sm:px-8 sm:py-4">
@@ -186,7 +188,7 @@ const Premise: React.FC = () => {
                 <ResizablePanel>
                     <Tabs
                         defaultValue="{currentFloor}"
-                        onValueChange={(value) => handleFloorChange(value)}
+                        onValueChange={(value) => handleFloorChange(value.charAt((0)))}
                         className="flex h-full w-full flex-col items-start"
                     >
                         <TabsList className="flex items-start">
@@ -224,7 +226,7 @@ const Premise: React.FC = () => {
                         </TabsContent>
                         <TabsContent
                             value="2floor"
-                            id="ref-body"
+                            id="ref-body-2"
                             className="h-full w-full flex-1"
                         >
                             <Canvas
