@@ -105,7 +105,7 @@ function Profile({ children }: { children?: React.ReactNode }) {
         <DropdownMenuSeparator />
         <DropdownMenuItem>
           <Link to="/login" onClick={() => logoutUser()}>
-            Log out
+            Kirjaudu ulos
           </Link>
         </DropdownMenuItem>
       </DropdownMenuContent>
