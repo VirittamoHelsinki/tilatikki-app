@@ -100,7 +100,7 @@ function Profile({ children }: { children?: React.ReactNode }) {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <Link to="/settings">Hallinointi</Link>
+          <Link to="/settings">Hallinnointi</Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem>

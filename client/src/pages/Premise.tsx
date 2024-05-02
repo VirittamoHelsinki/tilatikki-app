@@ -140,7 +140,7 @@ const Premise: React.FC = () => {
                 <ResizableHandle withHandle/>
                 <ResizablePanel>
                     <div className="flex h-full w-full flex-col gap-6 p-6">
-                        <Input placeholder="search..."/>
+                        <Input placeholder="Hae..."/>
                         <Suspense fallback={<Loader2 className="animate-spin"/>}>
                             {currentBuilding && currentBuilding.space.length >= 1 ? (
                                 isLoading ? (
@@ -172,7 +172,7 @@ const Premise: React.FC = () => {
                                 )
                             ) : (
                                 <p className="text-sm text-muted-foreground">
-                                    Ei ole tiloja saatavilla
+                                    Tiloja ei ole saatavilla
                                 </p>
                             )}
                         </Suspense>
@@ -214,7 +214,7 @@ const Premise: React.FC = () => {
                             </Canvas>
                         </TabsContent>
                         <TabsContent value="2floor">
-                            <p>hmmm kauppa</p>
+                            <p>Toinen kerros</p>
                         </TabsContent>
                     </Tabs>
                 </ResizablePanel>

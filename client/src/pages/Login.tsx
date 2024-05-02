@@ -106,10 +106,10 @@ export function Login() {
           <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
             <div className="flex flex-col space-y-2 text-center">
               <h1 className="text-2xl font-semibold tracking-tight">
-                Kirjaudu Sisään
+                Kirjaudu sisään
               </h1>
               <p className="text-sm text-muted-foreground">
-                Tilavarausjärjestelmä opetustiloille.
+                Tilanvarausjärjestelmä opetustiloille.
               </p>
             </div>
             <Form {...form}>
@@ -131,7 +131,7 @@ export function Login() {
                         />
                       </FormControl>
                       <FormDescription>
-                        Sähköposti pitää olla @hel.fi tai @edu.hel.fi
+                        Sähköpostin pitää olla @hel.fi tai @edu.hel.fi
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -150,9 +150,6 @@ export function Login() {
                           {...field}
                         />
                       </FormControl>
-                      <FormDescription>
-                        Salasana pitää olla vähintään 10 merkkiä pitkä
-                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -174,7 +171,7 @@ export function Login() {
                       <path d="M21 12a9 9 0 1 1-6.219-8.56" />
                     </svg>
                   )}
-                  Kirjaudu Sisään
+                  Kirjaudu sisään
                 </Button>
               </form>
             </Form>
