@@ -63,7 +63,7 @@ const ReservationDialog: React.FC<ReservationDialogProps> = ({ availabilityId, c
         <DialogHeader>
           <DialogTitle>A1234</DialogTitle>
           <DialogDescription>
-            Kolmikerrosinen koulu rakennus, jossa on noin 150 opetustilaa
+            Opetustila, jossa on tilaa 100 opiskelijalle.
           </DialogDescription>
           <div className="flex gap-4">
             <div className="flex items-center gap-1 text-sm">
@@ -80,17 +80,17 @@ const ReservationDialog: React.FC<ReservationDialogProps> = ({ availabilityId, c
             <Label htmlFor="name" className="">
               Otsikko
             </Label>
-            <Input id="name" placeholder="Yrittajyys kurssi" className="" />
+            <Input id="name" placeholder="Yrittäjyyskurssi" className="" />
           </div>
           <div className="flex flex-col gap-4">
             <Label htmlFor="add-user" className="">
-              Lisaa jasen
+              Lisää jäsen
             </Label>
             <AddMember />
           </div>
           <div className="flex flex-col gap-4">
             <Label htmlFor="member-count" className="">
-              Ryhman koko
+              Ryhmän koko
             </Label>
             <Input id="member-count" placeholder="10" className="" />
           </div>
@@ -181,7 +181,7 @@ const ReservationDialog: React.FC<ReservationDialogProps> = ({ availabilityId, c
               onValueChange={setEnd}
             >
               <SelectTrigger className="w-full flex-1">
-                <SelectValue placeholder="Valitse aloitusaika" />
+                <SelectValue placeholder="Valitse lopetusaika" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
@@ -194,27 +194,27 @@ const ReservationDialog: React.FC<ReservationDialogProps> = ({ availabilityId, c
           </div>
           <div className="flex w-full flex-1 flex-col gap-4">
             <Label htmlFor="add-user" className="">
-              Toituva
+              Toistuvuus
             </Label>
             <Select
               // value={start}
               onValueChange={setEnd}
             >
               <SelectTrigger className="w-full flex-1">
-                <SelectValue placeholder="Valitse Toistuva" />
+                <SelectValue placeholder="Toistuvuus" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectLabel>Toistuva</SelectLabel>
-                  <SelectItem value="everyday">Joka paiva</SelectItem>
-                  <SelectItem value="every-week">Joka viikko</SelectItem>
+                  <SelectLabel>Toistuvuus</SelectLabel>
+                  <SelectItem value="everyday">Päivittäin</SelectItem>
+                  <SelectItem value="every-week">Viikoittain</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
           </div>
           <div className="flex w-full flex-1 flex-col gap-4">
             <Label htmlFor="add-user" className="">
-              Lisatietoa
+              Lisätietoa
             </Label>
             <Textarea placeholder="Kirjoita viesti" />
           </div>
@@ -227,7 +227,7 @@ const ReservationDialog: React.FC<ReservationDialogProps> = ({ availabilityId, c
               console.log("max win");
             }}
           >
-            Varaa Tila
+            Varaa tila
           </Button>
         </DialogFooter>
       </DialogContent>
