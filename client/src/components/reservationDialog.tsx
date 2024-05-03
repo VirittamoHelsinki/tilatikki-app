@@ -194,20 +194,20 @@ const ReservationDialog: React.FC<ReservationDialogProps> = ({ availabilityId, c
           </div>
           <div className="flex w-full flex-1 flex-col gap-4">
             <Label htmlFor="add-user" className="">
-              Toistuva
+              Toistuvuus
             </Label>
             <Select
               // value={start}
               onValueChange={setEnd}
             >
               <SelectTrigger className="w-full flex-1">
-                <SelectValue placeholder="Valitse toistuva" />
+                <SelectValue placeholder="Toistuvuus" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectLabel>Toistuva</SelectLabel>
-                  <SelectItem value="everyday">Joka päivä</SelectItem>
-                  <SelectItem value="every-week">Joka viikko</SelectItem>
+                  <SelectLabel>Toistuvuus</SelectLabel>
+                  <SelectItem value="everyday">Päivittäin</SelectItem>
+                  <SelectItem value="every-week">Viikoittain</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
