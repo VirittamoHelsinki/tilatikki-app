@@ -13,6 +13,7 @@ interface CellProps {
 const Cell: React.FC<CellProps> = ({ color, fillOpacity, shape }) => {
   const [room, setRoom] = useState(false);
   const [hovered, hover] = useState(false);
+  // TODO: here custom cursor
   useEffect(() => {
     return void ((
       document.querySelector("#ref-body") as HTMLDivElement
