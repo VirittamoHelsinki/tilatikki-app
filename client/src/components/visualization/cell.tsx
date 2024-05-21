@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import RoomHover from './roomHover';
+import RoomHover from './roomHover.tsx';
 import { Color, Shape, } from "three";
 
 // TODO: Tell here what the component does
@@ -13,6 +13,7 @@ interface CellProps {
 const Cell: React.FC<CellProps> = ({ color, fillOpacity, shape }) => {
   const [room, setRoom] = useState(false);
   const [hovered, hover] = useState(false);
+  // TODO: here custom cursor
   useEffect(() => {
     return void ((
       document.querySelector("#ref-body") as HTMLDivElement
@@ -37,7 +38,7 @@ const Cell: React.FC<CellProps> = ({ color, fillOpacity, shape }) => {
         );
         setRoom(!room);
       }}
-      rotation={[0, 0, Math.PI / 1]}
+      rotation={[0, 0, Math.PI]}
     >
       <shapeGeometry args={[shape]} />
       <meshBasicMaterial

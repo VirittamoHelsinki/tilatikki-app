@@ -9,7 +9,7 @@ interface OutlineProps {
 
 const Outline: React.FC<OutlineProps> = ({ shape }) => {
   return (
-    <mesh rotation={[0, 0, Math.PI / 1]}>
+    <mesh rotation={[0, 0, Math.PI]}>
       <shapeGeometry args={[shape]} />
       <meshBasicMaterial depthWrite={false} color="#f8f8f8" />
     </mesh>

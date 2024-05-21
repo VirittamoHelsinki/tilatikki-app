@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { Group, Object3DEventMap } from "three";
-import Cell from './cell';
+import Cell from './cell.tsx';
 import { useLoader, extend } from "@react-three/fiber";
 import { SVGLoader } from "three-stdlib";
 

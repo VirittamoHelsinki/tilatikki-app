@@ -65,9 +65,9 @@ export function Profile() {
   return (
     <main className="flex flex-1 flex-col p-4 sm:min-h-0 sm:px-8 sm:py-4">
       <div className="space-y-0.5">
-        <h2 className="text-2xl font-bold tracking-tight">Hallinnointi</h2>
+        <h2 className="text-2xl font-bold tracking-tight">Hallinnonti</h2>
         <p className="text-muted-foreground">
-        Tällä sivulla voit esimerkiksi muokata omia käyttäjätietojasi sekä tarkastella varaushistoriaasi.
+          Jotain tai ehkä jätää tämän pois mmmm... pitää miettiä
         </p>
       </div>
       <Separator className="my-6" />
@@ -80,12 +80,13 @@ export function Profile() {
             <div>
               <h3 className="text-lg font-medium">Käyttäjätiedot</h3>
               <p className="text-sm text-muted-foreground">
-                Muokkaa käyttäjätietojasi.
+                Hallitse käyttäjiä ja jne. toimintoja mitä käyttä voi käyttää TT
+                sovellusta
               </p>
             </div>
             <Separator />
-            <p>Etunimi</p>
-            <span>Sukunimi</span>
+            <p>Kall</p>
+            <span>hmmmm</span>
           </div>
         </div>
       </div>

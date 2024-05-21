@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -60,15 +60,9 @@ export function Login() {
   }
 
   const cookies = new Cookies();
-  const [tilatikkiCookie, setTilatikkiCookie] = useState(cookies.get("tilatikkiToken"))
+  const tilatikkiCookie = cookies.get("tilatikkiToken");
 
-  cookies.addChangeListener((val) => {
-    console.log("Login page cookies updated", val)
-    if (val.name === "tilatikkiToken") {
-      setTilatikkiCookie(val.value)
-    }
-  })
-
+  // TODO:fix this useEffect by removing it
   useEffect(() => {
     if (tilatikkiCookie) {
       navigate("/");
@@ -106,10 +100,10 @@ export function Login() {
           <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
             <div className="flex flex-col space-y-2 text-center">
               <h1 className="text-2xl font-semibold tracking-tight">
-                Kirjaudu sisään
+                Kirjaudu Sisään
               </h1>
               <p className="text-sm text-muted-foreground">
-                Tilanvarausjärjestelmä opetustiloille.
+                Tilavarausjärjestelmä opetustiloille.
               </p>
             </div>
             <Form {...form}>
@@ -131,7 +125,7 @@ export function Login() {
                         />
                       </FormControl>
                       <FormDescription>
-                        Sähköpostin pitää olla @hel.fi tai @edu.hel.fi
+                        Sähköposti pitää olla @hel.fi tai @edu.hel.fi
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -150,6 +144,9 @@ export function Login() {
                           {...field}
                         />
                       </FormControl>
+                      <FormDescription>
+                        Salasana pitää olla vähintään 10 merkkiä pitkä
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -171,7 +168,7 @@ export function Login() {
                       <path d="M21 12a9 9 0 1 1-6.219-8.56" />
                     </svg>
                   )}
-                  Kirjaudu sisään
+                  Kirjaudu Sisään
                 </Button>
               </form>
             </Form>

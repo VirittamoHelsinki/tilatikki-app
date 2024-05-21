@@ -21,8 +21,7 @@
     "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
     "paths": {
-      "~/*": ["./src/*"],
-      "@shared/*": ["../shared/*"],
+      "~/*": ["./src/*"]
     }
   },
   "include": [".eslintrc.cjs", "**/*.ts", "**/*.tsx", "**/*.cjs", "**/*.mjs"],

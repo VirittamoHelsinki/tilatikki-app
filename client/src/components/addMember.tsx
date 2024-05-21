@@ -43,7 +43,7 @@ const AddMember: React.FC = () => {
             onValueChange={setInputValue}
             onBlur={() => setOpen(false)}
             onFocus={() => setOpen(true)}
-            placeholder="Lisää jäsen..."
+            placeholder="Lisaa jasen..."
             className="ml-2 flex-1 bg-transparent outline-none placeholder:text-muted-foreground"
           />
         </div>

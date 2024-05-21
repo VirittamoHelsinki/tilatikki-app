@@ -142,7 +142,7 @@ const PremiseFilter: FC<Props> = ({setCurrentSpaceId, setCurrentBuildingId, setC
                 <CardHeader>
                     <CardTitle>{premiseData.name}</CardTitle>
                     <CardDescription>
-                        Kolmikerroksinen koulurakennus, jossa on noin 150 opetustilaa.
+                        Kolmikerroksinen koulurakennus, jossa on noin 150 opetustilaa
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -171,7 +171,7 @@ const PremiseFilter: FC<Props> = ({setCurrentSpaceId, setCurrentBuildingId, setC
                                             >
                                                 <FormControl>
                                                     <SelectTrigger className="w-[180px]">
-                                                        <SelectValue placeholder="Valitse rakennus"/>
+                                                        <SelectValue placeholder="Valitse Rakennus"/>
                                                     </SelectTrigger>
                                                 </FormControl>
                                                 <SelectContent>
@@ -185,6 +185,7 @@ const PremiseFilter: FC<Props> = ({setCurrentSpaceId, setCurrentBuildingId, setC
                                                     </SelectGroup>
                                                 </SelectContent>
                                             </Select>
+                                            <FormDescription>Opetustila mmm...</FormDescription>
                                             <FormMessage/>
                                         </FormItem>
                                     )}
@@ -201,7 +202,7 @@ const PremiseFilter: FC<Props> = ({setCurrentSpaceId, setCurrentBuildingId, setC
                                             >
                                                 <FormControl>
                                                     <SelectTrigger className="w-[180px]">
-                                                        <SelectValue placeholder="Valitse kerros"/>
+                                                        <SelectValue placeholder="Valitse Kerros"/>
                                                     </SelectTrigger>
                                                 </FormControl>
                                                 <SelectContent>
@@ -221,12 +222,13 @@ const PremiseFilter: FC<Props> = ({setCurrentSpaceId, setCurrentBuildingId, setC
                                                                 aria-disabled
                                                                 className="relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
                                                             >
-                                                                Kerroksia ei ole saatavilla
+                                                                No floors available
                                                             </p>
                                                         )}
                                                     </SelectGroup>
                                                 </SelectContent>
                                             </Select>
+                                            <FormDescription>Opetustila mmm...</FormDescription>
                                             <FormMessage/>
                                         </FormItem>
                                     )}
@@ -244,7 +246,7 @@ const PremiseFilter: FC<Props> = ({setCurrentSpaceId, setCurrentBuildingId, setC
                                         >
                                             <FormControl>
                                                 <SelectTrigger className="w-[180px]">
-                                                    <SelectValue placeholder="Valitse opetustila"/>
+                                                    <SelectValue placeholder="Valitse Opetustila"/>
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
@@ -261,12 +263,13 @@ const PremiseFilter: FC<Props> = ({setCurrentSpaceId, setCurrentBuildingId, setC
                                                             aria-disabled
                                                             className="relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
                                                         >
-                                                            Tiloja ei ole saatavilla
+                                                            Ei ole tiloja saatavilla
                                                         </div>
                                                     )}
                                                 </SelectGroup>
                                             </SelectContent>
                                         </Select>
+                                        <FormDescription>Opetustila mmm...</FormDescription>
                                         <FormMessage/>
                                     </FormItem>
                                 )}
@@ -307,6 +310,7 @@ const PremiseFilter: FC<Props> = ({setCurrentSpaceId, setCurrentBuildingId, setC
                                                 />
                                             </PopoverContent>
                                         </Popover>
+                                        <FormDescription>Päivämäärä...</FormDescription>
                                         <FormMessage/>
                                     </FormItem>
                                 )}
@@ -335,6 +339,7 @@ const PremiseFilter: FC<Props> = ({setCurrentSpaceId, setCurrentBuildingId, setC
                                                     </SelectGroup>
                                                 </SelectContent>
                                             </Select>
+                                            <FormDescription>Aloitusaika...</FormDescription>
                                             <FormMessage/>
                                         </FormItem>
                                     )}
@@ -362,12 +367,13 @@ const PremiseFilter: FC<Props> = ({setCurrentSpaceId, setCurrentBuildingId, setC
                                                     </SelectGroup>
                                                 </SelectContent>
                                             </Select>
+                                            <FormDescription>Lopetusaika...</FormDescription>
                                             <FormMessage/>
                                         </FormItem>
                                     )}
                                 />
                             </div>
-                            <Button type="submit">Hae tiloja</Button>
+                            <Button type="submit">Hae Tilat</Button>
                         </form>
                     </Form>
                 </CardContent>

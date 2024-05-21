@@ -6,7 +6,6 @@ import { Button, buttonVariants } from "~/@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -78,7 +77,7 @@ export function Register() {
           "absolute right-4 top-4 md:right-8 md:top-8",
         )}
       >
-        Kirjaudu sisään
+        Kirjaudu Sisään
       </Link>
       <div className="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex">
         <div className="absolute inset-0 bg-neutral-900" />
@@ -98,7 +97,7 @@ export function Register() {
               Luo uusi käyttäjä
             </h1>
             <p className="text-sm text-muted-foreground">
-              Muista käyttää etunimi.sukunimi@hel.fi sähköpostia.
+              Muista käyttää etunimi.sukunimi@hel.fi sähköpostia
             </p>
           </div>
           <Form {...form}>
@@ -153,9 +152,6 @@ export function Register() {
                     <FormControl>
                       <Input placeholder="virittamo" {...field} />
                     </FormControl>
-                    <FormDescription>
-                        Salasanan pitää olla vähintään 10 merkkiä pitkä.
-                      </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}

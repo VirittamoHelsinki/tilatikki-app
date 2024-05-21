@@ -100,12 +100,12 @@ function Profile({ children }: { children?: React.ReactNode }) {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <Link to="/settings">Hallinnointi</Link>
+          <Link to="/settings">Hallinointi</Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
           <Link to="/login" onClick={() => logoutUser()}>
-            Kirjaudu ulos
+            Log out
           </Link>
         </DropdownMenuItem>
       </DropdownMenuContent>
