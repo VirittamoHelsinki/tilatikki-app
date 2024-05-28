@@ -1,33 +1,12 @@
 {
-  "name": "tilatikki-app",
+  "name": "tilatikki-poc",
   "version": "1.0.0",
-  "description": "tilatikki-app",
-  "directories": {
-    "test": "tests"
-  },
   "scripts": {
-    "dev:client": "cd client && npm run dev",
-    "dev:server": "cd server && npm run dev",
-    "dev": "concurrently -n Client,Server \"npm run dev:client\" \"npm run dev:server\"",
-    "setup:client": "cd client && npm install",
-    "setup:server": "cd server && npm install",
-    "setup:types": "cd shared && npm install",
-    "setup": "concurrently -n Client,Server,Types \"npm run setup:client\" \"npm run setup:server\" \"npm run setup:types\"",
-    "lint:client": "cd client && npm run lint",
-    "lint:server": "cd server && npm run lint",
-    "lint": "concurrently -n Client,Server \"npm run lint:client\" \"npm run lint:server\""
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "concurrently": "^8.2.2",
-    "d3": "^7.9.0",
-    "pixi-svg": "^3.2.0",
-    "pixi.js": "^8.0.5"
+    "start": "concurrently \"npm run client\" \"npm run server\"",
+    "client": "npm run dev --prefix client",
+    "server": "npm run dev --prefix server"
   },
   "devDependencies": {
-    "@types/d3": "^7.4.3",
-    "nodemon": "^3.1.0"
+    "concurrently": "^8.2.2"
   }
 }

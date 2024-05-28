@@ -1,23 +1,8 @@
-# TilaTikki Frontend
+# React + Vite
 
-```sh
-npm install
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-npm run dev
-```
+Currently, two official plugins are available:
 
-# TODO
-
-- [ ] room functionallities
-  - [ ] reserve a room
-  - [ ] free a room
-  - [ ] edit reserved room?
-- [ ] filtering for room that are free for specific date/duration
-- [ ] able to change to different schools
-- [ ] search field for schools
-- [ ] user functionallities
-  - [ ] reservation history
-- [ ] map functionallities
-  - [ ] select a room
-  - [ ] see what rooms are free
-  - [ ] room number
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
