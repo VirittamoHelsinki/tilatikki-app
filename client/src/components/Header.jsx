@@ -14,9 +14,9 @@ const Header = () => {
   };
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: '#18181B', padding: '0 2rem' }}>
+    <AppBar position="static" sx={{ backgroundColor: 'white', boxShadow: 'none', padding: '0 2rem' }}>
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Typography variant="h6" component="div">
+        <Typography variant="h6" component="div" sx={{ color: 'black' }}>
           TilaTikki
         </Typography>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -25,20 +25,19 @@ const Header = () => {
             src="/path/to/profile.jpg" 
             sx={{ width: 40, height: 40, marginRight: 2 }}
           />
-          <Typography variant="body1" component="div" sx={{ marginRight: 2 }}>
-            User Name
+          <Typography variant="body1" component="div" sx={{ color: 'black', marginRight: 2 }}>
+            Nimi
           </Typography>
           <IconButton onClick={handleMenuOpen} color="inherit">
-            <ExpandMoreIcon />
+            <ExpandMoreIcon sx={{ color: 'black' }} />
           </IconButton>
           <Menu
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}
             onClose={handleMenuClose}
           >
-            <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-            <MenuItem onClick={handleMenuClose}>Settings</MenuItem>
-            <MenuItem onClick={handleMenuClose}>Logout</MenuItem>
+            <MenuItem onClick={handleMenuClose}>Hallinnointi</MenuItem>
+            <MenuItem onClick={handleMenuClose}>Kirjaudu ulos</MenuItem>
           </Menu>
         </Box>
       </Toolbar>
