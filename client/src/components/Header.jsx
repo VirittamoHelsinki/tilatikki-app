@@ -1,6 +1,7 @@
 import React from 'react';
-import { AppBar, Toolbar, Typography, Avatar, Menu, MenuItem, IconButton, Box } from '@mui/material';
+import { AppBar, Toolbar, Typography, Avatar, Menu, MenuItem, IconButton, Box} from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -13,10 +14,26 @@ const Header = () => {
     setAnchorEl(null);
   };
 
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate('/schools');
+  };
+
+  const handleSettingsClick = () => {
+    navigate('/settings');
+    handleMenuClose();
+  };
+
+  const handleLogoutClick = () => {
+    navigate('/login');
+    handleMenuClose();
+  };
+
   return (
     <AppBar position="static" sx={{ backgroundColor: 'white', boxShadow: 'none', padding: '0 2rem' }}>
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Typography variant="h6" component="div" sx={{ color: 'black' }}>
+        <Typography variant="h6" component="div" sx={{ color: 'black', cursor: 'pointer' }} onClick={handleClick}>
           TilaTikki
         </Typography>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -36,8 +53,8 @@ const Header = () => {
             open={Boolean(anchorEl)}
             onClose={handleMenuClose}
           >
-            <MenuItem onClick={handleMenuClose}>Hallinnointi</MenuItem>
-            <MenuItem onClick={handleMenuClose}>Kirjaudu ulos</MenuItem>
+            <MenuItem onClick={handleSettingsClick}>Hallinnointi</MenuItem>
+            <MenuItem onClick={handleLogoutClick}>Kirjaudu ulos</MenuItem>
           </Menu>
         </Box>
       </Toolbar>

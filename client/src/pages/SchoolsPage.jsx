@@ -8,19 +8,19 @@ const cardData = [
     title: 'Card Title 1',
     description: 'This is the description for card 1.',
     image: 'https://via.placeholder.com/150',
-    link: '/link1'
+    link: '/reservations'
   },
   {
     title: 'Card Title 2',
     description: 'This is the description for card 2.',
     image: 'https://via.placeholder.com/150',
-    link: '/link2'
+    link: '/reservations'
   },
   {
     title: 'Card Title 3',
     description: 'This is the description for card 3.',
     image: 'https://via.placeholder.com/150',
-    link: '/link3'
+    link: '/reservations'
   }
 ];
 
