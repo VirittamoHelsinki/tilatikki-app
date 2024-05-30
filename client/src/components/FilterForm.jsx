@@ -59,8 +59,24 @@ const FilterForm = () => {
 		setSelectedBuildings(selectedBuildingObjects);
 	};
 
+	const handleSelectedFloor = (event) => {
+		setSelectedFloor(event.target.value);
+	};
+
+	const generateFloorList = (maxFloor) => {
+		return Array.from({ length: maxFloor}, (_, index) => index + 1);
+	}
 
 	useEffect(() => {
+		const maxFloorValue = selectedBuildings.reduce((max, building) =>
+		building.floors > max ? building.floors : max, 1
+		);
+
+		console.log('selectedBuildings', selectedBuildings);
+		setAvailableFloors(generateFloorList(maxFloorValue));
+		setSelectedFloor(1);
+		console.log('maxFloorValue', maxFloorValue);
+		console.log('availableFloors', availableFloors);
 	  }, [selectedBuildings]);
 
 return (
@@ -93,6 +109,25 @@ return (
 				))}
 			</Select>
 		</FormControl>
+
+		<InputLabel id="floor-select-label">Kerros</InputLabel>
+			<Select
+				labelId="floor-select-label"
+				id="floor-select"
+				label="Kerros"
+				value={selectedFloor}
+				onChange={handleSelectedFloor}
+				input={<OutlinedInput label="Kerros" />}
+				MenuProps={MenuProps}
+			>
+				{availableFloors.map((floor) => (
+					<MenuItem key={floor} value={floor}>
+						<ListItemText primary={floor} />
+					</MenuItem>
+				))}
+			</Select>
+
+
 
 		<Button variant="contained" type="submit" fullWidth
 			sx={{
