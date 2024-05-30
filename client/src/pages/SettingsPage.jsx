@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Typography, Divider, Box, List, ListItem, ListItemText } from '@mui/material';
 import UserInformation from '../components/UserInformation';
 import ReservationHistory from '../components/ReservationHistory';
+import Header from '../components/Header';
 
 const SettingsPage = () => {
     const [selectedComponent, setSelectedComponent] = useState(null);
@@ -11,6 +12,8 @@ const SettingsPage = () => {
     };
 
     return (
+        <>
+        <Header/>
         <Box sx={{ padding: 4 }}>
             <Typography variant="h4" component="div" sx={{ marginBottom: 2 }}>
                 Hallinnointi
@@ -55,6 +58,7 @@ const SettingsPage = () => {
                 </Box>
             </Box>
         </Box>
+        </>
     );
 };
 
