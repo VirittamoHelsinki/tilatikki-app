@@ -47,14 +47,16 @@ const timeSlots = [
 	'20:00', '20:30', '21:00', '21:30', '22:00', '22:30'
   ];
 
+const groupSizes = Array.from({ length: 20 }, (_, index) => (index + 1) * 5);
+
 // need to pass buildings as props?
 const FilterForm = () => {
 	const [selectedBuildings, setSelectedBuildings] = useState([]);
 	const [availableFloors, setAvailableFloors] = useState([1]);
-	const [selectedFloor, setSelectedFloor] = useState(1);
+	const [selectedFloor, setSelectedFloor] = useState('');
 	const [startingTime, setStartingTime] = useState('');
 	const [endingTime, setEndingTime] = useState('');
-
+	const [groupSize, setGroupSize] = useState('');
 
 	const handleSelectedBuildings = (event) => {
 		const {
@@ -79,6 +81,10 @@ const FilterForm = () => {
 	}
 	const handleEndingTime = (e) => {
 		setEndingTime(e.target.value);
+	}
+
+	const handleGroupSize = (e) => {
+		setGroupSize(e.target.value);
 	}
 
 	const generateFloorList = (maxFloor) => {
@@ -173,7 +179,7 @@ return (
 			<Select
 				labelId="endtime-select-label"
 				id="endtime-select"
-				label="Aloitusaika"
+				label="Lopetusaika"
 				value={endingTime}
 				onChange={handleEndingTime}
 				input={<OutlinedInput label="Lopetusaika" />}
@@ -182,6 +188,23 @@ return (
 				{timeSlots.map((time) => (
 					<MenuItem key={time} value={time}>
 						<ListItemText primary={time} />
+					</MenuItem>
+				))}
+			</Select>
+
+		<InputLabel id="groupsize-select-label">Ryhmäkoko</InputLabel>
+			<Select
+				labelId="groupsize-select-label"
+				id="groupsize-select"
+				label="Ryhmäkoko"
+				value={groupSize}
+				onChange={handleGroupSize}
+				input={<OutlinedInput label="Ryhmäkoko" />}
+				MenuProps={MenuProps}
+			>
+				{groupSizes.map((size) => (
+					<MenuItem key={size} value={size}>
+						<ListItemText primary={size} />
 					</MenuItem>
 				))}
 			</Select>
