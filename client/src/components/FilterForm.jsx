@@ -13,17 +13,30 @@ import Chip from '@mui/material/Chip';
 const buildings = [
 	{
 		name: 'Päärakennus',
-		floors: 6,
-		rooms: 56,
+		floors: {
+			1: ['101', '102', '103', '104'],
+			2: ['201', '202', '203', '204', '205'],
+			3: ['301', '302', '303', '304', '305', '306'],
+			4: ['401', '402', '403', '404'],
+			5: ['501', '502', '503'],
+			6: ['601', '602', '603', '604'],
+		},
+		rooms: 26,
 	},
 	{
 		name: 'Lisärakennus',
-		floors: 2,
+		floors: {
+			1: ['101', '102', '103', '104'],
+			2: ['201', '202', '203'],
+			3: ['301', '302'],
+		},
 		rooms: 9,
 	},
 	{
 		name: 'Parakki',
-		floors: 1,
+		floors: {
+			1: ['101', '102', '103'],
+		},
 		rooms: 3,
 	},
 ];
@@ -57,6 +70,8 @@ const FilterForm = () => {
 	const [startingTime, setStartingTime] = useState('');
 	const [endingTime, setEndingTime] = useState('');
 	const [groupSize, setGroupSize] = useState('');
+	const [classroom, setClassroom] = useState('');
+	const [availableClassrooms, setAvailableClassrooms] = useState([]);
 
 	const handleSelectedBuildings = (event) => {
 		const {
@@ -87,23 +102,54 @@ const FilterForm = () => {
 		setGroupSize(e.target.value);
 	}
 
+	const handleClassroom = (e) => {
+		setClassroom(e.target.value);
+	}
+
+	const handleAvailableClassrooms = () => {
+		let allRooms = [];
+
+		selectedBuildings.forEach((building) => {
+			if (selectedFloor != '') {
+				if (selectedFloor in building.floors) {
+					allRooms = allRooms.concat(building.floors[selectedFloor].map((room) => `${building.name} - ${selectedFloor} - ${room}`));
+				}
+			}
+			else {
+				Object.keys(building.floors).forEach((floor) => {
+					allRooms = allRooms.concat(building.floors[floor].map((room) => `${building.name} - ${floor} - ${room}`));
+				});
+			}
+		})
+		console.log('allRooms', allRooms);
+		setAvailableClassrooms(allRooms);
+	}
+
 	const generateFloorList = (maxFloor) => {
 		return Array.from({ length: maxFloor}, (_, index) => index + 1);
 	}
 
 	useEffect(() => {
+		console.log('useEffect');
 		const maxFloorValue = selectedBuildings.reduce((max, building) =>
-		building.floors > max ? building.floors : max, 1
-		);
+			Object.keys(building.floors).length > max ? Object.keys(building.floors).length : max, 1
+		)
 
-		console.log('selectedBuildings', selectedBuildings);
 		setAvailableFloors(generateFloorList(maxFloorValue));
 		if (selectedBuildings.length == 0) {
 			setSelectedFloor('');
+			setAvailableClassrooms([]);
 		}
+		else {
+			if (selectedFloor > maxFloorValue) {
+				setSelectedFloor('');
+			}
+			handleAvailableClassrooms();
+		}
+		console.log('selectedBuildings', selectedBuildings);
 		console.log('maxFloorValue', maxFloorValue);
 		console.log('availableFloors', availableFloors);
-	  }, [selectedBuildings]);
+	  }, [selectedBuildings, selectedFloor]);
 
 return (
 	<>
@@ -211,6 +257,24 @@ return (
 				))}
 			</Select>
 
+		<FormControl sx={{ m: 1, width: 300 }}>
+			<InputLabel id="classroom-select-label">Opetustila</InputLabel>
+				<Select
+					labelId="classroom-select-label"
+					id="classroom-select"
+					label="Opetustila"
+					value={classroom}
+					onChange={handleClassroom}
+					input={<OutlinedInput label="Opetustila" />}
+					MenuProps={MenuProps}
+					>
+					{availableClassrooms.map((room) => (
+						<MenuItem key={room} value={room}>
+							<ListItemText primary={room} />
+						</MenuItem>
+					))}
+				</Select>
+		</FormControl>
 
 		<Button variant="contained" type="submit" fullWidth
 			sx={{
