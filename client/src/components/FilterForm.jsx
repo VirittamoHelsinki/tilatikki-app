@@ -7,6 +7,7 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import FormControl from '@mui/material/FormControl';
 import ListItemText from '@mui/material/ListItemText';
 import Checkbox from '@mui/material/Checkbox';
+import Chip from '@mui/material/Chip';
 
 // TODO change this to real data from the DB
 const buildings = [
@@ -89,7 +90,8 @@ return (
 	</Typography>
 
 	<form>
-		<FormControl sx={{ m: 1, width: 300 }}>
+
+		<FormControl required sx={{ m: 1, width: 300 }}>
 		<InputLabel id="building-checkbox-label">Rakennus</InputLabel>
 			<Select
 				labelId="building-checkbox-label"
@@ -98,7 +100,13 @@ return (
 				value={selectedBuildings.map(building => building.name)}
 				onChange={handleSelectedBuildings}
 				input={<OutlinedInput label="Rakennus" />}
-				renderValue={ (selected) => selected.join(', ') }
+				renderValue={(selected) => (
+					<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+					  {selected.map((value) => (
+						<Chip key={value} label={value} />
+					  ))}
+					</Box>
+				  )}
 				MenuProps={MenuProps}
 			>
 				{buildings.map((building) => (
