@@ -98,7 +98,9 @@ const FilterForm = () => {
 
 		console.log('selectedBuildings', selectedBuildings);
 		setAvailableFloors(generateFloorList(maxFloorValue));
-		setSelectedFloor(1);
+		if (selectedBuildings.length == 0) {
+			setSelectedFloor('');
+		}
 		console.log('maxFloorValue', maxFloorValue);
 		console.log('availableFloors', availableFloors);
 	  }, [selectedBuildings]);
