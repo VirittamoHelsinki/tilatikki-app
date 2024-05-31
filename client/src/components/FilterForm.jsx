@@ -151,6 +151,29 @@ const FilterForm = () => {
 		console.log('availableFloors', availableFloors);
 	  }, [selectedBuildings, selectedFloor]);
 
+	const filterFieldContainer = {
+		display: 'flex',
+		gap: '50px',
+		alignItems: 'center'
+	}
+
+	const timeSlotStyle = {
+		display: 'flex',
+		flexDirection: 'column',
+		minWidth: '50px',
+		maxWidth: '100px'
+	}
+
+	const buildingStyle = {
+		display: 'flex',
+		flexDirection: 'column'
+	}
+
+	const groupStyle = {
+		display: 'flex',
+		flexDirection: 'column'
+	}
+
 return (
 	<>
 	<Typography variant="h6" gutterBottom>
@@ -162,119 +185,136 @@ return (
 
 	<form>
 
-		<FormControl required sx={{ m: 1, width: 300 }}>
-		<InputLabel id="building-checkbox-label">Rakennus</InputLabel>
-			<Select
-				labelId="building-checkbox-label"
-				id="building-multiple-checkbox"
-				multiple
-				value={selectedBuildings.map(building => building.name)}
-				onChange={handleSelectedBuildings}
-				input={<OutlinedInput label="Rakennus" />}
-				renderValue={(selected) => (
-					<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-					  {selected.map((value) => (
-						<Chip key={value} label={value} />
-					  ))}
-					</Box>
-				  )}
-				MenuProps={MenuProps}
-			>
-				{buildings.map((building) => (
-				<MenuItem key={building.name} value={building.name}>
-					<Checkbox checked={selectedBuildings.some((selected) => selected.name === building.name)} />
-					<ListItemText primary={building.name} />
-				</MenuItem>
-				))}
-			</Select>
-		</FormControl>
+		<div style={filterFieldContainer}>
+			<div style={buildingStyle}>
+				<FormControl required sx={{ m: 1, width: 200 }}>
+				<InputLabel id="building-checkbox-label">Rakennus</InputLabel>
+					<Select
+						labelId="building-checkbox-label"
+						id="building-multiple-checkbox"
+						multiple
+						value={selectedBuildings.map(building => building.name)}
+						onChange={handleSelectedBuildings}
+						input={<OutlinedInput label="Rakennus" />}
+						renderValue={(selected) => (
+							<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+							{selected.map((value) => (
+								<Chip key={value} label={value} />
+								))}
+							</Box>
+						)}
+						MenuProps={MenuProps}
+						>
+						{buildings.map((building) => (
+							<MenuItem key={building.name} value={building.name}>
+							<Checkbox checked={selectedBuildings.some((selected) => selected.name === building.name)} />
+							<ListItemText primary={building.name} />
+						</MenuItem>
+						))}
+					</Select>
+				</FormControl>
+			</div>
+			<div style={buildingStyle}>
+				<InputLabel id="floor-select-label">Kerros</InputLabel>
+					<Select
+						labelId="floor-select-label"
+						id="floor-select"
+						label="Kerros"
+						value={selectedFloor}
+						onChange={handleSelectedFloor}
+						input={<OutlinedInput label="Kerros" />}
+						MenuProps={MenuProps}
+						>
+						{availableFloors.map((floor) => (
+							<MenuItem key={floor} value={floor}>
+								<ListItemText primary={floor} />
+							</MenuItem>
+						))}
+					</Select>
+			</div>
+		</div>
 
-		<InputLabel id="floor-select-label">Kerros</InputLabel>
-			<Select
-				labelId="floor-select-label"
-				id="floor-select"
-				label="Kerros"
-				value={selectedFloor}
-				onChange={handleSelectedFloor}
-				input={<OutlinedInput label="Kerros" />}
-				MenuProps={MenuProps}
-			>
-				{availableFloors.map((floor) => (
-					<MenuItem key={floor} value={floor}>
-						<ListItemText primary={floor} />
-					</MenuItem>
-				))}
-			</Select>
-
-		<InputLabel id="starttime-select-label">Aloitusaika</InputLabel>
-			<Select
-				labelId="starttime-select-label"
-				id="starttime-select"
-				label="Aloitusaika"
-				value={startingTime}
-				onChange={handleStartingTime}
-				input={<OutlinedInput label="Aloitusaika" />}
-				MenuProps={MenuProps}
-			>
-				{timeSlots.map((time) => (
-					<MenuItem key={time} value={time}>
-						<ListItemText primary={time} />
-					</MenuItem>
-				))}
-			</Select>
-
-		<InputLabel id="endtime-select-label">Lopetusaika</InputLabel>
-			<Select
-				labelId="endtime-select-label"
-				id="endtime-select"
-				label="Lopetusaika"
-				value={endingTime}
-				onChange={handleEndingTime}
-				input={<OutlinedInput label="Lopetusaika" />}
-				MenuProps={MenuProps}
-			>
-				{timeSlots.map((time) => (
-					<MenuItem key={time} value={time}>
-						<ListItemText primary={time} />
-					</MenuItem>
-				))}
-			</Select>
-
-		<InputLabel id="groupsize-select-label">Ryhmäkoko</InputLabel>
-			<Select
-				labelId="groupsize-select-label"
-				id="groupsize-select"
-				label="Ryhmäkoko"
-				value={groupSize}
-				onChange={handleGroupSize}
-				input={<OutlinedInput label="Ryhmäkoko" />}
-				MenuProps={MenuProps}
-			>
-				{groupSizes.map((size) => (
-					<MenuItem key={size} value={size}>
-						<ListItemText primary={size} />
-					</MenuItem>
-				))}
-			</Select>
-
-		<FormControl sx={{ m: 1, width: 300 }}>
-			<InputLabel id="classroom-select-label">Opetustila</InputLabel>
+		<div style={filterFieldContainer}>
+			<div style={timeSlotStyle}>
+			<InputLabel id="starttime-select-label">Aloitusaika</InputLabel>
 				<Select
-					labelId="classroom-select-label"
-					id="classroom-select"
-					label="Opetustila"
-					value={classroom}
-					onChange={handleClassroom}
-					input={<OutlinedInput label="Opetustila" />}
+					labelId="starttime-select-label"
+					id="starttime-select"
+					label="Aloitusaika"
+					value={startingTime}
+					onChange={handleStartingTime}
+					input={<OutlinedInput label="Aloitusaika" />}
 					MenuProps={MenuProps}
 					>
-					{availableClassrooms.map((room) => (
-						<MenuItem key={room} value={room}>
-							<ListItemText primary={room} />
+					{timeSlots.map((time) => (
+						<MenuItem key={time} value={time}>
+							<ListItemText primary={time} />
 						</MenuItem>
 					))}
 				</Select>
-		</FormControl>
+			</div>
+			<div style={timeSlotStyle}>
+			<InputLabel id="endtime-select-label">Lopetusaika</InputLabel>
+				<Select
+					labelId="endtime-select-label"
+					id="endtime-select"
+					label="Lopetusaika"
+					value={endingTime}
+					onChange={handleEndingTime}
+					input={<OutlinedInput label="Lopetusaika" />}
+					MenuProps={MenuProps}
+					>
+					{timeSlots.map((time) => (
+						<MenuItem key={time} value={time}>
+							<ListItemText primary={time} />
+						</MenuItem>
+					))}
+				</Select>
+			</div>
+		</div>
+
+		<div style={filterFieldContainer}>
+			<div style={groupStyle}>
+				<FormControl sx={{ m: 1, width: 200 }}>
+					<InputLabel id="classroom-select-label">Opetustila</InputLabel>
+						<Select
+							labelId="classroom-select-label"
+							id="classroom-select"
+							label="Opetustila"
+							value={classroom}
+							onChange={handleClassroom}
+							input={<OutlinedInput label="Opetustila" />}
+							MenuProps={MenuProps}
+							>
+							{availableClassrooms.map((room) => (
+								<MenuItem key={room} value={room}>
+									<ListItemText primary={room} />
+								</MenuItem>
+							))}
+						</Select>
+				</FormControl>
+			</div>
+			<div style={groupStyle}>
+				<InputLabel id="groupsize-select-label">Ryhmäkoko</InputLabel>
+					<Select
+						labelId="groupsize-select-label"
+						id="groupsize-select"
+						label="Ryhmäkoko"
+						value={groupSize}
+						onChange={handleGroupSize}
+						input={<OutlinedInput label="Ryhmäkoko" />}
+						MenuProps={MenuProps}
+					>
+						{groupSizes.map((size) => (
+							<MenuItem key={size} value={size}>
+								<ListItemText primary={size} />
+							</MenuItem>
+						))}
+					</Select>
+			</div>
+
+		</div>
+
 
 		<Button variant="contained" type="submit" fullWidth
 			sx={{
