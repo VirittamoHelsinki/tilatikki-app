@@ -39,12 +39,22 @@ PaperProps: {
 },
 };
 
+const timeSlots = [
+	'06:00', '06:30', '07:00', '07:30', '08:00', '08:30', '09:00',
+	'09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30',
+	'13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00',
+	'16:30', '17:00', '17:30', '18:00', '18:30', '19:00', '19:30',
+	'20:00', '20:30', '21:00', '21:30', '22:00', '22:30'
+  ];
 
 // need to pass buildings as props?
 const FilterForm = () => {
 	const [selectedBuildings, setSelectedBuildings] = useState([]);
 	const [availableFloors, setAvailableFloors] = useState([1]);
 	const [selectedFloor, setSelectedFloor] = useState(1);
+	const [startingTime, setStartingTime] = useState('');
+	const [endingTime, setEndingTime] = useState('');
+
 
 	const handleSelectedBuildings = (event) => {
 		const {
@@ -63,6 +73,13 @@ const FilterForm = () => {
 	const handleSelectedFloor = (event) => {
 		setSelectedFloor(event.target.value);
 	};
+
+	const handleStartingTime = (e) => {
+		setStartingTime(e.target.value);
+	}
+	const handleEndingTime = (e) => {
+		setEndingTime(e.target.value);
+	}
 
 	const generateFloorList = (maxFloor) => {
 		return Array.from({ length: maxFloor}, (_, index) => index + 1);
@@ -135,6 +152,39 @@ return (
 				))}
 			</Select>
 
+		<InputLabel id="starttime-select-label">Aloitusaika</InputLabel>
+			<Select
+				labelId="starttime-select-label"
+				id="starttime-select"
+				label="Aloitusaika"
+				value={startingTime}
+				onChange={handleStartingTime}
+				input={<OutlinedInput label="Aloitusaika" />}
+				MenuProps={MenuProps}
+			>
+				{timeSlots.map((time) => (
+					<MenuItem key={time} value={time}>
+						<ListItemText primary={time} />
+					</MenuItem>
+				))}
+			</Select>
+
+		<InputLabel id="endtime-select-label">Lopetusaika</InputLabel>
+			<Select
+				labelId="endtime-select-label"
+				id="endtime-select"
+				label="Aloitusaika"
+				value={endingTime}
+				onChange={handleEndingTime}
+				input={<OutlinedInput label="Lopetusaika" />}
+				MenuProps={MenuProps}
+			>
+				{timeSlots.map((time) => (
+					<MenuItem key={time} value={time}>
+						<ListItemText primary={time} />
+					</MenuItem>
+				))}
+			</Select>
 
 
 		<Button variant="contained" type="submit" fullWidth
