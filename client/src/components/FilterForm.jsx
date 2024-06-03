@@ -152,8 +152,19 @@ const FilterForm = ({onFilterChange}) => {
 			classroom,
 		}
 		onFilterChange(filterData);
+		resetStates();
 	}
 
+	const resetStates = () => {
+		setSelectedBuildings([]);
+		setAvailableFloors([1]);
+		setSelectedFloor('');
+		setStartingTime('');
+		setEndingTime('');
+		setGroupSize('');
+		setClassroom('');
+		setAvailableClassrooms([]);
+		setSelectedDate(null);
 	}
 
 	const handleDateChange = (newDate) => {
@@ -225,6 +236,10 @@ return (
 	</Typography>
 
 	<form>
+
+		<button type="button" onClick={resetStates} style={{ marginLeft : '180px', marginTop: '60px'}}>
+			Tyhjennä hakuehdot
+		</button>
 
 		<div style={filterFieldContainer}>
 			<div style={buildingStyle}>
