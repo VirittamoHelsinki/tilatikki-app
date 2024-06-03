@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Container, Box, TextField, Button, Typography } from '@mui/material';
 import Header from '../components/Header';
 import FilterForm from '../components/FilterForm';
+import BookingResults from '../components/BookingResults';
 
 const ReservationPage = () => {
 	const [filterValues, setFilterValues] = useState({});
@@ -29,6 +30,9 @@ const ReservationPage = () => {
           <Typography variant="body1">
             No data to display yet.
           </Typography>
+
+			<BookingResults filterValues={filterValues}/>
+
         </Box>
       </Box>
 
