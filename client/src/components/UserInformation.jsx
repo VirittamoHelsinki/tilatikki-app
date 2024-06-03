@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, CssBaseline, Box, Typography, Grid, TextField, Button, Link, FormControlLabel, Checkbox, Input, Divider } from '@mui/material';
-import { useForm } from "react-hook-form"
+import { useForm } from "react-hook-form";
 
 
 const UserInformation = () => {
   const [ userDataError, setUserDataError ] = useState('');
-  const [ passwordError, setPasswordError ] = useState('');
+  const [ passwordMatchError, setPasswordMatchError ] = useState('');
 
   const userDataForm = useForm({
     defaultValues: {
@@ -13,19 +13,46 @@ const UserInformation = () => {
       surname: "",
       email: "",
     }
-  })
+  });
 
-  const passwordDataForm = useForm()
+  const passwordDataForm = useForm();
 
-  const handleUserDataSubmit = (data) => {    
+  const handleUserDataSubmit = (data) => {
     console.log(data);
-    setUserDataError("Testing userdata error...");
   }
 
-  const handlePasswordSubmit = (data) => {
-    console.table(data);
-    setPasswordError("Testing password error...");
+  const handlePasswordSubmit = async (data) => {
+    const {
+      currentPassword,
+      newPassword,
+      confirmPassword,
+    } = data
+
+    if (newPassword !== confirmPassword) {
+      return
+    }
+
+    setPasswordMatchError("");
+    
+    // Check if currentPassword matches with user's actual password,
+    // then update old password to newPassword :3
   }
+
+  // Update passwordMatchError when user is typing a password,
+  // so user can see password match errors in real time.
+  useEffect(() => {
+    const subscription = passwordDataForm.watch((value) => {
+      const { newPassword, confirmPassword } = value
+      if (newPassword !== confirmPassword) {
+        setPasswordMatchError("Salasanat eivät täsmää...")
+      } else {
+        setPasswordMatchError("")
+      }
+    })
+
+    return () => subscription.unsubscribe()
+
+  }, [ passwordDataForm ])
 
   return (
     <Typography variant="body1" component="div" sx={{ width: '1000px' }}>
@@ -139,10 +166,10 @@ const UserInformation = () => {
               <TextField
                 required
                 fullWidth
-                name="password"
+                name="newPassword"
                 label="Uusi Salasana"
                 type="password"
-                id="password"
+                id="newPassword"
                 autoComplete="new-password"
                 {...passwordDataForm.register("newPassword")}
               />
@@ -156,6 +183,8 @@ const UserInformation = () => {
                 type="password"
                 id="confirmPassword"
                 autoComplete="new-password"
+                error={!!passwordMatchError}
+                helperText={passwordMatchError}
                 {...passwordDataForm.register("confirmPassword")}
               />
             </Grid>
