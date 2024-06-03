@@ -1,0 +1,2 @@
+koulujen lisääminen ei mahdollista
+cookie system tietoturva
