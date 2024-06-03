@@ -207,12 +207,16 @@ const FilterForm = ({onFilterChange}) => {
 		display: 'flex',
 		flexDirection: 'column',
 		minWidth: '50px',
-		maxWidth: '100px'
+		maxWidth: '100px',
+		paddingLeft: '10px',
+		paddingTop: '10px'
 	}
 
 	const buildingStyle = {
 		display: 'flex',
-		flexDirection: 'column'
+		flexDirection: 'column',
+		paddingTop: '10px',
+		paddingBottom: '10px'
 	}
 
 	const groupStyle = {
@@ -223,8 +227,14 @@ const FilterForm = ({onFilterChange}) => {
 	const selectWrapper = {
 		display: 'flex',
 		flexDirection: 'column',
-		minWidth: '200px'
+		width: '310px',
+		paddingLeft: '8px'
 	};
+
+	const buildingStyleLeft = {
+		paddingTop: '20px'
+	}
+
 
 return (
 	<>
@@ -242,9 +252,9 @@ return (
 		</button>
 
 		<div style={filterFieldContainer}>
-			<div style={buildingStyle}>
+			<div style={buildingStyle, buildingStyleLeft}>
 				<FormControl required sx={{ m: 1, width: 200 }}>
-				<InputLabel id="building-checkbox-label">Rakennus</InputLabel>
+				<InputLabel id="building-checkbox-label" >Rakennus</InputLabel>
 					<Select
 						labelId="building-checkbox-label"
 						id="building-multiple-checkbox"
@@ -356,7 +366,7 @@ return (
 		</div>
 
 		<div style={filterFieldContainer}>
-			<div style={groupStyle}>
+			<div style={groupStyle, buildingStyleLeft}>
 				<FormControl sx={{ m: 1, width: 200 }}>
 					<InputLabel id="classroom-select-label">Opetustila</InputLabel>
 						<Select
@@ -394,7 +404,6 @@ return (
 						))}
 					</Select>
 			</div>
-
 		</div>
 
 
