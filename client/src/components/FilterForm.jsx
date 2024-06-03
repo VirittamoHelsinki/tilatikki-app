@@ -8,6 +8,9 @@ import FormControl from '@mui/material/FormControl';
 import ListItemText from '@mui/material/ListItemText';
 import Checkbox from '@mui/material/Checkbox';
 import Chip from '@mui/material/Chip';
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import 'dayjs/locale/de';
 
 // TODO change this to real data from the DB
 const buildings = [
@@ -72,6 +75,7 @@ const FilterForm = () => {
 	const [groupSize, setGroupSize] = useState('');
 	const [classroom, setClassroom] = useState('');
 	const [availableClassrooms, setAvailableClassrooms] = useState([]);
+	const [selectedDate, setSelectedDate] = useState(null);
 
 	const handleSelectedBuildings = (event) => {
 		const {
@@ -136,6 +140,22 @@ const FilterForm = () => {
 		return Array.from({ length: maxFloor}, (_, index) => index + 1);
 	}
 
+	const handleSubmit = (e) => {
+		e.preventDefault();
+		console.log('---handleSubmit');
+		console.log('selectedBuildings', selectedBuildings);
+		console.log('selectedFloor', selectedFloor);
+		console.log('startingTime', startingTime);
+		console.log('endingTime', endingTime);
+		console.log('classroom', classroom);
+		console.log('groupSize', groupSize);
+		console.log('selectedDate', selectedDate);
+	}
+
+	const handleDateChange = (newDate) => {
+		setSelectedDate(newDate);
+	}
+
 	useEffect(() => {
 		console.log('useEffect');
 		const maxFloorValue = selectedBuildings.reduce((max, building) =>
@@ -184,6 +204,12 @@ const FilterForm = () => {
 		display: 'flex',
 		flexDirection: 'column'
 	}
+
+	const selectWrapper = {
+		display: 'flex',
+		flexDirection: 'column',
+		minWidth: '200px'
+	};
 
 return (
 	<>
@@ -244,6 +270,20 @@ return (
 					</Select>
 			</div>
 		</div>
+
+		<Box sx={selectWrapper}>
+			<LocalizationProvider dateAdapter={AdapterDayjs} >
+			<DatePicker
+				label="Päivämäärä"
+				value={selectedDate}
+				onChange={handleDateChange}
+				format="DD.MM.YYYY"
+				slotProps={{
+				textField: { fullWidth: true },
+				}}
+			/>
+			</LocalizationProvider>
+		</Box>
 
 		<div style={filterFieldContainer}>
 			<div style={timeSlotStyle}>
@@ -339,7 +379,7 @@ return (
 		</div>
 
 
-		<Button variant="contained" type="submit" fullWidth
+		<Button variant="contained" type="submit" fullWidth onClick={handleSubmit}
 			sx={{
 				mt: 3,
 				mb: 2,
