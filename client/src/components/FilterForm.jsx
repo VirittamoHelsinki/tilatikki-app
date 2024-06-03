@@ -89,6 +89,7 @@ const FilterForm = () => {
 
 	const handleSelectedFloor = (event) => {
 		setSelectedFloor(event.target.value);
+		setClassroom('');
 	};
 
 	const handleStartingTime = (e) => {
@@ -152,6 +153,10 @@ const FilterForm = () => {
 			}
 			handleAvailableClassrooms();
 		}
+		setStartingTime('');
+		setEndingTime('');
+		setClassroom('');
+
 		console.log('selectedBuildings', selectedBuildings);
 		console.log('maxFloorValue', maxFloorValue);
 		console.log('availableFloors', availableFloors);
@@ -273,7 +278,7 @@ return (
 					{timeSlots.map((time) => (
 						startingTime ? (
 							startingTime >= time ? (
-								<MenuItem disabled='true' key={time} value={time}>
+								<MenuItem disabled={true} key={time} value={time}>
 									<ListItemText primary={time} />
 								</MenuItem>
 							) : (
