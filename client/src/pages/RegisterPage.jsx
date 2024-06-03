@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Container, CssBaseline, Box, Typography, Grid, TextField, Button, Link } from '@mui/material';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import LoggedIn from '../utils/LoggedIn';
 
 const RegisterPage = () => {
   const [password, setPassword] = useState('');
@@ -35,20 +36,32 @@ const RegisterPage = () => {
       if (!response.ok) {
         throw new Error('Failed to sign up');
       }
-
-      // Handle successful sign up response here
       console.log('User registered successfully');
       navigate('/login');
     } catch (error) {
       console.error('Error signing up:', error.message);
-      // Handle error appropriately (e.g., show error message to the user)
     }
   };
 
   return (
     <Container component="main" maxWidth={false} disableGutters sx={{ display: 'flex', height: '100vh', width: '100vw' }}>
+      <LoggedIn redirectTo="/schools" />
       <CssBaseline />
-      <Box sx={{ flex: 1, backgroundColor: 'black', height: '100%' }} />
+      <Box sx={{ position: 'relative', flex: 1, backgroundColor: 'black', height: '100%' }}>
+        <Typography
+          variant="h6"
+          component="div"
+          sx={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            color: 'white',
+            padding: 2,
+          }}
+        >
+          TilaTikki
+        </Typography>
+      </Box>
       <Box
         sx={{
           flex: 1,

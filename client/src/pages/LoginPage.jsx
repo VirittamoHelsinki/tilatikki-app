@@ -1,31 +1,12 @@
 import React, { useState } from 'react';
-import { Container, CssBaseline, Box, Typography, Grid, TextField, Button, Link, FormControlLabel, Checkbox } from '@mui/material';
+import { Container, CssBaseline, Box, Typography, Grid, TextField, Button, Link,} from '@mui/material';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import LoggedIn from '../utils/LoggedIn';
+import { setCookie } from '../utils/Cookies';
+import { loginUser } from '../api/userApi';
+
 
 export default function SignIn() {
-
-  function setCookie(name, value, days) {
-    const expires = new Date();
-    expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
-    document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
-  }
-  
-  function getCookie(name) {
-    const cookieName = `${name}=`;
-    const decodedCookie = decodeURIComponent(document.cookie);
-    const cookieArray = decodedCookie.split(';');
-    for (let i = 0; i < cookieArray.length; i++) {
-      let cookie = cookieArray[i];
-      while (cookie.charAt(0) === ' ') {
-        cookie = cookie.substring(1);
-      }
-      if (cookie.indexOf(cookieName) === 0) {
-        return cookie.substring(cookieName.length, cookie.length);
-      }
-    }
-    return null;
-  }
-
   const [error, setError] = useState('');
 
   let navigate = useNavigate();
@@ -37,41 +18,36 @@ export default function SignIn() {
       email: formData.get('email'),
       password: formData.get('password'),
     };
-    console.log('userData', userData);
     try {
-      const response = await fetch("http://localhost:5050/login", {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData),
-      });
-  
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Login failed');
-      } else {
-        console.log("logged in!" + userData.email);
-      }
-  
-      // const userResponse = await fetch(`http://localhost:5050/userdata/${userData.email}`);
-      // if (!userResponse.ok) {
-      //   throw new Error('Failed to fetch user data');
-      // }
-      // const userDataResponse = await userResponse.json();
-  
-      // setCookie('UserEmail', userDataResponse.email, 1);
-      // setCookie('LoggedIn', 'true', 1);
+      await loginUser(userData);
+      setCookie('UserEmail', userData.email, 1);
+      setCookie('LoggedIn', 'true', 1);
       navigate('/schools');
     } catch (error) {
-      setError(error.message);
+      console.error('Error signing up:', error.message);
+      setError('Failed to sign up. Please try again.');
     }
   };
 
   return (
     <Container component="main" maxWidth={false} disableGutters sx={{ display: 'flex', height: '100vh', width: '100vw' }}>
+      <LoggedIn redirectTo="/schools" />
       <CssBaseline />
-      <Box sx={{ flex: 1, backgroundColor: 'black', height: '100%' }} />
+      <Box sx={{ position: 'relative', flex: 1, backgroundColor: 'black', height: '100%' }}>
+        <Typography
+          variant="h6"
+          component="div"
+          sx={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            color: 'white',
+            padding: 2,
+          }}
+        >
+          TilaTikki
+        </Typography>
+      </Box>
       <Box
         sx={{
           flex: 1,
