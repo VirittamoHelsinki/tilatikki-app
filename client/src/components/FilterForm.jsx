@@ -66,7 +66,7 @@ const timeSlots = [
 const groupSizes = Array.from({ length: 20 }, (_, index) => (index + 1) * 5);
 
 // need to pass buildings as props?
-const FilterForm = () => {
+const FilterForm = ({onFilterChange}) => {
 	const [selectedBuildings, setSelectedBuildings] = useState([]);
 	const [availableFloors, setAvailableFloors] = useState([1]);
 	const [selectedFloor, setSelectedFloor] = useState('');
@@ -142,14 +142,18 @@ const FilterForm = () => {
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		console.log('---handleSubmit');
-		console.log('selectedBuildings', selectedBuildings);
-		console.log('selectedFloor', selectedFloor);
-		console.log('startingTime', startingTime);
-		console.log('endingTime', endingTime);
-		console.log('classroom', classroom);
-		console.log('groupSize', groupSize);
-		console.log('selectedDate', selectedDate);
+		const filterData = {
+			selectedBuildings,
+			selectedFloor,
+			selectedDate,
+			startingTime,
+			endingTime,
+			groupSize,
+			classroom,
+		}
+		onFilterChange(filterData);
+	}
+
 	}
 
 	const handleDateChange = (newDate) => {
