@@ -1,10 +1,29 @@
-import React from 'react';
-import { AppBar, Toolbar, Typography, Avatar, Menu, MenuItem, IconButton, Box} from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { AppBar, Toolbar, Typography, Avatar, Menu, MenuItem, IconButton, Box } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useNavigate } from 'react-router-dom';
+import { getCookie, removeCookie } from '../utils/Cookies';
+import { fetchUserDataByEmail } from '../api/userApi';
 
 const Header = () => {
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [name, setName] = useState('');
+  const [surname, setSurname] = useState('');
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const email = getCookie('UserEmail');
+    if (email) {
+      fetchUserDataByEmail(email)
+        .then(userData => {
+          setName(userData.name);
+          setSurname(userData.surname);
+        })
+        .catch(error => {
+          console.error('Error fetching user data:', error);
+        });
+    }
+  }, []);
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -13,8 +32,6 @@ const Header = () => {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
-
-  const navigate = useNavigate();
 
   const handleClick = () => {
     navigate('/schools');
@@ -27,6 +44,8 @@ const Header = () => {
 
   const handleLogoutClick = () => {
     navigate('/login');
+    removeCookie('LoggedIn');
+    removeCookie('UserEmail');
     handleMenuClose();
   };
 
@@ -38,12 +57,14 @@ const Header = () => {
         </Typography>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Avatar 
-            alt="User Profile Picture" 
-            src="/path/to/profile.jpg" 
-            sx={{ width: 40, height: 40, marginRight: 2 }}
-          />
+            alt="" 
+            src="" 
+            sx={{ width: 40, height: 40, marginRight: 2, backgroundColor: 'grey' }}
+            >
+              {name.charAt(0)}  {surname.charAt(0)}
+            </Avatar>
           <Typography variant="body1" component="div" sx={{ color: 'black', marginRight: 2 }}>
-            Nimi
+            {name}
           </Typography>
           <IconButton onClick={handleMenuOpen} color="inherit">
             <ExpandMoreIcon sx={{ color: 'black' }} />
