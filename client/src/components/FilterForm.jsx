@@ -309,7 +309,8 @@ return (
 		</div>
 		<>
 			{required && (
-				<p style={{color: 'red', paddingLeft: '10px', marginTop: '-10px', marginBottom: '20px'}}>
+				<p style={{color: 'red', paddingLeft: '10px', marginTop: '-10px', marginBottom: '20px',
+				fontFamily: "Helvetica"}}>
 					*Pakollinen
 				</p>
 			)}
