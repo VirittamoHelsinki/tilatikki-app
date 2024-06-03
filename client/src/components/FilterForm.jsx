@@ -93,7 +93,13 @@ const FilterForm = () => {
 
 	const handleStartingTime = (e) => {
 		setStartingTime(e.target.value);
+		if (endingTime) {
+			if (e.target.value >= endingTime) {
+				setEndingTime('');
+			}
+		}
 	}
+
 	const handleEndingTime = (e) => {
 		setEndingTime(e.target.value);
 	}
@@ -265,9 +271,21 @@ return (
 					MenuProps={MenuProps}
 					>
 					{timeSlots.map((time) => (
-						<MenuItem key={time} value={time}>
-							<ListItemText primary={time} />
-						</MenuItem>
+						startingTime ? (
+							startingTime >= time ? (
+								<MenuItem disabled='true' key={time} value={time}>
+									<ListItemText primary={time} />
+								</MenuItem>
+							) : (
+								<MenuItem key={time} value={time}>
+									<ListItemText primary={time} />
+								</MenuItem>
+							)
+						) : (
+							<MenuItem key={time} value={time}>
+								<ListItemText primary={time} />
+							</MenuItem>
+							)
 					))}
 				</Select>
 			</div>
