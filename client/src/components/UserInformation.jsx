@@ -7,28 +7,23 @@ const UserInformation = () => {
   const [ userDataError, setUserDataError ] = useState('');
   const [ passwordError, setPasswordError ] = useState('');
 
-  const handleSubmit = (event) => {
-    event.preventDefault()
-    const formData = new FormData(event.currentTarget);
-    const userData = {
-      name: formData.get("name"),
-      surname: formData.get("surname"),
-      email: formData.get("email"),
+  const userDataForm = useForm({
+    defaultValues: {
+      name: "",
+      surname: "",
+      email: "",
     }
+  })
 
-    console.table(userData);
+  const passwordDataForm = useForm()
+
+  const handleUserDataSubmit = (data) => {    
+    console.log(data);
     setUserDataError("Testing userdata error...");
   }
 
-  const handlePasswordSubmit = (event) => {
-    event.preventDefault()
-    const formData = new FormData(event.currentTarget);
-    const passwordData = {
-      password: formData.get("currentPassword"),
-      newPassword: formData.get("password"),
-    }
-
-    console.table(passwordData);
+  const handlePasswordSubmit = (data) => {
+    console.table(data);
     setPasswordError("Testing password error...");
   }
 
@@ -46,7 +41,12 @@ const UserInformation = () => {
 
         <Divider sx={{ mt: 4, mb: 4 }} />
 
-        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+        <Box
+          component="form"
+          noValidate
+          sx={{ mt: 3 }}
+          onSubmit={userDataForm.handleSubmit(handleUserDataSubmit)}
+        >
 
           <Typography component="h1" variant="h5" sx={{ mb: 3 }}>
             Salasanan vaihto
@@ -61,7 +61,7 @@ const UserInformation = () => {
                 fullWidth
                 id="name"
                 label="Etunimi"
-                defaultValue="Matti"
+                {...userDataForm.register("name")}
               />
             </Grid>
             <Grid item lg={6}>
@@ -72,7 +72,7 @@ const UserInformation = () => {
                 fullWidth
                 id="surname"
                 label="Sukunimi"
-                defaultValue="Meikäläinen"
+                {...userDataForm.register("surname")}
               />
             </Grid>
             <Grid item xs={6}>
@@ -83,7 +83,7 @@ const UserInformation = () => {
                 label="Sähköposti"
                 name="email"
                 autoComplete="email"
-                defaultValue="email@example.com"
+                {...userDataForm.register("email")}
               />
             </Grid>
           </Grid>
@@ -109,7 +109,12 @@ const UserInformation = () => {
           Salasanan vaihto
         </Typography>
 
-        <Box component="form" noValidate onSubmit={handlePasswordSubmit} sx={{ mt: 3 }}>
+        <Box
+          component="form"
+          noValidate
+          sx={{ mt: 3 }}
+          onSubmit={passwordDataForm.handleSubmit(handlePasswordSubmit)}
+        >
           <Grid container spacing={2}>
             <Grid item xs={12} lg={6}>
               <TextField
@@ -120,6 +125,7 @@ const UserInformation = () => {
                 type="password"
                 id="currentPassword"
                 autoComplete="new-password"
+                {...passwordDataForm.register("currentPassword")}
               />
             </Grid>
 
@@ -138,6 +144,7 @@ const UserInformation = () => {
                 type="password"
                 id="password"
                 autoComplete="new-password"
+                {...passwordDataForm.register("newPassword")}
               />
             </Grid>
             <Grid item xs={12} lg={6}>
@@ -149,6 +156,7 @@ const UserInformation = () => {
                 type="password"
                 id="confirmPassword"
                 autoComplete="new-password"
+                {...passwordDataForm.register("confirmPassword")}
               />
             </Grid>
           </Grid>
