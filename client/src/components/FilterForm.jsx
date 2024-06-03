@@ -76,6 +76,7 @@ const FilterForm = ({onFilterChange}) => {
 	const [classroom, setClassroom] = useState('');
 	const [availableClassrooms, setAvailableClassrooms] = useState([]);
 	const [selectedDate, setSelectedDate] = useState(null);
+	const [required, setRequired] = useState(false);
 
 	const handleSelectedBuildings = (event) => {
 		const {
@@ -151,8 +152,14 @@ const FilterForm = ({onFilterChange}) => {
 			groupSize,
 			classroom,
 		}
-		onFilterChange(filterData);
-		resetStates();
+
+		if (selectedBuildings.length > 0) {
+			onFilterChange(filterData);
+			resetStates();
+		}
+		else {
+			setRequired(true);
+		}
 	}
 
 	const resetStates = () => {
@@ -165,6 +172,7 @@ const FilterForm = ({onFilterChange}) => {
 		setClassroom('');
 		setAvailableClassrooms([]);
 		setSelectedDate(null);
+		setRequired(false);
 	}
 
 	const handleDateChange = (newDate) => {
@@ -299,6 +307,13 @@ return (
 					</Select>
 			</div>
 		</div>
+		<>
+			{required && (
+				<p style={{color: 'red', paddingLeft: '10px', marginTop: '-10px', marginBottom: '20px'}}>
+					*Pakollinen
+				</p>
+			)}
+		</>
 
 		<Box sx={selectWrapper}>
 			<LocalizationProvider dateAdapter={AdapterDayjs} >
@@ -407,18 +422,18 @@ return (
 		</div>
 
 
-		<Button variant="contained" type="submit" fullWidth onClick={handleSubmit}
-			sx={{
-				mt: 3,
-				mb: 2,
-				backgroundColor: '#18181B', // Change this to your desired color
-				'&:hover': {
-					backgroundColor: '#2b2b2b' // Change this to a lighter shade of your color
-				}
-			}}>
-			Hae tiloja
-		</Button>
-        </form>
+			<Button variant="contained" type="submit" fullWidth onClick={handleSubmit}
+				sx={{
+					mt: 3,
+					mb: 2,
+					backgroundColor: '#18181B', // Change this to your desired color
+					'&:hover': {
+						backgroundColor: '#2b2b2b' // Change this to a lighter shade of your color
+					}
+				}}>
+				Hae tiloja
+			</Button>
+		</form>
 	</>
   )
 }
