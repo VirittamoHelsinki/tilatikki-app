@@ -18,7 +18,6 @@ router.get('/userdata/:email', async (req, res) => {
   }
 });
 
-
 router.post('/register', async (req, res) => {
   const { name, surname, email, password } = req.body;
 
