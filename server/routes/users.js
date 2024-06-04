@@ -73,7 +73,7 @@ router.post('/login', async (req, res) => {
 });
 
 router.put('/update/:email', async (req, res) => {
-  const { name, surname, email, password } = req.body;
+  const { name, surname, email } = req.body;
   const currentEmail = req.params.email;
 
   try {
@@ -86,10 +86,33 @@ router.put('/update/:email', async (req, res) => {
     user.name = name || user.name;
     user.surname = surname || user.surname;
     user.email = email || user.email;
-    
-    if (password) {
-      user.password = password;
+
+    await user.save();
+    res.status(200).json({ message: 'User updated successfully', user });
+  } catch (error) {
+    console.error('Error updating user:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+router.put('/updatePassword/:email', async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+  const currentEmail = req.params.email;
+
+  try {
+    let user = await User.findOne({ email: currentEmail });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
     }
+    
+    // Only update password if user has provided the current password
+    // and a new one.
+    if (!(newPassword && user.comparePassword(currentPassword))) {
+      return res.status(401).json({ message: 'Incorrect password' })
+    }
+    
+    user.password = newPassword;
 
     await user.save();
     res.status(200).json({ message: 'User updated successfully', user });
