@@ -57,3 +57,25 @@ export const updateUser = async (email, newUserData) => {
     throw error;
   }
 }
+
+export const updateUserPassword = async (email, newPasswordData) => {
+  try {
+    const response = await fetch(`${API_URL}/updatePassword/${encodeURIComponent(email)}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(newPasswordData)
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to update password');
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error updating userdata:', error);
+    throw error;
+  }
+}
