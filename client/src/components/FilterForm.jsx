@@ -75,7 +75,8 @@ const FilterForm = ({onFilterChange}) => {
 	const [groupSize, setGroupSize] = useState('');
 	const [classroom, setClassroom] = useState('');
 	const [availableClassrooms, setAvailableClassrooms] = useState([]);
-	const [selectedDate, setSelectedDate] = useState(null);
+	const [selectedStartDate, setSelectedStartDate] = useState(null);
+	const [selectedEndDate, setSelectedEndDate] = useState(null);
 	const [required, setRequired] = useState(false);
 
 	const handleSelectedBuildings = (event) => {
@@ -146,7 +147,8 @@ const FilterForm = ({onFilterChange}) => {
 		const filterData = {
 			selectedBuildings,
 			selectedFloor,
-			selectedDate,
+			selectedStartDate,
+			selectedEndDate,
 			startingTime,
 			endingTime,
 			groupSize,
@@ -171,12 +173,17 @@ const FilterForm = ({onFilterChange}) => {
 		setGroupSize('');
 		setClassroom('');
 		setAvailableClassrooms([]);
-		setSelectedDate(null);
+		setSelectedStartDate(null);
+		setSelectedEndDate(null);
 		setRequired(false);
 	}
 
-	const handleDateChange = (newDate) => {
-		setSelectedDate(newDate);
+	const handleStartingDateChange = (newDate) => {
+		setSelectedStartDate(newDate);
+	}
+
+	const handleEndingDateChange = (newDate) => {
+		setSelectedEndDate(newDate);
 	}
 
 	useEffect(() => {
@@ -196,8 +203,6 @@ const FilterForm = ({onFilterChange}) => {
 			}
 			handleAvailableClassrooms();
 		}
-		setStartingTime('');
-		setEndingTime('');
 		setClassroom('');
 
 		console.log('selectedBuildings', selectedBuildings);
@@ -232,6 +237,10 @@ const FilterForm = ({onFilterChange}) => {
 		flexDirection: 'column'
 	}
 
+	const sizeStyle = {
+		paddingRight: '10px'
+	}
+
 	const selectWrapper = {
 		display: 'flex',
 		flexDirection: 'column',
@@ -241,6 +250,10 @@ const FilterForm = ({onFilterChange}) => {
 
 	const buildingStyleLeft = {
 		paddingTop: '20px'
+	}
+
+	const dateStyle = {
+		paddingTop: '15px'
 	}
 
 
@@ -316,19 +329,37 @@ return (
 			)}
 		</>
 
-		<Box sx={selectWrapper}>
-			<LocalizationProvider dateAdapter={AdapterDayjs} >
-			<DatePicker
-				label="Päivämäärä"
-				value={selectedDate}
-				onChange={handleDateChange}
-				format="DD.MM.YYYY"
-				slotProps={{
-				textField: { fullWidth: true },
-				}}
-			/>
-			</LocalizationProvider>
-		</Box>
+		<div style={dateStyle}>
+			<Box sx={selectWrapper}>
+				<LocalizationProvider dateAdapter={AdapterDayjs} >
+				<DatePicker
+					label="Aloituspäivämäärä"
+					value={selectedStartDate}
+					onChange={handleStartingDateChange}
+					format="DD.MM.YYYY"
+					slotProps={{
+					textField: { fullWidth: true },
+					}}
+				/>
+				</LocalizationProvider>
+			</Box>
+		</div>
+
+		<div style={dateStyle}>
+			<Box sx={selectWrapper}>
+				<LocalizationProvider dateAdapter={AdapterDayjs} >
+				<DatePicker
+					label="Lopetuspäivämäärä"
+					value={selectedEndDate}
+					onChange={handleEndingDateChange}
+					format="DD.MM.YYYY"
+					slotProps={{
+						textField: { fullWidth: true },
+					}}
+					/>
+				</LocalizationProvider>
+			</Box>
+		</div>
 
 		<div style={filterFieldContainer}>
 			<div style={timeSlotStyle}>
@@ -402,7 +433,7 @@ return (
 						</Select>
 				</FormControl>
 			</div>
-			<div style={groupStyle}>
+			<div style={groupStyle, sizeStyle}>
 				<InputLabel id="groupsize-select-label">Ryhmäkoko</InputLabel>
 					<Select
 						labelId="groupsize-select-label"
@@ -421,7 +452,6 @@ return (
 					</Select>
 			</div>
 		</div>
-
 
 			<Button variant="contained" type="submit" fullWidth onClick={handleSubmit}
 				sx={{
