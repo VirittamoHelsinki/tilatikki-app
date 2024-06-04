@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Container, CssBaseline, Box, Typography, Grid, TextField, Button, Link, FormControlLabel, Checkbox, Input, Divider } from '@mui/material';
 import { useForm } from "react-hook-form";
 
-import { getCookie } from "../utils/Cookies"
-import { fetchUserDataByEmail } from '../api/userApi';
+import { getCookie, setCookie } from "../utils/Cookies"
+import { fetchUserDataByEmail, updateUser } from '../api/userApi';
 
 
 const UserInformation = () => {
@@ -11,13 +11,20 @@ const UserInformation = () => {
   const [ passwordMatchError, setPasswordMatchError ] = useState('');
 
   const userDataForm = useForm({
-    defaultValues: async () => fetchUserDataByEmail(getCookie("UserEmail"))
+    defaultValues: async () => {
+      const { name, surname, email } = await fetchUserDataByEmail(getCookie("UserEmail"))
+      return { name, surname, email }
+    }
   });
-  
+
   const passwordDataForm = useForm();
 
-  const handleUserDataSubmit = (data) => {
-    console.log(data);
+  const handleUserDataSubmit = async (data) => {
+    const email = getCookie("UserEmail")
+    const { message, user: updatedUser } = await updateUser(email, data)
+
+    // Re-set the userEmail cookie incase user updated their email.
+    setCookie('UserEmail', updatedUser.email, 1);
   }
 
   const handlePasswordSubmit = async (data) => {
@@ -32,7 +39,7 @@ const UserInformation = () => {
     }
 
     setPasswordMatchError("");
-    
+
     // Check if currentPassword matches with user's actual password,
     // then update old password to newPassword :3
   }
