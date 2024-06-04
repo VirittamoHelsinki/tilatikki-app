@@ -37,11 +37,12 @@ const UserInformation = () => {
     if (newPassword !== confirmPassword) {
       return
     }
+    
 
     setPasswordMatchError("");
 
-    // Check if currentPassword matches with user's actual password,
-    // then update old password to newPassword :3
+    const email = getCookie("UserEmail")
+    const { message, user: updatedUser } = await updateUser(email, { password: newPassword })
   }
 
 
@@ -161,6 +162,7 @@ const UserInformation = () => {
                 type="password"
                 id="currentPassword"
                 autoComplete="new-password"
+                disabled
                 {...passwordDataForm.register("currentPassword")}
               />
             </Grid>
