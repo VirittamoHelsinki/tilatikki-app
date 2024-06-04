@@ -11,11 +11,9 @@ const UserInformation = () => {
   const [ passwordMatchError, setPasswordMatchError ] = useState('');
 
   const userDataForm = useForm({
-    placeholderValues: async () => fetchUserDataByEmail(getCookie("UserEmail"))
+    defaultValues: async () => fetchUserDataByEmail(getCookie("UserEmail"))
   });
-
-  console.log(userDataForm.defaultValues);
-
+  
   const passwordDataForm = useForm();
 
   const handleUserDataSubmit = (data) => {
