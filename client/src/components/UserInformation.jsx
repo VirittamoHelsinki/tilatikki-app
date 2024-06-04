@@ -2,18 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { Container, CssBaseline, Box, Typography, Grid, TextField, Button, Link, FormControlLabel, Checkbox, Input, Divider } from '@mui/material';
 import { useForm } from "react-hook-form";
 
+import { getCookie } from "../utils/Cookies"
+import { fetchUserDataByEmail } from '../api/userApi';
+
 
 const UserInformation = () => {
   const [ userDataError, setUserDataError ] = useState('');
   const [ passwordMatchError, setPasswordMatchError ] = useState('');
 
   const userDataForm = useForm({
-    defaultValues: {
-      name: "",
-      surname: "",
-      email: "",
-    }
+    placeholderValues: async () => fetchUserDataByEmail(getCookie("UserEmail"))
   });
+
+  console.log(userDataForm.defaultValues);
 
   const passwordDataForm = useForm();
 
@@ -38,6 +39,7 @@ const UserInformation = () => {
     // then update old password to newPassword :3
   }
 
+
   // Update passwordMatchError when user is typing a password,
   // so user can see password match errors in real time.
   useEffect(() => {
@@ -51,7 +53,6 @@ const UserInformation = () => {
     })
 
     return () => subscription.unsubscribe()
-
   }, [ passwordDataForm ])
 
   return (
@@ -76,12 +77,13 @@ const UserInformation = () => {
         >
 
           <Typography component="h1" variant="h5" sx={{ mb: 3 }}>
-            Salasanan vaihto
+            Perustiedot
           </Typography>
 
           <Grid container spacing={2}>
             <Grid item lg={6}>
               <TextField
+                InputLabelProps={{ shrink: true }} 
                 autoComplete="name"
                 name="name"
                 required
@@ -93,6 +95,7 @@ const UserInformation = () => {
             </Grid>
             <Grid item lg={6}>
               <TextField
+                InputLabelProps={{ shrink: true }} 
                 autoComplete="surname"
                 name="surname"
                 required
@@ -104,6 +107,7 @@ const UserInformation = () => {
             </Grid>
             <Grid item xs={6}>
               <TextField
+                InputLabelProps={{ shrink: true }} 
                 required
                 fullWidth
                 id="email"
