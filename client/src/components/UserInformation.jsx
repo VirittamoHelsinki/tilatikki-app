@@ -3,11 +3,12 @@ import { Container, CssBaseline, Box, Typography, Grid, TextField, Button, Link,
 import { useForm } from "react-hook-form";
 
 import { getCookie, setCookie } from "../utils/Cookies"
-import { fetchUserDataByEmail, updateUser } from '../api/userApi';
+import { fetchUserDataByEmail, updateUser, updateUserPassword } from '../api/userApi';
 
 
 const UserInformation = () => {
   const [ userDataError, setUserDataError ] = useState('');
+  const [ currentPasswordError, setCurrentPasswordError ] = useState('');
   const [ passwordMatchError, setPasswordMatchError ] = useState('');
 
   const userDataForm = useForm({
@@ -38,13 +39,20 @@ const UserInformation = () => {
       return
     }
     
-
     setPasswordMatchError("");
 
-    const email = getCookie("UserEmail")
-    const { message, user: updatedUser } = await updateUser(email, { password: newPassword })
-  }
 
+    const email = getCookie("UserEmail")
+    try {
+      const { message, user: updatedUser } = await updateUserPassword(email, {
+        currentPassword,
+        newPassword,
+      })
+  
+    } catch (error) {
+      setCurrentPasswordError("Väärä salasana")
+    }
+  }
 
   // Update passwordMatchError when user is typing a password,
   // so user can see password match errors in real time.
@@ -162,7 +170,8 @@ const UserInformation = () => {
                 type="password"
                 id="currentPassword"
                 autoComplete="new-password"
-                disabled
+                error={!!currentPasswordError}
+                helperText={currentPasswordError}
                 {...passwordDataForm.register("currentPassword")}
               />
             </Grid>
