@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Container, CssBaseline, Box, Typography, Grid, TextField, Button, Link, FormControlLabel, Checkbox, Input, Divider, Snackbar } from '@mui/material';
-import { useForm } from "react-hook-form";
+import { useForm } from 'react-hook-form';
 
-import { getCookie, setCookie } from "../utils/Cookies"
+import { getCookie, setCookie } from '../utils/Cookies';
 import { fetchUserDataByEmail, updateUser, updateUserPassword } from '../api/userApi';
 
 
@@ -15,7 +15,7 @@ const UserInformation = () => {
 
   const userDataForm = useForm({
     defaultValues: async () => {
-      const { name, surname, email } = await fetchUserDataByEmail(getCookie("UserEmail"))
+      const { name, surname, email } = await fetchUserDataByEmail(getCookie('UserEmail'))
       return { name, surname, email }
     }
   });
@@ -27,15 +27,16 @@ const UserInformation = () => {
   }
 
   const handleUserDataSubmit = async (data) => {
-    const email = getCookie("UserEmail")
+    const email = getCookie('UserEmail')
     try {
-      const { message, user: updatedUser } = await updateUser(email, data)
+      const { message, user: updatedUser } = await updateUser(email, data);
 
       // Re-set the userEmail cookie incase user updated their email.
       setCookie('UserEmail', updatedUser.email, 1);
-      setSnackbarMessage("Perustiedot päivitetty onnistuneesti!")
+      setSnackbarMessage('Perustiedot päivitetty onnistuneesti!');
     } catch (error) {
-      console.error(error)
+      setSnackbarMessage('Jokin meni pieleen...');
+      console.error(error);
     }
   }
 
@@ -44,26 +45,26 @@ const UserInformation = () => {
       currentPassword,
       newPassword,
       confirmPassword,
-    } = data
+    } = data;
 
     if (newPassword !== confirmPassword) {
-      return
+      return;
     }
     
-    setPasswordMatchError("");
+    setPasswordMatchError('');
 
 
-    const email = getCookie("UserEmail")
+    const email = getCookie('UserEmail');
     try {
       const { message, user: updatedUser } = await updateUserPassword(email, {
         currentPassword,
         newPassword,
-      })
+      });
 
-      setCurrentPasswordError('')
-      setSnackbarMessage("Salasana päivitetty onnistuneesti!")
+      setCurrentPasswordError('');
+      setSnackbarMessage('Salasana päivitetty onnistuneesti!');
     } catch (error) {
-      setCurrentPasswordError("Väärä salasana")
+      setCurrentPasswordError('Väärä salasana');
     }
   }
 
@@ -71,16 +72,16 @@ const UserInformation = () => {
   // so user can see password match errors in real time.
   useEffect(() => {
     const subscription = passwordDataForm.watch((value) => {
-      const { newPassword, confirmPassword } = value
+      const { newPassword, confirmPassword } = value;
       if (newPassword !== confirmPassword) {
-        setPasswordMatchError("Salasanat eivät täsmää...")
+        setPasswordMatchError('Salasanat eivät täsmää...');
       } else {
-        setPasswordMatchError("")
+        setPasswordMatchError('');
       }
     })
 
-    return () => subscription.unsubscribe()
-  }, [ passwordDataForm ])
+    return () => subscription.unsubscribe();
+  }, [ passwordDataForm ]);
 
   return (
     <Typography variant="body1" component="div" sx={{ width: '1000px' }}>
