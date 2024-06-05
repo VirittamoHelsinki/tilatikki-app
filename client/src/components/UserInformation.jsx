@@ -9,6 +9,7 @@ import { fetchUserDataByEmail, updateUser, updateUserPassword } from '../api/use
 const UserInformation = () => {
   const [ userDataError, setUserDataError ] = useState('');
   const [ currentPasswordError, setCurrentPasswordError ] = useState('');
+  const [ newPasswordError, setNewPasswordError ] = useState('');
   const [ passwordMatchError, setPasswordMatchError ] = useState('');
 
   const [ snackbarMessage, setSnackbarMessage ] = useState('');
@@ -21,6 +22,7 @@ const UserInformation = () => {
   });
 
   const passwordDataForm = useForm();
+  const passwordDataFormErrors = passwordDataForm.formState.errors
 
   const handleSnackbarClose = () => {
     setSnackbarMessage('');
@@ -54,6 +56,10 @@ const UserInformation = () => {
     if (newPassword !== confirmPassword) {
       return;
     }
+
+    if (newPassword === "") {
+      return setNewPasswordError("Salasana ei voi olla tyhjä.")
+    }
     
     setPasswordMatchError('');
 
@@ -65,6 +71,7 @@ const UserInformation = () => {
       });
 
       setCurrentPasswordError('');
+      setNewPasswordError('');
       setSnackbarMessage('Salasana päivitetty onnistuneesti!');
     } catch (error) {
       setCurrentPasswordError('Väärä salasana');
@@ -85,6 +92,8 @@ const UserInformation = () => {
 
     return () => subscription.unsubscribe();
   }, [ passwordDataForm ]);
+
+  console.log(passwordDataFormErrors);
 
   return (
     <Typography variant="body1" component="div" sx={{ width: '1000px' }}>
@@ -217,7 +226,9 @@ const UserInformation = () => {
                 type="password"
                 id="newPassword"
                 autoComplete="new-password"
-                {...passwordDataForm.register("newPassword")}
+                error={passwordDataFormErrors.newPassword?.message}
+                helperText={passwordDataFormErrors.newPassword?.message}
+                {...passwordDataForm.register("newPassword", { minLength: { value: 4, message: "Salasanan täytyy ollä vähintään neljä (4) merkkiä pitkä." } })}
               />
             </Grid>
             <Grid item xs={12} lg={6}>
