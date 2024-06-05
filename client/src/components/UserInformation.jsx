@@ -31,6 +31,10 @@ const UserInformation = () => {
     try {
       const { message, user: updatedUser } = await updateUser(email, data);
 
+      userDataForm.setValue("name", updatedUser.name)
+      userDataForm.setValue("surname", updatedUser.surname)
+      userDataForm.setValue("email", updatedUser.email)
+
       // Re-set the userEmail cookie incase user updated their email.
       setCookie('UserEmail', updatedUser.email, 1);
       setSnackbarMessage('Perustiedot päivitetty onnistuneesti!');
@@ -52,7 +56,6 @@ const UserInformation = () => {
     }
     
     setPasswordMatchError('');
-
 
     const email = getCookie('UserEmail');
     try {
