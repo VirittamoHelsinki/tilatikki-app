@@ -108,7 +108,7 @@ router.put('/updatePassword/:email', async (req, res) => {
     
     // Only update password if user has provided the current password
     // and a new one.
-    if (!(newPassword && user.comparePassword(currentPassword))) {
+    if (!(newPassword && await user.comparePassword(currentPassword))) {
       return res.status(401).json({ message: 'Incorrect password' })
     }
     
