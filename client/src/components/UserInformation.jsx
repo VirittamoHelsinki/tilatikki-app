@@ -22,7 +22,6 @@ const UserInformation = () => {
   });
 
   const passwordDataForm = useForm();
-  const passwordDataFormErrors = passwordDataForm.formState.errors
 
   const handleSnackbarClose = () => {
     setSnackbarMessage('');
@@ -93,8 +92,6 @@ const UserInformation = () => {
     return () => subscription.unsubscribe();
   }, [ passwordDataForm ]);
 
-  console.log(passwordDataFormErrors);
-
   return (
     <Typography variant="body1" component="div" sx={{ width: '1000px' }}>
 
@@ -139,7 +136,9 @@ const UserInformation = () => {
                 fullWidth
                 id="name"
                 label="Etunimi"
-                {...userDataForm.register("name")}
+                error={!!userDataForm.formState.errors.name?.message}
+                helperText={userDataForm.formState.errors.name?.message}
+                {...userDataForm.register("name", { required: "Nimi ei voi olla tyhjä." })}
               />
             </Grid>
             <Grid item lg={6}>
@@ -151,7 +150,9 @@ const UserInformation = () => {
                 fullWidth
                 id="surname"
                 label="Sukunimi"
-                {...userDataForm.register("surname")}
+                error={!!userDataForm.formState.errors.surname?.message}
+                helperText={userDataForm.formState.errors.surname?.message}
+                {...userDataForm.register("surname", { required: "Sukunimi ei voi olla tyhjä." })}
               />
             </Grid>
             <Grid item xs={6}>
@@ -163,7 +164,9 @@ const UserInformation = () => {
                 label="Sähköposti"
                 name="email"
                 autoComplete="email"
-                {...userDataForm.register("email")}
+                error={!!userDataForm.formState.errors.email?.message}
+                helperText={userDataForm.formState.errors.email?.message}
+                {...userDataForm.register("email", { required: "Sähköposti ei voi olla tyhjä." })}
               />
             </Grid>
           </Grid>
@@ -226,8 +229,8 @@ const UserInformation = () => {
                 type="password"
                 id="newPassword"
                 autoComplete="new-password"
-                error={passwordDataFormErrors.newPassword?.message}
-                helperText={passwordDataFormErrors.newPassword?.message}
+                error={!!passwordDataForm.formState.errors.newPassword?.message}
+                helperText={passwordDataForm.formState.errors.newPassword?.message}
                 {...passwordDataForm.register("newPassword", { minLength: { value: 4, message: "Salasanan täytyy ollä vähintään neljä (4) merkkiä pitkä." } })}
               />
             </Grid>
