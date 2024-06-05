@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, CssBaseline, Box, Typography, Grid, TextField, Button, Link, FormControlLabel, Checkbox, Input, Divider } from '@mui/material';
+import { Container, CssBaseline, Box, Typography, Grid, TextField, Button, Link, FormControlLabel, Checkbox, Input, Divider, Snackbar } from '@mui/material';
 import { useForm } from "react-hook-form";
 
 import { getCookie, setCookie } from "../utils/Cookies"
@@ -11,6 +11,8 @@ const UserInformation = () => {
   const [ currentPasswordError, setCurrentPasswordError ] = useState('');
   const [ passwordMatchError, setPasswordMatchError ] = useState('');
 
+  const [ snackbarMessage, setSnackbarMessage ] = useState('');
+
   const userDataForm = useForm({
     defaultValues: async () => {
       const { name, surname, email } = await fetchUserDataByEmail(getCookie("UserEmail"))
@@ -20,12 +22,21 @@ const UserInformation = () => {
 
   const passwordDataForm = useForm();
 
+  const handleSnackbarClose = () => {
+    setSnackbarMessage('');
+  }
+
   const handleUserDataSubmit = async (data) => {
     const email = getCookie("UserEmail")
-    const { message, user: updatedUser } = await updateUser(email, data)
+    try {
+      const { message, user: updatedUser } = await updateUser(email, data)
 
-    // Re-set the userEmail cookie incase user updated their email.
-    setCookie('UserEmail', updatedUser.email, 1);
+      // Re-set the userEmail cookie incase user updated their email.
+      setCookie('UserEmail', updatedUser.email, 1);
+      setSnackbarMessage("Perustiedot päivitetty onnistuneesti!")
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const handlePasswordSubmit = async (data) => {
@@ -48,7 +59,9 @@ const UserInformation = () => {
         currentPassword,
         newPassword,
       })
-  
+
+      setCurrentPasswordError('')
+      setSnackbarMessage("Salasana päivitetty onnistuneesti!")
     } catch (error) {
       setCurrentPasswordError("Väärä salasana")
     }
@@ -71,6 +84,15 @@ const UserInformation = () => {
 
   return (
     <Typography variant="body1" component="div" sx={{ width: '1000px' }}>
+
+      <Snackbar
+        open={!!snackbarMessage}
+        onClose={handleSnackbarClose}
+        autoHideDuration={6000}
+        message={snackbarMessage}
+        key={"snackbar-" + snackbarMessage}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      />
 
       <Box component="div"  sx={{ mb: 3 }}>
         <Typography component="h1" variant="h5">
