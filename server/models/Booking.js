@@ -10,22 +10,22 @@ const BookingSchema = new mongoose.Schema({
 		required: true
 	},
 	user: {
-		type: Schema.Types.ObjectId,
+		type: mongoose.Types.ObjectId,
 		ref: 'User',
 		required: true
 	},
 	school: {
-		type: Schema.Types.ObjectId,
+		type: mongoose.Types.ObjectId,
 		ref: 'School',
 		required: true
 	},
 	building: {
-		type: Schema.Types.ObjectId,
+		type: mongoose.Types.ObjectId,
 		ref: 'Building',
 		required: true
 	},
 	room: {
-		type: Schema.Types.ObjectId,
+		type: mongoose.Types.ObjectId,
 		ref: 'Room',
 		required: true
 	},

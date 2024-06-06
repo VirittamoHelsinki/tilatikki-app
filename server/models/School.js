@@ -9,7 +9,7 @@ const SchoolSchema = new mongoose.Schema({
 		type: String
 	},
 	buildings: [{
-		type: Schema.Types.ObjectId,
+		type: mongoose.Types.ObjectId,
 		ref: 'Building',
 		required: true
 	}]

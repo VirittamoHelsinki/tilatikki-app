@@ -10,12 +10,12 @@ const RoomSchema = new mongoose.Schema({
 		required: true
 	},
 	building: {
-		type: Schema.Types.ObjectId,
+		type: mongoose.Types.ObjectId,
 		ref: 'Building',
 		required: true
 	},
 	bookings: [{
-		type: Schema.Types.ObjectId,
+		type: mongoose.Types.ObjectId,
 		ref: 'Booking'
 	}]
 });

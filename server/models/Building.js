@@ -6,7 +6,7 @@ const BuildingSchema = new mongoose.Schema({
 		required: true
 	},
 	school: {
-		type: Schema.Types.ObjectId,
+		type: mongoose.Types.ObjectId,
 		ref: 'School',
 		required: true
 	},
@@ -15,7 +15,7 @@ const BuildingSchema = new mongoose.Schema({
 		required: true
 	},
 	rooms: [{
-		type: Schema.Types.ObjectId,
+		type: mongoose.Types.ObjectId,
 		ref: 'Room'
 	}]
 });
