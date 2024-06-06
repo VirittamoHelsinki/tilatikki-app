@@ -12,6 +12,10 @@ const SchoolSchema = new mongoose.Schema({
 		type: mongoose.Types.ObjectId,
 		ref: 'Building',
 		required: true
+	}],
+	users: [{
+		type: mongoose.Types.ObjectId,
+		ref: 'User'
 	}]
 });
 
