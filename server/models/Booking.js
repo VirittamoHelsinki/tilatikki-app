@@ -29,7 +29,7 @@ const BookingSchema = new mongoose.Schema({
 		ref: 'Room',
 		required: true
 	},
-	groupsize: {
+	groupSize: {
 		type: Number,
 		required: true
 	}
