@@ -9,6 +9,6 @@ const FloorSchema = new mongoose.Schema({
 		type: mongoose.Types.ObjectId,
 		ref: 'Room'
 	}]
-})
+});
 
 module.exports = mongoose.model('Floor', FloorSchema);
