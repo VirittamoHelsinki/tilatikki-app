@@ -6,18 +6,15 @@ const Room = require('../models/Room');
 const Floor = require('../models/Floor');
 
 exports.createSchool = async (req, res) => {
-	const session = await School.startSession();
-	session.startTransaction();
 	try {
 		const { name, intro, buildings, users } = req.body;
 
 		const newSchool = new School({ name, intro, buildings, users});
+
 		const school = await newSchool.save({ session });
 		res.status(201).json(school);
 	}
 	catch (error) {
-		await session.commitTransaction();
-		session.endSession();
 		res.status(500).json({ error: error.message });
 	}
 };
