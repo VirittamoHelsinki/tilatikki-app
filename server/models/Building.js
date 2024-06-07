@@ -5,18 +5,10 @@ const BuildingSchema = new mongoose.Schema({
 		type: String,
 		required: true
 	},
-	school: {
+	floors: [{
 		type: mongoose.Types.ObjectId,
-		ref: 'School',
+		ref: 'Floor',
 		required: true
-	},
-	floors: {
-		type: Number,
-		required: true
-	},
-	rooms: [{
-		type: mongoose.Types.ObjectId,
-		ref: 'Room'
 	}]
 });
 

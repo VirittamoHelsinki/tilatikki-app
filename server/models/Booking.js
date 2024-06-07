@@ -5,7 +5,11 @@ const BookingSchema = new mongoose.Schema({
 		type: String,
 		required: true
 	},
-	time: {
+	startTime: {
+		type: Date,
+		required: true
+	},
+	endTime: {
 		type: Date,
 		required: true
 	},
@@ -29,7 +33,7 @@ const BookingSchema = new mongoose.Schema({
 		ref: 'Room',
 		required: true
 	},
-	groupsize: {
+	groupSize: {
 		type: Number,
 		required: true
 	}

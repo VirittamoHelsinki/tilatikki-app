@@ -9,11 +9,6 @@ const RoomSchema = new mongoose.Schema({
 		type: Number,
 		required: true
 	},
-	building: {
-		type: mongoose.Types.ObjectId,
-		ref: 'Building',
-		required: true
-	},
 	bookings: [{
 		type: mongoose.Types.ObjectId,
 		ref: 'Booking'
