@@ -4,10 +4,12 @@ import { Container, Box, TextField, Button, Typography } from '@mui/material';
 import Header from '../components/Header';
 import FilterForm from '../components/FilterForm';
 import BookingResults from '../components/BookingResults';
+import FloorPlanBase from '../components/floorplans/FloorPlanBase1';
 import FloorPlan1 from '../components/floorplans/FloorPlan1';
-// import FloorPlan2 from '../components/floorplans/FloorPlan2';
-// import FloorPlan3 from '../components/floorplans/FloorPlan3';
-// import FloorPlan4 from '../components/floorplans/FloorPlan4';
+import FloorPlan2 from '../components/floorplans/FloorPlan2';
+import FloorPlan3 from '../components/floorplans/FloorPlan3';
+import FloorPlan4 from '../components/floorplans/FloorPlan4';
+import FloorPlan5 from '../components/floorplans/FloorPlan5';
 
 const ReservationPage = () => {
 	const [filterValues, setFilterValues] = useState({});
@@ -44,7 +46,8 @@ const ReservationPage = () => {
           Pohjapiirrustus
         </Typography>
         <Box>
-          <FloorPlan1 />
+          {/* <FloorPlanBase></FloorPlanBase> */}
+          <FloorPlan5 />
         </Box>
       </Box>
     </Container>
