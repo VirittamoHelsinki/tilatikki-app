@@ -79,7 +79,7 @@ const reservations = [
   }
 ];
 
-const FloorPlan = () => {
+const FloorPlan1 = () => {
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [roomData, setRoomData] = useState(null);
 
@@ -99,10 +99,10 @@ const FloorPlan = () => {
 
   const getRoomColor = (roomId) => {
     const reservation = reservations.find(res => res.room._id === roomId);
-    if(reservation){
+    if (reservation) {
       if (reservation.room.capacity > reservation.groupsize) {
-        return '#F4BD89';    
-      } else if (reservation.room.capacity <= reservation.groupsize){
+        return '#F4BD89';
+      } else if (reservation.room.capacity <= reservation.groupsize) {
         return '#EA7272';
       }
     } else {
@@ -268,4 +268,4 @@ const FloorPlan = () => {
   );
 };
 
-export default FloorPlan;
+export default FloorPlan1
