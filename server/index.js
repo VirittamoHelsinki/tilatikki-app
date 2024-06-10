@@ -22,11 +22,11 @@ app.use(express.json()); // Parse JSON bodies
 
 
 app.use(users);
-app.use('/api', schoolRoutes);
-app.use('/api', buildingRoutes);
-app.use('/api', floorRoutes);
-app.use('/api', roomRoutes);
-app.use('/api', reservationRoutes);
+app.use(schoolRoutes);
+app.use(buildingRoutes);
+app.use(floorRoutes);
+app.use(roomRoutes);
+app.use(reservationRoutes);
 
 // Start the server
 app.listen(process.env.PORT, () => {

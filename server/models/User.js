@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const Schema = mongoose.Schema;
 
 const UserSchema = new mongoose.Schema({
   name: {
@@ -23,6 +24,11 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: true
   },
+  reservations: [{ type: Schema.Types.ObjectId, ref: 'Reservation' }],
+  building: {
+    type: Schema.Types.ObjectId,
+    ref: 'School'
+  }
 });
 
 UserSchema.methods.comparePassword = async function(candidatePassword) {
