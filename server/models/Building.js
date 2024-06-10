@@ -1,15 +1,13 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-const BuildingSchema = new mongoose.Schema({
-	name: {
-		type: String,
-		required: true
-	},
-	floors: [{
-		type: mongoose.Types.ObjectId,
-		ref: 'Floor',
-		required: true
-	}]
+const buildingSchema = new Schema({
+  name: { type: String, required: true },
+  floors: [{ type: Schema.Types.ObjectId, ref: 'Floor' }],
+  school: { type: Schema.Types.ObjectId, ref: 'School' }
+
 });
 
-module.exports = mongoose.model('Building', BuildingSchema);
+const Building = mongoose.model('Building', buildingSchema);
+module.exports = Building;
+

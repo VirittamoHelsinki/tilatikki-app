@@ -1,178 +1,125 @@
 const School = require('../models/School');
 const Building = require('../models/Building');
-const Booking = require('../models/Booking');
-const User = require('../models/User');
-const Room = require('../models/Room');
 const Floor = require('../models/Floor');
+const Room = require('../models/Room');
+const Reservation = require('../models/Reservation');
+const User = require('../models/User');
 
-exports.createSchool = async (req, res) => {
-	try {
-		const { name, intro, buildings, users } = req.body;
+exports.createSchoolWithNestedEntities = async (req, res) => {
+  console.log('body: ', req.body);
+  const session = await School.startSession();
+  session.startTransaction();
+  try {
+    const { name, address, buildings, users } = req.body;
 
-		const newSchool = new School({ name, intro, buildings, users});
+    // Create Users
+    const userIds = [];
+    for (const userData of users) {
+      const newUser = new User(userData);
+      const user = await newUser.save({ session });
+      userIds.push(user._id);
+    }
 
-		const school = await newSchool.save({ session });
-		res.status(201).json(school);
-	}
-	catch (error) {
-		res.status(500).json({ error: error.message });
-	}
-};
+    // Create School
+    const newSchool = new School({ name, address });
+    const school = await newSchool.save({ session });
 
-exports.createSchoolWithEntities = async (req, res) => {
-	const session = await School.startSession();
-	session.startTransaction();
-	try {
-		const { name, intro, buildings, users } = req.body;
+    const buildingIds = [];
+    for (const buildingData of buildings) {
+      const newBuilding = new Building({ name: buildingData.name, school: school._id });
+      const building = await newBuilding.save({ session });
+      buildingIds.push(building._id);
 
-		const newSchool = new School({ name, intro });
-		const school = await newSchool.save({ session });
+      const floorIds = [];
+      for (const floorData of buildingData.floors) {
+        const newFloor = new Floor({ number: floorData.number, building: building._id });
+        const floor = await newFloor.save({ session });
+        floorIds.push(floor._id);
 
-		if (buildings) {
-			for (const buildingData of buildings) {
-				const newBuilding = new Building({ name: buildingData.name });
-				const building = await newBuilding.save({ session });
+        const roomIds = [];
+        for (const roomData of floorData.rooms) {
+          const newRoom = new Room({ number: roomData.number, capacity: roomData.capacity, floor: floor._id });
+          const room = await newRoom.save({ session });
+          roomIds.push(room._id);
 
-				const floorIds = [];
-				if (buildingData.floors) {
-					for (const floorData of buildingData.floors) {
-						const newFloor = new Floor({ name: floorData.name });
-						const floor = await newFloor.save({ session });
+          const reservationIds = [];
+          for (const reservationData of roomData.reservations) {
+            const userId = userIds.find(userId => userId.equals(reservationData.user));  // Replace user email with corresponding user ID
+            const newReservation = new Reservation({
+              user: userId,
+              startTime: reservationData.startTime,
+              endTime: reservationData.endTime,
+              purpose: reservationData.purpose,
+              groupsize: reservationData.groupsize,
+              room: room._id
+            });
+            const reservation = await newReservation.save({ session });
+            reservationIds.push(reservation._id);
+          }
+          // Push reservations to room
+          await Room.findByIdAndUpdate(room._id, { reservations: reservationIds }, { session });
+        }
+        // Push rooms to floor
+        await Floor.findByIdAndUpdate(floor._id, { rooms: roomIds }, { session });
+      }
+      // Push floors to building
+      await Building.findByIdAndUpdate(building._id, { floors: floorIds }, { session });
+    }
+    // Push buildings to school
+    await School.findByIdAndUpdate(school._id, { buildings: buildingIds, users: userIds }, { session });
 
-						const roomIds = [];
-						if (floorData.rooms) {
-							for (const roomData of floorData.rooms) {
-								const newRoom = new Room({ name: roomData.name, capacity: roomData.capacity });
-								const room = await newRoom.save({ session });
-
-								const bookingIds = [];
-								if (roomData.bookings) {
-									for (bookingData of roomData.bookings) {
-										const newBooking = new Booking({
-											name: bookingData.name,
-											startTime: bookingData.startTime,
-											endTime: bookingData.endTime,
-											user: bookingData.user,
-											school: school._id,
-											building: building._id,
-											room: room._id,
-											groupSize: bookingData.groupSize
-										});
-										const booking = await newBooking.save({ session });
-										bookingIds.push(booking._id);
-									}
-									newRoom.bookings = bookingsIds;
-									await newRoom.save({ session });
-								}
-								roomIds.push(room._id);
-							}
-							newFloor.rooms = roomIds;
-							await newFloor.save({ session });
-						}
-						floorIds.push(floor._id);
-					}
-					newBuilding.floors = floorIds;
-					await newBuilding.save({ session });
-				}
-				school.buildings.push(building._id);
-				await school.save({ session });
-			}
-		}
-		await session.commitTransaction();
-		session.endSession();
-		res.status(201).json(school);
-	}
-	catch (error) {
-		await session.abortTransaction();
-		session.endSession();
-		res.status(500).json({ error: error.message });
-	}
-};
-
-exports.addUserToSchool = async (req, res) => {
-	const session = await School.startSession();
-	session.startTransaction();
-	try {
-		const { schoolId, userId } = req.body;
-
-		const user = User.findById(userId);
-		if (!user) {
-			throw new Error(`Käyttäjää ei löytynyt, ID: ${userId}`);
-		}
-
-		const school = School.findById(schoolId);
-		if (!school) {
-			throw new Error(`Koulua ei löytynyt, ID: ${schoolId}`)
-		}
-
-		if (school.users.includes(userID)) {
-			throw new Error(`Käyttäjä '${userId}' on jo lisätty kouluun '${schoolId}'`);
-		}
-
-		school.users.push(userId);
-		await school.save({ session });
-		await session.commitTransaction();
-		session.endSession();
-		res.status(200).json({ message: 'Käyttäjän lisääminen onnistui.'});
-	}
-	catch (error) {
-		await session.abortTransaction();
-		session.endSession();
-		res.status(500).json({ error: error.message });
-	}
+    await session.commitTransaction();
+    session.endSession();
+    res.status(201).json(school);
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    res.status(500).json({ error: error.message });
+  }
 };
 
 exports.getSchoolById = async (req, res) => {
-	try {
-		const school = await School.findById(req.params.id).populate({
-			path: 'buildings',
-			populate: {
-				path: 'floors',
-				populate: {
-					path: 'rooms',
-					populate: {
-						path: 'bookings'
-					}
-				}
-			}
-		});
-		if (!school) {
-			return res.status(404).json({ error: error.message });
-		}
-		res.status(200).json(school);
-	}
-	catch (error) {
-		res.status(500).json({ error: error.message });
-	}
-};
-
-exports.getAllSchoolsFullRef = async (req, res) => {
-	try {
-		const schools = await School.find().populate({
-			path: 'buildings',
-			populate: {
-				path: 'floors',
-				populate: {
-					path: 'rooms',
-					populate: {
-						path: 'bookings'
-					}
-				}
-			}
-		});
-		res.status(200).json(schools);
-	}
-	catch (error) {
-		res.status(500).json({ error: error.message });
-	}
+  try {
+    const school = await School.findById(req.params.id).populate({
+      path: 'buildings',
+      populate: {
+        path: 'floors',
+        populate: {
+          path: 'rooms',
+          populate: {
+            path: 'reservations'
+          }
+        }
+      }
+    });
+    if (!school) {
+      return res.status(404).json({ message: 'School not found' });
+    }
+    res.status(200).json(school);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
 exports.getAllSchools = async (req, res) => {
-	try {
-		const schools = await School.find();
-		res.status(200).json(schools);
-	}
-	catch (error) {
-		res.status(500).json({ error: error.message });
-	}
-};
+  console.log('testing connection')
+  try {
+    const schools = await School.find().populate(
+      {
+        path: 'buildings',
+        populate: {
+          path: 'floors',
+          populate: {
+            path: 'rooms',
+            populate: {
+              path: 'reservations'
+            }
+          }
+        }
+      }
+    )
+    res.status(200).json(schools);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}

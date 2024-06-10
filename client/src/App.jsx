@@ -5,7 +5,6 @@ import SchoolsPage from './pages/SchoolsPage';
 import ReservationPage from './pages/ReservationPage';
 import SettingsPage from './pages/SettingsPage';
 
-
 function App() {
   return (
     <>

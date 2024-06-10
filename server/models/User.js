@@ -1,32 +1,34 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const Schema = mongoose.Schema;
 
 const UserSchema = new mongoose.Schema({
-	name: {
-		type: String,
-		required: true
-	},
-	surname: {
-		type: String,
-		required: true
-	},
-	email: {
-		type: String,
-		required: true,
-		unique: true
-	},
-	password: {
-		type: String,
-		required: true
-	},
-	admin: {
-		type: Boolean,
-		default: false
-	},
-	bookings: [{
-		type: mongoose.Types.ObjectId,
-		ref: 'Booking'
-	}]
+  name: {
+    type: String,
+    required: true
+  },
+  surname: {
+    type: String,
+    required: true
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  password: {
+    type: String,
+    required: true
+  },
+  admin: {
+    type: Boolean,
+    default: true
+  },
+  reservations: [{ type: Schema.Types.ObjectId, ref: 'Reservation' }],
+  building: {
+    type: Schema.Types.ObjectId,
+    ref: 'School'
+  }
 });
 
 UserSchema.methods.comparePassword = async function(candidatePassword) {
