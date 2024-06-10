@@ -1,40 +1,29 @@
 import React from 'react';
+import { useState } from 'react';
 import { Container, Box, TextField, Button, Typography } from '@mui/material';
 import Header from '../components/Header';
+import FilterForm from '../components/FilterForm';
+import BookingResults from '../components/BookingResults';
+import FloorPlanBase from '../components/floorplans/FloorPlanBase1';
+import FloorPlan1 from '../components/floorplans/FloorPlan1';
+import FloorPlan2 from '../components/floorplans/FloorPlan2';
+import FloorPlan3 from '../components/floorplans/FloorPlan3';
+import FloorPlan4 from '../components/floorplans/FloorPlan4';
+import FloorPlan5 from '../components/floorplans/FloorPlan5';
 
 const ReservationPage = () => {
+	const [filterValues, setFilterValues] = useState({});
+
+	const handleFilterChange = (newFilterValues) => {
+		setFilterValues(newFilterValues);
+	}
+
   return (
     <>
     <Header/>
-    <Container maxWidth="lg" style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '20px' }}>
+    <Container maxWidth="" style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '20px' }}>
       <Box sx={{ width: '30%', padding: '20px', border: '1px solid #ddd', borderRadius: '4px' }}>
-        <Typography variant="h6" gutterBottom>
-          Input Form
-        </Typography>
-        <form>
-          <TextField
-            fullWidth
-            label="Name"
-            variant="outlined"
-            margin="normal"
-          />
-          <TextField
-            fullWidth
-            label="Email"
-            variant="outlined"
-            margin="normal"
-          />
-          <Button variant="contained" type="submit" fullWidth sx={{ 
-              mt: 3, 
-              mb: 2,
-              backgroundColor: '#18181B', // Change this to your desired color
-              '&:hover': {
-                backgroundColor: '#2b2b2b' // Change this to a lighter shade of your color
-              }
-            }}>
-            Submit
-          </Button>
-        </form>
+		<FilterForm onFilterChange={handleFilterChange} />
       </Box>
 
       {/* Middle Section - Data Display */}
@@ -47,19 +36,35 @@ const ReservationPage = () => {
           <Typography variant="body1">
             No data to display yet.
           </Typography>
+
+			<BookingResults filterValues={filterValues}/>
+
         </Box>
       </Box>
-
-      {/* Right Section - Empty */}
-      <Box sx={{ width: '30%', padding: '20px', border: '1px solid #ddd', borderRadius: '4px' }}>
+      <Box sx={{ width: '100%', padding: '20px', border: '1px solid #ddd', borderRadius: '4px' }}>
         <Typography variant="h6" gutterBottom>
-          Empty Section
+          Pohjapiirrustus
         </Typography>
         <Box>
-          {/* This section is intentionally left empty */}
+          {/* <FloorPlanBase></FloorPlanBase> */}
+          <FloorPlan5 />
         </Box>
       </Box>
     </Container>
+    <Box sx={{ display: 'flex', justifyContent: 'center', paddingTop: '20px' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', marginRight: '20px' }}>
+          <Box sx={{ width: '30px', height: '30px', borderRadius: '50%', backgroundColor: '#94D0AD', marginRight: '10px', boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.2)' }} />
+          <Typography>Vapaa</Typography>
+        </Box>
+        <Box sx={{ display: 'flex', alignItems: 'center', marginRight: '20px' }}>
+          <Box sx={{ width: '30px', height: '30px', borderRadius: '50%', backgroundColor: '#F4BD89', marginRight: '10px', boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.2)' }} />
+          <Typography>Osittain vapaa</Typography>
+        </Box>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Box sx={{ width: '30px', height: '30px', borderRadius: '50%', backgroundColor: '#EA7272', marginRight: '10px', boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.2)' }} />
+          <Typography>Varattu</Typography>
+        </Box>
+      </Box>
     </>
   );
 }

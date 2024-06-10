@@ -78,75 +78,7 @@ exports.createSchoolWithNestedEntities = async (req, res) => {
   }
 };
 
-// exports.createSchoolWithNestedEntities = async (req, res) => {
-//   console.log('body: ', req.body);
-//   const session = await School.startSession();
-//   session.startTransaction();
-//   try {
-//     const { name, address, buildings } = req.body;
-//
-//     const newSchool = new School({ name, address });
-//     const school = await newSchool.save({ session });
-//
-//     const buildingIds = [];
-//     for (const buildingData of buildings) {
-//       const newBuilding = new Building({ name: buildingData.name, school: school._id });
-//       const building = await newBuilding.save({ session });
-//       buildingIds.push(building._id);
-//
-//       const floorIds = [];
-//       for (const floorData of buildingData.floors) {
-//         const newFloor = new Floor({ number: floorData.number, building: building._id });
-//         const floor = await newFloor.save({ session });
-//         floorIds.push(floor._id);
-//
-//         const roomIds = [];
-//         for (const roomData of floorData.rooms) {
-//           const newRoom = new Room({ number: roomData.number, capacity: roomData.capacity, floor: floor._id });
-//           const room = await newRoom.save({ session });
-//           roomIds.push(room._id);
-//
-//           const reservationIds = [];
-//           for (const reservationData of roomData.reservations) {
-//             const newReservation = new Reservation({
-//               user: reservationData.user,
-//               startTime: reservationData.startTime,
-//               endTime: reservationData.endTime,
-//               purpose: reservationData.purpose,
-//               room: room._id
-//             });
-//             const reservation = await newReservation.save({ session });
-//             reservationIds.push(reservation._id);
-//           }
-//           // Push reservations to room
-//           await Room.findByIdAndUpdate(room._id, { reservations: reservationIds }, { session });
-//         }
-//         // Push rooms to floor
-//         await Floor.findByIdAndUpdate(floor._id, { rooms: roomIds }, { session });
-//       }
-//       // Push floors to building
-//       await Building.findByIdAndUpdate(building._id, { floors: floorIds }, { session });
-//     }
-//     // Push buildings to school
-//     await School.findByIdAndUpdate(school._id, { buildings: buildingIds }, { session });
-//
-//     await session.commitTransaction();
-//     session.endSession();
-//     res.status(201).json(school);
-//   } catch (error) {
-//     await session.abortTransaction();
-//     session.endSession();
-//     res.status(500).json({ error: error.message });
-//   }
-// };
-
-exports.createSchool = async (req, res) => {
   try {
-    const { name, address } = req.body;
-    const newSchool = new School({ name, address });
-    const school = await newSchool.save();
-    res.status(201).json(school);
-  } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };

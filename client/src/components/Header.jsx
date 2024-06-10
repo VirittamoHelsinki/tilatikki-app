@@ -64,7 +64,7 @@ const Header = () => {
               {name.charAt(0)}  {surname.charAt(0)}
             </Avatar>
           <Typography variant="body1" component="div" sx={{ color: 'black', marginRight: 2 }}>
-            {name}
+            {name}{" "}{surname}
           </Typography>
           <IconButton onClick={handleMenuOpen} color="inherit">
             <ExpandMoreIcon sx={{ color: 'black' }} />
