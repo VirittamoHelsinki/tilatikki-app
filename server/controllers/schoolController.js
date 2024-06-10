@@ -78,11 +78,6 @@ exports.createSchoolWithNestedEntities = async (req, res) => {
   }
 };
 
-  try {
-    res.status(500).json({ error: error.message });
-  }
-};
-
 exports.getSchoolById = async (req, res) => {
   try {
     const school = await School.findById(req.params.id).populate({

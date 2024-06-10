@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import jatkasaariKoulu from '../images/jatkasaari-koulu.png';
 import pakilaKoulu from '../images/pakila-koulu.jpg';
-import { useSchoolQuery } from '../api/query';
+import { useSchoolQuery } from '../api/schools';
 
 const cardData = [
   {
@@ -24,11 +24,14 @@ const cardData = [
 const SchoolsPage = () => {
   const navigate = useNavigate();
 
-  const { data: schools, isLoading, isError } = useSchoolQuery();
+  const { data: schools, isLoading, error } = useSchoolQuery();
 
-  React.useEffect(() => console.log(
-    'schools: ', schools
-  ), [])
+  React.useEffect(() => {
+    console.log('schools:', schools);
+    if (error) {
+      console.error('Error fetching schools:', error);
+    }
+  }, [schools, error]);
 
   const handleCardClick = (link) => {
     navigate(link);
