@@ -79,7 +79,7 @@ const reservations = [
   }
 ];
 
-const FloorPlan = () => {
+const FloorPlan2 = () => {
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [roomData, setRoomData] = useState(null);
 
@@ -99,10 +99,10 @@ const FloorPlan = () => {
 
   const getRoomColor = (roomId) => {
     const reservation = reservations.find(res => res.room._id === roomId);
-    if(reservation){
+    if (reservation) {
       if (reservation.room.capacity > reservation.groupsize) {
-        return '#F4BD89';    
-      } else if (reservation.room.capacity <= reservation.groupsize){
+        return '#F4BD89';
+      } else if (reservation.room.capacity <= reservation.groupsize) {
         return '#EA7272';
       }
     } else {
@@ -127,136 +127,145 @@ const FloorPlan = () => {
       <svg viewBox="0 0 552 307" xmlns="http://www.w3.org/2000/svg">
         {/* Room 1 */}
         <rect
-          className='room'
           id="room1"
-          x="0"
-          y="0"
-          width="127"
-          height="81"
-          fill={getRoomColor('room1')}
-          onClick={() => handleRoomClick('room1')}
-        />
-
-        {/* Room 2 */}
-        <rect
-          className='room'
-          id="room2"
-          x="0"
-          y="85"
-          width="82"
-          height="81"
-          fill={getRoomColor('room2')}
-          onClick={() => handleRoomClick('room2')}
-        />
-
-        {/* Room 3 */}
-        <rect
-          className='room'
-          id="room3"
-          x="0"
-          y="170"
-          width="48"
-          height="47"
-          fill={getRoomColor('room3')}
-          onClick={() => handleRoomClick('room3')}
-        />
-
-        {/* Room 4 */}
-        <rect
-          className='room'
-          id="room4"
-          x="402"
-          y="0"
-          width="150"
-          height="81"
-          fill={getRoomColor('room4')}
-          onClick={() => handleRoomClick('room4')}
-        />
-
-        {/* Room 5 */}
-        <rect
-          className='room'
-          id="room5"
-          x="131"
-          y="0"
-          width="107"
-          height="60"
-          fill={getRoomColor('room5')}
-          onClick={() => handleRoomClick('room5')}
-        />
-
-        {/* Room 6 */}
-        <rect
-          className='room'
-          id="room6"
           x="242"
           y="0"
           width="107"
           height="60"
-          fill={getRoomColor('room6')}
-          onClick={() => handleRoomClick('room6')}
+          fill={getRoomColor('room1')}
+          onClick={() => handleRoomClick('room1')}
+          onMouseEnter={() => handleRoomHover('room1')}
+          className="room"
         />
 
-        {/* Room 7 */}
+        {/* Room 2 */}
         <rect
-          className='room'
-          id="room7"
+          id="room2"
           x="353"
           y="0"
           width="45"
           height="45"
-          fill={getRoomColor('room7')}
-          onClick={() => handleRoomClick('room7')}
+          fill={getRoomColor('room2')}
+          onClick={() => handleRoomClick('room2')}
+          onMouseEnter={() => handleRoomHover('room2')}
+          className="room"
         />
 
-        {/* Room 8 */}
+        {/* Room 3 */}
         <rect
-          className='room'
-          id="room8"
+          id="room3"
+          x="402"
+          y="0"
+          width="150"
+          height="81"
+          fill={getRoomColor('room3')}
+          onClick={() => handleRoomClick('room3')}
+          onMouseEnter={() => handleRoomHover('room3')}
+          className="room"
+        />
+
+        {/* Room 4 */}
+        <rect
+          id="room4"
           x="468"
           y="85"
           width="84"
           height="78"
-          fill={getRoomColor('room8')}
-          onClick={() => handleRoomClick('room8')}
+          fill={getRoomColor('room4')}
+          onClick={() => handleRoomClick('room4')}
+          onMouseEnter={() => handleRoomHover('room4')}
+          className="room"
         />
 
-        {/* Room 9 */}
+        {/* Room 5 */}
         <rect
-          className='room'
-          id="room9"
-          x="468"
+          id="room5"
+          x="512"
           y="167"
-          width="84"
+          width="40"
           height="46"
-          fill={getRoomColor('room9')}
-          onClick={() => handleRoomClick('room9')}
+          fill={getRoomColor('room5')}
+          onClick={() => handleRoomClick('room5')}
+          onMouseEnter={() => handleRoomHover('room5')}
+          className="room"
         />
 
-        {/* Room 10 */}
+        {/* Room 6 */}
         <rect
-          className='room'
-          id="room10"
+          id="room6"
           x="468"
           y="217"
           width="84"
           height="46"
-          fill={getRoomColor('room10')}
-          onClick={() => handleRoomClick('room10')}
-          style={{ cursor: 'pointer' }}
+          fill={getRoomColor('room6')}
+          onClick={() => handleRoomClick('room6')}
+          onMouseEnter={() => handleRoomHover('room6')}
+          className="room"
         />
 
-        {/* Room 11 */}
+        {/* Room 7 */}
         <rect
-          className='room'
-          id="room11"
+          id="room7"
           x="512"
           y="267"
           width="40"
           height="40"
+          fill={getRoomColor('room7')}
+          onClick={() => handleRoomClick('room7')}
+          onMouseEnter={() => handleRoomHover('room7')}
+          className="room"
+        />
+
+        {/* Room 8 */}
+        <rect
+          id="room8"
+          x="131"
+          y="0"
+          width="107"
+          height="81"
+          fill={getRoomColor('room8')}
+          onClick={() => handleRoomClick('room8')}
+          onMouseEnter={() => handleRoomHover('room8')}
+          className="room"
+        />
+
+        {/* Room 9 */}
+        <rect
+          id="room9"
+          x="0"
+          y="0"
+          width="127"
+          height="81"
+          fill={getRoomColor('room9')}
+          onClick={() => handleRoomClick('room9')}
+          onMouseEnter={() => handleRoomHover('room9')}
+          className="room"
+        />
+
+        {/* Room 10 */}
+        <rect
+          id="room10"
+          x="0"
+          y="85"
+          width="82"
+          height="81"
+          fill={getRoomColor('room10')}
+          onClick={() => handleRoomClick('room10')}
+          onMouseEnter={() => handleRoomHover('room10')}
+          className="room"
+        />
+
+        {/* Room 11 */}
+        <rect
+          id="room11"
+          x="0"
+          y="170"
+          width="82"
+          height="47"
           fill={getRoomColor('room11')}
           onClick={() => handleRoomClick('room11')}
-          style={{ cursor: 'pointer' }}
+          onMouseEnter={() => handleRoomHover('room11')}
+          className="room"
         />
       </svg>
       {roomData && (
@@ -268,4 +277,4 @@ const FloorPlan = () => {
   );
 };
 
-export default FloorPlan;
+export default FloorPlan2;
