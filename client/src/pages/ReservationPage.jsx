@@ -21,6 +21,7 @@ const ReservationPage = () => {
   const { data, error, isLoading } = useSchoolQuery(id);
 
   useEffect(() => {
+    console.log('id: ', id)
     console.log('data: ', data)
   }, [])
 
