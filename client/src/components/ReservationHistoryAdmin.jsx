@@ -214,7 +214,7 @@ const fiLocaleText = {
 };
 
 
-const ReservationHistory = () => {
+const ReservationHistoryAdmin = () => {
 
   const [open, setOpen] = React.useState(false);
   const [selectedRow, setSelectedRow] = React.useState(null);
@@ -298,4 +298,4 @@ const ReservationHistory = () => {
   );
 };
 
-export default ReservationHistory;
+export default ReservationHistoryAdmin;
