@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import RepeatIcon from '@mui/icons-material/Repeat';
@@ -7,6 +7,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { Button } from '@mui/material';
 import { fiFI } from '@mui/x-data-grid/locales';
 import DeleteDialog from './DeleteDialog';
+import Snackbar from '@mui/material/Snackbar';
 
 const columns = (handleClickOpen) => [
   {
@@ -217,6 +218,15 @@ const ReservationHistory = () => {
 
   const [open, setOpen] = React.useState(false);
   const [selectedRow, setSelectedRow] = React.useState(null);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+  const handleSnackbarClose = (_event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbarOpen(false);
+  };
 
   const handleClickOpen = (row) => {
     setSelectedRow(row);
@@ -228,8 +238,26 @@ const ReservationHistory = () => {
     setSelectedRow(null);
   };
 
+  const handleDelete = (deleted) => {
+    setOpen(false);
+    setSelectedRow(null);
+    if (deleted) {
+      setSnackbarMessage('Varaus on poistettu onnistuneesti');
+      setSnackbarOpen(true);
+    }
+  };
+
+
+
   return (
     <>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={4000}
+        onClose={handleSnackbarClose}
+        message={snackbarMessage}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      />
       <Box sx={{ height: '100%', width: '100%' }}>
         <DataGrid
           rows={rows}
@@ -259,6 +287,7 @@ const ReservationHistory = () => {
         <DeleteDialog
           open={open}
           handleClose={handleClose}
+          handleDelete={handleDelete}
           course={selectedRow.opettaja}
           roomName={selectedRow.opetustila}
           date={selectedRow.päivämäärä}
