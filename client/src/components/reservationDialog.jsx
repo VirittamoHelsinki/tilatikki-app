@@ -16,6 +16,10 @@ import {
 } from '@mui/material';
 import { LocalizationProvider, DatePicker, TimePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
+import 'dayjs/locale/fi';  // Import Finnish locale
+
+dayjs.locale('fi');
 
 const theme = createTheme({
 	palette: {
@@ -140,7 +144,16 @@ const ReservationDialog = ({ isOpen, onClose }) => {
 									label="Aloitusaika"
 									value={startTime}
 									onChange={handleStartTimeChange}
-									renderInput={(params) => <TextField {...params} fullWidth />}
+									renderInput={(params) => (
+										<TextField
+											{...params}
+											fullWidth
+											// Change time format to Finnish (24-hour clock)
+											inputProps={{ style: { textTransform: 'lowercase' } }}
+											InputLabelProps={{ shrink: true }}
+											placeholder="hh:mm"
+										/>
+									)}
 								/>
 							</Grid>
 							<Grid item xs={6}>
@@ -153,10 +166,19 @@ const ReservationDialog = ({ isOpen, onClose }) => {
 							</Grid>
 							<Grid item xs={6}>
 								<TimePicker
-									label="Lopetusaika"
-									value={endTime}
-									onChange={handleEndTimeChange}
-									renderInput={(params) => <TextField {...params} fullWidth />}
+									label="Aloitusaika"
+									value={startTime}
+									onChange={handleStartTimeChange}
+									renderInput={(params) => (
+										<TextField
+											{...params}
+											fullWidth
+											// Change time format to Finnish (24-hour clock)
+											inputProps={{ style: { textTransform: 'lowercase' } }}
+											InputLabelProps={{ shrink: true }}
+											placeholder="hh:mm"
+										/>
+									)}
 								/>
 							</Grid>
 						</Grid>
