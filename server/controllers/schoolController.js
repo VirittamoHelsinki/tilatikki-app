@@ -13,11 +13,19 @@ exports.createSchoolWithNestedEntities = async (req, res) => {
     const { name, address, buildings, users } = req.body;
 
     // Create Users
-    const userIds = [];
+    // const userIds = [];
+    // for (const userData of users) {
+    //   const newUser = new User(userData);
+    //   const user = await newUser.save({ session });
+    //   userIds.push(user._id);
+    // }
+
+    // Create Users
+    const userIdsMap = {};  // Map emails to ObjectIds
     for (const userData of users) {
       const newUser = new User(userData);
       const user = await newUser.save({ session });
-      userIds.push(user._id);
+      userIdsMap[userData.email] = user._id;
     }
 
     // Create School
@@ -44,7 +52,8 @@ exports.createSchoolWithNestedEntities = async (req, res) => {
 
           const reservationIds = [];
           for (const reservationData of roomData.reservations) {
-            const userId = userIds.find(userId => userId.equals(reservationData.user));  // Replace user email with corresponding user ID
+            /* const userId = userIds.find(userId => userId.equals(reservationData.user));  // Replace user email with corresponding user ID */
+            const userId = userIdsMap[reservationData.user];
             const newReservation = new Reservation({
               user: userId,
               startTime: reservationData.startTime,
@@ -66,7 +75,7 @@ exports.createSchoolWithNestedEntities = async (req, res) => {
       await Building.findByIdAndUpdate(building._id, { floors: floorIds }, { session });
     }
     // Push buildings to school
-    await School.findByIdAndUpdate(school._id, { buildings: buildingIds, users: userIds }, { session });
+    await School.findByIdAndUpdate(school._id, { buildings: buildingIds, users: Object.values(userIdsMap) }, { session });
 
     await session.commitTransaction();
     session.endSession();
