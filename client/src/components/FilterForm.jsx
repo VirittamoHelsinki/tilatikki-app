@@ -12,38 +12,6 @@ import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import 'dayjs/locale/de';
 
-// TODO change this to real data from the DB
-const buildings = [
-	{
-		name: 'Päärakennus',
-		floors: {
-			1: ['101', '102', '103', '104'],
-			2: ['201', '202', '203', '204', '205'],
-			3: ['301', '302', '303', '304', '305', '306'],
-			4: ['401', '402', '403', '404'],
-			5: ['501', '502', '503'],
-			6: ['601', '602', '603', '604'],
-		},
-		rooms: 26,
-	},
-	{
-		name: 'Lisärakennus',
-		floors: {
-			1: ['101', '102', '103', '104'],
-			2: ['201', '202', '203'],
-			3: ['301', '302'],
-		},
-		rooms: 9,
-	},
-	{
-		name: 'Parakki',
-		floors: {
-			1: ['101', '102', '103'],
-		},
-		rooms: 3,
-	},
-];
-
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -66,7 +34,7 @@ const timeSlots = [
 const groupSizes = Array.from({ length: 20 }, (_, index) => (index + 1) * 5);
 
 // need to pass buildings as props?
-const FilterForm = ({onFilterChange}) => {
+const FilterForm = ({onClassroomChange, schoolData}) => {
 	const [selectedBuildings, setSelectedBuildings] = useState([]);
 	const [availableFloors, setAvailableFloors] = useState([1]);
 	const [selectedFloor, setSelectedFloor] = useState('');
@@ -78,6 +46,7 @@ const FilterForm = ({onFilterChange}) => {
 	const [selectedStartDate, setSelectedStartDate] = useState(null);
 	const [selectedEndDate, setSelectedEndDate] = useState(null);
 	const [required, setRequired] = useState(false);
+	const [filteredClassrooms, setFilteredClassrooms] = useState([]);
 
 	const handleSelectedBuildings = (event) => {
 		const {
@@ -88,9 +57,10 @@ const FilterForm = ({onFilterChange}) => {
 
 		const selectedValues = typeof value === 'string' ? value.split(',') : value;
 		const selectedBuildingObjects = selectedValues.map((name) =>
-			buildings.find((building) => building.name === name)
+			schoolData.buildings.find((building) => building.name === name)
 		);
 		setSelectedBuildings(selectedBuildingObjects);
+		console.log('selectedBuildingObjects', selectedBuildingObjects);
 	};
 
 	const handleSelectedFloor = (event) => {
@@ -124,22 +94,30 @@ const FilterForm = ({onFilterChange}) => {
 
 		selectedBuildings.forEach((building) => {
 			if (selectedFloor != '') {
-				if (selectedFloor in building.floors) {
-					allRooms = allRooms.concat(building.floors[selectedFloor].map((room) => `${building.name} - ${selectedFloor} - ${room}`));
+
+				const floorObject = building.floors.find(floor => floor.number === selectedFloor);
+				if (floorObject) {
+					allRooms = allRooms.concat(floorObject.rooms.map((room) => `${building.name} - ${selectedFloor} - ${room.number}`));
 				}
 			}
 			else {
-				Object.keys(building.floors).forEach((floor) => {
-					allRooms = allRooms.concat(building.floors[floor].map((room) => `${building.name} - ${floor} - ${room}`));
+				building.floors.forEach((floor) => {
+					allRooms = allRooms.concat(floor.rooms.map((room) => `${building.name} - ${floor.number} - ${room.number}`));
 				});
 			}
 		})
-		console.log('allRooms', allRooms);
 		setAvailableClassrooms(allRooms);
 	}
 
 	const generateFloorList = (maxFloor) => {
 		return Array.from({ length: maxFloor}, (_, index) => index + 1);
+	}
+
+	const filterResults = () => {
+
+
+
+		onClassroomChange(filteredClassrooms);
 	}
 
 	const handleSubmit = (e) => {
@@ -156,8 +134,12 @@ const FilterForm = ({onFilterChange}) => {
 		}
 
 		if (selectedBuildings.length > 0) {
-			onFilterChange(filterData);
-			resetStates();
+			filterResults();
+
+			// const filteredData =
+
+			// // need to see the search-criteria?
+			// resetStates();
 		}
 		else {
 			setRequired(true);
@@ -188,6 +170,9 @@ const FilterForm = ({onFilterChange}) => {
 
 	useEffect(() => {
 		console.log('useEffect');
+		console.log('schoolData', schoolData);
+		console.log('schoolData.buildings', schoolData.buildings);
+
 		const maxFloorValue = selectedBuildings.reduce((max, building) =>
 			Object.keys(building.floors).length > max ? Object.keys(building.floors).length : max, 1
 		)
@@ -205,9 +190,9 @@ const FilterForm = ({onFilterChange}) => {
 		}
 		setClassroom('');
 
-		console.log('selectedBuildings', selectedBuildings);
-		console.log('maxFloorValue', maxFloorValue);
-		console.log('availableFloors', availableFloors);
+		// console.log('selectedBuildings', selectedBuildings);
+		// console.log('maxFloorValue', maxFloorValue);
+		// console.log('availableFloors', availableFloors);
 	  }, [selectedBuildings, selectedFloor]);
 
 	const filterFieldContainer = {
@@ -292,7 +277,7 @@ return (
 						)}
 						MenuProps={MenuProps}
 						>
-						{buildings.map((building) => (
+						{schoolData.buildings.map((building) => (
 							<MenuItem key={building.name} value={building.name}>
 							<Checkbox checked={selectedBuildings.some((selected) => selected.name === building.name)} />
 							<ListItemText primary={building.name} />

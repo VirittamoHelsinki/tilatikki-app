@@ -14,8 +14,7 @@ import FloorPlan4 from '../components/floorplans/FloorPlan4';
 import FloorPlan5 from '../components/floorplans/FloorPlan5';
 
 const ReservationPage = () => {
-  const [filterValues, setFilterValues] = useState({});
-
+  const [filteredClassrooms, setFilteredClassrooms] = useState([]);
 
   const { id } = useParams();
   const { data, error, isLoading } = useSchoolQuery(id);
@@ -33,16 +32,16 @@ const ReservationPage = () => {
     return <div>Error: {error.message}</div>;
   }
 
-  const handleFilterChange = (newFilterValues) => {
-    setFilterValues(newFilterValues);
-  }
+  const handleClassroomChange = (newClassrooms) => {
+	setFilteredClassrooms(newClassrooms);
+  };
 
   return (
     <>
       <Header />
       <Container maxWidth="" style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '20px' }}>
         <Box sx={{ width: '30%', padding: '20px', border: '1px solid #ddd', borderRadius: '4px' }}>
-          <FilterForm onFilterChange={handleFilterChange} />
+          <FilterForm onClassroomChange={handleClassroomChange} schoolData={data} />
         </Box>
 
         {/* Middle Section - Data Display */}
@@ -56,7 +55,7 @@ const ReservationPage = () => {
               No data to display yet.
             </Typography>
 
-            <BookingResults filterValues={filterValues} />
+            <BookingResults classrooms={filteredClassrooms} />
 
           </Box>
         </Box>
@@ -66,7 +65,7 @@ const ReservationPage = () => {
           </Typography>
           <Box>
             {/* <FloorPlanBase></FloorPlanBase> */}
-            <FloorPlan5 />
+            {/* <FloorPlan5 /> */}
           </Box>
         </Box>
       </Container>
