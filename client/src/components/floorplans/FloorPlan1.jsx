@@ -110,18 +110,6 @@ const FloorPlan1 = () => {
     }
   };
 
-  const fetchRoomCapacity = (roomId) => {
-    const reservation = reservations.find(res => res.room._id === roomId);
-    if (reservation.room.capacity > reservation.groupsize) {
-      return reservation.room.capacity;
-    } else {
-      return null; // or return a default value or handle the error as needed
-    }
-  };
-
-  const roomCapacity = fetchRoomCapacity('room1');
-  console.log(`Room capacity: ${roomCapacity}`);
-
   return (
     <div className="floor-plan">
       <svg viewBox="0 0 552 307" xmlns="http://www.w3.org/2000/svg">
