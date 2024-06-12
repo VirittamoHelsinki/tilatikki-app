@@ -12,7 +12,9 @@ import {
 	FormControl,
 	Grid,
 	ThemeProvider,
-	createTheme
+	Typography,
+	createTheme,
+	Box
 } from '@mui/material';
 import { useCreateReservationMutation } from '../api/reservations';
 import { LocalizationProvider, DatePicker, TimePicker } from '@mui/x-date-pickers';
@@ -63,7 +65,8 @@ const ReservationDialog = ({ isOpen, onClose, roomId }) => {
 	const [additionalInfo, setAdditionalInfo] = useState('');
 	const [name, setName] = useState('')
 	const [surname, setSurname] = useState('')
-	const [user, setUser] = useState()
+	const [user, setUser] = useState({ name: 'Matti' })
+	const [room, setRoom] = useState({ number: 'Room 72' })
 
 	const createReservationMutation = useCreateReservationMutation();
 
@@ -148,14 +151,15 @@ const ReservationDialog = ({ isOpen, onClose, roomId }) => {
 		<ThemeProvider theme={theme}>
 			<LocalizationProvider dateAdapter={AdapterDayjs}>
 				<Dialog open={isOpen} onClose={onClose} maxWidth="sm" fullWidth>
-					<Box>
-						<DialogTitle>Luo varaus</DialogTitle>
-						<Box sx={{ marginTop: 2 }}>
-							<Typography variant="h6">Varauksen tekijä</Typography>
-							<Typography variant="body1">{user.name} {user.surname}</Typography>
-						</Box>
-					</Box>
+					<DialogTitle>Luo varaus</DialogTitle>
 					<DialogContent>
+						<Box sx={{ marginTop: 0, marginBottom: 0 }}>
+							<Typography variant="h4">{room.number}</Typography>
+						</Box>
+						<Box sx={{ marginTop: 1, marginBottom: 1 }}>
+							<Typography variant="h6">Varauksen tekijä</Typography>
+							<Typography variant="body2">{user.name} {user.surname}</Typography>
+						</Box>
 						<TextField
 							autoFocus
 							margin="dense"
