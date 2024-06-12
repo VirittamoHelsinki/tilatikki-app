@@ -121,12 +121,7 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 
 		buildings.forEach((building) => {
 			building.floors.forEach((floor) => {
-				if (selectedFloor) {
-					if (floor.number === selectedFloor) {
-						classrooms = classrooms.concat(floor.rooms);
-					}
-				}
-				else {
+				if (!selectedFloor || floor.number === selectedFloor) {
 					classrooms = classrooms.concat(floor.rooms);
 				}
 			})
@@ -141,10 +136,43 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 		return classrooms;
 	};
 
+	const filterByClassroom = (buildings) => {
+		let classrooms = [];
+
+		buildings.forEach((building) => {
+			if (classroom) {
+				const parts = classroom.split(' - ');
+				const buildingName = parts[0];
+				const floorNumber = parseInt(parts[1]);
+				const className = parts[2];
+
+				if (building.name === buildingName) {
+					building.floors.forEach((floor) => {
+						if (floor.number === floorNumber) {
+							floor.rooms.forEach((room) => {
+								if (room.number === className) {
+									classrooms.push(room);
+								}
+							})
+						}
+					})
+				}
+			}
+			else {
+				building.floors.forEach((floor) => {
+					classrooms = classrooms.concat(floor.rooms);
+				})
+			}
+		})
+		return classrooms;
+	};
+
 	const filterResults = () => {
 		const buildings = filterByBuilding();
-		let classrooms = filterByFloor(buildings);
-		classrooms = filterByGroupsize(classrooms);
+		let classrooms = filterByClassroom(buildings);
+
+		// let classrooms = filterByFloor(buildings);
+		// classrooms = filterByGroupsize(classrooms);
 
 		console.log('buildings', buildings);
 		console.log('classrooms', classrooms);
