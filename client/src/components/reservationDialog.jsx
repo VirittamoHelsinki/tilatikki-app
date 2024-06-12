@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
 	Dialog,
 	DialogTitle,
@@ -19,6 +19,8 @@ import { LocalizationProvider, DatePicker, TimePicker } from '@mui/x-date-picker
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import 'dayjs/locale/en-gb';  // Import Finnish locale
+import { getCookie } from '../utils/Cookies';
+import { fetchUserDataByEmail } from '../api/userApi';
 
 dayjs.locale('en-gb');
 
@@ -50,7 +52,7 @@ const theme = createTheme({
 	},
 });
 
-const ReservationDialog = ({ isOpen, onClose, userId, roomId }) => {
+const ReservationDialog = ({ isOpen, onClose, roomId }) => {
 	const [title, setTitle] = useState('');
 	const [groupSize, setGroupSize] = useState('');
 	const [startDate, setStartDate] = useState(null);
@@ -59,8 +61,28 @@ const ReservationDialog = ({ isOpen, onClose, userId, roomId }) => {
 	const [endTime, setEndTime] = useState(null);
 	const [recurrence, setRecurrence] = useState('');
 	const [additionalInfo, setAdditionalInfo] = useState('');
+	const [name, setName] = useState('')
+	const [surname, setSurname] = useState('')
+	const [user, setUser] = useState()
 
 	const createReservationMutation = useCreateReservationMutation();
+
+	useEffect(() => {
+		const email = getCookie('UserEmail');
+		if (email) {
+			fetchUserDataByEmail(email)
+				.then(userData => {
+					setName(userData.name);
+					setSurname(userData.surname);
+					setUser(userData)
+					console.log('user: ', user)
+				})
+				.catch(error => {
+					console.error('Error fetching user data:', error);
+				});
+		}
+	}, []);
+
 
 	const handleTitleChange = (event) => {
 		setTitle(event.target.value);
@@ -98,14 +120,11 @@ const ReservationDialog = ({ isOpen, onClose, userId, roomId }) => {
 		// Handle save action
 		e.preventDefault();
 
-		console.log('startTime: ', startTime)
-		console.log('startDate: ', startDate)
-
 		const startDateTime = dayjs(startDate).set('hour', dayjs(startTime).hour()).set('minute', dayjs(startTime).minute()).toISOString();
 		const endDateTime = dayjs(endDate).set('hour', dayjs(endTime).hour()).set('minute', dayjs(endTime).minute()).toISOString();
 
 		const reservationData = {
-			userId: userId, // userId
+			userId: user._id, // userId
 			startTime: startDateTime, // date
 			endTime: endDateTime, // date
 			purpose: title, // string
@@ -129,7 +148,13 @@ const ReservationDialog = ({ isOpen, onClose, userId, roomId }) => {
 		<ThemeProvider theme={theme}>
 			<LocalizationProvider dateAdapter={AdapterDayjs}>
 				<Dialog open={isOpen} onClose={onClose} maxWidth="sm" fullWidth>
-					<DialogTitle>Luo varaus</DialogTitle>
+					<Box>
+						<DialogTitle>Luo varaus</DialogTitle>
+						<Box sx={{ marginTop: 2 }}>
+							<Typography variant="h6">Varauksen tekijä</Typography>
+							<Typography variant="body1">{user.name} {user.surname}</Typography>
+						</Box>
+					</Box>
 					<DialogContent>
 						<TextField
 							autoFocus

@@ -18,7 +18,7 @@ const ReservationDialogPage = () => {
   return (
     <>
       <button onClick={handleOpenDialog}>Open Reservation Dialog</button>
-      <ReservationDialog isOpen={isOpen} onClose={handleCloseDialog} userId={'60c72b2f9b1e8a5f9c8e7d0c'} roomId={'60c72b2f9b1e8a5f9c8e7d0d'} />
+      <ReservationDialog isOpen={isOpen} onClose={handleCloseDialog} roomId={'60c72b2f9b1e8a5f9c8e7d0d'} />
     </>
   );
 };
