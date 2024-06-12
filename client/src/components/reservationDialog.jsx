@@ -65,10 +65,10 @@ const ReservationDialog = ({ isOpen, onClose, roomId }) => {
 	const [recurrence, setRecurrence] = useState('');
 	const [additionalInfo, setAdditionalInfo] = useState('');
 	const [user, setUser] = useState({ name: '' })
-	const [room, setRoom] = useState({})
 
 	const createReservationMutation = useCreateReservationMutation();
-	const { data, error, isLoading } = useRoomQuery(roomId);
+	const { data: room, error: roomError, isLoading: roomLoading } = useRoomQuery(roomId);
+	const { data: totalPeople, error: totalPeopleError, isLoading: totalPeopleLoading } = useTotalPeopleReservedQuery(roomId);
 
 	useEffect(() => {
 		setRoom(data)
