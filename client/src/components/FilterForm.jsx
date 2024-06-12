@@ -116,22 +116,37 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 		return schoolData.buildings.filter(schoolBuilding => selectedBuildings.some(selectedBuilding => selectedBuilding.name === schoolBuilding.name));
 	};
 
-	const filterByFloor = (classRooms) => {
-		return classRooms.filter(room => {
-			return
+	const filterByFloor = (buildings) => {
+		let classrooms = [];
+
+		buildings.forEach((building) => {
+			building.floors.forEach((floor) => {
+				if (selectedFloor) {
+					if (floor.number === selectedFloor) {
+						classrooms = classrooms.concat(floor.rooms);
+					}
+				}
+				else {
+					classrooms = classrooms.concat(floor.rooms);
+				}
+			})
 		})
+		return classrooms;
 	};
 
 	const filterResults = () => {
 		const buildings = filterByBuilding();
-		const classrooms = filterByFloor();
+		const classrooms = filterByFloor(buildings);
+
+		console.log('buildings', buildings);
+		console.log('classrooms', classrooms);
 
 
 
 
-		console.log('test', filteredClassrooms);
+		// console.log('test', filteredClassrooms);
 
-		onClassroomChange(filteredClassrooms);
+		// onClassroomChange(filteredClassrooms);
 	}
 
 	const handleSubmit = (e) => {
