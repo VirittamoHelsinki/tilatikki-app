@@ -28,3 +28,26 @@ exports.getRoomById = async (req, res) => {
   }
 };
 
+exports.getTotalPeopleReserved = async (req, res) => {
+  const roomId = req.params.roomId;
+
+  try {
+    // Ensure the roomId is a valid ObjectId
+    const roomObjectId = mongoose.Types.ObjectId(roomId);
+
+    // Use aggregation to sum the groupsize for the given room
+    const result = await Reservation.aggregate([
+      { $match: { room: roomObjectId } }, // Match reservations for the specific room
+      { $group: { _id: null, totalPeople: { $sum: '$groupsize' } } } // Sum the groupsize
+    ]);
+
+    // Extract the total people count from the result
+    const totalPeople = result.length > 0 ? result[0].totalPeople : 0;
+
+    // Send the total people count as the response
+    res.status(200).json({ totalPeople });
+  } catch (err) {
+    console.error('Error calculating total people reserved:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
