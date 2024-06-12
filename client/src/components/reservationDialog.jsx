@@ -23,6 +23,7 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/en-gb';  // Import Finnish locale
 import { getCookie } from '../utils/Cookies';
 import { fetchUserDataByEmail } from '../api/userApi';
+import { useRoomQuery } from '../api/rooms';
 
 dayjs.locale('en-gb');
 
@@ -63,12 +64,16 @@ const ReservationDialog = ({ isOpen, onClose, roomId }) => {
 	const [endTime, setEndTime] = useState(null);
 	const [recurrence, setRecurrence] = useState('');
 	const [additionalInfo, setAdditionalInfo] = useState('');
-	const [name, setName] = useState('')
-	const [surname, setSurname] = useState('')
-	const [user, setUser] = useState({ name: 'Matti' })
-	const [room, setRoom] = useState({ number: 'Room 72' })
+	const [user, setUser] = useState({ name: '' })
+	const [room, setRoom] = useState({})
 
 	const createReservationMutation = useCreateReservationMutation();
+	const { data, error, isLoading } = useRoomQuery(roomId);
+
+	useEffect(() => {
+		setRoom(data)
+		console.log('current room: ', room)
+	}, [])
 
 	useEffect(() => {
 		const email = getCookie('UserEmail');
