@@ -113,23 +113,22 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 	}
 
 	const filterByBuilding = () => {
-		let filteredRooms = [];
+		return selectedBuildings.flatMap(selectedBuilding => {
+			return schoolData.buildings
+			  .filter(schoolBuilding => selectedBuilding.name === schoolBuilding.name)
+			  .flatMap(schoolBuilding =>
+				schoolBuilding.floors.flatMap(floor => floor.rooms)
+			  );
+		  });
+	};
 
-		selectedBuildings.forEach((selectedBuilding) => {
-			schoolData.buildings.forEach((schoolBuilding) => {
-				if (selectedBuilding.name === schoolBuilding.name) {
-					schoolBuilding.floors.forEach((floor) => {
-						filteredRooms = filteredRooms.concat(floor.rooms);
-					});
-				}
-			});
-		});
-		return filteredRooms;
+	const filterByFloor = (classRooms) => {
+
 	};
 
 	const filterResults = () => {
 		let filteredClassrooms = filterByBuilding();
-
+		filterByFloor(filteredClassrooms);
 
 
 
