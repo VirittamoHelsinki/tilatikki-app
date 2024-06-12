@@ -113,22 +113,19 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 	}
 
 	const filterByBuilding = () => {
-		return selectedBuildings.flatMap(selectedBuilding => {
-			return schoolData.buildings
-			  .filter(schoolBuilding => selectedBuilding.name === schoolBuilding.name)
-			  .flatMap(schoolBuilding =>
-				schoolBuilding.floors.flatMap(floor => floor.rooms)
-			  );
-		  });
+		return schoolData.buildings.filter(schoolBuilding => selectedBuildings.some(selectedBuilding => selectedBuilding.name === schoolBuilding.name));
 	};
 
 	const filterByFloor = (classRooms) => {
-
+		return classRooms.filter(room => {
+			return
+		})
 	};
 
 	const filterResults = () => {
-		let filteredClassrooms = filterByBuilding();
-		filterByFloor(filteredClassrooms);
+		const buildings = filterByBuilding();
+		const classrooms = filterByFloor();
+
 
 
 
@@ -153,10 +150,11 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 		if (selectedBuildings.length > 0) {
 			filterResults();
 
-			// const filteredData =
-
 			// // need to see the search-criteria?
 			// resetStates();
+
+			// temporary fix to resetstates
+			setRequired(false);
 		}
 		else {
 			setRequired(true);
