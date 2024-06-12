@@ -134,9 +134,17 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 		return classrooms;
 	};
 
+	const filterByGroupsize = (classrooms) => {
+		if (groupSize) {
+			return classrooms.filter(room => room.capacity >= groupSize);
+		}
+		return classrooms;
+	};
+
 	const filterResults = () => {
 		const buildings = filterByBuilding();
-		const classrooms = filterByFloor(buildings);
+		let classrooms = filterByFloor(buildings);
+		classrooms = filterByGroupsize(classrooms);
 
 		console.log('buildings', buildings);
 		console.log('classrooms', classrooms);
