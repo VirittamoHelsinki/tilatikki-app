@@ -4,7 +4,7 @@ import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import RepeatIcon from '@mui/icons-material/Repeat';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Button } from '@mui/material';
+import { Typography, Divider } from '@mui/material';
 import { fiFI } from '@mui/x-data-grid/locales';
 import DeleteDialog from './DeleteDialog';
 import Snackbar from '@mui/material/Snackbar';
@@ -258,7 +258,16 @@ const ReservationHistoryAdmin = () => {
         message={snackbarMessage}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       />
-      <Box sx={{ height: '100%', width: '100%' }}>
+       <Typography component="h1" variant="h5">
+            Varaukset
+          </Typography>
+  
+          <Typography component="p" variant="subtitle1">
+          Alla olevasta taulukosta löydät kaikkien käyttäjien varaukset ja pystyt helposti muokkaamaan tai poistamaan varauksia. Pystyt myös siirtämään varauksen toiselle opettajalle.
+          </Typography>
+  
+          <Divider sx={{ mt: 4, mb: 4 }} />
+      <Box sx={{ height: '600', width: '100%' }}>
         <DataGrid
           rows={rows}
           localeText={fiLocaleText}
