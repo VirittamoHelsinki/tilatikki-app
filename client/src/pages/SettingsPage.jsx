@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Typography, Divider, Box, List, ListItem, ListItemText } from '@mui/material';
+import { Typography, Divider, Box, List, ListItem, ListItemText, Button } from '@mui/material';
 import UserInformation from '../components/UserInformation';
 import ReservationHistory from '../components/ReservationHistory';
 import UserProfiles from '../components/UserProfiles';
@@ -8,12 +8,19 @@ import Header from '../components/Header';
 
 const SettingsPage = () => {
     const [selectedComponent, setSelectedComponent] = useState(null);
-    const [admin, setAdmin] = useState(true); // Change this to control admin status
+    const [admin, setAdmin] = useState(true);
 
 
     const handleNavigation = (component) => {
         setSelectedComponent(component);
     };
+
+    const swapPermission = () => {
+        if (admin) {
+            setAdmin(false);
+        }
+        else setAdmin(true)
+    }
 
     return (
         <>
@@ -22,9 +29,26 @@ const SettingsPage = () => {
                 <Typography variant="h4" component="div" sx={{ marginBottom: 2 }}>
                     Hallinnointi
                 </Typography>
-                <Typography variant="body1" component="div" sx={{ marginBottom: 4 }}>
-                    Tällä sivulla voit muokata omia käyttäjätietojasi sekä tarkastella varaushistoriaasi.
+                <Typography variant="body1" component="div" sx={{ marginBottom: 1 }}>
+                    {admin
+                        ? "Tällä sivulla voit mm. muokata omia käyttäjätietojasi, tehdä lukukausivarauksia sekä asettaa käyttäjille eri käyttöoikeuksia."
+                        : "Tällä sivulla voit muokata omia käyttäjätietojasi sekä tarkastella varaushistoriaasi."
+                    }
                 </Typography>
+                <Button
+                    variant="contained"
+                    onClick={() => swapPermission()}
+                    sx={{
+                        mt: 3,
+                        mb: 4,
+                        backgroundColor: '#18181B',
+                        '&:hover': {
+                            backgroundColor: '#2b2b2b'
+                        }
+                    }}
+                >
+                    Vaihda adminin ja opettajan välillä
+                </Button>
                 <Divider sx={{ marginBottom: 4 }} />
                 <Box sx={{ display: 'flex' }}>
                     <Box sx={{ width: '200px', marginRight: 4 }}>
@@ -49,7 +73,7 @@ const SettingsPage = () => {
                                         Admin
                                     </Typography>
                                     <ListItem
-                                        onClick={() => handleNavigation('UserInformation')}
+                                        onClick={() => handleNavigation('UserInformation')}// TÄHÄN NAVIGAATIO KALENTERIIN
                                         sx={{
                                             cursor: 'pointer',
                                             '&:hover': {
@@ -114,7 +138,7 @@ const SettingsPage = () => {
                         {admin ? (
                             <>
                                 {selectedComponent === 'UserInformation' && <UserInformation />}
-                                {selectedComponent === 'UserInformation' && < UserInformation />}
+                                {/* {selectedComponent === 'UserInformation' && < UserInformation />} TÄHÄN TILALLE KALENTERI */}
                                 {selectedComponent === 'UserProfiles' && <UserProfiles />}
                                 {selectedComponent === 'ReservationHistoryAdmin' && <ReservationHistoryAdmin />}
                             </>
