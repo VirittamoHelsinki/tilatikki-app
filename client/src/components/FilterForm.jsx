@@ -46,7 +46,6 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 	const [selectedStartDate, setSelectedStartDate] = useState(null);
 	const [selectedEndDate, setSelectedEndDate] = useState(null);
 	const [required, setRequired] = useState(false);
-	const [filteredClassrooms, setFilteredClassrooms] = useState([]);
 
 	const handleSelectedBuildings = (event) => {
 		const {
@@ -113,9 +112,28 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 		return Array.from({ length: maxFloor}, (_, index) => index + 1);
 	}
 
+	const filterByBuilding = () => {
+		let filteredRooms = [];
+
+		selectedBuildings.forEach((selectedBuilding) => {
+			schoolData.buildings.forEach((schoolBuilding) => {
+				if (selectedBuilding.name === schoolBuilding.name) {
+					schoolBuilding.floors.forEach((floor) => {
+						filteredRooms = filteredRooms.concat(floor.rooms);
+					});
+				}
+			});
+		});
+		return filteredRooms;
+	};
+
 	const filterResults = () => {
+		let filteredClassrooms = filterByBuilding();
 
 
+
+
+		console.log('test', filteredClassrooms);
 
 		onClassroomChange(filteredClassrooms);
 	}
@@ -245,10 +263,10 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 return (
 	<>
 	<Typography variant="h6" gutterBottom>
-		 TODO: school name here
+		 {schoolData.name}
 	</Typography>
 	<Typography variant="h7" gutterBottom>
-		 TODO: school intro here
+		 {schoolData.address}
 	</Typography>
 
 	<form>

@@ -15,6 +15,7 @@ import FloorPlan5 from '../components/floorplans/FloorPlan5';
 
 const ReservationPage = () => {
   const [filteredClassrooms, setFilteredClassrooms] = useState([]);
+  const [filterValues, setFilterValues] = useState(null);
 
   const { id } = useParams();
   const { data, error, isLoading } = useSchoolQuery(id);
@@ -32,8 +33,14 @@ const ReservationPage = () => {
     return <div>Error: {error.message}</div>;
   }
 
+  const handleFilterValues = (newValues) => {
+	setFilterValues(newValues);
+  }
+
   const handleClassroomChange = (newClassrooms) => {
 	setFilteredClassrooms(newClassrooms);
+	console.log('newClassrooms', newClassrooms);
+	console.log('filteredClassrooms', filteredClassrooms);
   };
 
   return (
