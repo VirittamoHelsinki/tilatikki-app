@@ -6,18 +6,19 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { fiFI } from '@mui/x-data-grid/locales';
 import DeleteDialog from './DeleteDialog';
 import Snackbar from '@mui/material/Snackbar';
+import EditUsers from './EditUsers';
 
-const columns = (handleClickOpen) => [
+const columns = (handleClickOpen, handleToEdit) => [
   {
     field: 'käyttäjä',
     headerName: 'Käyttäjä',
-    width: 220,
+    width: 250,
     editable: false,
   },
   {
     field: 'sähköposti',
     headerName: 'Sähköposti',
-    width: 220,
+    width: 400,
     editable: false,
   },
   {
@@ -29,7 +30,7 @@ const columns = (handleClickOpen) => [
   {
     field: 'toissijainenopettaja',
     headerName: 'Toissijainen opettaja',
-    width: 220,
+    width: 250,
     editable: false,
   },
   {
@@ -42,7 +43,7 @@ const columns = (handleClickOpen) => [
     sticky: 'right',
     renderCell: (params) => (
       <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%', marginTop: '12px' }}>
-        <EditIcon style={{ cursor: 'pointer', marginRight: '8px' }} />
+        <EditIcon style={{ cursor: 'pointer', marginRight: '8px' }} onClick={() => handleToEdit(params.row)} />
         <DeleteIcon style={{ cursor: 'pointer' }} onClick={() => handleClickOpen(params.row)} />
       </div>
     ),
@@ -160,6 +161,7 @@ const UserProfiles = () => {
   const [selectedRow, setSelectedRow] = React.useState(null);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
   const handleSnackbarClose = (_event, reason) => {
     if (reason === 'clickaway') {
@@ -172,6 +174,11 @@ const UserProfiles = () => {
     setSelectedRow(row);
     setOpen(true);
   };
+
+  const handleToEdit = (row) => {
+    setSelectedRow(row);
+    setIsEditing(true);
+  }
 
   const handleClose = () => {
     setOpen(false);
@@ -188,6 +195,15 @@ const UserProfiles = () => {
   };
 
 
+  if (isEditing) {
+    return <EditUsers
+    name={selectedRow.käyttäjä}
+    role={selectedRow.käyttäjärooli}
+    otherTeacher={selectedRow.toissijainenopettaja}
+    onClose={() => setIsEditing(false)} 
+    />;
+  }
+
 
   return (
     <>
@@ -202,7 +218,7 @@ const UserProfiles = () => {
         <DataGrid
           rows={rows}
           localeText={fiLocaleText}
-          columns={columns(handleClickOpen)}
+          columns={columns(handleClickOpen, handleToEdit)}
           disableRowSelectionOnClick
           initialState={{
             pagination: {
