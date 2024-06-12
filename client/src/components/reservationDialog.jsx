@@ -14,12 +14,13 @@ import {
 	ThemeProvider,
 	createTheme
 } from '@mui/material';
+import { useCreateReservationMutation } from '../api/reservations';
 import { LocalizationProvider, DatePicker, TimePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
-import 'dayjs/locale/fi';  // Import Finnish locale
+import 'dayjs/locale/en-gb';  // Import Finnish locale
 
-dayjs.locale('fi');
+dayjs.locale('en-gb');
 
 const theme = createTheme({
 	palette: {
@@ -49,7 +50,7 @@ const theme = createTheme({
 	},
 });
 
-const ReservationDialog = ({ isOpen, onClose }) => {
+const ReservationDialog = ({ isOpen, onClose, userId, roomId }) => {
 	const [title, setTitle] = useState('');
 	const [groupSize, setGroupSize] = useState('');
 	const [startDate, setStartDate] = useState(null);
@@ -58,6 +59,8 @@ const ReservationDialog = ({ isOpen, onClose }) => {
 	const [endTime, setEndTime] = useState(null);
 	const [recurrence, setRecurrence] = useState('');
 	const [additionalInfo, setAdditionalInfo] = useState('');
+
+	const createReservationMutation = useCreateReservationMutation();
 
 	const handleTitleChange = (event) => {
 		setTitle(event.target.value);
@@ -91,8 +94,30 @@ const ReservationDialog = ({ isOpen, onClose }) => {
 		setAdditionalInfo(event.target.value);
 	};
 
-	const handleSave = () => {
+	const handleSave = (e) => {
 		// Handle save action
+		e.preventDefault();
+
+		console.log('startTime: ', startTime)
+		console.log('startDate: ', startDate)
+
+		const startDateTime = dayjs(startDate).set('hour', dayjs(startTime).hour()).set('minute', dayjs(startTime).minute()).toISOString();
+		const endDateTime = dayjs(endDate).set('hour', dayjs(endTime).hour()).set('minute', dayjs(endTime).minute()).toISOString();
+
+		const reservationData = {
+			userId: userId, // userId
+			startTime: startDateTime, // date
+			endTime: endDateTime, // date
+			purpose: title, // string
+			roomId: roomId, // roomId
+			groupsize: groupSize, // integer
+			recurrence: recurrence,
+			additionalInfo: additionalInfo
+		}
+
+		console.log('reservationData: ', reservationData)
+
+		createReservationMutation.mutate(reservationData);
 		onClose();
 	};
 
@@ -144,16 +169,7 @@ const ReservationDialog = ({ isOpen, onClose }) => {
 									label="Aloitusaika"
 									value={startTime}
 									onChange={handleStartTimeChange}
-									renderInput={(params) => (
-										<TextField
-											{...params}
-											fullWidth
-											// Change time format to Finnish (24-hour clock)
-											inputProps={{ style: { textTransform: 'lowercase' } }}
-											InputLabelProps={{ shrink: true }}
-											placeholder="hh:mm"
-										/>
-									)}
+									ampm={false}
 								/>
 							</Grid>
 							<Grid item xs={6}>
@@ -166,19 +182,10 @@ const ReservationDialog = ({ isOpen, onClose }) => {
 							</Grid>
 							<Grid item xs={6}>
 								<TimePicker
-									label="Aloitusaika"
-									value={startTime}
-									onChange={handleStartTimeChange}
-									renderInput={(params) => (
-										<TextField
-											{...params}
-											fullWidth
-											// Change time format to Finnish (24-hour clock)
-											inputProps={{ style: { textTransform: 'lowercase' } }}
-											InputLabelProps={{ shrink: true }}
-											placeholder="hh:mm"
-										/>
-									)}
+									label="Lopetusaika"
+									value={endTime}
+									onChange={handleEndTimeChange}
+									ampm={false}
 								/>
 							</Grid>
 						</Grid>
