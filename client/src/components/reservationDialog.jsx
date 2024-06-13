@@ -90,17 +90,16 @@ const ReservationDialog = ({ isOpen, onClose, roomId }) => {
 
 
 	useEffect(() => {
-		if (!roomLoading) {
+		if (fetchRoom && !roomLoading) {
 			setRoom(fetchRoom)
 		}
-	}, [roomLoading])
+	}, [roomLoading, fetchRoom])
 
 	useEffect(() => {
-		if (!totalPeopleLoading) {
+		if (!totalPeopleLoading && !totalPeopleLoading) {
 			setPeopleInside(totalPeople)
-			console.log(peopleInside)
 		}
-	}, [totalPeopleLoading])
+	}, [totalPeopleLoading, totalPeople])
 
 
 	const handleTitleChange = (event) => {
@@ -164,6 +163,7 @@ const ReservationDialog = ({ isOpen, onClose, roomId }) => {
 	const handleCancel = () => {
 		onClose();
 	};
+
 
 	if (roomLoading || totalPeopleLoading || !peopleInside || !room) {
 		return (
