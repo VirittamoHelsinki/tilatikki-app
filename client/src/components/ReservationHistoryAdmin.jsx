@@ -214,7 +214,7 @@ const fiLocaleText = {
 };
 
 
-const ReservationHistory = () => {
+const ReservationHistoryAdmin = () => {
 
   const [open, setOpen] = React.useState(false);
   const [selectedRow, setSelectedRow] = React.useState(null);
@@ -259,15 +259,14 @@ const ReservationHistory = () => {
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       />
       <Typography component="h1" variant="h5">
-        Omat varaukset
+        Varaukset
       </Typography>
 
       <Typography component="p" variant="subtitle1">
-        Muokkaa omia käyttäjätietojasi.
+        Alla olevasta taulukosta löydät kaikkien käyttäjien varaukset ja pystyt helposti muokkaamaan tai poistamaan varauksia. Pystyt myös siirtämään varauksen toiselle opettajalle.
       </Typography>
 
       <Divider sx={{ mt: 4, mb: 4 }} />
-
       <Box sx={{ height: '600', width: '100%' }}>
         <DataGrid
           rows={rows}
@@ -311,4 +310,4 @@ const ReservationHistory = () => {
   );
 };
 
-export default ReservationHistory;
+export default ReservationHistoryAdmin;

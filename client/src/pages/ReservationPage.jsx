@@ -6,6 +6,8 @@ import { Container, Box, TextField, Button, Typography } from '@mui/material';
 import Header from '../components/Header';
 import FilterForm from '../components/FilterForm';
 import BookingResults from '../components/BookingResults';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import FloorPlanBase from '../components/floorplans/FloorPlanBase1';
 import FloorPlan1 from '../components/floorplans/FloorPlan1';
 import FloorPlan2 from '../components/floorplans/FloorPlan2';
@@ -16,6 +18,13 @@ import FloorPlan5 from '../components/floorplans/FloorPlan5';
 const ReservationPage = () => {
   const [filteredClassrooms, setFilteredClassrooms] = useState([]);
   const [filterValues, setFilterValues] = useState(null);
+  const [floor, setFloor] = React.useState('floor1');
+
+  const handleChange = (event, newFloor) => {
+    setFloor(newFloor);
+  };
+
+
 
   const { id } = useParams();
   const { data, error, isLoading } = useSchoolQuery(id);
@@ -65,9 +74,28 @@ const ReservationPage = () => {
           </Box>
         </Box>
         <Box sx={{ width: '100%', padding: '20px', border: '1px solid #ddd', borderRadius: '4px' }}>
-          <Typography variant="h6" gutterBottom>
-            Pohjapiirrustus
-          </Typography>
+        <ToggleButtonGroup
+      color="primary"
+      value={floor}
+      exclusive
+      onChange={handleChange}
+      aria-label="Platform"
+      sx={{marginRight: 2}}
+    >
+      <ToggleButton value="floor1">1. kerros</ToggleButton>
+      <ToggleButton value="floor2">2. kerros</ToggleButton>
+    </ToggleButtonGroup>
+    <ToggleButtonGroup
+      color="primary"
+      value={floor}
+      exclusive
+      onChange={handleChange}
+      aria-label="Platform"
+      sx={{marginBottom: 10}}
+    >
+      <ToggleButton value="buildingA">Rakennus A</ToggleButton>
+      <ToggleButton value="buildingB">Rakennus B</ToggleButton>
+    </ToggleButtonGroup>
           <Box>
             {/* <FloorPlanBase></FloorPlanBase> */}
             {/* <FloorPlan5 /> */}

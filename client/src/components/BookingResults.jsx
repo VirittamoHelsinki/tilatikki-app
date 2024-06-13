@@ -1,6 +1,6 @@
 import React from 'react'
 
-const BookingResults = ({classrooms}) => {
+const BookingResults = ({ classrooms }) => {
 
 	console.log('classrooms', classrooms);
 
@@ -16,7 +16,8 @@ const BookingResults = ({classrooms}) => {
 		</ul>
 	</>
 
-  )
+
+	)
 }
 
 export default BookingResults

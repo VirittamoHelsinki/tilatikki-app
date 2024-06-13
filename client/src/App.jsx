@@ -4,6 +4,7 @@ import LoginPage from './pages/LoginPage';
 import SchoolsPage from './pages/SchoolsPage';
 import ReservationPage from './pages/ReservationPage';
 import SettingsPage from './pages/SettingsPage';
+import ReservationDialogPage from './pages/ReservationDialogPage';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
             <Route path="/schools" element={<SchoolsPage />} />
             <Route path="/reservations/:id" element={<ReservationPage />} />
             <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/reservation-dialog" element={<ReservationDialogPage />} />
           </Routes>
         </div>
       </Router>

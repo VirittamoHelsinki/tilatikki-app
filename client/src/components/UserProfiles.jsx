@@ -1,61 +1,37 @@
 import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import RepeatIcon from '@mui/icons-material/Repeat';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Typography, Divider } from '@mui/material';
 import { fiFI } from '@mui/x-data-grid/locales';
+import { Typography, Divider } from '@mui/material';
 import DeleteDialog from './DeleteDialog';
 import Snackbar from '@mui/material/Snackbar';
+import EditUsers from './EditUsers';
 
-const columns = (handleClickOpen) => [
+const columns = (handleClickOpen, handleToEdit) => [
   {
-    field: 'opetustila',
-    headerName: 'Opetustila',
-    width: 220,
+    field: 'käyttäjä',
+    headerName: 'Käyttäjä',
+    width: 270,
     editable: false,
   },
   {
-    field: 'toistuva',
-    headerName: 'Toistuva',
-    width: 180,
-    editable: false,
-    renderCell: (params) => (
-      <div style={{ display: 'flex', width: '100%', marginTop: '12px' }}>
-        {params.value ? <RepeatIcon /> : null}
-      </div>
-    ),
-  },
-  {
-    field: 'päivämäärä',
-    headerName: 'Päivämäärä',
-    type: 'Date',
-    width: 220,
+    field: 'sähköposti',
+    headerName: 'Sähköposti',
+    width: 400,
     editable: false,
   },
   {
-    field: 'aikaväli',
-    headerName: 'Aikaväli',
-    type: 'number',
-    headerAlign: 'left',
-    align: 'left',
-    width: 180,
+    field: 'käyttäjärooli',
+    headerName: 'Käyttäjärooli',
+    width: 270,
     editable: false,
   },
   {
-    field: 'opettaja',
-    headerName: 'Opettaja',
-    width: 220,
-    editable: false,
-  },
-  {
-    field: 'ryhmankoko',
-    headerName: 'Ryhmän koko',
-    type: 'number',
-    headerAlign: 'left',
-    align: 'left',
-    width: 220,
+    field: 'toissijainenopettaja',
+    headerName: 'Toissijainen opettaja',
+    width: 290,
     editable: false,
   },
   {
@@ -68,7 +44,7 @@ const columns = (handleClickOpen) => [
     sticky: 'right',
     renderCell: (params) => (
       <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%', marginTop: '12px' }}>
-        <EditIcon style={{ cursor: 'pointer', marginRight: '8px' }} />
+        <EditIcon style={{ cursor: 'pointer', marginRight: '8px' }} onClick={() => handleToEdit(params.row)} />
         <DeleteIcon style={{ cursor: 'pointer' }} onClick={() => handleClickOpen(params.row)} />
       </div>
     ),
@@ -78,132 +54,98 @@ const columns = (handleClickOpen) => [
 const rows = [
   {
     id: 1,
-    opetustila: 'Classroom 1',
-    toistuva: true,
-    päivämäärä: '2024-06-07',
-    aikaväli: 60,
-    opettaja: 'John Doe',
-    ryhmankoko: 25,
+    käyttäjä: 'Matti Meikäläinen',
+    sähköposti: 'matti.meikalainen@example.com',
+    käyttäjärooli: 'Opettaja',
+    toissijainenopettaja: 'Maija Mallinen',
     toiminnot: 'Edit/Delete',
   },
   {
     id: 2,
-    opetustila: 'Classroom 2',
-    toistuva: false,
-    päivämäärä: '2024-06-08',
-    aikaväli: 90,
-    opettaja: 'Jane Smith',
-    ryhmankoko: 30,
+    käyttäjä: 'Anna Ankka',
+    sähköposti: 'anna.ankka@example.com',
+    käyttäjärooli: 'Opiskelija',
+    toissijainenopettaja: 'Kalle Kukko',
     toiminnot: 'Edit/Delete',
   },
   {
     id: 3,
-    opetustila: 'Classroom 3',
-    toistuva: true,
-    päivämäärä: '2024-06-09',
-    aikaväli: 120,
-    opettaja: 'Alice Johnson',
-    ryhmankoko: 20,
+    käyttäjä: 'Pekka Pouta',
+    sähköposti: 'pekka.pouta@example.com',
+    käyttäjärooli: 'Admin',
+    toissijainenopettaja: 'Sanna Sateenkaari',
     toiminnot: 'Edit/Delete',
   },
   {
     id: 4,
-    opetustila: 'Classroom 4',
-    toistuva: false,
-    päivämäärä: '2024-06-10',
-    aikaväli: 70,
-    opettaja: 'Mark Davis',
-    ryhmankoko: 28,
+    käyttäjä: 'Teemu Teekkari',
+    sähköposti: 'teemu.teekkari@example.com',
+    käyttäjärooli: 'Opettaja',
+    toissijainenopettaja: 'Liisa Laakso',
     toiminnot: 'Edit/Delete',
   },
   {
     id: 5,
-    opetustila: 'Classroom 5',
-    toistuva: true,
-    päivämäärä: '2024-06-11',
-    aikaväli: 80,
-    opettaja: 'Emily Wilson',
-    ryhmankoko: 22,
+    käyttäjä: 'Olga Opiskelija',
+    sähköposti: 'olga.opiskelija@example.com',
+    käyttäjärooli: 'Opiskelija',
+    toissijainenopettaja: 'Mikko Maanviljelijä',
     toiminnot: 'Edit/Delete',
   },
   {
     id: 6,
-    opetustila: 'Classroom 6',
-    toistuva: false,
-    päivämäärä: '2024-06-12',
-    aikaväli: 100,
-    opettaja: 'Michael Brown',
-    ryhmankoko: 35,
+    käyttäjä: 'Jussi Jokinen',
+    sähköposti: 'jussi.jokinen@example.com',
+    käyttäjärooli: 'Opettaja',
+    toissijainenopettaja: 'Elina Elo',
     toiminnot: 'Edit/Delete',
   },
   {
     id: 7,
-    opetustila: 'Classroom 7',
-    toistuva: true,
-    päivämäärä: '2024-06-13',
-    aikaväli: 110,
-    opettaja: 'Sarah Martinez',
-    ryhmankoko: 18,
+    käyttäjä: 'Riikka Rinne',
+    sähköposti: 'riikka.rinne@example.com',
+    käyttäjärooli: 'Opiskelija',
+    toissijainenopettaja: 'Ville Virtanen',
     toiminnot: 'Edit/Delete',
   },
   {
     id: 8,
-    opetustila: 'Classroom 8',
-    toistuva: false,
-    päivämäärä: '2024-06-14',
-    aikaväli: 130,
-    opettaja: 'Andrew Taylor',
-    ryhmankoko: 27,
+    käyttäjä: 'Kalle Kuusi',
+    sähköposti: 'kalle.kuusi@example.com',
+    käyttäjärooli: 'Opettaja',
+    toissijainenopettaja: 'Päivi Pihlaja',
     toiminnot: 'Edit/Delete',
   },
   {
     id: 9,
-    opetustila: 'Classroom 9',
-    toistuva: true,
-    päivämäärä: '2024-06-15',
-    aikaväli: 95,
-    opettaja: 'Jessica Thomas',
-    ryhmankoko: 29,
+    käyttäjä: 'Sanna Suutari',
+    sähköposti: 'sanna.suutari@example.com',
+    käyttäjärooli: 'Admin',
+    toissijainenopettaja: 'Hanna Haukka',
     toiminnot: 'Edit/Delete',
   },
   {
     id: 10,
-    opetustila: 'Classroom 10',
-    toistuva: false,
-    päivämäärä: '2024-06-16',
-    aikaväli: 35,
-    opettaja: 'David jeeeriguez',
-    ryhmankoko: 64,
+    käyttäjä: 'Mikko Miettinen',
+    sähköposti: 'mikko.miettinen@example.com',
+    käyttäjärooli: 'Opiskelija',
+    toissijainenopettaja: 'Tiina Talvi',
     toiminnot: 'Edit/Delete',
   },
   {
     id: 11,
-    opetustila: 'Classroom 11',
-    toistuva: false,
-    päivämäärä: '2024-09-16',
-    aikaväli: 75,
-    opettaja: 'David sdgsdgfsuez',
-    ryhmankoko: 24,
+    käyttäjä: 'Liisa Laine',
+    sähköposti: 'liisa.laine@example.com',
+    käyttäjärooli: 'Opettaja',
+    toissijainenopettaja: 'Kari Kevät',
     toiminnot: 'Edit/Delete',
   },
   {
     id: 12,
-    opetustila: 'Classroom 12',
-    toistuva: false,
-    päivämäärä: '2024-08-16',
-    aikaväli: 95,
-    opettaja: 'David Rodriguez',
-    ryhmankoko: 24,
-    toiminnot: 'Edit/Delete',
-  },
-  {
-    id: 13,
-    opetustila: 'Classroom 13',
-    toistuva: false,
-    päivämäärä: '2024-06-29',
-    aikaväli: 75,
-    opettaja: 'David Rgegedriguez',
-    ryhmankoko: 34,
+    käyttäjä: 'Pekka Pelto',
+    sähköposti: 'pekka.pelto@example.com',
+    käyttäjärooli: 'Opiskelija',
+    toissijainenopettaja: 'Jari Joki',
     toiminnot: 'Edit/Delete',
   },
 ];
@@ -214,12 +156,13 @@ const fiLocaleText = {
 };
 
 
-const ReservationHistory = () => {
+const UserProfiles = () => {
 
   const [open, setOpen] = React.useState(false);
   const [selectedRow, setSelectedRow] = React.useState(null);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
   const handleSnackbarClose = (_event, reason) => {
     if (reason === 'clickaway') {
@@ -232,6 +175,11 @@ const ReservationHistory = () => {
     setSelectedRow(row);
     setOpen(true);
   };
+
+  const handleToEdit = (row) => {
+    setSelectedRow(row);
+    setIsEditing(true);
+  }
 
   const handleClose = () => {
     setOpen(false);
@@ -248,6 +196,15 @@ const ReservationHistory = () => {
   };
 
 
+  if (isEditing) {
+    return <EditUsers
+      name={selectedRow.käyttäjä}
+      role={selectedRow.käyttäjärooli}
+      otherTeacher={selectedRow.toissijainenopettaja}
+      onClose={() => setIsEditing(false)}
+    />;
+  }
+
 
   return (
     <>
@@ -259,20 +216,19 @@ const ReservationHistory = () => {
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       />
       <Typography component="h1" variant="h5">
-        Omat varaukset
+        Käyttäjät
       </Typography>
 
       <Typography component="p" variant="subtitle1">
-        Muokkaa omia käyttäjätietojasi.
+        Taulukon kautta pystyt mm. poistamaan käyttäjän tai lisäämään käyttäjälle sijaisopettajan.
       </Typography>
 
       <Divider sx={{ mt: 4, mb: 4 }} />
-
       <Box sx={{ height: '600', width: '100%' }}>
         <DataGrid
           rows={rows}
           localeText={fiLocaleText}
-          columns={columns(handleClickOpen)}
+          columns={columns(handleClickOpen, handleToEdit)}
           disableRowSelectionOnClick
           initialState={{
             pagination: {
@@ -311,4 +267,4 @@ const ReservationHistory = () => {
   );
 };
 
-export default ReservationHistory;
+export default UserProfiles;

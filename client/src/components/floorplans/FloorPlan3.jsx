@@ -110,18 +110,6 @@ const FloorPlan3 = () => {
     }
   };
 
-  const fetchRoomCapacity = (roomId) => {
-    const reservation = reservations.find(res => res.room._id === roomId);
-    if (reservation.room.capacity > reservation.groupsize) {
-      return reservation.room.capacity;
-    } else {
-      return null; // or return a default value or handle the error as needed
-    }
-  };
-
-  const roomCapacity = fetchRoomCapacity('room1');
-  console.log(`Room capacity: ${roomCapacity}`);
-
   return (
     <div className="floor-plan">
       <svg viewBox="0 0 552 307" xmlns="http://www.w3.org/2000/svg">
@@ -134,7 +122,6 @@ const FloorPlan3 = () => {
           height="45"
           fill={getRoomColor('room1')}
           onClick={() => handleRoomClick('room1')}
-          onMouseEnter={() => handleRoomHover('room1')}
           className="room"
         />
 
@@ -147,7 +134,6 @@ const FloorPlan3 = () => {
           height="45"
           fill={getRoomColor('room2')}
           onClick={() => handleRoomClick('room2')}
-          onMouseEnter={() => handleRoomHover('room2')}
           className="room"
         />
 
@@ -160,7 +146,6 @@ const FloorPlan3 = () => {
           height="78"
           fill={getRoomColor('room3')}
           onClick={() => handleRoomClick('room3')}
-          onMouseEnter={() => handleRoomHover('room3')}
           className="room"
         />
 
@@ -186,7 +171,6 @@ const FloorPlan3 = () => {
           height="46"
           fill={getRoomColor('room5')}
           onClick={() => handleRoomClick('room5')}
-          onMouseEnter={() => handleRoomHover('room5')}
           className="room"
         />
 
@@ -199,7 +183,6 @@ const FloorPlan3 = () => {
           height="46"
           fill={getRoomColor('room6')}
           onClick={() => handleRoomClick('room6')}
-          onMouseEnter={() => handleRoomHover('room6')}
           className="room"
         />
 
@@ -225,7 +208,6 @@ const FloorPlan3 = () => {
           height="81"
           fill={getRoomColor('room8')}
           onClick={() => handleRoomClick('room8')}
-          onMouseEnter={() => handleRoomHover('room8')}
           className="room"
         />
 
@@ -238,7 +220,6 @@ const FloorPlan3 = () => {
           height="81"
           fill={getRoomColor('room9')}
           onClick={() => handleRoomClick('room9')}
-          onMouseEnter={() => handleRoomHover('room9')}
           className="room"
         />
 
@@ -251,7 +232,6 @@ const FloorPlan3 = () => {
           height="58"
           fill={getRoomColor('room10')}
           onClick={() => handleRoomClick('room10')}
-          onMouseEnter={() => handleRoomHover('room10')}
           className="room"
         />
       </svg>

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -11,7 +11,8 @@ import Switch from '@mui/material/Switch';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
-export default function DeleteDialog({ open, handleClose, course, roomName, date, hours}) {
+export default function DeleteDialog({ open, handleClose, handleDelete, course, roomName, date, hours }) {
+
     return (
         <Dialog
             open={open}
@@ -41,13 +42,14 @@ export default function DeleteDialog({ open, handleClose, course, roomName, date
             </FormGroup>
             <DialogActions sx={{ display: 'flex', justifyContent: 'space-between', marginLeft: 2 }}>
                 <Button
-                    onClick={handleClose}
+                    onClick={handleDelete}
                     autoFocus
                     sx={{
                         color: 'white',
+                        textTransform: 'none',
                         backgroundColor: '#EF4444;',
                         '&:hover': {
-                            backgroundColor: '#8b0000', // Darker shade of red
+                            backgroundColor: '#8b0000',
                         }
                     }}
                 >
@@ -57,4 +59,3 @@ export default function DeleteDialog({ open, handleClose, course, roomName, date
         </Dialog>
     );
 }
-
