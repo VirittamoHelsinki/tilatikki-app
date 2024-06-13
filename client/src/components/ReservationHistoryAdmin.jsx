@@ -19,7 +19,7 @@ const columns = (handleClickOpen) => [
   {
     field: 'toistuva',
     headerName: 'Toistuva',
-    width: 220,
+    width: 180,
     editable: false,
     renderCell: (params) => (
       <div style={{ display: 'flex', width: '100%', marginTop: '12px' }}>
@@ -40,7 +40,7 @@ const columns = (handleClickOpen) => [
     type: 'number',
     headerAlign: 'left',
     align: 'left',
-    width: 220,
+    width: 180,
     editable: false,
   },
   {
@@ -258,15 +258,15 @@ const ReservationHistoryAdmin = () => {
         message={snackbarMessage}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       />
-       <Typography component="h1" variant="h5">
-            Varaukset
-          </Typography>
-  
-          <Typography component="p" variant="subtitle1">
-          Alla olevasta taulukosta löydät kaikkien käyttäjien varaukset ja pystyt helposti muokkaamaan tai poistamaan varauksia. Pystyt myös siirtämään varauksen toiselle opettajalle.
-          </Typography>
-  
-          <Divider sx={{ mt: 4, mb: 4 }} />
+      <Typography component="h1" variant="h5">
+        Varaukset
+      </Typography>
+
+      <Typography component="p" variant="subtitle1">
+        Alla olevasta taulukosta löydät kaikkien käyttäjien varaukset ja pystyt helposti muokkaamaan tai poistamaan varauksia. Pystyt myös siirtämään varauksen toiselle opettajalle.
+      </Typography>
+
+      <Divider sx={{ mt: 4, mb: 4 }} />
       <Box sx={{ height: '600', width: '100%' }}>
         <DataGrid
           rows={rows}
@@ -286,8 +286,11 @@ const ReservationHistoryAdmin = () => {
           slots={{ toolbar: GridToolbar }}
           slotProps={{
             toolbar: {
-              style: { color: 'black' },
+              style: { color: 'black', marginLeft: '8px' },
               showQuickFilter: true,
+              quickFilterProps: {
+                style: { marginRight: '20px' },
+              },
             },
           }}
         />

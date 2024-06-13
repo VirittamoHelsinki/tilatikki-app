@@ -33,8 +33,8 @@ export default function EditUsers({ name, role, otherTeacher, onClose }) {
   };
 
   return (
-    
-  <Typography variant="body1" component="div" sx={{ width: '1000px' }}>
+
+    <Typography variant="body1" component="div" sx={{ width: '1000px' }}>
       <Typography
         variant="subtitle1"
         sx={{ textDecoration: 'underline', cursor: 'pointer', color: 'black', marginBottom: '20px' }}
@@ -42,64 +42,64 @@ export default function EditUsers({ name, role, otherTeacher, onClose }) {
       >
         Takaisin käyttäjiin
       </Typography>
-    <Box component="div" sx={{ mb: 3 }}>
-      <Typography component="h1" variant="h5">
-        {name}
-      </Typography>
-      <Typography component="p" variant="subtitle1">
-        {role}
-      </Typography>
-      <Divider sx={{ mt: 4, mb: 4 }} />
-      <Typography variant="p" gutterBottom>
-        Käyttäjärooli
-      </Typography>
-      <Box sx={{ minWidth: 120 }}>
-        <FormControl sx={{width: 200}}>
-          <Select
-            id="select"
-            value={roleName}
-            onChange={handleChange}
-          >
-            <MenuItem value={"Opettaja"}>Opettaja</MenuItem>
-            <MenuItem value={"admin"}>Admin</MenuItem>
-          </Select>
-        </FormControl>
+      <Box component="div" sx={{ mb: 3 }}>
+        <Typography component="h1" variant="h5">
+          {name}
+        </Typography>
+        <Typography component="p" variant="subtitle1">
+          {role}
+        </Typography>
+        <Divider sx={{ mt: 4, mb: 4 }} />
+        <Typography variant="p" gutterBottom>
+          Käyttäjärooli
+        </Typography>
+        <Box sx={{ minWidth: 120 }}>
+          <FormControl sx={{ width: 200 }}>
+            <Select
+              id="select"
+              value={roleName}
+              onChange={handleChange}
+            >
+              <MenuItem value={"Opettaja"}>Opettaja</MenuItem>
+              <MenuItem value={"admin"}>Admin</MenuItem>
+            </Select>
+          </FormControl>
+        </Box>
+        <Box sx={{ minWidth: 120, margin: '20px auto' }}>
+          <Typography variant="p" gutterBottom>
+            Lisää toissijainen opettaja
+          </Typography>
+          <TextField
+            fullWidth
+            value={inputValue}
+            onChange={handleInputChange}
+            onKeyPress={handleInputSubmit}
+            sx={{ marginBottom: 2 }}
+          />
+          {chipVisible && (
+            <Chip
+              label={otherTeacherName}
+              onDelete={handleChipDelete}
+              sx={{}}
+            />
+          )}
+        </Box>
       </Box>
-      <Box sx={{  minWidth: 120, margin: '20px auto' }}>
-      <Typography variant="p" gutterBottom>
-        Lisää toissijainen opettaja
-      </Typography>
-      <TextField
-        fullWidth
-        value={inputValue}
-        onChange={handleInputChange}
-        onKeyPress={handleInputSubmit}
-        sx={{ marginBottom: 2 }}
-      />
-      {chipVisible && (
-        <Chip
-          label={otherTeacherName}
-          onDelete={handleChipDelete}
-          sx={{}}
-        />
-      )}
-    </Box>
-    </Box>
-    <Button
-            type="submit"
-            variant="contained"
-            sx={{ 
-              mt: 1, 
-              mb: 2,
-              textTransform: 'none',
-              backgroundColor: '#18181B',
-              '&:hover': {
-                backgroundColor: '#2b2b2b'
-              }
-            }}
-          >
-            Tallenna muutokset
-          </Button>
-  </Typography>
+      <Button
+        type="submit"
+        variant="contained"
+        sx={{
+          mt: 1,
+          mb: 2,
+          textTransform: 'none',
+          backgroundColor: '#18181B',
+          '&:hover': {
+            backgroundColor: '#2b2b2b'
+          }
+        }}
+      >
+        Tallenna muutokset
+      </Button>
+    </Typography>
   );
 }

@@ -56,17 +56,24 @@ const Header = () => {
           TilaTikki
         </Typography>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Avatar 
-            alt="" 
-            src="" 
-            sx={{ width: 40, height: 40, marginRight: 2, backgroundColor: 'grey' }}
+          <IconButton
+            onClick={handleMenuOpen}
+            color="inherit"
+            sx={{
+              '&:hover': {
+                backgroundColor: 'inherit',
+              }
+            }}>
+            <Avatar
+              alt=""
+              src=""
+              sx={{ width: 40, height: 40, marginRight: 2, backgroundColor: 'grey' }}
             >
               {name.charAt(0)}  {surname.charAt(0)}
             </Avatar>
-          <Typography variant="body1" component="div" sx={{ color: 'black', marginRight: 2 }}>
-            {name}{" "}{surname}
-          </Typography>
-          <IconButton onClick={handleMenuOpen} color="inherit">
+            <Typography variant="body1" component="div" sx={{ color: 'black', marginRight: 2 }}>
+              {name}{" "}{surname}
+            </Typography>
             <ExpandMoreIcon sx={{ color: 'black' }} />
           </IconButton>
           <Menu
