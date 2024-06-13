@@ -165,10 +165,8 @@ const ReservationDialog = ({ isOpen, onClose, roomId }) => {
 	};
 
 
-	if (roomLoading || totalPeopleLoading || !peopleInside || !room) {
-		return (
-			<div>Loading...</div>
-		)
+	if (roomLoading || totalPeopleLoading || !peopleInside.totalPeople || !room.capacity) {
+		return <div>Loading...</div>;
 	}
 
 	return (
