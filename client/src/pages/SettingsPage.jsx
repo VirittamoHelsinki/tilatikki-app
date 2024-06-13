@@ -6,6 +6,7 @@ import UserProfiles from '../components/UserProfiles';
 import ReservationHistoryAdmin from '../components/ReservationHistoryAdmin';
 import Header from '../components/Header';
 import Calendar from '../components/Calendar';
+import AdminSemesterReservation from '../components/AdminSemesterReservation';
 
 const SettingsPage = () => {
     const [selectedComponent, setSelectedComponent] = useState(null);
@@ -139,7 +140,7 @@ const SettingsPage = () => {
                         {admin ? (
                             <>
                                 {/* {selectedComponent === 'UserInformation' && <UserInformation />} */}
-                                {selectedComponent === 'UserInformation' && < Calendar />}
+                                {selectedComponent === 'UserInformation' && <AdminSemesterReservation />}
                                 {selectedComponent === 'UserProfiles' && <UserProfiles />}
                                 {selectedComponent === 'ReservationHistoryAdmin' && <ReservationHistoryAdmin />}
                             </>
