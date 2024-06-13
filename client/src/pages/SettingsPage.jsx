@@ -5,6 +5,7 @@ import ReservationHistory from '../components/ReservationHistory';
 import UserProfiles from '../components/UserProfiles';
 import ReservationHistoryAdmin from '../components/ReservationHistoryAdmin';
 import Header from '../components/Header';
+import Calendar from '../components/Calendar';
 
 const SettingsPage = () => {
     const [selectedComponent, setSelectedComponent] = useState(null);
@@ -137,8 +138,8 @@ const SettingsPage = () => {
                     <Box sx={{ flex: 1 }}>
                         {admin ? (
                             <>
-                                {selectedComponent === 'UserInformation' && <UserInformation />}
-                                {/* {selectedComponent === 'UserInformation' && < UserInformation />} TÄHÄN TILALLE KALENTERI */}
+                                {/* {selectedComponent === 'UserInformation' && <UserInformation />} */}
+                                {selectedComponent === 'UserInformation' && < Calendar />}
                                 {selectedComponent === 'UserProfiles' && <UserProfiles />}
                                 {selectedComponent === 'ReservationHistoryAdmin' && <ReservationHistoryAdmin />}
                             </>
