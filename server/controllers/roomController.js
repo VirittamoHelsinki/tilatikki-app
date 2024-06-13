@@ -5,9 +5,18 @@ const mongoose = require('mongoose')
 
 exports.createRoom = async (req, res) => {
   try {
-    const { number, capacity, floorId } = req.body;
-    const newRoom = new Room({ number, capacity });
+    const { number, capacity, reservations, floorId } = req.body;
+
+    // Create a new room with the floorId
+    const newRoom = new Room({ number, capacity, floor: floorId });
     const room = await newRoom.save();
+
+    // If there are reservations, find and update them
+    if (reservations && reservations.length > 0) {
+      for (const reservationId of reservations) {
+        await Reservation.findByIdAndUpdate(reservationId, { room: room._id });
+      }
+    }
 
     // Add room to the corresponding floor
     await Floor.findByIdAndUpdate(floorId, { $push: { rooms: room._id } });
