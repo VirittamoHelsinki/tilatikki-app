@@ -23,7 +23,7 @@ exports.createReservation = async (req, res) => {
 
 exports.getReservationById = async (req, res) => {
   try {
-    const reservation = await Reservation.findById(req.params.id);
+    const reservation = await Reservation.findById(req.params.id).populate('room');
     if (!reservation) {
       return res.status(404).json({ message: 'Reservation not found' });
     }
