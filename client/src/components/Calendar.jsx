@@ -145,7 +145,8 @@ const mockData = [
   },
 ]
 
-const Calendar = ({ calendarData = mockData }) => {
+// { calendarData = mockData } to use mockData
+const Calendar = ({ calendarData = [] }) => {
   const [ date, setDate ] = useState(moment())
   const [ modal, setModal ] = useState(-1)
 

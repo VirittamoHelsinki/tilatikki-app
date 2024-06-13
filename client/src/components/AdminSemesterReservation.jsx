@@ -13,8 +13,6 @@ const AdminSemesterReservation = () => {
     return `${hour}:${minute.toString().padStart(2, '0')}`
   })
 
-  console.log(timeSelectionOptions);
-
   return (
 
     <Grid container spacing={0}>
@@ -23,11 +21,11 @@ const AdminSemesterReservation = () => {
         <Grid container spacing={2}>
           <Grid item xs={10}>
             <Typography component="h1" variant="h5">
-              Käyttäjätiedot
+              Lukukausivaraukset
             </Typography>
 
             <Typography component="p" variant="subtitle1">
-              Muokkaa omia käyttäjätietojasi.
+              Tee varauksia koko lukukaudelle.
             </Typography>
 
             <Divider sx={{ mt: 4, mb: 4 }} />
