@@ -15,22 +15,10 @@ const ReservationDialogPage = () => {
     setIsOpen(false);
   };
 
-  const user = {
-    "_id": {
-      "$oid": "66681d10e4d6ee12a3bb7e04"
-    },
-    "name": "Pentti",
-    "surname": "Penttilä",
-    "email": "pentti.penttila@yle.fi",
-    "password": "$2b$10$P4q1w9FMajSBGyiVGpHrf.TGyw5y4eW3ot4WO2I0ZZ6o3I0tmLyS.",
-    "admin": true,
-    "reservations": [],
-  }
-
   return (
     <>
       <button onClick={handleOpenDialog}>Open Reservation Dialog</button>
-      <ReservationDialog isOpen={isOpen} onClose={handleCloseDialog} roomId={'66681d10e4d6ee12a3bb7e0e'} />
+      <ReservationDialog isOpen={isOpen} onClose={handleCloseDialog} roomId={'6666fdca9786f9616159b565'} />
     </>
   );
 };

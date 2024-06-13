@@ -1,14 +1,19 @@
 const Reservation = require('../models/Reservation');
 const Room = require('../models/Room');
+const User = require('../models/User');
 
 exports.createReservation = async (req, res) => {
   try {
     const { userId, startTime, endTime, purpose, roomId, groupsize, recurrence, additionalInfo } = req.body;
+    console.log('body: ', req.body)
     const newReservation = new Reservation({ user: userId, startTime, endTime, purpose, room: roomId, groupsize, recurrence, additionalInfo });
     const reservation = await newReservation.save();
 
     // Add reservation to the corresponding room
     await Room.findByIdAndUpdate(roomId, { $push: { reservations: reservation._id } });
+
+    // Add reservation to the user's reservations
+    await User.findByIdAndUpdate(userId, { $push: { reservations: reservation._id } });
 
     res.status(201).json(reservation);
   } catch (error) {
