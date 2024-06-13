@@ -17,6 +17,7 @@ import {
 	Box
 } from '@mui/material';
 import { useCreateReservationMutation } from '../api/reservations';
+import { useTotalPeopleReservedQuery } from '../api/rooms';
 import { LocalizationProvider, DatePicker, TimePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
@@ -64,32 +65,41 @@ const ReservationDialog = ({ isOpen, onClose, roomId }) => {
 	const [endTime, setEndTime] = useState(null);
 	const [recurrence, setRecurrence] = useState('');
 	const [additionalInfo, setAdditionalInfo] = useState('');
-	const [user, setUser] = useState({ name: '' })
+	const [room, setRoom] = useState({ number: 'test' })
+	const [peopleInside, setPeopleInside] = useState()
+	const [user, setUser] = useState({ name: 'Matti' })
 
 	const createReservationMutation = useCreateReservationMutation();
-	const { data: room, error: roomError, isLoading: roomLoading } = useRoomQuery(roomId);
-	const { data: totalPeople, error: totalPeopleError, isLoading: totalPeopleLoading } = useTotalPeopleReservedQuery(roomId);
 
-	useEffect(() => {
-		setRoom(data)
-		console.log('current room: ', room)
-	}, [])
+	const { data: fetchRoom, error: roomError, isLoading: roomLoading } = useRoomQuery(roomId);
+	const { data: totalPeople, error: totalPeopleError, isLoading: totalPeopleLoading } = useTotalPeopleReservedQuery(roomId);
 
 	useEffect(() => {
 		const email = getCookie('UserEmail');
 		if (email) {
 			fetchUserDataByEmail(email)
 				.then(userData => {
-					setName(userData.name);
-					setSurname(userData.surname);
 					setUser(userData)
-					console.log('user: ', user)
 				})
 				.catch(error => {
 					console.error('Error fetching user data:', error);
 				});
 		}
 	}, []);
+
+
+	useEffect(() => {
+		if (!roomLoading) {
+			setRoom(fetchRoom)
+		}
+	}, [roomLoading])
+
+	useEffect(() => {
+		if (!totalPeopleLoading) {
+			setPeopleInside(totalPeople)
+			console.log(peopleInside)
+		}
+	}, [totalPeopleLoading])
 
 
 	const handleTitleChange = (event) => {
@@ -131,6 +141,8 @@ const ReservationDialog = ({ isOpen, onClose, roomId }) => {
 		const startDateTime = dayjs(startDate).set('hour', dayjs(startTime).hour()).set('minute', dayjs(startTime).minute()).toISOString();
 		const endDateTime = dayjs(endDate).set('hour', dayjs(endTime).hour()).set('minute', dayjs(endTime).minute()).toISOString();
 
+		console.log('user: ', user)
+
 		const reservationData = {
 			userId: user._id, // userId
 			startTime: startDateTime, // date
@@ -152,6 +164,12 @@ const ReservationDialog = ({ isOpen, onClose, roomId }) => {
 		onClose();
 	};
 
+	if (roomLoading || totalPeopleLoading) {
+		return (
+			<div>Loading...</div>
+		)
+	}
+
 	return (
 		<ThemeProvider theme={theme}>
 			<LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -160,6 +178,9 @@ const ReservationDialog = ({ isOpen, onClose, roomId }) => {
 					<DialogContent>
 						<Box sx={{ marginTop: 0, marginBottom: 0 }}>
 							<Typography variant="h4">{room.number}</Typography>
+						</Box>
+						<Box sx={{ marginTop: 0, marginBottom: 0 }}>
+							<Typography variant="h6">{peopleInside.totalPeople} / {room.capacity}</Typography>
 						</Box>
 						<Box sx={{ marginTop: 1, marginBottom: 1 }}>
 							<Typography variant="h6">Varauksen tekijä</Typography>
