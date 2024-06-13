@@ -10,7 +10,9 @@ const reservationSchema = new Schema({
   groupsize: {
     type: Number,
     required: true
-  }
+  },
+  recurrence: { type: String },
+  additionalInfo: { type: String }
 
 });
 
