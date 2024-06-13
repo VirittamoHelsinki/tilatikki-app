@@ -16,6 +16,7 @@ import {
 	createTheme,
 	Box
 } from '@mui/material';
+import PeopleIcon from '@mui/icons-material/People';
 import { useCreateReservationMutation } from '../api/reservations';
 import { useTotalPeopleReservedQuery } from '../api/rooms';
 import { LocalizationProvider, DatePicker, TimePicker } from '@mui/x-date-pickers';
@@ -67,7 +68,7 @@ const ReservationDialog = ({ isOpen, onClose, roomId }) => {
 	const [additionalInfo, setAdditionalInfo] = useState('');
 	const [room, setRoom] = useState({ number: 'test' })
 	const [peopleInside, setPeopleInside] = useState()
-	const [user, setUser] = useState({ name: 'Matti' })
+	const [user, setUser] = useState({ name: '' })
 
 	const createReservationMutation = useCreateReservationMutation();
 
@@ -164,7 +165,7 @@ const ReservationDialog = ({ isOpen, onClose, roomId }) => {
 		onClose();
 	};
 
-	if (roomLoading || totalPeopleLoading) {
+	if (roomLoading || totalPeopleLoading || !peopleInside) {
 		return (
 			<div>Loading...</div>
 		)
@@ -174,15 +175,16 @@ const ReservationDialog = ({ isOpen, onClose, roomId }) => {
 		<ThemeProvider theme={theme}>
 			<LocalizationProvider dateAdapter={AdapterDayjs}>
 				<Dialog open={isOpen} onClose={onClose} maxWidth="sm" fullWidth>
-					<DialogTitle>Luo varaus</DialogTitle>
 					<DialogContent>
-						<Box sx={{ marginTop: 0, marginBottom: 0 }}>
+						<Box sx={{ marginTop: 0, marginBottom: 1 }}>
 							<Typography variant="h4">{room.number}</Typography>
 						</Box>
-						<Box sx={{ marginTop: 0, marginBottom: 0 }}>
-							<Typography variant="h6">{peopleInside.totalPeople} / {room.capacity}</Typography>
+						<Box sx={{ marginTop: 0, marginBottom: 0, display: 'flex', alignItems: 'center' }}>
+							<Typography variant="h6" sx={{ display: 'flex', alignItems: 'center' }}>
+								<PeopleIcon sx={{ marginRight: 1 }} />{peopleInside.totalPeople} / {room.capacity}
+							</Typography>
 						</Box>
-						<Box sx={{ marginTop: 1, marginBottom: 1 }}>
+						<Box sx={{ marginTop: 1, marginBottom: 2 }}>
 							<Typography variant="h6">Varauksen tekijä</Typography>
 							<Typography variant="body2">{user.name} {user.surname}</Typography>
 						</Box>
@@ -196,18 +198,22 @@ const ReservationDialog = ({ isOpen, onClose, roomId }) => {
 							onChange={handleTitleChange}
 						/>
 						<FormControl fullWidth margin="dense">
-							<InputLabel id="group-size-label">Ryhmän koko (max. 100 oppilasta)</InputLabel>
+							<InputLabel id="group-size-label">Ryhmän koko (max. {room.capacity - peopleInside.totalPeople} oppilasta)</InputLabel>
 							<Select
 								labelId="group-size-label"
 								id="group-size"
 								value={groupSize}
 								onChange={handleGroupSizeChange}
+								label={`Ryhmän koko (max. ${room.capacity - peopleInside.totalPeople} oppilasta)`}  // Ensure the label is also set in the Select
 							>
-								{[...Array(101).keys()].map((size) => (
-									<MenuItem key={size} value={size}>
-										{size}
-									</MenuItem>
-								))}
+								{[...Array(room.capacity - peopleInside.totalPeople).keys()].map((index) => {
+									const size = index + 1; // Shift the range to start from 1
+									return (
+										<MenuItem key={size} value={size}>
+											{size}
+										</MenuItem>
+									);
+								})}
 							</Select>
 						</FormControl>
 						<Grid container spacing={2} marginTop={1}>
@@ -250,6 +256,7 @@ const ReservationDialog = ({ isOpen, onClose, roomId }) => {
 								labelId="recurrence-label"
 								id="recurrence"
 								value={recurrence}
+								label={'Toistuvuus'}
 								onChange={handleRecurrenceChange}
 							>
 								<MenuItem value="none">Älä toista</MenuItem>
