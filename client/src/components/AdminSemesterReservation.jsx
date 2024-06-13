@@ -105,7 +105,7 @@ const AdminSemesterReservation = () => {
 
           <Grid item lg={5}>
             <FormControl fullWidth>
-              <InputLabel id="start-time-label">Valitse lopetusaika</InputLabel>
+              <InputLabel id="end-time-label">Valitse lopetusaika</InputLabel>
               <Select
                 labelId="end-time-label"
                 id="end-time-select"
@@ -125,14 +125,25 @@ const AdminSemesterReservation = () => {
           </Grid>
 
           <Grid item lg={5}>
-            <TextField
-              autoComplete="reservationName"
-              name="reservationName"
-              required
-              fullWidth
-              id="reservationName"
-              label="Ryhmän koko"
-            />
+          <FormControl fullWidth>
+              <InputLabel id="group-size-label">Ryhmän koko</InputLabel>
+              <Select
+                labelId="group-size-label"
+                id="group-size-select"
+                name="groupSize"
+                required
+                fullWidth
+                label="Ryhmäkoko"
+                defaultValue={10}
+              >
+                {
+                  Array.from({ length: 100 }).map((_, index) => {
+                    const value = index + 1
+                    return <MenuItem key={`menu-item-${value}`} value={value}>{value}</MenuItem>
+                  })
+                }
+              </Select>
+            </FormControl>
           </Grid>
 
           <Grid item lg={5}>
