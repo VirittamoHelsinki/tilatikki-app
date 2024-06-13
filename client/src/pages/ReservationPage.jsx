@@ -39,8 +39,6 @@ const ReservationPage = () => {
 
   const handleClassroomChange = (newClassrooms) => {
 	setFilteredClassrooms(newClassrooms);
-	console.log('newClassrooms', newClassrooms);
-	console.log('filteredClassrooms', filteredClassrooms);
   };
 
   return (

@@ -33,7 +33,6 @@ const timeSlots = [
 
 const groupSizes = Array.from({ length: 20 }, (_, index) => (index + 1) * 5);
 
-// need to pass buildings as props?
 const FilterForm = ({onClassroomChange, schoolData}) => {
 	const [selectedBuildings, setSelectedBuildings] = useState([]);
 	const [availableFloors, setAvailableFloors] = useState([1]);
@@ -52,14 +51,11 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 			target: { value },
 		} = event;
 
-		console.log('value', value);
-
 		const selectedValues = typeof value === 'string' ? value.split(',') : value;
 		const selectedBuildingObjects = selectedValues.map((name) =>
 			schoolData.buildings.find((building) => building.name === name)
 		);
 		setSelectedBuildings(selectedBuildingObjects);
-		console.log('selectedBuildingObjects', selectedBuildingObjects);
 	};
 
 	const handleSelectedFloor = (event) => {
@@ -156,22 +152,27 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 		return classrooms;
 	};
 
+	const filterByDate = (classrooms) => {
+		let filteredClassrooms = [];
+
+		if (selectedStartDate) {
+			classrooms.forEach((room) => {
+				let freeTimeFound = false;
+			})
+		}
+		return filteredClassrooms;
+	};
+
 	const filterResults = () => {
 		const buildings = filterByBuilding();
 		let classrooms = filterByClassroomOrFloor(buildings);
-		// let classrooms = filterByFloor(classrooms);
-
-		// classrooms = filterByGroupsize(classrooms);
+		classrooms = filterByGroupsize(classrooms);
+		// classrooms = filterByDate(classrooms);
 
 		console.log('buildings', buildings);
 		console.log('classrooms', classrooms);
 
-
-
-
-		// console.log('test', filteredClassrooms);
-
-		// onClassroomChange(filteredClassrooms);
+		onClassroomChange(classrooms);
 	}
 
 	const handleSubmit = (e) => {
@@ -190,7 +191,7 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 		if (selectedBuildings.length > 0) {
 			filterResults();
 
-			// // need to see the search-criteria?
+			// // uncomment to clear fields when sent
 			// resetStates();
 
 			// temporary fix to resetstates
@@ -211,7 +212,7 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 		setClassroom('');
 		setAvailableClassrooms([]);
 		setSelectedStartDate(null);
-		setSelectedEndDate(null);
+		// setSelectedEndDate(null);
 		setRequired(false);
 	}
 
@@ -219,9 +220,9 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 		setSelectedStartDate(newDate);
 	}
 
-	const handleEndingDateChange = (newDate) => {
-		setSelectedEndDate(newDate);
-	}
+	// const handleEndingDateChange = (newDate) => {
+	// 	setSelectedEndDate(newDate);
+	// }
 
 	useEffect(() => {
 		console.log('useEffect');
@@ -245,9 +246,6 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 		}
 		setClassroom('');
 
-		// console.log('selectedBuildings', selectedBuildings);
-		// console.log('maxFloorValue', maxFloorValue);
-		// console.log('availableFloors', availableFloors);
 	  }, [selectedBuildings, selectedFloor]);
 
 	const filterFieldContainer = {
@@ -373,7 +371,7 @@ return (
 			<Box sx={selectWrapper}>
 				<LocalizationProvider dateAdapter={AdapterDayjs} >
 				<DatePicker
-					label="Aloituspäivämäärä"
+					label="Päivämäärä"
 					value={selectedStartDate}
 					onChange={handleStartingDateChange}
 					format="DD.MM.YYYY"
@@ -385,11 +383,12 @@ return (
 			</Box>
 		</div>
 
-		<div style={dateStyle}>
+		{/* V1 with endDate */}
+		{/* <div style={dateStyle}>
 			<Box sx={selectWrapper}>
 				<LocalizationProvider dateAdapter={AdapterDayjs} >
 				<DatePicker
-					label="Lopetuspäivämäärä"
+					label="Lopetuspäivämä	ärä"
 					value={selectedEndDate}
 					onChange={handleEndingDateChange}
 					format="DD.MM.YYYY"
@@ -399,7 +398,7 @@ return (
 					/>
 				</LocalizationProvider>
 			</Box>
-		</div>
+		</div> */}
 
 		<div style={filterFieldContainer}>
 			<div style={timeSlotStyle}>

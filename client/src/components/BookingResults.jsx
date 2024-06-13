@@ -8,11 +8,11 @@ const BookingResults = ({classrooms}) => {
 	<>
 		<h3>Classrooms</h3>
 		<ul>
-			{Object.entries(classrooms).map(([key, value]) => (
-				<li key={key}>
+			{classrooms && Object.entries(classrooms).map(([key, value]) => (
+					<li key={key}>
 					<strong>{key}:</strong> {JSON.stringify(value)}
-				</li>
-			))}
+					</li>
+				))}
 		</ul>
 	</>
 
