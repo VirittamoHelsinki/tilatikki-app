@@ -295,250 +295,166 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 	}
 
 
-return (
-	<>
-	<Typography variant="h6" gutterBottom>
-		 {schoolData.name}
-	</Typography>
-	<Typography variant="h7" gutterBottom>
-		 {schoolData.address}
-	</Typography>
+	return (
+		<>
+		<Typography variant="h6" gutterBottom>
+			 {schoolData.name}
+		</Typography>
+		<Typography variant="h7" gutterBottom>
+			 {schoolData.address}
+		</Typography>
 
-	<form>
+		<form>
 
-		<button type="button" onClick={resetStates} style={{ marginLeft : '180px', marginTop: '60px'}}>
-			Tyhjennä hakuehdot
-		</button>
+			<button type="button" onClick={resetStates} style={{ marginLeft : '180px', marginTop: '60px'}}>
+				Tyhjennä hakuehdot
+			</button>
 
-		<div style={filterFieldContainer}>
-			<div style={buildingStyle, buildingStyleLeft}>
-				<FormControl required sx={{ m: 1, width: 200 }}>
-				<InputLabel id="building-checkbox-label" >Rakennus</InputLabel>
-					<Select
-						labelId="building-checkbox-label"
-						id="building-multiple-checkbox"
-						multiple
-						value={selectedBuildings.map(building => building.name)}
-						onChange={handleSelectedBuildings}
-						input={<OutlinedInput label="Rakennus" />}
-						renderValue={(selected) => (
-							<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-							{selected.map((value) => (
-								<Chip key={value} label={value} />
-								))}
-							</Box>
-						)}
-						MenuProps={MenuProps}
-						>
-						{schoolData.buildings.map((building) => (
-							<MenuItem key={building.name} value={building.name}>
-							<Checkbox checked={selectedBuildings.some((selected) => selected.name === building.name)} />
-							<ListItemText primary={building.name} />
-						</MenuItem>
-						))}
-					</Select>
-				</FormControl>
+			<div style={filterFieldContainer}>
+				<div style={buildingStyle, buildingStyleLeft}>
+					<FormControl required sx={{ m: 1, width: 200 }}>
+					<InputLabel id="building-checkbox-label" >Rakennus</InputLabel>
+						<Select
+							labelId="building-checkbox-label"
+							id="building-multiple-checkbox"
+							multiple
+							value={selectedBuildings.map(building => building.name)}
+							onChange={handleSelectedBuildings}
+							input={<OutlinedInput label="Rakennus" />}
+							renderValue={(selected) => (
+								<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+								{selected.map((value) => (
+									<Chip key={value} label={value} />
+									))}
+								</Box>
+							)}
+							MenuProps={MenuProps}
+							>
+							{schoolData.buildings.map((building) => (
+								<MenuItem key={building.name} value={building.name}>
+								<Checkbox checked={selectedBuildings.some((selected) => selected.name === building.name)} />
+								<ListItemText primary={building.name} />
+							</MenuItem>
+							))}
+						</Select>
+					</FormControl>
+				</div>
+				<div style={buildingStyle}>
+					<InputLabel id="floor-select-label">Kerros</InputLabel>
+						<Select
+							labelId="floor-select-label"
+							id="floor-select"
+							label="Kerros"
+							value={selectedFloor}
+							onChange={handleSelectedFloor}
+							input={<OutlinedInput label="Kerros" />}
+							MenuProps={MenuProps}
+							>
+							{availableFloors.map((floor) => (
+								<MenuItem key={floor} value={floor}>
+									<ListItemText primary={floor} />
+								</MenuItem>
+							))}
+						</Select>
+				</div>
 			</div>
-			<div style={buildingStyle}>
-				<InputLabel id="floor-select-label">Kerros</InputLabel>
+			<>
+				{required && (
+					<p style={{color: 'red', paddingLeft: '10px', marginTop: '-10px', marginBottom: '20px',
+					fontFamily: "Helvetica"}}>
+						*Pakollinen
+					</p>
+				)}
+			</>
+
+			<div style={dateStyle}>
+				<Box sx={selectWrapper}>
+					<LocalizationProvider dateAdapter={AdapterDayjs} >
+					<DatePicker
+						label="Päivämäärä"
+						value={selectedStartDate}
+						onChange={handleStartingDateChange}
+						format="DD.MM.YYYY"
+						slotProps={{
+						textField: { fullWidth: true },
+						}}
+					/>
+					</LocalizationProvider>
+				</Box>
+			</div>
+
+			{/* V1 with endDate */}
+			{/* <div style={dateStyle}>
+				<Box sx={selectWrapper}>
+					<LocalizationProvider dateAdapter={AdapterDayjs} >
+					<DatePicker
+						label="Lopetuspäivämä	ärä"
+						value={selectedEndDate}
+						onChange={handleEndingDateChange}
+						format="DD.MM.YYYY"
+						slotProps={{
+							textField: { fullWidth: true },
+						}}
+						/>
+					</LocalizationProvider>
+				</Box>
+			</div> */}
+
+			<div style={filterFieldContainer}>
+				<div style={timeSlotStyle}>
+				<InputLabel id="starttime-select-label">Aloitusaika</InputLabel>
 					<Select
-						labelId="floor-select-label"
-						id="floor-select"
-						label="Kerros"
-						value={selectedFloor}
-						onChange={handleSelectedFloor}
-						input={<OutlinedInput label="Kerros" />}
+						labelId="starttime-select-label"
+						id="starttime-select"
+						label="Aloitusaika"
+						value={startingTime}
+						onChange={handleStartingTime}
+						input={<OutlinedInput label="Aloitusaika" />}
 						MenuProps={MenuProps}
 						>
-						{availableFloors.map((floor) => (
-							<MenuItem key={floor} value={floor}>
-								<ListItemText primary={floor} />
+						{timeSlots.map((time) => (
+							<MenuItem key={time} value={time}>
+								<ListItemText primary={time} />
 							</MenuItem>
 						))}
 					</Select>
-			</div>
-		</div>
-		<>
-			{required && (
-				<p style={{color: 'red', paddingLeft: '10px', marginTop: '-10px', marginBottom: '20px',
-				fontFamily: "Helvetica"}}>
-					*Pakollinen
-				</p>
-			)}
-		</>
-
-		<div style={dateStyle}>
-			<Box sx={selectWrapper}>
-				<LocalizationProvider dateAdapter={AdapterDayjs} >
-				<DatePicker
-					label="Päivämäärä"
-					value={selectedStartDate}
-					onChange={handleStartingDateChange}
-					format="DD.MM.YYYY"
-					slotProps={{
-					textField: { fullWidth: true },
-					}}
-				/>
-				</LocalizationProvider>
-			</Box>
-		</div>
-
-		{/* V1 with endDate */}
-		{/* <div style={dateStyle}>
-			<Box sx={selectWrapper}>
-				<LocalizationProvider dateAdapter={AdapterDayjs} >
-				<DatePicker
-					label="Lopetuspäivämä	ärä"
-					value={selectedEndDate}
-					onChange={handleEndingDateChange}
-					format="DD.MM.YYYY"
-					slotProps={{
-						textField: { fullWidth: true },
-					}}
-					/>
-				</LocalizationProvider>
-			</Box>
-		</div> */}
-
-		<div style={filterFieldContainer}>
-			<div style={timeSlotStyle}>
-			<InputLabel id="starttime-select-label">Aloitusaika</InputLabel>
-				<Select
-					labelId="starttime-select-label"
-					id="starttime-select"
-					label="Aloitusaika"
-					value={startingTime}
-					onChange={handleStartingTime}
-					input={<OutlinedInput label="Aloitusaika" />}
-					MenuProps={MenuProps}
-					>
-					{timeSlots.map((time) => (
-						<MenuItem key={time} value={time}>
-							<ListItemText primary={time} />
-						</MenuItem>
-					))}
-				</Select>
-			</div>
-			<div style={timeSlotStyle}>
-			<InputLabel id="endtime-select-label">Lopetusaika</InputLabel>
-				<Select
-					labelId="endtime-select-label"
-					id="endtime-select"
-					label="Lopetusaika"
-					value={endingTime}
-					onChange={handleEndingTime}
-					input={<OutlinedInput label="Lopetusaika" />}
-					MenuProps={MenuProps}
-					>
-					{timeSlots.map((time) => (
-						startingTime ? (
-							startingTime >= time ? (
-								<MenuItem disabled={true} key={time} value={time}>
-									<ListItemText primary={time} />
-                    
-								</MenuItem>
-							))}
-						</Select>
-					</div>
 				</div>
-				<>
-					{required && (
-						<p style={{
-							color: 'red', paddingLeft: '10px', marginTop: '-10px', marginBottom: '20px',
-							fontFamily: "Helvetica"
-						}}>
-							*Pakollinen
-						</p>
-					)}
-				</>
-
-				<div style={dateStyle}>
-					<Box sx={selectWrapper}>
-						<LocalizationProvider dateAdapter={AdapterDayjs} >
-							<DatePicker
-								label="Aloituspäivämäärä"
-								value={selectedStartDate}
-								onChange={handleStartingDateChange}
-								format="DD.MM.YYYY"
-								slotProps={{
-									textField: { fullWidth: true },
-								}}
-							/>
-						</LocalizationProvider>
-					</Box>
-				</div>
-
-				<div style={dateStyle}>
-					<Box sx={selectWrapper}>
-						<LocalizationProvider dateAdapter={AdapterDayjs} >
-							<DatePicker
-								label="Lopetuspäivämäärä"
-								value={selectedEndDate}
-								onChange={handleEndingDateChange}
-								format="DD.MM.YYYY"
-								slotProps={{
-									textField: { fullWidth: true },
-								}}
-							/>
-						</LocalizationProvider>
-					</Box>
-				</div>
-
-				<div style={filterFieldContainer}>
-					<div style={timeSlotStyle}>
-						<InputLabel id="starttime-select-label">Aloitusaika</InputLabel>
-						<Select
-							labelId="starttime-select-label"
-							id="starttime-select"
-							label="Aloitusaika"
-							value={startingTime}
-							onChange={handleStartingTime}
-							input={<OutlinedInput label="Aloitusaika" />}
-							MenuProps={MenuProps}
+				<div style={timeSlotStyle}>
+				<InputLabel id="endtime-select-label">Lopetusaika</InputLabel>
+					<Select
+						labelId="endtime-select-label"
+						id="endtime-select"
+						label="Lopetusaika"
+						value={endingTime}
+						onChange={handleEndingTime}
+						input={<OutlinedInput label="Lopetusaika" />}
+						MenuProps={MenuProps}
 						>
-							{timeSlots.map((time) => (
-								<MenuItem key={time} value={time}>
-									<ListItemText primary={time} />
-								</MenuItem>
-							))}
-						</Select>
-					</div>
-					<div style={timeSlotStyle}>
-						<InputLabel id="endtime-select-label">Lopetusaika</InputLabel>
-						<Select
-							labelId="endtime-select-label"
-							id="endtime-select"
-							label="Lopetusaika"
-							value={endingTime}
-							onChange={handleEndingTime}
-							input={<OutlinedInput label="Lopetusaika" />}
-							MenuProps={MenuProps}
-						>
-							{timeSlots.map((time) => (
-								startingTime ? (
-									startingTime >= time ? (
-										<MenuItem disabled={true} key={time} value={time}>
-											<ListItemText primary={time} />
-										</MenuItem>
-									) : (
-										<MenuItem key={time} value={time}>
-											<ListItemText primary={time} />
-										</MenuItem>
-									)
+						{timeSlots.map((time) => (
+							startingTime ? (
+								startingTime >= time ? (
+									<MenuItem disabled={true} key={time} value={time}>
+										<ListItemText primary={time} />
+									</MenuItem>
 								) : (
 									<MenuItem key={time} value={time}>
 										<ListItemText primary={time} />
 									</MenuItem>
 								)
-							))}
-						</Select>
-					</div>
+							) : (
+								<MenuItem key={time} value={time}>
+									<ListItemText primary={time} />
+								</MenuItem>
+								)
+						))}
+					</Select>
 				</div>
+			</div>
 
-				<div style={filterFieldContainer}>
-					<div style={groupStyle, buildingStyleLeft}>
-						<FormControl sx={{ m: 1, width: 200 }}>
-							<InputLabel id="classroom-select-label">Opetustila</InputLabel>
+			<div style={filterFieldContainer}>
+				<div style={groupStyle, buildingStyleLeft}>
+					<FormControl sx={{ m: 1, width: 200 }}>
+						<InputLabel id="classroom-select-label">Opetustila</InputLabel>
 							<Select
 								labelId="classroom-select-label"
 								id="classroom-select"
@@ -547,17 +463,17 @@ return (
 								onChange={handleClassroom}
 								input={<OutlinedInput label="Opetustila" />}
 								MenuProps={MenuProps}
-							>
+								>
 								{availableClassrooms.map((room) => (
 									<MenuItem key={room} value={room}>
 										<ListItemText primary={room} />
 									</MenuItem>
 								))}
 							</Select>
-						</FormControl>
-					</div>
-					<div style={groupStyle, sizeStyle}>
-						<InputLabel id="groupsize-select-label">Ryhmäkoko</InputLabel>
+					</FormControl>
+				</div>
+				<div style={groupStyle, sizeStyle}>
+					<InputLabel id="groupsize-select-label">Ryhmäkoko</InputLabel>
 						<Select
 							labelId="groupsize-select-label"
 							id="groupsize-select"
@@ -573,8 +489,8 @@ return (
 								</MenuItem>
 							))}
 						</Select>
-					</div>
 				</div>
+			</div>
 
 				<Button variant="contained" type="submit" fullWidth onClick={handleSubmit}
 					sx={{
@@ -589,7 +505,7 @@ return (
 				</Button>
 			</form>
 		</>
-	)
+	  )
 }
 
 export default FilterForm
