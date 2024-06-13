@@ -19,7 +19,7 @@ const columns = (handleClickOpen) => [
   {
     field: 'toistuva',
     headerName: 'Toistuva',
-    width: 220,
+    width: 180,
     editable: false,
     renderCell: (params) => (
       <div style={{ display: 'flex', width: '100%', marginTop: '12px' }}>
@@ -40,7 +40,7 @@ const columns = (handleClickOpen) => [
     type: 'number',
     headerAlign: 'left',
     align: 'left',
-    width: 220,
+    width: 180,
     editable: false,
   },
   {
@@ -259,15 +259,15 @@ const ReservationHistory = () => {
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       />
       <Typography component="h1" variant="h5">
-            Omat varaukset
-          </Typography>
-  
-          <Typography component="p" variant="subtitle1">
-            Muokkaa omia käyttäjätietojasi.
-          </Typography>
-  
-          <Divider sx={{ mt: 4, mb: 4 }} />
-  
+        Omat varaukset
+      </Typography>
+
+      <Typography component="p" variant="subtitle1">
+        Muokkaa omia käyttäjätietojasi.
+      </Typography>
+
+      <Divider sx={{ mt: 4, mb: 4 }} />
+
       <Box sx={{ height: '600', width: '100%' }}>
         <DataGrid
           rows={rows}
@@ -287,8 +287,11 @@ const ReservationHistory = () => {
           slots={{ toolbar: GridToolbar }}
           slotProps={{
             toolbar: {
-              style: { color: 'black' },
+              style: { color: 'black', marginLeft: '8px' },
               showQuickFilter: true,
+              quickFilterProps: {
+                style: { marginRight: '20px' },
+              },
             },
           }}
         />

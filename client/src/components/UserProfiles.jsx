@@ -4,6 +4,7 @@ import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { fiFI } from '@mui/x-data-grid/locales';
+import { Typography, Divider } from '@mui/material';
 import DeleteDialog from './DeleteDialog';
 import Snackbar from '@mui/material/Snackbar';
 import EditUsers from './EditUsers';
@@ -12,7 +13,7 @@ const columns = (handleClickOpen, handleToEdit) => [
   {
     field: 'käyttäjä',
     headerName: 'Käyttäjä',
-    width: 250,
+    width: 270,
     editable: false,
   },
   {
@@ -24,13 +25,13 @@ const columns = (handleClickOpen, handleToEdit) => [
   {
     field: 'käyttäjärooli',
     headerName: 'Käyttäjärooli',
-    width: 220,
+    width: 270,
     editable: false,
   },
   {
     field: 'toissijainenopettaja',
     headerName: 'Toissijainen opettaja',
-    width: 250,
+    width: 290,
     editable: false,
   },
   {
@@ -197,10 +198,10 @@ const UserProfiles = () => {
 
   if (isEditing) {
     return <EditUsers
-    name={selectedRow.käyttäjä}
-    role={selectedRow.käyttäjärooli}
-    otherTeacher={selectedRow.toissijainenopettaja}
-    onClose={() => setIsEditing(false)} 
+      name={selectedRow.käyttäjä}
+      role={selectedRow.käyttäjärooli}
+      otherTeacher={selectedRow.toissijainenopettaja}
+      onClose={() => setIsEditing(false)}
     />;
   }
 
@@ -214,7 +215,16 @@ const UserProfiles = () => {
         message={snackbarMessage}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       />
-      <Box sx={{ height: '100%', width: '100%' }}>
+      <Typography component="h1" variant="h5">
+        Käyttäjät
+      </Typography>
+
+      <Typography component="p" variant="subtitle1">
+        Taulukon kautta pystyt mm. poistamaan käyttäjän tai lisäämään käyttäjälle sijaisopettajan.
+      </Typography>
+
+      <Divider sx={{ mt: 4, mb: 4 }} />
+      <Box sx={{ height: '600', width: '100%' }}>
         <DataGrid
           rows={rows}
           localeText={fiLocaleText}
@@ -233,8 +243,11 @@ const UserProfiles = () => {
           slots={{ toolbar: GridToolbar }}
           slotProps={{
             toolbar: {
-              style: { color: 'black' },
+              style: { color: 'black', marginLeft: '8px' },
               showQuickFilter: true,
+              quickFilterProps: {
+                style: { marginRight: '20px' },
+              },
             },
           }}
         />

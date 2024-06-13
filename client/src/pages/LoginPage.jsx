@@ -89,6 +89,7 @@ export default function SignIn() {
             sx={{ 
                 mt: 3, 
                 mb: 2,
+                textTransform: 'none',
                 backgroundColor: '#18181B', // Change this to your desired color
                 '&:hover': {
                   backgroundColor: '#2b2b2b' // Change this to a lighter shade of your color
