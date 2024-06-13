@@ -12,38 +12,6 @@ import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import 'dayjs/locale/de';
 
-// TODO change this to real data from the DB
-const buildings = [
-	{
-		name: 'Päärakennus',
-		floors: {
-			1: ['101', '102', '103', '104'],
-			2: ['201', '202', '203', '204', '205'],
-			3: ['301', '302', '303', '304', '305', '306'],
-			4: ['401', '402', '403', '404'],
-			5: ['501', '502', '503'],
-			6: ['601', '602', '603', '604'],
-		},
-		rooms: 26,
-	},
-	{
-		name: 'Lisärakennus',
-		floors: {
-			1: ['101', '102', '103', '104'],
-			2: ['201', '202', '203'],
-			3: ['301', '302'],
-		},
-		rooms: 9,
-	},
-	{
-		name: 'Parakki',
-		floors: {
-			1: ['101', '102', '103'],
-		},
-		rooms: 3,
-	},
-];
-
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -65,8 +33,8 @@ const timeSlots = [
 
 const groupSizes = Array.from({ length: 20 }, (_, index) => (index + 1) * 5);
 
-// need to pass buildings as props?
-const FilterForm = ({ onFilterChange }) => {
+
+const FilterForm = ({onClassroomChange, schoolData}) => {
 	const [selectedBuildings, setSelectedBuildings] = useState([]);
 	const [availableFloors, setAvailableFloors] = useState([1]);
 	const [selectedFloor, setSelectedFloor] = useState('');
@@ -84,11 +52,9 @@ const FilterForm = ({ onFilterChange }) => {
 			target: { value },
 		} = event;
 
-		console.log('value', value);
-
 		const selectedValues = typeof value === 'string' ? value.split(',') : value;
 		const selectedBuildingObjects = selectedValues.map((name) =>
-			buildings.find((building) => building.name === name)
+			schoolData.buildings.find((building) => building.name === name)
 		);
 		setSelectedBuildings(selectedBuildingObjects);
 	};
@@ -124,22 +90,90 @@ const FilterForm = ({ onFilterChange }) => {
 
 		selectedBuildings.forEach((building) => {
 			if (selectedFloor != '') {
-				if (selectedFloor in building.floors) {
-					allRooms = allRooms.concat(building.floors[selectedFloor].map((room) => `${building.name} - ${selectedFloor} - ${room}`));
+
+				const floorObject = building.floors.find(floor => floor.number === selectedFloor);
+				if (floorObject) {
+					allRooms = allRooms.concat(floorObject.rooms.map((room) => `${building.name} - ${selectedFloor} - ${room.number}`));
 				}
 			}
 			else {
-				Object.keys(building.floors).forEach((floor) => {
-					allRooms = allRooms.concat(building.floors[floor].map((room) => `${building.name} - ${floor} - ${room}`));
+				building.floors.forEach((floor) => {
+					allRooms = allRooms.concat(floor.rooms.map((room) => `${building.name} - ${floor.number} - ${room.number}`));
 				});
 			}
 		})
-		console.log('allRooms', allRooms);
 		setAvailableClassrooms(allRooms);
 	}
 
 	const generateFloorList = (maxFloor) => {
 		return Array.from({ length: maxFloor }, (_, index) => index + 1);
+	}
+
+	const filterByBuilding = () => {
+		return schoolData.buildings.filter(schoolBuilding => selectedBuildings.some(selectedBuilding => selectedBuilding.name === schoolBuilding.name));
+	};
+
+	const filterByGroupsize = (classrooms) => {
+		if (groupSize) {
+			return classrooms.filter(room => room.capacity >= groupSize);
+		}
+		return classrooms;
+	};
+
+	const filterByClassroomOrFloor = (buildings) => {
+		let classrooms = [];
+
+		buildings.forEach((building) => {
+			if (classroom) {
+				const parts = classroom.split(' - ');
+				const buildingName = parts[0];
+				const floorNumber = parseInt(parts[1]);
+				const className = parts[2];
+
+				if (building.name === buildingName) {
+					building.floors.forEach((floor) => {
+						if (floor.number === floorNumber) {
+							floor.rooms.forEach((room) => {
+								if (room.number === className) {
+									classrooms.push(room);
+								}
+							})
+						}
+					})
+				}
+			}
+			else {
+				building.floors.forEach((floor) => {
+					if (!selectedFloor || floor.number === selectedFloor) {
+						classrooms = classrooms.concat(floor.rooms);
+					}
+				})
+			}
+		})
+		return classrooms;
+	};
+
+	const filterByDate = (classrooms) => {
+		let filteredClassrooms = [];
+
+		if (selectedStartDate) {
+			classrooms.forEach((room) => {
+				let freeTimeFound = false;
+			})
+		}
+		return filteredClassrooms;
+	};
+
+	const filterResults = () => {
+		const buildings = filterByBuilding();
+		let classrooms = filterByClassroomOrFloor(buildings);
+		classrooms = filterByGroupsize(classrooms);
+		// classrooms = filterByDate(classrooms);
+
+		console.log('buildings', buildings);
+		console.log('classrooms', classrooms);
+
+		onClassroomChange(classrooms);
 	}
 
 	const handleSubmit = (e) => {
@@ -156,8 +190,13 @@ const FilterForm = ({ onFilterChange }) => {
 		}
 
 		if (selectedBuildings.length > 0) {
-			onFilterChange(filterData);
-			resetStates();
+			filterResults();
+
+			// // uncomment to clear fields when sent
+			// resetStates();
+
+			// temporary fix to resetstates
+			setRequired(false);
 		}
 		else {
 			setRequired(true);
@@ -174,7 +213,7 @@ const FilterForm = ({ onFilterChange }) => {
 		setClassroom('');
 		setAvailableClassrooms([]);
 		setSelectedStartDate(null);
-		setSelectedEndDate(null);
+		// setSelectedEndDate(null);
 		setRequired(false);
 	}
 
@@ -182,12 +221,15 @@ const FilterForm = ({ onFilterChange }) => {
 		setSelectedStartDate(newDate);
 	}
 
-	const handleEndingDateChange = (newDate) => {
-		setSelectedEndDate(newDate);
-	}
+	// const handleEndingDateChange = (newDate) => {
+	// 	setSelectedEndDate(newDate);
+	// }
 
 	useEffect(() => {
 		console.log('useEffect');
+		console.log('schoolData', schoolData);
+		console.log('schoolData.buildings', schoolData.buildings);
+
 		const maxFloorValue = selectedBuildings.reduce((max, building) =>
 			Object.keys(building.floors).length > max ? Object.keys(building.floors).length : max, 1
 		)
@@ -204,11 +246,7 @@ const FilterForm = ({ onFilterChange }) => {
 			handleAvailableClassrooms();
 		}
 		setClassroom('');
-
-		console.log('selectedBuildings', selectedBuildings);
-		console.log('maxFloorValue', maxFloorValue);
-		console.log('availableFloors', availableFloors);
-	}, [selectedBuildings, selectedFloor]);
+	  }, [selectedBuildings, selectedFloor]);
 
 	const filterFieldContainer = {
 		display: 'flex',
@@ -257,64 +295,147 @@ const FilterForm = ({ onFilterChange }) => {
 	}
 
 
-	return (
-		<>
-			<Typography variant="h6" gutterBottom>
-				TODO: school name here
-			</Typography>
-			<Typography variant="h7" gutterBottom>
-				TODO: school intro here
-			</Typography>
+return (
+	<>
+	<Typography variant="h6" gutterBottom>
+		 {schoolData.name}
+	</Typography>
+	<Typography variant="h7" gutterBottom>
+		 {schoolData.address}
+	</Typography>
 
-			<form>
+	<form>
 
-				<button type="button" onClick={resetStates} style={{ marginLeft: '180px', marginTop: '60px' }}>
-					Tyhjennä hakuehdot
-				</button>
+		<button type="button" onClick={resetStates} style={{ marginLeft : '180px', marginTop: '60px'}}>
+			Tyhjennä hakuehdot
+		</button>
 
-				<div style={filterFieldContainer}>
-					<div style={buildingStyle, buildingStyleLeft}>
-						<FormControl required sx={{ m: 1, width: 200 }}>
-							<InputLabel id="building-checkbox-label" >Rakennus</InputLabel>
-							<Select
-								labelId="building-checkbox-label"
-								id="building-multiple-checkbox"
-								multiple
-								value={selectedBuildings.map(building => building.name)}
-								onChange={handleSelectedBuildings}
-								input={<OutlinedInput label="Rakennus" />}
-								renderValue={(selected) => (
-									<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-										{selected.map((value) => (
-											<Chip key={value} label={value} />
-										))}
-									</Box>
-								)}
-								MenuProps={MenuProps}
-							>
-								{buildings.map((building) => (
-									<MenuItem key={building.name} value={building.name}>
-										<Checkbox checked={selectedBuildings.some((selected) => selected.name === building.name)} />
-										<ListItemText primary={building.name} />
-									</MenuItem>
+		<div style={filterFieldContainer}>
+			<div style={buildingStyle, buildingStyleLeft}>
+				<FormControl required sx={{ m: 1, width: 200 }}>
+				<InputLabel id="building-checkbox-label" >Rakennus</InputLabel>
+					<Select
+						labelId="building-checkbox-label"
+						id="building-multiple-checkbox"
+						multiple
+						value={selectedBuildings.map(building => building.name)}
+						onChange={handleSelectedBuildings}
+						input={<OutlinedInput label="Rakennus" />}
+						renderValue={(selected) => (
+							<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+							{selected.map((value) => (
+								<Chip key={value} label={value} />
 								))}
-							</Select>
-						</FormControl>
-					</div>
-					<div style={buildingStyle}>
-						<InputLabel id="floor-select-label">Kerros</InputLabel>
-						<Select
-							labelId="floor-select-label"
-							id="floor-select"
-							label="Kerros"
-							value={selectedFloor}
-							onChange={handleSelectedFloor}
-							input={<OutlinedInput label="Kerros" />}
-							MenuProps={MenuProps}
+							</Box>
+						)}
+						MenuProps={MenuProps}
 						>
-							{availableFloors.map((floor) => (
-								<MenuItem key={floor} value={floor}>
-									<ListItemText primary={floor} />
+						{schoolData.buildings.map((building) => (
+							<MenuItem key={building.name} value={building.name}>
+							<Checkbox checked={selectedBuildings.some((selected) => selected.name === building.name)} />
+							<ListItemText primary={building.name} />
+						</MenuItem>
+						))}
+					</Select>
+				</FormControl>
+			</div>
+			<div style={buildingStyle}>
+				<InputLabel id="floor-select-label">Kerros</InputLabel>
+					<Select
+						labelId="floor-select-label"
+						id="floor-select"
+						label="Kerros"
+						value={selectedFloor}
+						onChange={handleSelectedFloor}
+						input={<OutlinedInput label="Kerros" />}
+						MenuProps={MenuProps}
+						>
+						{availableFloors.map((floor) => (
+							<MenuItem key={floor} value={floor}>
+								<ListItemText primary={floor} />
+							</MenuItem>
+						))}
+					</Select>
+			</div>
+		</div>
+		<>
+			{required && (
+				<p style={{color: 'red', paddingLeft: '10px', marginTop: '-10px', marginBottom: '20px',
+				fontFamily: "Helvetica"}}>
+					*Pakollinen
+				</p>
+			)}
+		</>
+
+		<div style={dateStyle}>
+			<Box sx={selectWrapper}>
+				<LocalizationProvider dateAdapter={AdapterDayjs} >
+				<DatePicker
+					label="Päivämäärä"
+					value={selectedStartDate}
+					onChange={handleStartingDateChange}
+					format="DD.MM.YYYY"
+					slotProps={{
+					textField: { fullWidth: true },
+					}}
+				/>
+				</LocalizationProvider>
+			</Box>
+		</div>
+
+		{/* V1 with endDate */}
+		{/* <div style={dateStyle}>
+			<Box sx={selectWrapper}>
+				<LocalizationProvider dateAdapter={AdapterDayjs} >
+				<DatePicker
+					label="Lopetuspäivämä	ärä"
+					value={selectedEndDate}
+					onChange={handleEndingDateChange}
+					format="DD.MM.YYYY"
+					slotProps={{
+						textField: { fullWidth: true },
+					}}
+					/>
+				</LocalizationProvider>
+			</Box>
+		</div> */}
+
+		<div style={filterFieldContainer}>
+			<div style={timeSlotStyle}>
+			<InputLabel id="starttime-select-label">Aloitusaika</InputLabel>
+				<Select
+					labelId="starttime-select-label"
+					id="starttime-select"
+					label="Aloitusaika"
+					value={startingTime}
+					onChange={handleStartingTime}
+					input={<OutlinedInput label="Aloitusaika" />}
+					MenuProps={MenuProps}
+					>
+					{timeSlots.map((time) => (
+						<MenuItem key={time} value={time}>
+							<ListItemText primary={time} />
+						</MenuItem>
+					))}
+				</Select>
+			</div>
+			<div style={timeSlotStyle}>
+			<InputLabel id="endtime-select-label">Lopetusaika</InputLabel>
+				<Select
+					labelId="endtime-select-label"
+					id="endtime-select"
+					label="Lopetusaika"
+					value={endingTime}
+					onChange={handleEndingTime}
+					input={<OutlinedInput label="Lopetusaika" />}
+					MenuProps={MenuProps}
+					>
+					{timeSlots.map((time) => (
+						startingTime ? (
+							startingTime >= time ? (
+								<MenuItem disabled={true} key={time} value={time}>
+									<ListItemText primary={time} />
+                    
 								</MenuItem>
 							))}
 						</Select>
