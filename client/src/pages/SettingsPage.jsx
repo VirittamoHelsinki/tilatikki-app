@@ -75,7 +75,7 @@ const SettingsPage = () => {
                                         Admin
                                     </Typography>
                                     <ListItem
-                                        onClick={() => handleNavigation('UserInformation')}// TÄHÄN NAVIGAATIO KALENTERIIN
+                                        onClick={() => handleNavigation('AdminSemesterReservation')}// TÄHÄN NAVIGAATIO KALENTERIIN
                                         sx={{
                                             cursor: 'pointer',
                                             '&:hover': {
@@ -139,8 +139,8 @@ const SettingsPage = () => {
                     <Box sx={{ flex: 1 }}>
                         {admin ? (
                             <>
-                                {/* {selectedComponent === 'UserInformation' && <UserInformation />} */}
-                                {selectedComponent === 'UserInformation' && <AdminSemesterReservation />}
+                                {selectedComponent === 'UserInformation' && <UserInformation />}
+                                {selectedComponent === 'AdminSemesterReservation' && <AdminSemesterReservation />}
                                 {selectedComponent === 'UserProfiles' && <UserProfiles />}
                                 {selectedComponent === 'ReservationHistoryAdmin' && <ReservationHistoryAdmin />}
                             </>
