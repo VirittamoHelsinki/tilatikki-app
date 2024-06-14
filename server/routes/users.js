@@ -3,7 +3,7 @@ const router = express.Router();
 const User = require('../models/User');
 
 //get all users
-router.get('/users', async (req, res) => {
+router.get('/userdata', async (req, res) => {
   try {
     const users = await User.find({});
     res.status(200).json(users);
@@ -27,6 +27,27 @@ router.get('/userdata/:email', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+
+//get one user by id
+router.get('/userdata/:id', async (req, res) => {
+  try {
+      const user = await User.findById(req.params.id);
+      if (!user) {
+          return res.status(404).json({ message: 'User not found' });
+      }
+
+      // Convert ObjectId to string
+      const userData = user.toObject();
+      userData._id = userData._id.toString();
+      console.log("userData", userData)
+
+      res.status(200).json(userData);
+  } catch (error) {
+      console.error('Error fetching user data:', error);
+      res.status(500).json({ error: error.message });
+  }
+});
+
 
 router.post('/register', async (req, res) => {
   const { name, surname, email, password } = req.body;
