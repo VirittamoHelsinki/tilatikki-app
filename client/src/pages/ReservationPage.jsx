@@ -34,7 +34,7 @@ const ReservationPage = () => {
     setFloor(newFloor);
   };
 
-  
+
 
   const { id } = useParams();
   const { data, error, isLoading } = useSchoolQuery(id);
@@ -222,14 +222,14 @@ const ReservationPage = () => {
               <Box sx={{ width: '100%', padding: '20px', border: '1px solid #ddd', borderRadius: '4px', backgroundColor: '#fbfbfb' }}>
                 {
                   (calendarBuilding && calendarFloor && calendarRoom)
-                    ? <Calendar /> 
+                    ? <Calendar />
                     : <Typography>Nähdäksesi kalenterin valitse ensin rakennus, kerros ja opetustila.</Typography>
                 }
               </Box>
             </>
           )
         }
-        
+
       </Container>
       {
         selectedComponent === "pohjakarttanäkymä" && (
