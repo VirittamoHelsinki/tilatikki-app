@@ -73,7 +73,7 @@ const ReservationDialog = ({ isOpen, onClose, roomId }) => {
 	const createReservationMutation = useCreateReservationMutation();
 
 	const { data: fetchRoom, error: roomError, isLoading: roomLoading } = useRoomQuery(roomId);
-	const { data: totalPeople, error: totalPeopleError, isLoading: totalPeopleLoading } = useTotalPeopleReservedQuery(roomId);
+	/* 	const { data: totalPeople, error: totalPeopleError, isLoading: totalPeopleLoading } = useTotalPeopleReservedQuery(roomId); */
 
 	useEffect(() => {
 		const email = getCookie('UserEmail');
@@ -95,11 +95,11 @@ const ReservationDialog = ({ isOpen, onClose, roomId }) => {
 		}
 	}, [roomLoading, fetchRoom])
 
-	useEffect(() => {
-		if (!totalPeopleLoading && !totalPeopleLoading) {
-			setPeopleInside(totalPeople)
-		}
-	}, [totalPeopleLoading, totalPeople])
+	// useEffect(() => {
+	// 	if (!totalPeopleLoading && !totalPeopleLoading) {
+	// 		setPeopleInside(totalPeople)
+	// 	}
+	// }, [totalPeopleLoading, totalPeople])
 
 
 	const handleTitleChange = (event) => {
@@ -165,9 +165,9 @@ const ReservationDialog = ({ isOpen, onClose, roomId }) => {
 	};
 
 
-	if (roomLoading || totalPeopleLoading || !peopleInside.totalPeople || !room.capacity) {
-		return <div>Loading...</div>;
-	}
+	// if (roomLoading || !room.capacity) {
+	// 	return <div>Loading...</div>;
+	// }
 
 	return (
 		<ThemeProvider theme={theme}>
@@ -177,11 +177,7 @@ const ReservationDialog = ({ isOpen, onClose, roomId }) => {
 						<Box sx={{ marginTop: 0, marginBottom: 1 }}>
 							<Typography variant="h4">{room.number}</Typography>
 						</Box>
-						<Box sx={{ marginTop: 0, marginBottom: 0, display: 'flex', alignItems: 'center' }}>
-							<Typography variant="h6" sx={{ display: 'flex', alignItems: 'center' }}>
-								<PeopleIcon sx={{ marginRight: 1 }} />{peopleInside.totalPeople} / {room.capacity}
-							</Typography>
-						</Box>
+
 						<Box sx={{ marginTop: 1, marginBottom: 2 }}>
 							<Typography variant="h6">Varauksen tekijä</Typography>
 							<Typography variant="body2">{user.name} {user.surname}</Typography>
@@ -196,15 +192,15 @@ const ReservationDialog = ({ isOpen, onClose, roomId }) => {
 							onChange={handleTitleChange}
 						/>
 						<FormControl fullWidth margin="dense">
-							<InputLabel id="group-size-label">Ryhmän koko (max. {room.capacity - peopleInside.totalPeople} oppilasta)</InputLabel>
+							<InputLabel id="group-size-label">Ryhmän koko (max. {30})</InputLabel>
 							<Select
 								labelId="group-size-label"
 								id="group-size"
 								value={groupSize}
 								onChange={handleGroupSizeChange}
-								label={`Ryhmän koko (max. ${room.capacity - peopleInside.totalPeople} oppilasta)`}  // Ensure the label is also set in the Select
+								label={`Ryhmän koko (max. ${30} oppilasta)`}  // Ensure the label is also set in the Select
 							>
-								{[...Array(room.capacity - peopleInside.totalPeople).keys()].map((index) => {
+								{[...Array(30).keys()].map((index) => {
 									const size = index + 1; // Shift the range to start from 1
 									return (
 										<MenuItem key={size} value={size}>
@@ -287,3 +283,6 @@ const ReservationDialog = ({ isOpen, onClose, roomId }) => {
 };
 
 export default ReservationDialog;
+
+
+
