@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import '../../styles/FloorPlan.css';
+import { Typography } from '@mui/material';
 
 const reservations = [
   {
-    name: "Meeting with Project Team",
+    name: "Historia",
     time: "2024-06-15T10:00:00Z",
+    duration: "1h",
     user: "648c9f2c9e5b6a2f9e37b3c8",
     school: "648c9f2c9e5b6a2f9e37b3c9",
     building: "648c9f2c9e5b6a2f9e37b3ca",
@@ -18,8 +20,9 @@ const reservations = [
     groupsize: 10
   },
   {
-    name: "Math Study Group",
+    name: "Matematiikka",
     time: "2024-06-16T14:00:00Z",
+    duration: "1h",
     user: "648c9f2c9e5b6a2f9e37b3cc",
     school: "648c9f2c9e5b6a2f9e37b3cd",
     building: "648c9f2c9e5b6a2f9e37b3ce",
@@ -33,8 +36,9 @@ const reservations = [
     groupsize: 15
   },
   {
-    name: "Science Club Meeting",
+    name: "Kotitalous",
     time: "2024-06-17T09:00:00Z",
+    duration: "1h",
     user: "648c9f2c9e5b6a2f9e37b3d0",
     school: "648c9f2c9e5b6a2f9e37b3d1",
     building: "648c9f2c9e5b6a2f9e37b3d2",
@@ -48,8 +52,9 @@ const reservations = [
     groupsize: 8
   },
   {
-    name: "English Literature Class",
+    name: "Englanti",
     time: "2024-06-18T11:00:00Z",
+    duration: "45min",
     user: "648c9f2c9e5b6a2f9e37b3d4",
     school: "648c9f2c9e5b6a2f9e37b3d5",
     building: "648c9f2c9e5b6a2f9e37b3d6",
@@ -63,8 +68,9 @@ const reservations = [
     groupsize: 25
   },
   {
-    name: "History Lecture",
+    name: "Äidinkieli",
     time: "2024-06-19T13:00:00Z",
+    duration: "2h",
     user: "648c9f2c9e5b6a2f9e37b3d8",
     school: "648c9f2c9e5b6a2f9e37b3d9",
     building: "648c9f2c9e5b6a2f9e37b3da",
@@ -91,9 +97,9 @@ const FloorPlan5 = () => {
   const fetchRoomData = (roomId) => {
     const reservation = reservations.find(res => res.room._id === roomId);
     if (reservation) {
-      setRoomData({ id: roomId, info: `Reservation: ${reservation.name}, Time: ${new Date(reservation.time).toLocaleString()}` });
+      setRoomData({ id: roomId, info: `Varattu tunti: ${reservation.name}, Varauksen alku: ${new Date(reservation.time).toLocaleString()}, Varauksen kesto: ${reservation.duration}` });
     } else {
-      setRoomData({ id: roomId, info: `No reservations for ${roomId}` });
+      setRoomData({ id: roomId, info: `Ei varauksia ${roomId}` });
     }
   };
 
@@ -235,7 +241,7 @@ const FloorPlan5 = () => {
       </svg>
       {roomData && (
         <div className="room-data">
-          <h2>{roomData.info}</h2>
+          <Typography>{roomData.info}</Typography>
         </div>
       )}
     </div>
