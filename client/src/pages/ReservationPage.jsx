@@ -23,6 +23,13 @@ const ReservationPage = () => {
 
   const [ selectedComponent, setSelectedComponent ] = React.useState('pohjakarttanäkymä');
 
+
+  // For calendarview (temporary)
+  const [ calendarBuilding, setCalendarBuilding ] = useState(null);
+  const [ calendarFloor, setCalendarFloor ] = useState(null);
+  const [ calendarRoom, setCalendarRoom ] = useState(null);
+
+
   const handleChange = (event, newFloor) => {
     setFloor(newFloor);
   };
@@ -153,6 +160,8 @@ const ReservationPage = () => {
                         fullWidth
                         label="Rakennus"
                         placeholder="Valitse rakennus"
+                        value={calendarBuilding}
+                        onChange={(event) => setCalendarBuilding(event.target.value)}
                       >
                         {
                           data.buildings.map((buildingData) => {
@@ -173,6 +182,8 @@ const ReservationPage = () => {
                         fullWidth
                         label="Valitse kerros"
                         placeholder="Valitse kerros"
+                        value={calendarFloor}
+                        onChange={(event) => setCalendarFloor(event.target.value)}
                       >
                         {
                           [ 1, 2, 3].map((value) => {
@@ -185,15 +196,17 @@ const ReservationPage = () => {
 
                   <Grid item lg={10}>
                     <FormControl fullWidth>
-                      <InputLabel id="floor-label">Opetustila</InputLabel>
+                      <InputLabel id="room-label">Opetustila</InputLabel>
                       <Select
-                        labelId="floor-label"
-                        id="floor-select"
-                        name="floor"
+                        labelId="room-label"
+                        id="room-select"
+                        name="room"
                         required
                         fullWidth
-                        label="Valitse kerros"
-                        placeholder="Valitse kerros"
+                        label="Valitse opetustila"
+                        placeholder="Valitse opetustila"
+                        value={calendarRoom}
+                        onChange={(event) => setCalendarRoom(event.target.value)}
                       >
                         {
                           data.buildings[0].floors[0].rooms.map((room) => {
@@ -206,8 +219,12 @@ const ReservationPage = () => {
                 </Grid>
 
               </Box>
-              <Box sx={{ width: '100%', padding: '20px', border: '1px solid #ddd', borderRadius: '4px'  }}>
-                <Calendar />
+              <Box sx={{ width: '100%', padding: '20px', border: '1px solid #ddd', borderRadius: '4px', backgroundColor: '#fbfbfb' }}>
+                {
+                  (calendarBuilding && calendarFloor && calendarRoom)
+                    ? <Calendar /> 
+                    : <Typography>Nähdäksesi kalenterin valitse ensin rakennus, kerros ja opetustila.</Typography>
+                }
               </Box>
             </>
           )
