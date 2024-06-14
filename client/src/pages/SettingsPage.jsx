@@ -5,6 +5,8 @@ import ReservationHistory from '../components/ReservationHistory';
 import UserProfiles from '../components/UserProfiles';
 import ReservationHistoryAdmin from '../components/ReservationHistoryAdmin';
 import Header from '../components/Header';
+import Calendar from '../components/Calendar';
+import AdminSemesterReservation from '../components/AdminSemesterReservation';
 
 const SettingsPage = () => {
     const [selectedComponent, setSelectedComponent] = useState(null);
@@ -73,7 +75,7 @@ const SettingsPage = () => {
                                         Admin
                                     </Typography>
                                     <ListItem
-                                        onClick={() => handleNavigation('UserInformation')}// TÄHÄN NAVIGAATIO KALENTERIIN
+                                        onClick={() => handleNavigation('AdminSemesterReservation')}// TÄHÄN NAVIGAATIO KALENTERIIN
                                         sx={{
                                             cursor: 'pointer',
                                             '&:hover': {
@@ -138,7 +140,7 @@ const SettingsPage = () => {
                         {admin ? (
                             <>
                                 {selectedComponent === 'UserInformation' && <UserInformation />}
-                                {/* {selectedComponent === 'UserInformation' && < UserInformation />} TÄHÄN TILALLE KALENTERI */}
+                                {selectedComponent === 'AdminSemesterReservation' && <AdminSemesterReservation />}
                                 {selectedComponent === 'UserProfiles' && <UserProfiles />}
                                 {selectedComponent === 'ReservationHistoryAdmin' && <ReservationHistoryAdmin />}
                             </>
