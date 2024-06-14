@@ -1,5 +1,5 @@
-import { Grid, Typography, Divider, TextField, MenuItem, Select, FormControl, InputLabel } from "@mui/material"
-import { DatePicker, DigitalClock, LocalizationProvider, TimePicker } from "@mui/x-date-pickers"
+import { Grid, Typography, Divider, TextField, MenuItem, Select, FormControl, InputLabel, Button } from "@mui/material"
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import Calendar from "./Calendar"
 
@@ -145,25 +145,41 @@ const AdminSemesterReservation = () => {
           </Grid>
 
           <Grid item lg={5}>
-            <TextField
-              autoComplete="reservationName"
-              name="reservationName"
-              required
-              fullWidth
-              id="reservationName"
-              label="Opetustila"
-            />
+            <FormControl fullWidth>
+              <InputLabel id="classroom-label">Opetustila</InputLabel>
+              <Select
+                labelId="classroom-label"
+                id="classroom-select"
+                name="classroom"
+                required
+                fullWidth
+                label="Opetustila"
+                defaultValue={"Vihreä lohikäärme"}
+              >
+                <MenuItem value="Vihreä lohikäärme">Vihreä lohikäärme</MenuItem>
+                <MenuItem value="Punainen panda">Punainen panda</MenuItem>
+                <MenuItem value="Sininen siili">Sininen siili</MenuItem>
+              </Select>
+            </FormControl>
           </Grid>
 
           <Grid item lg={10}>
-            <TextField
-              autoComplete="reservationName"
-              name="reservationName"
-              required
-              fullWidth
-              id="reservationName"
-              label="Toistuvuus"
-            />
+            <FormControl fullWidth>
+              <InputLabel id="repetition-label">Toistuvuus</InputLabel>
+              <Select
+                labelId="repetition-label"
+                id="repetition-select"
+                name="repetition"
+                required
+                fullWidth
+                label="Toistuvuus"
+                defaultValue={"Älä toista"}
+              >
+                <MenuItem value="Älä toista">Älä toista</MenuItem>
+                <MenuItem value="Päivittäin">Päivittäin</MenuItem>
+                <MenuItem value="Viikottain">Viikottain</MenuItem>
+              </Select>
+            </FormControl>
           </Grid>
 
           <Grid item lg={10}>
@@ -173,7 +189,26 @@ const AdminSemesterReservation = () => {
               fullWidth
               id="reservationName"
               label="Lisätietoja"
+              multiline
+              rows={4}
             />
+          </Grid>
+
+          <Grid item lg={3}>          
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{ 
+                mt: 3, 
+                mb: 2,
+                backgroundColor: '#18181B', // Change this to your desired color
+                '&:hover': {
+                  backgroundColor: '#2b2b2b' // Change this to a lighter shade of your color
+                }
+              }}
+            >
+              Varaa tila
+            </Button>
           </Grid>
 
         </Grid>
