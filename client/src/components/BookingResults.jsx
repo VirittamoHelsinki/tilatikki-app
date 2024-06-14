@@ -1,4 +1,5 @@
 import React from 'react'
+import { Typography } from '@mui/material';
 
 const BookingResults = ({ classrooms }) => {
 
@@ -6,7 +7,7 @@ const BookingResults = ({ classrooms }) => {
 
   return (
 	<>
-		<h3>Classrooms</h3>
+		<Typography>Luokat</Typography>
 		<ul>
 			{classrooms && Object.entries(classrooms).map(([key, value]) => (
 					<li key={key}>
