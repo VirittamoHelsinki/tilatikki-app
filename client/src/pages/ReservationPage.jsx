@@ -2,7 +2,7 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useSchoolQuery } from '../api/schools';
-import { Container, Box, TextField, Button, Typography } from '@mui/material';
+import { Container, Box, TextField, Button, Typography, Grid } from '@mui/material';
 import Header from '../components/Header';
 import FilterForm from '../components/FilterForm';
 import BookingResults from '../components/BookingResults';
@@ -20,11 +20,13 @@ const ReservationPage = () => {
   const [filterValues, setFilterValues] = useState(null);
   const [floor, setFloor] = React.useState('floor1');
 
+  const [ selectedComponent, setSelectedComponent ] = React.useState('pohjakarttanäkymä');
+
   const handleChange = (event, newFloor) => {
     setFloor(newFloor);
   };
 
-
+  
 
   const { id } = useParams();
   const { data, error, isLoading } = useSchoolQuery(id);
@@ -53,6 +55,26 @@ const ReservationPage = () => {
   return (
     <>
       <Header />
+
+      <Grid container sx={{ backgroundColor: '#f2f5f9', padding: '6px', gap: '6px', 'borderRadius': '10px', 'marginTop': '10px', 'marginLeft': '20px', 'width': 'fit-content' }}>
+        <Grid item>
+          <Button
+            onClick={() => setSelectedComponent('pohjakarttanäkymä')}
+            sx={{ color: 'black', padding: '6px 10px', 'borderRadius': '6px', backgroundColor: selectedComponent === 'pohjakarttanäkymä' ? 'white' : 'transparent', 'fontWeight': 500 }}
+          >
+            Pohjakarttanäkymä
+          </Button>
+        </Grid>
+        <Grid item>
+          <Button
+          onClick={() => setSelectedComponent('kalenterinäkymä')}
+          sx={{ color: 'black', padding: '6px 10px', 'borderRadius': '6px', backgroundColor: selectedComponent === 'kalenterinäkymä' ? 'white' : 'transparent', 'fontWeight': 500 }}
+          >
+            Kalenterinäkymä
+          </Button>
+        </Grid>
+      </Grid>
+
       <Container maxWidth="" style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '20px' }}>
         <Box sx={{ width: '30%', padding: '20px', border: '1px solid #ddd', borderRadius: '4px' }}>
           <FilterForm onClassroomChange={handleClassroomChange} schoolData={data} />
