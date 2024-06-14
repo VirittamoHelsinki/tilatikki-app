@@ -10,13 +10,8 @@ import {
 } from '@mui/material';
 import PeopleIcon from '@mui/icons-material/People';
 
-const ReservationCard = ({ roomNumber, purpose, status, capacity, startTime, endTime }) => {
-	// console.log('roomNumber: ', roomNumber)
-	// console.log('purpose: ', purpose)
-	// console.log('status: ', status)
-	// console.log('capacity: ', capacity)
-	// console.log('startTime: ', startTime)
-	// console.log('endTime: ', endTime)
+const ReservationCard = ({ roomNumber, purpose, status, capacity, startTime, endTime, groupsize }) => {
+
 	return (
 		<Card variant="outlined">
 			<CardHeader
@@ -26,7 +21,7 @@ const ReservationCard = ({ roomNumber, purpose, status, capacity, startTime, end
 						<Typography variant="h6">{`Room ${roomNumber}`}</Typography>
 						<Box>
 							<Typography variant="body2" color="textSecondary">
-								{startTime} - {endTime}
+								{startTime ? new Date(startTime).toLocaleString() : ''}
 							</Typography>
 						</Box>
 					</Box>
@@ -49,7 +44,7 @@ const ReservationCard = ({ roomNumber, purpose, status, capacity, startTime, end
 						<Box display="flex" alignItems="center">
 							<PeopleIcon sx={{ marginRight: 1 }} />
 							<Typography variant="body2" color="textSecondary">
-								{capacity}
+								{groupsize}/{capacity}
 							</Typography>
 						</Box>
 					</Grid>
