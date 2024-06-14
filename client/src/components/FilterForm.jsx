@@ -294,6 +294,16 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 		paddingTop: '15px'
 	}
 
+	const clearButtonStyle = {
+		marginLeft: '10px',
+		marginTop: '10px',
+		border: 'none',
+		background: 'none',
+		textDecoration: 'underline',
+		cursor: 'pointer',
+		padding: '0',
+		fontSize: 'inherit'
+	}
 
 	return (
 		<>
@@ -305,11 +315,6 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 		</Typography>
 
 		<form>
-
-			<button type="button" onClick={resetStates} style={{ marginLeft : '180px', marginTop: '60px'}}>
-				Tyhjennä hakuehdot
-			</button>
-
 			<div style={filterFieldContainer}>
 				<div style={buildingStyle, buildingStyleLeft}>
 					<FormControl required sx={{ m: 1, width: 200 }}>
@@ -496,14 +501,20 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 					sx={{
 						mt: 3,
 						mb: 2,
-						backgroundColor: '#18181B', // Change this to your desired color
+						backgroundColor: '#18181B',
 						'&:hover': {
-							backgroundColor: '#2b2b2b' // Change this to a lighter shade of your color
+							backgroundColor: '#2b2b2b'
 						}
 					}}>
 					Hae tiloja
 				</Button>
+
+				<button type="button" onClick={resetStates} style={clearButtonStyle}>
+					Tyhjennä hakuehdot
+				</button>
+
 			</form>
+
 		</>
 	  )
 }
