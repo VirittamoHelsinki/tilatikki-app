@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import RepeatIcon from '@mui/icons-material/Repeat';
@@ -8,6 +8,8 @@ import { Typography, Divider } from '@mui/material';
 import { fiFI } from '@mui/x-data-grid/locales';
 import DeleteDialog from './DeleteDialog';
 import Snackbar from '@mui/material/Snackbar';
+import { getReservations } from '../api/reservations';
+import { fetchRoomById } from '../api/rooms';
 
 const columns = (handleClickOpen) => [
   {
@@ -75,139 +77,6 @@ const columns = (handleClickOpen) => [
   },
 ];
 
-const rows = [
-  {
-    id: 1,
-    opetustila: 'Classroom 1',
-    toistuva: true,
-    päivämäärä: '2024-06-07',
-    aikaväli: 60,
-    opettaja: 'John Doe',
-    ryhmankoko: 25,
-    toiminnot: 'Edit/Delete',
-  },
-  {
-    id: 2,
-    opetustila: 'Classroom 2',
-    toistuva: false,
-    päivämäärä: '2024-06-08',
-    aikaväli: 90,
-    opettaja: 'Jane Smith',
-    ryhmankoko: 30,
-    toiminnot: 'Edit/Delete',
-  },
-  {
-    id: 3,
-    opetustila: 'Classroom 3',
-    toistuva: true,
-    päivämäärä: '2024-06-09',
-    aikaväli: 120,
-    opettaja: 'Alice Johnson',
-    ryhmankoko: 20,
-    toiminnot: 'Edit/Delete',
-  },
-  {
-    id: 4,
-    opetustila: 'Classroom 4',
-    toistuva: false,
-    päivämäärä: '2024-06-10',
-    aikaväli: 70,
-    opettaja: 'Mark Davis',
-    ryhmankoko: 28,
-    toiminnot: 'Edit/Delete',
-  },
-  {
-    id: 5,
-    opetustila: 'Classroom 5',
-    toistuva: true,
-    päivämäärä: '2024-06-11',
-    aikaväli: 80,
-    opettaja: 'Emily Wilson',
-    ryhmankoko: 22,
-    toiminnot: 'Edit/Delete',
-  },
-  {
-    id: 6,
-    opetustila: 'Classroom 6',
-    toistuva: false,
-    päivämäärä: '2024-06-12',
-    aikaväli: 100,
-    opettaja: 'Michael Brown',
-    ryhmankoko: 35,
-    toiminnot: 'Edit/Delete',
-  },
-  {
-    id: 7,
-    opetustila: 'Classroom 7',
-    toistuva: true,
-    päivämäärä: '2024-06-13',
-    aikaväli: 110,
-    opettaja: 'Sarah Martinez',
-    ryhmankoko: 18,
-    toiminnot: 'Edit/Delete',
-  },
-  {
-    id: 8,
-    opetustila: 'Classroom 8',
-    toistuva: false,
-    päivämäärä: '2024-06-14',
-    aikaväli: 130,
-    opettaja: 'Andrew Taylor',
-    ryhmankoko: 27,
-    toiminnot: 'Edit/Delete',
-  },
-  {
-    id: 9,
-    opetustila: 'Classroom 9',
-    toistuva: true,
-    päivämäärä: '2024-06-15',
-    aikaväli: 95,
-    opettaja: 'Jessica Thomas',
-    ryhmankoko: 29,
-    toiminnot: 'Edit/Delete',
-  },
-  {
-    id: 10,
-    opetustila: 'Classroom 10',
-    toistuva: false,
-    päivämäärä: '2024-06-16',
-    aikaväli: 35,
-    opettaja: 'David jeeeriguez',
-    ryhmankoko: 64,
-    toiminnot: 'Edit/Delete',
-  },
-  {
-    id: 11,
-    opetustila: 'Classroom 11',
-    toistuva: false,
-    päivämäärä: '2024-09-16',
-    aikaväli: 75,
-    opettaja: 'David sdgsdgfsuez',
-    ryhmankoko: 24,
-    toiminnot: 'Edit/Delete',
-  },
-  {
-    id: 12,
-    opetustila: 'Classroom 12',
-    toistuva: false,
-    päivämäärä: '2024-08-16',
-    aikaväli: 95,
-    opettaja: 'David Rodriguez',
-    ryhmankoko: 24,
-    toiminnot: 'Edit/Delete',
-  },
-  {
-    id: 13,
-    opetustila: 'Classroom 13',
-    toistuva: false,
-    päivämäärä: '2024-06-29',
-    aikaväli: 75,
-    opettaja: 'David Rgegedriguez',
-    ryhmankoko: 34,
-    toiminnot: 'Edit/Delete',
-  },
-];
-
 
 const fiLocaleText = {
   ...fiFI.components.MuiDataGrid.defaultProps.localeText,
@@ -215,11 +84,44 @@ const fiLocaleText = {
 
 
 const ReservationHistoryAdmin = () => {
-
   const [open, setOpen] = React.useState(false);
   const [selectedRow, setSelectedRow] = React.useState(null);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [reservations, setReservations] = useState([]);
+
+  useEffect(() => {
+    const fetchAllReservations = async () => {
+      try {
+        const reservationsData = await getReservations();
+        console.log('reservationsData', reservationsData);
+
+        // Fetch room and user data for each reservation
+        const formattedReservations = await Promise.all(reservationsData.map(async (reservation, index) => {
+          const room = await fetchRoomById(reservation.room);
+          // const user = await fetchUserById(reservation.user);
+          console.log('gagasgassa', room);
+          // Format reservation data including room and user details
+          return {
+            id: index + 1,
+            opetustila: room.number || 'N/A',
+            toistuva: reservation.toistuva || false,
+            päivämäärä: reservation.päivämäärä || 'N/A',
+            aikaväli: reservation.aikaväli || 'N/A',
+            opettaja: reservation.user || 'N/A',
+            ryhmankoko: reservation.groupsize || 'N/A',
+          };
+        }));
+
+        setReservations(formattedReservations);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAllReservations();
+  }, []);
 
   const handleSnackbarClose = (_event, reason) => {
     if (reason === 'clickaway') {
@@ -269,7 +171,7 @@ const ReservationHistoryAdmin = () => {
       <Divider sx={{ mt: 4, mb: 4 }} />
       <Box sx={{ height: '600', width: '100%' }}>
         <DataGrid
-          rows={rows}
+          rows={reservations}
           localeText={fiLocaleText}
           columns={columns(handleClickOpen)}
           disableRowSelectionOnClick
