@@ -158,8 +158,32 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 
 		if (selectedStartDate) {
 			classrooms.forEach((room) => {
-				let freeTimeFound = false;
-			})
+				if (room.reservations.length == 0) {
+					filteredClassrooms = filteredClassrooms.concat(room);
+					return ;
+				}
+
+				let freeTimeFound = room.reservations.some((reservation) => {
+					if (reservation.groupsize < room.capacity) {
+							if (groupSize) {
+								if (reservation.groupsize + groupSize <= room.capacity) {
+									return true;
+								}
+							}
+							else {
+								return true;
+							}
+						}
+						return false;
+				});
+
+				})
+				if (freeTimeFound) {
+					filteredClassrooms = filteredClassrooms.concat(room);
+				}
+		}
+		else {
+			filteredClassrooms = [...classrooms];
 		}
 		return filteredClassrooms;
 	};
@@ -170,7 +194,6 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 		classrooms = filterByGroupsize(classrooms);
 		// classrooms = filterByDate(classrooms);
 
-		console.log('buildings', buildings);
 		console.log('classrooms', classrooms);
 
 		onClassroomChange(classrooms);
@@ -192,10 +215,10 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 		if (selectedBuildings.length > 0) {
 			filterResults();
 
-			// // uncomment to clear fields when sent
+			// // clears form when sent
 			// resetStates();
 
-			// temporary fix to resetstates
+			// not needed if resetStates() is called
 			setRequired(false);
 		}
 		else {
@@ -226,9 +249,7 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 	// }
 
 	useEffect(() => {
-		console.log('useEffect');
 		console.log('schoolData', schoolData);
-		console.log('schoolData.buildings', schoolData.buildings);
 
 		const maxFloorValue = selectedBuildings.reduce((max, building) =>
 			Object.keys(building.floors).length > max ? Object.keys(building.floors).length : max, 1
@@ -294,6 +315,16 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 		paddingTop: '15px'
 	}
 
+	const clearButtonStyle = {
+		marginLeft: '10px',
+		marginTop: '10px',
+		border: 'none',
+		background: 'none',
+		textDecoration: 'underline',
+		cursor: 'pointer',
+		padding: '0',
+		fontSize: 'inherit'
+	}
 
 	return (
 		<>
@@ -305,11 +336,6 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 		</Typography>
 
 		<form>
-
-			<button type="button" onClick={resetStates} style={{ marginLeft : '180px', marginTop: '60px'}}>
-				Tyhjennä hakuehdot
-			</button>
-
 			<div style={filterFieldContainer}>
 				<div style={buildingStyle, buildingStyleLeft}>
 					<FormControl required sx={{ m: 1, width: 200 }}>
@@ -496,14 +522,20 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 					sx={{
 						mt: 3,
 						mb: 2,
-						backgroundColor: '#18181B', // Change this to your desired color
+						backgroundColor: '#18181B',
 						'&:hover': {
-							backgroundColor: '#2b2b2b' // Change this to a lighter shade of your color
+							backgroundColor: '#2b2b2b'
 						}
 					}}>
 					Hae tiloja
 				</Button>
+
+				<button type="button" onClick={resetStates} style={clearButtonStyle}>
+					Tyhjennä hakuehdot
+				</button>
+
 			</form>
+
 		</>
 	  )
 }
