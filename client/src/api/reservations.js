@@ -24,6 +24,25 @@ export const createReservation = async (reservationData) => {
 	}
 };
 
+export const getReservations = async () => {
+	try {
+	  const response = await fetch(`${API_URL}/reservations/`);
+	  const responseData = await response.json();
+  
+	  if (!response.ok) {
+		console.error('Server response:', responseData);
+		throw new Error('Failed to fetch reservations');
+	  }
+  
+	  return responseData;
+	} catch (error) {
+	  console.error('Fetch reservations error:', error);
+	  throw error;
+	}
+  };
+  
+
+
 export const useCreateReservationMutation = () => {
 	const queryClient = useQueryClient();
 

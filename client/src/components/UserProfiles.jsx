@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { fiFI } from '@mui/x-data-grid/locales';
 import { Typography, Divider } from '@mui/material';
-import DeleteDialog from './DeleteDialog';
+import DeleteDialogUsers from './DeleteDialogUsers';
 import Snackbar from '@mui/material/Snackbar';
 import EditUsers from './EditUsers';
+import { fetchAllUsers } from '../api/userApi';
 
 const columns = (handleClickOpen, handleToEdit) => [
   {
@@ -64,7 +65,7 @@ const rows = [
     id: 2,
     käyttäjä: 'Anna Ankka',
     sähköposti: 'anna.ankka@example.com',
-    käyttäjärooli: 'Opiskelija',
+    käyttäjärooli: 'Opettaja',
     toissijainenopettaja: 'Kalle Kukko',
     toiminnot: 'Edit/Delete',
   },
@@ -86,9 +87,9 @@ const rows = [
   },
   {
     id: 5,
-    käyttäjä: 'Olga Opiskelija',
-    sähköposti: 'olga.opiskelija@example.com',
-    käyttäjärooli: 'Opiskelija',
+    käyttäjä: 'Olga Onnekas',
+    sähköposti: 'olga.onnekas@example.com',
+    käyttäjärooli: 'Admin',
     toissijainenopettaja: 'Mikko Maanviljelijä',
     toiminnot: 'Edit/Delete',
   },
@@ -96,7 +97,7 @@ const rows = [
     id: 6,
     käyttäjä: 'Jussi Jokinen',
     sähköposti: 'jussi.jokinen@example.com',
-    käyttäjärooli: 'Opettaja',
+    käyttäjärooli: 'Admin',
     toissijainenopettaja: 'Elina Elo',
     toiminnot: 'Edit/Delete',
   },
@@ -104,7 +105,7 @@ const rows = [
     id: 7,
     käyttäjä: 'Riikka Rinne',
     sähköposti: 'riikka.rinne@example.com',
-    käyttäjärooli: 'Opiskelija',
+    käyttäjärooli: 'Opettaja',
     toissijainenopettaja: 'Ville Virtanen',
     toiminnot: 'Edit/Delete',
   },
@@ -128,7 +129,7 @@ const rows = [
     id: 10,
     käyttäjä: 'Mikko Miettinen',
     sähköposti: 'mikko.miettinen@example.com',
-    käyttäjärooli: 'Opiskelija',
+    käyttäjärooli: 'Opettaja',
     toissijainenopettaja: 'Tiina Talvi',
     toiminnot: 'Edit/Delete',
   },
@@ -144,25 +145,45 @@ const rows = [
     id: 12,
     käyttäjä: 'Pekka Pelto',
     sähköposti: 'pekka.pelto@example.com',
-    käyttäjärooli: 'Opiskelija',
+    käyttäjärooli: 'Admin',
     toissijainenopettaja: 'Jari Joki',
     toiminnot: 'Edit/Delete',
   },
 ];
 
-
 const fiLocaleText = {
   ...fiFI.components.MuiDataGrid.defaultProps.localeText,
 };
 
-
 const UserProfiles = () => {
-
-  const [open, setOpen] = React.useState(false);
-  const [selectedRow, setSelectedRow] = React.useState(null);
+  const [open, setOpen] = useState(false);
+  const [selectedRow, setSelectedRow] = useState(null);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [users, setUsers] = useState([]);
+  const [rowsData, setRowsData] = useState(rows);
+
+  useEffect(() => {
+    const getUsers = async () => {
+      try {
+        const usersData = await fetchAllUsers();
+        const formattedUsers = usersData.map((user, index) => ({
+          id: index + 1,
+          käyttäjä: `${user.name} ${user.surname}`,
+          sähköposti: user.email,
+          käyttäjärooli: user.role,
+          toissijainenopettaja: user.secondaryTeacher || 'N/A',
+        }));
+        setUsers(formattedUsers);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    getUsers();
+  }, []);
 
   const handleSnackbarClose = (_event, reason) => {
     if (reason === 'clickaway') {
@@ -186,25 +207,38 @@ const UserProfiles = () => {
     setSelectedRow(null);
   };
 
-  const handleDelete = (deleted) => {
-    setOpen(false);
-    setSelectedRow(null);
-    if (deleted) {
-      setSnackbarMessage('Varaus on poistettu onnistuneesti');
-      setSnackbarOpen(true);
+  const handleDelete = () => {
+    if (selectedRow) {
+      setOpen(true); // Open confirmation dialog
     }
   };
 
+  const handleDeleteConfirmed = () => {
+    if (selectedRow) {
+      // Filter out the row to be deleted
+      const updatedRows = rowsData.filter(row => row.id !== selectedRow.id);
+      setRowsData(updatedRows);
+
+      // Show snackbar message
+      setSnackbarMessage('Varaus on poistettu onnistuneesti');
+      setSnackbarOpen(true);
+
+      // Close the confirmation dialog
+      setOpen(false);
+      setSelectedRow(null);
+    }
+  };
 
   if (isEditing) {
-    return <EditUsers
-      name={selectedRow.käyttäjä}
-      role={selectedRow.käyttäjärooli}
-      otherTeacher={selectedRow.toissijainenopettaja}
-      onClose={() => setIsEditing(false)}
-    />;
+    return (
+      <EditUsers
+        name={selectedRow.käyttäjä}
+        role={selectedRow.käyttäjärooli}
+        otherTeacher={selectedRow.toissijainenopettaja}
+        onClose={() => setIsEditing(false)}
+      />
+    );
   }
-
 
   return (
     <>
@@ -224,7 +258,7 @@ const UserProfiles = () => {
       </Typography>
 
       <Divider sx={{ mt: 4, mb: 4 }} />
-      <Box sx={{ height: '600', width: '100%' }}>
+      <Box sx={{ height: 600, width: '100%' }}>
         <DataGrid
           rows={rows}
           localeText={fiLocaleText}
@@ -253,14 +287,11 @@ const UserProfiles = () => {
         />
       </Box>
       {selectedRow && (
-        <DeleteDialog
+        <DeleteDialogUsers
           open={open}
           handleClose={handleClose}
-          handleDelete={handleDelete}
-          course={selectedRow.opettaja}
-          roomName={selectedRow.opetustila}
-          date={selectedRow.päivämäärä}
-          hours={selectedRow.aikaväli}
+          handleDelete={handleDeleteConfirmed}
+          user={selectedRow.käyttäjä}
         />
       )}
     </>
