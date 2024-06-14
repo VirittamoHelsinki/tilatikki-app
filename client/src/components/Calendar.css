@@ -52,6 +52,7 @@
 .calendar__header {
   display: grid;
   grid-template-columns: repeat(7, 160px); /* width of a cell */
+  border-radius: 0 10px 10px 0;
 }
 
 .calendar__header-title {
@@ -251,15 +252,18 @@
   grid-row: 1;
   grid-column: 2;
   gap: 1px 0;
+
+  grid-auto-flow: column dense;
 }
 
 .day-calendar__blocks > .block {
   padding-top: 4px;
+  
   display: flex;
   flex-direction: column;
-  gap: 2px;
   justify-content: start;
-
+  gap: 2px;
+  
   box-sizing: border-box;
 }
 

@@ -27,7 +27,7 @@ const Popup = ({ calendarData, date, close }) => {
       <div
         key={`popup`}
         className={`block first last`}
-        style={{ gridRow: `${rowStart + 1} / ${ rowEnd + 1 }`, gridColumn: 1, zIndex: 10000 }}
+        style={{ gridRow: `${rowStart + 1} / ${ rowEnd + 1 }`, zIndex: 10000 }}
       >
         <p>{data.label}</p>
         <p className="block__teacher-name">{data.teacher}</p>
@@ -122,7 +122,7 @@ const mockData = [
   {
     startDate: moment([2024, 5, 19]),
     endDate: moment([2024, 5, 21]),
-    startTime: "10:00",
+    startTime: "9:00",
     endTime: "11:00",
     label: "Biologia 2",
     teacher: "Onni Opettaja",
