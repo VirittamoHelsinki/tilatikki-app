@@ -158,8 +158,32 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 
 		if (selectedStartDate) {
 			classrooms.forEach((room) => {
-				let freeTimeFound = false;
-			})
+				if (room.reservations.length == 0) {
+					filteredClassrooms = filteredClassrooms.concat(room);
+					return ;
+				}
+
+				let freeTimeFound = room.reservations.some((reservation) => {
+					if (reservation.groupsize < room.capacity) {
+							if (groupSize) {
+								if (reservation.groupsize + groupSize <= room.capacity) {
+									return true;
+								}
+							}
+							else {
+								return true;
+							}
+						}
+						return false;
+				});
+
+				})
+				if (freeTimeFound) {
+					filteredClassrooms = filteredClassrooms.concat(room);
+				}
+		}
+		else {
+			filteredClassrooms = [...classrooms];
 		}
 		return filteredClassrooms;
 	};
@@ -170,7 +194,6 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 		classrooms = filterByGroupsize(classrooms);
 		// classrooms = filterByDate(classrooms);
 
-		console.log('buildings', buildings);
 		console.log('classrooms', classrooms);
 
 		onClassroomChange(classrooms);
@@ -192,10 +215,10 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 		if (selectedBuildings.length > 0) {
 			filterResults();
 
-			// // uncomment to clear fields when sent
+			// // clears form when sent
 			// resetStates();
 
-			// temporary fix to resetstates
+			// not needed if resetStates() is called
 			setRequired(false);
 		}
 		else {
@@ -226,9 +249,7 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 	// }
 
 	useEffect(() => {
-		console.log('useEffect');
 		console.log('schoolData', schoolData);
-		console.log('schoolData.buildings', schoolData.buildings);
 
 		const maxFloorValue = selectedBuildings.reduce((max, building) =>
 			Object.keys(building.floors).length > max ? Object.keys(building.floors).length : max, 1
