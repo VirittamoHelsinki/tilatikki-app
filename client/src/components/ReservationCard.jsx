@@ -11,6 +11,12 @@ import {
 import PeopleIcon from '@mui/icons-material/People';
 
 const ReservationCard = ({ roomNumber, purpose, status, capacity, startTime, endTime }) => {
+	// console.log('roomNumber: ', roomNumber)
+	// console.log('purpose: ', purpose)
+	// console.log('status: ', status)
+	// console.log('capacity: ', capacity)
+	// console.log('startTime: ', startTime)
+	// console.log('endTime: ', endTime)
 	return (
 		<Card variant="outlined">
 			<CardHeader
@@ -31,12 +37,9 @@ const ReservationCard = ({ roomNumber, purpose, status, capacity, startTime, end
 				<Grid container spacing={2}>
 					<Grid item xs={12} sm={6}>
 						<Box display="flex" alignItems="center">
-							<Typography variant="body2" color="textSecondary">
-								Status:
-							</Typography>
 							<Chip
 								label={status}
-								color={status === 'Available' ? 'success' : 'error'}
+								color={status === 'Vapaa' ? 'success' : 'error'}
 								size="small"
 								sx={{ marginLeft: 1 }}
 							/>
@@ -46,7 +49,7 @@ const ReservationCard = ({ roomNumber, purpose, status, capacity, startTime, end
 						<Box display="flex" alignItems="center">
 							<PeopleIcon sx={{ marginRight: 1 }} />
 							<Typography variant="body2" color="textSecondary">
-								Capacity: {capacity}
+								{capacity}
 							</Typography>
 						</Box>
 					</Grid>

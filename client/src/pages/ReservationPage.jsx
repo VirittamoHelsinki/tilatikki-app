@@ -43,11 +43,11 @@ const ReservationPage = () => {
   }
 
   const handleFilterValues = (newValues) => {
-	setFilterValues(newValues);
+    setFilterValues(newValues);
   }
 
   const handleClassroomChange = (newClassrooms) => {
-	setFilteredClassrooms(newClassrooms);
+    setFilteredClassrooms(newClassrooms);
   };
 
   return (
@@ -74,31 +74,31 @@ const ReservationPage = () => {
           </Box>
         </Box>
         <Box sx={{ width: '100%', padding: '20px', border: '1px solid #ddd', borderRadius: '4px' }}>
-        <ToggleButtonGroup
-      color="primary"
-      value={floor}
-      exclusive
-      onChange={handleChange}
-      aria-label="Platform"
-      sx={{marginRight: 2}}
-    >
-      <ToggleButton value="floor1">1. kerros</ToggleButton>
-      <ToggleButton value="floor2">2. kerros</ToggleButton>
-    </ToggleButtonGroup>
-    <ToggleButtonGroup
-      color="primary"
-      value={floor}
-      exclusive
-      onChange={handleChange}
-      aria-label="Platform"
-      sx={{marginBottom: 10}}
-    >
-      <ToggleButton value="buildingA">Rakennus A</ToggleButton>
-      <ToggleButton value="buildingB">Rakennus B</ToggleButton>
-    </ToggleButtonGroup>
+          <ToggleButtonGroup
+            color="primary"
+            value={floor}
+            exclusive
+            onChange={handleChange}
+            aria-label="Platform"
+            sx={{ marginRight: 2 }}
+          >
+            <ToggleButton value="floor1">1. kerros</ToggleButton>
+            <ToggleButton value="floor2">2. kerros</ToggleButton>
+          </ToggleButtonGroup>
+          <ToggleButtonGroup
+            color="primary"
+            value={floor}
+            exclusive
+            onChange={handleChange}
+            aria-label="Platform"
+            sx={{ marginBottom: 10 }}
+          >
+            <ToggleButton value="buildingA">Rakennus A</ToggleButton>
+            <ToggleButton value="buildingB">Rakennus B</ToggleButton>
+          </ToggleButtonGroup>
           <Box>
             {/* <FloorPlanBase></FloorPlanBase> */}
-            {/* <FloorPlan5 /> */}
+            <FloorPlan5 />
           </Box>
         </Box>
       </Container>
