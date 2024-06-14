@@ -43,8 +43,7 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 	const [groupSize, setGroupSize] = useState('');
 	const [classroom, setClassroom] = useState('');
 	const [availableClassrooms, setAvailableClassrooms] = useState([]);
-	const [selectedStartDate, setSelectedStartDate] = useState(null);
-	const [selectedEndDate, setSelectedEndDate] = useState(null);
+	const [selectedDate, setSelectedDate] = useState(null);
 	const [required, setRequired] = useState(false);
 
 	const handleSelectedBuildings = (event) => {
@@ -156,7 +155,7 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 	const filterByDate = (classrooms) => {
 		let filteredClassrooms = [];
 
-		if (selectedStartDate) {
+		if (selectedDate) {
 			classrooms.forEach((room) => {
 				if (room.reservations.length == 0) {
 					filteredClassrooms = filteredClassrooms.concat(room);
@@ -204,8 +203,7 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 		const filterData = {
 			selectedBuildings,
 			selectedFloor,
-			selectedStartDate,
-			selectedEndDate,
+			selectedDate,
 			startingTime,
 			endingTime,
 			groupSize,
@@ -235,13 +233,13 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 		setGroupSize('');
 		setClassroom('');
 		setAvailableClassrooms([]);
-		setSelectedStartDate(null);
+		setSelectedDate(null);
 		// setSelectedEndDate(null);
 		setRequired(false);
 	}
 
 	const handleStartingDateChange = (newDate) => {
-		setSelectedStartDate(newDate);
+		setSelectedDate(newDate);
 	}
 
 	// const handleEndingDateChange = (newDate) => {
@@ -398,7 +396,7 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 					<LocalizationProvider dateAdapter={AdapterDayjs} >
 					<DatePicker
 						label="Päivämäärä"
-						value={selectedStartDate}
+						value={selectedDate}
 						onChange={handleStartingDateChange}
 						format="DD.MM.YYYY"
 						slotProps={{
