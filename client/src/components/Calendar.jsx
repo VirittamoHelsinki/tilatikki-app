@@ -92,7 +92,7 @@ const mockData = [
     endDate: moment([2024, 5, 10]),
     startTime: "9:00",
     endTime: "15:00",
-    label: "Vektorit ja Muut",
+    label: "Matematiikka 1",
     teacher: "Onni Opettaja",
   },
   {
@@ -100,7 +100,7 @@ const mockData = [
     endDate: moment([2024, 5, 13]),
     startTime: "15:15",
     endTime: "16:00",
-    label: "Algoritmit",
+    label: "Äidinkieli 1",
     teacher: "Onni Opettaja",
   },
   {
@@ -108,15 +108,15 @@ const mockData = [
     endDate: moment([2024, 5, 15]),
     startTime: "9:00",
     endTime: "12:00",
-    label: "Iso Aamupala",
+    label: "Biologia 5",
     teacher: "Onni Opettaja",
   },
   {
-    startDate: moment([2024, 5, 19]),
+    startDate: moment([2024, 5, 18]),
     endDate: moment([2024, 5, 21]),
     startTime: "9:00",
     endTime: "10:00",
-    label: "Matematiikka 1",
+    label: "Matematiikka 2",
     teacher: "Onni Opettaja",
   },
   {
@@ -146,7 +146,7 @@ const mockData = [
 ]
 
 // { calendarData = mockData } to use mockData
-const Calendar = ({ calendarData = [] }) => {
+const Calendar = ({ calendarData = mockData }) => {
   const [ date, setDate ] = useState(moment())
   const [ modal, setModal ] = useState(-1)
 
