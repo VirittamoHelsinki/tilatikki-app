@@ -4,6 +4,7 @@ import { Box, Button } from '@mui/material';
 
 const BookingResults = ({ classrooms }) => {
 	const [currentPage, setCurrentPage] = useState(0);
+
 	const itemsPerPage = 5;
 
 	console.log('classrooms: ', classrooms)
@@ -25,6 +26,7 @@ const BookingResults = ({ classrooms }) => {
 		(currentPage + 1) * itemsPerPage
 	);
 
+
 	return (
 		<Box>
 			<h3>Huoneet</h3>
@@ -35,7 +37,7 @@ const BookingResults = ({ classrooms }) => {
 							value.reservations.map((reservation) => (
 								<ReservationCard
 									key={reservation._id}
-									roomId={value._id}
+									roomId={reservation.room}
 									roomNumber={value.number}
 									purpose={reservation.purpose}
 									status="Varattu"

@@ -96,7 +96,10 @@ exports.getSchoolById = async (req, res) => {
         populate: {
           path: 'rooms',
           populate: {
-            path: 'reservations'
+            path: 'reservations',
+            populate: {
+              path: 'user'
+            }
           }
         }
       }
