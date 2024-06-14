@@ -14,6 +14,20 @@ export const fetchUserDataByEmail = async (email) => {
     }
   };
 
+  export const fetchAllUsers = async () => {
+    try {
+      const response = await fetch(`${API_URL}/users`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch users data');
+      }
+      const usersData = await response.json();
+      return usersData;
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      throw error;
+    }
+  };
+
 export const loginUser = async (credentials) => {
   try {
     const response = await fetch(`${API_URL}/login`, {
