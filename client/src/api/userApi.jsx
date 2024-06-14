@@ -1,32 +1,47 @@
 const API_URL = 'http://localhost:5050';
 
 export const fetchUserDataByEmail = async (email) => {
-    try {
-      const response = await fetch(`${API_URL}/userdata/${encodeURIComponent(email)}`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch user data');
-      }
-      const userData = await response.json();
-      return userData;
-    } catch (error) {
-      console.error('Error fetching user data:', error);
-      throw error;
+  try {
+    const response = await fetch(`${API_URL}/userdata/${encodeURIComponent(email)}`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch user data');
     }
-  };
+    const userData = await response.json();
+    return userData;
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+    throw error;
+  }
+};
 
-  export const fetchAllUsers = async () => {
-    try {
-      const response = await fetch(`${API_URL}/users`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch users data');
-      }
-      const usersData = await response.json();
-      return usersData;
-    } catch (error) {
-      console.error('Error fetching user data:', error);
-      throw error;
+
+export const fetchUserById = async (id) => {
+  try {
+    const response = await fetch(`${API_URL}/userdata/${id}`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch user data');
     }
-  };
+    return response.json();
+  } catch (error) {
+    console.error('Fetch user data error:', error);
+    throw error;
+  }
+};
+
+
+export const fetchAllUsers = async () => {
+  try {
+    const response = await fetch(`${API_URL}/userdata`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch users data');
+    }
+    const usersData = await response.json();
+    return usersData;
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+    throw error;
+  }
+};
 
 export const loginUser = async (credentials) => {
   try {

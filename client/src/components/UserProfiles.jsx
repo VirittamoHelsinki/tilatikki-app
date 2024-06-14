@@ -52,6 +52,105 @@ const columns = (handleClickOpen, handleToEdit) => [
   },
 ];
 
+const rows = [
+  {
+    id: 1,
+    käyttäjä: 'Matti Meikäläinen',
+    sähköposti: 'matti.meikalainen@example.com',
+    käyttäjärooli: 'Opettaja',
+    toissijainenopettaja: 'Maija Mallinen',
+    toiminnot: 'Edit/Delete',
+  },
+  {
+    id: 2,
+    käyttäjä: 'Anna Ankka',
+    sähköposti: 'anna.ankka@example.com',
+    käyttäjärooli: 'Opettaja',
+    toissijainenopettaja: 'Kalle Kukko',
+    toiminnot: 'Edit/Delete',
+  },
+  {
+    id: 3,
+    käyttäjä: 'Pekka Pouta',
+    sähköposti: 'pekka.pouta@example.com',
+    käyttäjärooli: 'Admin',
+    toissijainenopettaja: 'Sanna Sateenkaari',
+    toiminnot: 'Edit/Delete',
+  },
+  {
+    id: 4,
+    käyttäjä: 'Teemu Teekkari',
+    sähköposti: 'teemu.teekkari@example.com',
+    käyttäjärooli: 'Opettaja',
+    toissijainenopettaja: 'Liisa Laakso',
+    toiminnot: 'Edit/Delete',
+  },
+  {
+    id: 5,
+    käyttäjä: 'Olga Onnekas',
+    sähköposti: 'olga.onnekas@example.com',
+    käyttäjärooli: 'Admin',
+    toissijainenopettaja: 'Mikko Maanviljelijä',
+    toiminnot: 'Edit/Delete',
+  },
+  {
+    id: 6,
+    käyttäjä: 'Jussi Jokinen',
+    sähköposti: 'jussi.jokinen@example.com',
+    käyttäjärooli: 'Admin',
+    toissijainenopettaja: 'Elina Elo',
+    toiminnot: 'Edit/Delete',
+  },
+  {
+    id: 7,
+    käyttäjä: 'Riikka Rinne',
+    sähköposti: 'riikka.rinne@example.com',
+    käyttäjärooli: 'Opettaja',
+    toissijainenopettaja: 'Ville Virtanen',
+    toiminnot: 'Edit/Delete',
+  },
+  {
+    id: 8,
+    käyttäjä: 'Kalle Kuusi',
+    sähköposti: 'kalle.kuusi@example.com',
+    käyttäjärooli: 'Opettaja',
+    toissijainenopettaja: 'Päivi Pihlaja',
+    toiminnot: 'Edit/Delete',
+  },
+  {
+    id: 9,
+    käyttäjä: 'Sanna Suutari',
+    sähköposti: 'sanna.suutari@example.com',
+    käyttäjärooli: 'Admin',
+    toissijainenopettaja: 'Hanna Haukka',
+    toiminnot: 'Edit/Delete',
+  },
+  {
+    id: 10,
+    käyttäjä: 'Mikko Miettinen',
+    sähköposti: 'mikko.miettinen@example.com',
+    käyttäjärooli: 'Opettaja',
+    toissijainenopettaja: 'Tiina Talvi',
+    toiminnot: 'Edit/Delete',
+  },
+  {
+    id: 11,
+    käyttäjä: 'Liisa Laine',
+    sähköposti: 'liisa.laine@example.com',
+    käyttäjärooli: 'Opettaja',
+    toissijainenopettaja: 'Kari Kevät',
+    toiminnot: 'Edit/Delete',
+  },
+  {
+    id: 12,
+    käyttäjä: 'Pekka Pelto',
+    sähköposti: 'pekka.pelto@example.com',
+    käyttäjärooli: 'Admin',
+    toissijainenopettaja: 'Jari Joki',
+    toiminnot: 'Edit/Delete',
+  },
+];
+
 const fiLocaleText = {
   ...fiFI.components.MuiDataGrid.defaultProps.localeText,
 };
@@ -63,6 +162,7 @@ const UserProfiles = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [users, setUsers] = useState([]);
+  const [rowsData, setRowsData] = useState(rows);
 
   useEffect(() => {
     const getUsers = async () => {
@@ -107,12 +207,25 @@ const UserProfiles = () => {
     setSelectedRow(null);
   };
 
-  const handleDelete = (deleted) => {
-    setOpen(false);
-    setSelectedRow(null);
-    if (deleted) {
+  const handleDelete = () => {
+    if (selectedRow) {
+      setOpen(true); // Open confirmation dialog
+    }
+  };
+
+  const handleDeleteConfirmed = () => {
+    if (selectedRow) {
+      // Filter out the row to be deleted
+      const updatedRows = rowsData.filter(row => row.id !== selectedRow.id);
+      setRowsData(updatedRows);
+
+      // Show snackbar message
       setSnackbarMessage('Varaus on poistettu onnistuneesti');
       setSnackbarOpen(true);
+
+      // Close the confirmation dialog
+      setOpen(false);
+      setSelectedRow(null);
     }
   };
 
@@ -147,7 +260,7 @@ const UserProfiles = () => {
       <Divider sx={{ mt: 4, mb: 4 }} />
       <Box sx={{ height: 600, width: '100%' }}>
         <DataGrid
-          rows={users}
+          rows={rows}
           localeText={fiLocaleText}
           columns={columns(handleClickOpen, handleToEdit)}
           disableRowSelectionOnClick
@@ -177,7 +290,7 @@ const UserProfiles = () => {
         <DeleteDialogUsers
           open={open}
           handleClose={handleClose}
-          handleDelete={handleDelete}
+          handleDelete={handleDeleteConfirmed}
           user={selectedRow.käyttäjä}
         />
       )}
