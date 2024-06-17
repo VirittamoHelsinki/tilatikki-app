@@ -563,21 +563,25 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 			</div>
 
 				{/* <Button variant="contained" type="submit" fullWidth onClick={handleSubmit} */}
-				<Button variant="contained" type="submit" fullWidth onClick={checkRequired}
+				<Button variant="contained" type="submit" onClick={checkRequired}
 					sx={{
 						mt: 3,
 						mb: 2,
+						width: '35%',
 						backgroundColor: '#18181B',
 						'&:hover': {
 							backgroundColor: '#2b2b2b'
-						}
+						},
+						marginLeft: '0'
 					}}>
-					Hae tiloja
+						Hae tiloja
 				</Button>
 
-				<button type="button" onClick={resetStates} style={clearButtonStyle}>
-					Tyhjennä hakuehdot
-				</button>
+				<div>
+					<button type="button" onClick={resetStates} style={clearButtonStyle}>
+						Tyhjennä hakuehdot
+					</button>
+				</div>
 
 			</form>
 
