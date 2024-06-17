@@ -292,7 +292,7 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 
 	const filterFieldContainer = {
 		display: 'flex',
-		gap: '50px',
+		gap: '7%',
 		alignItems: 'center'
 	};
 
@@ -309,7 +309,8 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 		display: 'flex',
 		flexDirection: 'column',
 		paddingTop: '10px',
-		paddingBottom: '10px'
+		paddingBottom: '10px',
+		width: '80%'
 	};
 
 	const groupStyle = {
@@ -339,7 +340,6 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 
 	const floorStyle = {
 		marginTop: '4%'
-
 	};
 
 	const clearButtonStyle = {
