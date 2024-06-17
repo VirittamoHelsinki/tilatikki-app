@@ -45,6 +45,7 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 	const [availableClassrooms, setAvailableClassrooms] = useState([]);
 	const [selectedDate, setSelectedDate] = useState(null);
 	const [required, setRequired] = useState(false);
+	const [requiredEndTime, setRequiredEndTime] = useState(false);
 
 	const handleSelectedBuildings = (event) => {
 		const {
@@ -56,6 +57,7 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 			schoolData.buildings.find((building) => building.name === name)
 		);
 		setSelectedBuildings(selectedBuildingObjects);
+		setRequired(false);
 	};
 
 	const handleSelectedFloor = (event) => {
@@ -74,6 +76,7 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 
 	const handleEndingTime = (e) => {
 		setEndingTime(e.target.value);
+		setRequiredEndTime(false);
 	}
 
 	const handleGroupSize = (e) => {
@@ -176,10 +179,13 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 						return false;
 				});
 
-				})
 				if (freeTimeFound) {
 					filteredClassrooms = filteredClassrooms.concat(room);
 				}
+				else {
+					// loop through
+				}
+			})
 		}
 		else {
 			filteredClassrooms = [...classrooms];
@@ -211,16 +217,33 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 		}
 
 		if (selectedBuildings.length > 0) {
-			filterResults();
+			if (startingTime && !endingTime) {
+				setRequiredEndTime(true);
+			}
+			else {
+				filterResults();
+				// // clears form when sent
+				// resetStates();
 
-			// // clears form when sent
-			// resetStates();
-
-			// not needed if resetStates() is called
-			setRequired(false);
+				// not needed if resetStates() is called
+				setRequired(false);
+				setRequiredEndTime(false);
+			}
+		}
+		else if (startingTime && !endingTime) {
+			console.log('testing');
+			setRequiredEndTime(true);
+			setRequired(true);
 		}
 		else {
+			console.log('not testiong');
 			setRequired(true);
+		}
+	}
+
+	const checkRequired = () => {
+		if (startingTime && !endingTime) {
+			setRequiredEndTime(true);
 		}
 	}
 
@@ -234,17 +257,13 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 		setClassroom('');
 		setAvailableClassrooms([]);
 		setSelectedDate(null);
-		// setSelectedEndDate(null);
 		setRequired(false);
+		setRequiredEndTime(false);
 	}
 
 	const handleStartingDateChange = (newDate) => {
 		setSelectedDate(newDate);
 	}
-
-	// const handleEndingDateChange = (newDate) => {
-	// 	setSelectedEndDate(newDate);
-	// }
 
 	useEffect(() => {
 		console.log('schoolData', schoolData);
@@ -333,11 +352,11 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 			 {schoolData.address}
 		</Typography>
 
-		<form>
+		<form onSubmit={handleSubmit}>
 			<div style={filterFieldContainer}>
 				<div style={buildingStyle, buildingStyleLeft}>
-					<FormControl required sx={{ m: 1, width: 200 }}>
-					<InputLabel id="building-checkbox-label" >Rakennus</InputLabel>
+					<FormControl sx={{ m: 1, width: 200 }}>
+					<InputLabel required id="building-checkbox-label" >Rakennus</InputLabel>
 						<Select
 							labelId="building-checkbox-label"
 							id="building-multiple-checkbox"
@@ -382,6 +401,7 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 						</Select>
 				</div>
 			</div>
+
 			<>
 				{required && (
 					<p style={{color: 'red', paddingLeft: '10px', marginTop: '-10px', marginBottom: '20px',
@@ -443,36 +463,49 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 						))}
 					</Select>
 				</div>
-				<div style={timeSlotStyle}>
-				<InputLabel id="endtime-select-label">Lopetusaika</InputLabel>
-					<Select
-						labelId="endtime-select-label"
-						id="endtime-select"
-						label="Lopetusaika"
-						value={endingTime}
-						onChange={handleEndingTime}
-						input={<OutlinedInput label="Lopetusaika" />}
-						MenuProps={MenuProps}
-						>
-						{timeSlots.map((time) => (
-							startingTime ? (
-								startingTime >= time ? (
-									<MenuItem disabled={true} key={time} value={time}>
-										<ListItemText primary={time} />
-									</MenuItem>
+
+				{startingTime && (
+					<div style={timeSlotStyle}>
+					<InputLabel required id="endtime-select-label">Lopetusaika</InputLabel>
+						<Select
+							labelId="endtime-select-label"
+							id="endtime-select"
+							label="Lopetusaika"
+							value={endingTime}
+							onChange={handleEndingTime}
+							input={<OutlinedInput label="Lopetusaika" />}
+							MenuProps={MenuProps}
+							>
+							{timeSlots.map((time) => (
+								startingTime ? (
+									startingTime >= time ? (
+										<MenuItem disabled={true} key={time} value={time}>
+											<ListItemText primary={time} />
+										</MenuItem>
+									) : (
+										<MenuItem key={time} value={time}>
+											<ListItemText primary={time} />
+										</MenuItem>
+									)
 								) : (
 									<MenuItem key={time} value={time}>
 										<ListItemText primary={time} />
 									</MenuItem>
-								)
-							) : (
-								<MenuItem key={time} value={time}>
-									<ListItemText primary={time} />
-								</MenuItem>
-								)
-						))}
-					</Select>
-				</div>
+									)
+							))}
+						</Select>
+
+					</div>
+				)}
+			</div>
+
+			<div>
+			{requiredEndTime && (
+				<p style={{color: 'red', marginLeft: '43%', marginBottom: '-3%', marginTop: '0',
+				fontFamily: "Helvetica"}}>
+					*Pakollinen
+				</p>
+			)}
 			</div>
 
 			<div style={filterFieldContainer}>
@@ -516,7 +549,8 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 				</div>
 			</div>
 
-				<Button variant="contained" type="submit" fullWidth onClick={handleSubmit}
+				{/* <Button variant="contained" type="submit" fullWidth onClick={handleSubmit} */}
+				<Button variant="contained" type="submit" fullWidth onClick={checkRequired}
 					sx={{
 						mt: 3,
 						mb: 2,
