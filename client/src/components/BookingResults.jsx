@@ -50,6 +50,7 @@ const BookingResults = ({ classrooms }) => {
 						) : (
 							<ReservationCard
 								key={key}
+								roomId={value._id}
 								roomNumber={value.number}
 								purpose="Ei varauksia"
 								status="Vapaa"
