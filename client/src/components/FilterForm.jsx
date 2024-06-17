@@ -161,8 +161,10 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 
 	const filterByDate = (classrooms) => {
 		let filteredClassrooms = [];
+		const today = new Date();
+		today.setHours(0, 0, 0, 0);
 
-		if (selectedDate) {
+		if (selectedDate && selectedDate.$d >= today) {
 			classrooms.forEach((room) => {
 				if (room.reservations.length == 0) {
 					filteredClassrooms = filteredClassrooms.concat(room);
@@ -201,7 +203,7 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 		const buildings = filterByBuilding();
 		let classrooms = filterByClassroomOrFloor(buildings);
 		classrooms = filterByGroupsize(classrooms);
-		// classrooms = filterByDate(classrooms);
+		classrooms = filterByDate(classrooms);
 
 		console.log('classrooms', classrooms);
 
@@ -235,12 +237,10 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 			}
 		}
 		else if (startingTime && !endingTime) {
-			console.log('testing');
 			setRequiredEndTime(true);
 			setRequired(true);
 		}
 		else {
-			console.log('not testiong');
 			setRequired(true);
 		}
 	}
@@ -572,7 +572,7 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 						'&:hover': {
 							backgroundColor: '#2b2b2b'
 						},
-						marginLeft: '0'
+						marginLeft: '2%'
 					}}>
 						Hae tiloja
 				</Button>
