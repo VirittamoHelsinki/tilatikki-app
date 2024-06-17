@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Container, Box, TextField, Button, Typography } from '@mui/material';
+import { Container, Box, TextField, Button, Typography, FormLabel } from '@mui/material';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
@@ -290,7 +290,7 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 		display: 'flex',
 		gap: '50px',
 		alignItems: 'center'
-	}
+	};
 
 	const timeSlotStyle = {
 		display: 'flex',
@@ -299,23 +299,24 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 		maxWidth: '100px',
 		paddingLeft: '10px',
 		paddingTop: '10px'
-	}
+	};
 
 	const buildingStyle = {
 		display: 'flex',
 		flexDirection: 'column',
 		paddingTop: '10px',
 		paddingBottom: '10px'
-	}
+	};
 
 	const groupStyle = {
 		display: 'flex',
 		flexDirection: 'column'
-	}
+	};
 
 	const sizeStyle = {
-		paddingRight: '10px'
-	}
+		paddingRight: '10px',
+		marginTop: '4%'
+	};
 
 	const selectWrapper = {
 		display: 'flex',
@@ -326,11 +327,16 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 
 	const buildingStyleLeft = {
 		paddingTop: '20px'
-	}
+	};
 
 	const dateStyle = {
 		paddingTop: '15px'
-	}
+	};
+
+	const floorStyle = {
+		marginTop: '4%'
+
+	};
 
 	const clearButtonStyle = {
 		marginLeft: '10px',
@@ -341,7 +347,7 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 		cursor: 'pointer',
 		padding: '0',
 		fontSize: 'inherit'
-	}
+	};
 
 	return (
 		<>
@@ -356,7 +362,8 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 			<div style={filterFieldContainer}>
 				<div style={buildingStyle, buildingStyleLeft}>
 					<FormControl sx={{ m: 1, width: 200 }}>
-					<InputLabel required id="building-checkbox-label" >Rakennus</InputLabel>
+					<FormLabel required id="building-top-label">Rakennus</FormLabel>
+					<InputLabel id="building-checkbox-label" > </InputLabel>
 						<Select
 							labelId="building-checkbox-label"
 							id="building-multiple-checkbox"
@@ -382,7 +389,7 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 						</Select>
 					</FormControl>
 				</div>
-				<div style={buildingStyle}>
+				<div style={buildingStyle, floorStyle}>
 					<InputLabel id="floor-select-label">Kerros</InputLabel>
 						<Select
 							labelId="floor-select-label"
@@ -404,7 +411,7 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 
 			<>
 				{required && (
-					<p style={{color: 'red', paddingLeft: '10px', marginTop: '-10px', marginBottom: '20px',
+					<p style={{color: 'red', paddingLeft: '10px', marginTop: '0', marginBottom: '20px',
 					fontFamily: "Helvetica"}}>
 						*Pakollinen
 					</p>
@@ -413,9 +420,10 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 
 			<div style={dateStyle}>
 				<Box sx={selectWrapper}>
+					<FormLabel id="date-top-label">Päivämäärä</FormLabel>
 					<LocalizationProvider dateAdapter={AdapterDayjs} >
 					<DatePicker
-						label="Päivämäärä"
+						// label="Päivämäärä"
 						value={selectedDate}
 						onChange={handleStartingDateChange}
 						format="DD.MM.YYYY"
@@ -511,7 +519,8 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 			<div style={filterFieldContainer}>
 				<div style={groupStyle, buildingStyleLeft}>
 					<FormControl sx={{ m: 1, width: 200 }}>
-						<InputLabel id="classroom-select-label">Opetustila</InputLabel>
+						<FormLabel id="classroom-top-label">Opetustila</FormLabel>
+						<InputLabel id="classroom-select-label"></InputLabel>
 							<Select
 								labelId="classroom-select-label"
 								id="classroom-select"
