@@ -99,12 +99,12 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 
 				const floorObject = building.floors.find(floor => floor.number === selectedFloor);
 				if (floorObject) {
-					allRooms = allRooms.concat(floorObject.rooms.map((room) => `${building.name} - ${selectedFloor} - ${room.number}`));
+					allRooms = allRooms.concat(floorObject.rooms.map((room) => `${building.name} - ${room.number} - ${selectedFloor}`));
 				}
 			}
 			else {
 				building.floors.forEach((floor) => {
-					allRooms = allRooms.concat(floor.rooms.map((room) => `${building.name} - ${floor.number} - ${room.number}`));
+					allRooms = allRooms.concat(floor.rooms.map((room) => `${building.name} - ${room.number} - ${floor.number}`));
 				});
 			}
 		})
@@ -133,8 +133,8 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 			if (classroom) {
 				const parts = classroom.split(' - ');
 				const buildingName = parts[0];
-				const floorNumber = parseInt(parts[1]);
-				const className = parts[2];
+				const className = parts[1];
+				const floorNumber = parseInt(parts[2]);
 
 				if (building.name === buildingName) {
 					building.floors.forEach((floor) => {
@@ -513,7 +513,7 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 
 			<div>
 			{requiredEndTime && (
-				<p style={{color: 'red', marginLeft: '43%', marginBottom: '-3%', marginTop: '0',
+				<p style={{color: 'red', marginLeft: '40%', marginBottom: '-3%', marginTop: '0',
 				fontFamily: "Helvetica"}}>
 					*Pakollinen
 				</p>
