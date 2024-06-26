@@ -44,7 +44,7 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 	const [selectedFloor, setSelectedFloor] = useState('');
 	const [startingTime, setStartingTime] = useState('');
 	const [endingTime, setEndingTime] = useState('');
-	const [groupSize, setGroupSize] = useState('');
+	const [selectedGroupSize, setSelectedGroupSize] = useState('');
 	const [classroom, setClassroom] = useState('');
 	const [availableClassrooms, setAvailableClassrooms] = useState([]);
 	const [selectedDate, setSelectedDate] = useState(null);
@@ -84,7 +84,7 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 	}
 
 	const handleGroupSize = (e) => {
-		setGroupSize(e.target.value);
+		setSelectedGroupSize(e.target.value);
 	}
 
 	const handleClassroom = (e) => {
@@ -119,9 +119,9 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 		return schoolData.buildings.filter(schoolBuilding => selectedBuildings.some(selectedBuilding => selectedBuilding.name === schoolBuilding.name));
 	};
 
-	const filterByGroupsize = (classrooms) => {
-		if (groupSize) {
-			return classrooms.filter(room => room.capacity >= groupSize);
+	const filterByRoomCapacity = (classrooms) => {
+		if (selectedGroupSize) {
+			return classrooms.filter(room => room.capacity >= selectedGroupSize);
 		}
 		return classrooms;
 	};
@@ -165,8 +165,8 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 		date1.getDate() == date2.getDate()) {
 			return true;
 		}
-	return false;
-}
+		return false;
+	}
 
 	const filterByDate = (classrooms) => {
 		let filteredClassrooms = [];
@@ -202,6 +202,7 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 				}
 			})
 		}
+		// no date selected, add all rooms
 		else {
 			filteredClassrooms = [...classrooms];
 		}
@@ -211,7 +212,7 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 	const filterResults = () => {
 		const buildings = filterByBuilding();
 		let classrooms = filterByClassroomOrFloor(buildings);
-		classrooms = filterByGroupsize(classrooms);
+		classrooms = filterByRoomCapacity(classrooms);
 		classrooms = filterByDate(classrooms);
 
 		console.log('classrooms', classrooms);
@@ -227,7 +228,7 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 			selectedDate,
 			startingTime,
 			endingTime,
-			groupSize,
+			selectedGroupSize,
 			classroom,
 		}
 
@@ -266,7 +267,7 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 		setSelectedFloor('');
 		setStartingTime('');
 		setEndingTime('');
-		setGroupSize('');
+		setSelectedGroupSize('');
 		setClassroom('');
 		setAvailableClassrooms([]);
 		setSelectedDate(null);
@@ -557,7 +558,7 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 							labelId="groupsize-select-label"
 							id="groupsize-select"
 							label="Ryhmäkoko"
-							value={groupSize}
+							value={selectedGroupSize}
 							onChange={handleGroupSize}
 							input={<OutlinedInput label="Ryhmäkoko" />}
 							MenuProps={MenuProps}
