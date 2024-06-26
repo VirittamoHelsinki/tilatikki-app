@@ -168,17 +168,16 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 		return false;
 	}
 
-	const filterByDate = (classrooms) => {
-		let filteredClassrooms = [];
-		const today = new Date();
-		today.setHours(0, 0, 0, 0);
+	// format the date to match timeslots format -> '08:15'
+	const formatTimestringToTimeslot = (timestring) => {
+		const timeObject = new Date(timestring);
+		const hour = timeObject.getHours();
+		const minutes = timeObject.getMinutes();
+		const paddedMinutes = String(minutes).padStart(2, '0');
+		const paddedHour = String(hour).padStart(2, '0');
 
-		if (selectedDate && selectedDate.$d >= today) {
-			classrooms.forEach((room) => {
-				if (room.reservations.length == 0) {
-					filteredClassrooms = filteredClassrooms.concat(room);
-					return ;
-				}
+		return `${paddedHour}:${paddedMinutes}`;
+	};
 
 				let freeTimeFound = room.reservations.some((reservation) => {
 					if (reservation.groupsize < room.capacity) {
