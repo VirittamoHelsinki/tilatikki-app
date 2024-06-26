@@ -216,6 +216,26 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 		})
 		return roomTimeslots;
 	};
+
+	const roomHasAnyFreeTimeslot = (room) => {
+		if (room.reservations.length == 0) {
+			return true;
+		}
+
+		const roomTimeSlots = createRoomTimeslotOccupancy(room, selectedDate.$d);
+		return roomTimeSlots.some((time) => {
+			if (selectedGroupSize) {
+				if (selectedGroupSize + time.occupancy < room.capacity) {
+					return true;
+				}
+				return false;
+			}
+			else if (!time.isFull) {
+				return true;
+			}
+			return false;
+		});
+	};
 		}
 		// no date selected, add all rooms
 		else {
