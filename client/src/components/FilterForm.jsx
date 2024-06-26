@@ -236,6 +236,20 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 			return false;
 		});
 	};
+
+	const filterByDate = (classrooms) => {
+		let filteredClassrooms = [];
+		const today = new Date();
+		today.setHours(0, 0, 0, 0);
+
+		if (selectedDate) {
+			if (selectedDate.$d >= today) {
+				classrooms.forEach((room) => {
+					if (roomHasAnyFreeTimeslot(room)) {
+						filteredClassrooms = filteredClassrooms.concat(room);
+					}
+				})
+			}
 		}
 		// no date selected, add all rooms
 		else {
