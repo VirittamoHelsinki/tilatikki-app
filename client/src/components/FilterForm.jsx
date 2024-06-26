@@ -223,14 +223,14 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 		}
 
 		const roomTimeSlots = createRoomTimeslotOccupancy(room, selectedDate.$d);
-		return roomTimeSlots.some((time) => {
+		return roomTimeSlots.some((timeslot) => {
 			if (selectedGroupSize) {
-				if (selectedGroupSize + time.occupancy < room.capacity) {
+				if (selectedGroupSize + timeslot.occupancy <= room.capacity) {
 					return true;
 				}
 				return false;
 			}
-			else if (!time.isFull) {
+			else if (!timeslot.isFull) {
 				return true;
 			}
 			return false;
@@ -239,10 +239,11 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 
 	const filterByDate = (classrooms) => {
 		let filteredClassrooms = [];
-		const today = new Date();
-		today.setHours(0, 0, 0, 0);
 
 		if (selectedDate) {
+			const today = new Date();
+			today.setHours(0, 0, 0, 0);
+
 			if (selectedDate.$d >= today) {
 				classrooms.forEach((room) => {
 					if (roomHasAnyFreeTimeslot(room)) {
@@ -258,11 +259,47 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 		return filteredClassrooms;
 	};
 
+	const filterByTimes = (classrooms) => {
+		let filteredClassrooms = [];
+
+		if (startingTime && endingTime && selectedDate) {
+			classrooms.forEach((room) => {
+				let roomHasSpace = true;
+				const roomTimeslots = createRoomTimeslotOccupancy(room, selectedDate.$d);
+
+				for (let i = 0; i < roomTimeslots.length; i++) {
+					if (isWithinTimeslot(roomTimeslots[i].time, startingTime, endTime)) {
+						if (selectedGroupSize) {
+							if (selectedGroupSize + roomTimeslots[i].occupancy > room.capacity) {
+								roomHasSpace = false;
+								break;
+							}
+						}
+						else if (roomTimeslots[i].isFull) {
+							roomHasSpace = false;
+							break;
+						}
+					}
+				}
+
+				if (roomHasSpace) {
+					filteredClassrooms = filteredClassrooms.concat(room);
+				}
+			})
+		}
+		// add all classrooms
+		else {
+			filteredClassrooms = [...classrooms];
+		}
+		return filteredClassrooms;
+	};
+
 	const filterResults = () => {
 		const buildings = filterByBuilding();
 		let classrooms = filterByClassroomOrFloor(buildings);
 		classrooms = filterByRoomCapacity(classrooms);
 		classrooms = filterByDate(classrooms);
+		classrooms = filterByTimes(classrooms);
 
 		console.log('classrooms', classrooms);
 
