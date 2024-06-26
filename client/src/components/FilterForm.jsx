@@ -183,6 +183,39 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 		return time >= startTime && time < endTime;
 	}
 
+	const createRoomTimeslotOccupancy = (room, selectedDay) => {
+		const roomTimeslots = [];
+
+		for (let i = 0; i < timeSlots.length; i++) {
+			roomTimeslots.push({
+				time: timeSlots[i],
+				occupancy: 0,
+				isFull: false,
+			});
+		};
+
+		room.reservations.forEach((reservation) => {
+			// if sameday reservation found, add occupancies to roomTimeslots
+			if (isSameDate(selectedDay, new Date(reservation.startTime))) {
+				const startTime = formatTimestringToTimeslot(reservation.startTime);
+				const endTime = formatTimestringToTimeslot(reservation.endTime);
+
+				console.log('reservation', reservation);
+
+				// add groupsize to timeslot occupancy-property
+				for (let i = 0; i < roomTimeslots.length; i++) {
+					if (isWithinTimeslot(roomTimeslots[i].time, startTime, endTime)) {
+						roomTimeslots[i].occupancy += reservation.groupsize;
+
+						if (roomTimeslots[i].occupancy >= room.capacity) {
+							roomTimeslots[i].isFull = true;
+						}
+					}
+				}
+			}
+		})
+		return roomTimeslots;
+	};
 		}
 		// no date selected, add all rooms
 		else {
