@@ -179,27 +179,10 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 		return `${paddedHour}:${paddedMinutes}`;
 	};
 
-				let freeTimeFound = room.reservations.some((reservation) => {
-					if (reservation.groupsize < room.capacity) {
-							if (groupSize) {
-								if (reservation.groupsize + groupSize <= room.capacity) {
-									return true;
-								}
-							}
-							else {
-								return true;
-							}
-						}
-						return false;
-				});
+	const isWithinTimeslot = (time, startTime, endTime) => {
+		return time >= startTime && time < endTime;
+	}
 
-				if (freeTimeFound) {
-					filteredClassrooms = filteredClassrooms.concat(room);
-				}
-				else {
-					// loop through
-				}
-			})
 		}
 		// no date selected, add all rooms
 		else {
