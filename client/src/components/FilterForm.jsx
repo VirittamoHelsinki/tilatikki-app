@@ -268,7 +268,7 @@ const FilterForm = ({onClassroomChange, schoolData}) => {
 				const roomTimeslots = createRoomTimeslotOccupancy(room, selectedDate.$d);
 
 				for (let i = 0; i < roomTimeslots.length; i++) {
-					if (isWithinTimeslot(roomTimeslots[i].time, startingTime, endTime)) {
+					if (isWithinTimeslot(roomTimeslots[i].time, startingTime, endingTime)) {
 						if (selectedGroupSize) {
 							if (selectedGroupSize + roomTimeslots[i].occupancy > room.capacity) {
 								roomHasSpace = false;
