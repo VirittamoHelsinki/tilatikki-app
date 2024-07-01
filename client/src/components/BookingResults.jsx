@@ -4,10 +4,11 @@ import { Box, Button } from '@mui/material';
 
 const BookingResults = ({ classrooms }) => {
 	const [currentPage, setCurrentPage] = useState(0);
+	const [filterMode, setFilterMode] = useState('all'); // 'all', 'reservations', 'free'
 
 	const itemsPerPage = 5;
 
-	console.log('classrooms: ', classrooms)
+	console.log('classrooms: ', classrooms);
 
 	const handleNextPage = () => {
 		if (currentPage < Math.ceil(Object.keys(classrooms).length / itemsPerPage) - 1) {
@@ -21,15 +22,39 @@ const BookingResults = ({ classrooms }) => {
 		}
 	};
 
-	const paginatedClassrooms = Object.entries(classrooms).slice(
+	const handleFilterChange = (mode) => {
+		setFilterMode(mode);
+		setCurrentPage(0); // Reset to first page when filter changes
+	};
+
+	const filteredClassrooms = Object.entries(classrooms).filter(([key, value]) => {
+		if (filterMode === 'reservations') {
+			return value.reservations.length > 0;
+		} else if (filterMode === 'free') {
+			return value.reservations.length === 0;
+		}
+		return true;
+	});
+
+	const paginatedClassrooms = filteredClassrooms.slice(
 		currentPage * itemsPerPage,
 		(currentPage + 1) * itemsPerPage
 	);
 
-
 	return (
 		<Box>
 			<h3>Huoneet</h3>
+			<Box display="flex" justifyContent="center" mb={2}>
+				<Button onClick={() => handleFilterChange('all')} variant={filterMode === 'all' ? 'contained' : 'outlined'}>
+					Kaikki
+				</Button>
+				<Button onClick={() => handleFilterChange('reservations')} variant={filterMode === 'reservations' ? 'contained' : 'outlined'}>
+					Varatut
+				</Button>
+				<Button onClick={() => handleFilterChange('free')} variant={filterMode === 'free' ? 'contained' : 'outlined'}>
+					Vapaat
+				</Button>
+			</Box>
 			<Box sx={{ maxHeight: '500px', overflowY: 'auto' }}>
 				{paginatedClassrooms.map(([key, value]) => (
 					<React.Fragment key={key}>
@@ -69,7 +94,7 @@ const BookingResults = ({ classrooms }) => {
 				</Button>
 				<Button
 					onClick={handleNextPage}
-					disabled={currentPage >= Math.ceil(Object.keys(classrooms).length / itemsPerPage) - 1}
+					disabled={currentPage >= Math.ceil(filteredClassrooms.length / itemsPerPage) - 1}
 				>
 					Seuraava
 				</Button>

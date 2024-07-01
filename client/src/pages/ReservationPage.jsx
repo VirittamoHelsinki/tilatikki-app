@@ -21,13 +21,13 @@ const ReservationPage = () => {
   const [filterValues, setFilterValues] = useState(null);
   const [floor, setFloor] = React.useState('floor1');
 
-  const [ selectedComponent, setSelectedComponent ] = React.useState('pohjakarttanäkymä');
+  const [selectedComponent, setSelectedComponent] = React.useState('pohjakarttanäkymä');
 
 
   // For calendarview (temporary)
-  const [ calendarBuilding, setCalendarBuilding ] = useState(null);
-  const [ calendarFloor, setCalendarFloor ] = useState(null);
-  const [ calendarRoom, setCalendarRoom ] = useState(null);
+  const [calendarBuilding, setCalendarBuilding] = useState(null);
+  const [calendarFloor, setCalendarFloor] = useState(null);
+  const [calendarRoom, setCalendarRoom] = useState(null);
 
 
   const handleChange = (event, newFloor) => {
@@ -77,8 +77,8 @@ const ReservationPage = () => {
         </Grid>
         <Grid item>
           <Button
-          onClick={() => setSelectedComponent('kalenterinäkymä')}
-          sx={{ color: 'black', padding: '6px 10px', 'borderRadius': '6px', backgroundColor: selectedComponent === 'kalenterinäkymä' ? 'white' : 'transparent', 'fontWeight': 500 }}
+            onClick={() => setSelectedComponent('kalenterinäkymä')}
+            sx={{ color: 'black', padding: '6px 10px', 'borderRadius': '6px', backgroundColor: selectedComponent === 'kalenterinäkymä' ? 'white' : 'transparent', 'fontWeight': 500 }}
           >
             Kalenterinäkymä
           </Button>
@@ -96,15 +96,8 @@ const ReservationPage = () => {
                 <FilterForm onClassroomChange={handleClassroomChange} schoolData={data} />
               </Box>
               <Box sx={{ width: '30%', padding: '20px', border: '1px solid #ddd', borderRadius: '4px' }}>
-                <Typography variant="h6" gutterBottom>
-                  Data Display
-                </Typography>
-                <Box>
-                  {/* Placeholder for dynamic data */}
-                  <Typography variant="body1">
-                    No data to display yet.
-                  </Typography>
 
+                <Box>
                   <BookingResults classrooms={filteredClassrooms} />
 
                 </Box>
@@ -178,7 +171,7 @@ const ReservationPage = () => {
                         labelId="floor-label"
                         id="floor-select"
                         name="floor"
-                        required
+                        reqed
                         fullWidth
                         label="Valitse kerros"
                         placeholder="Valitse kerros"
@@ -186,7 +179,7 @@ const ReservationPage = () => {
                         onChange={(event) => setCalendarFloor(event.target.value)}
                       >
                         {
-                          [ 1, 2, 3].map((value) => {
+                          [1, 2, 3].map((value) => {
                             return <MenuItem key={`menu-item-${value}`} value={value}>{value}</MenuItem>
                           })
                         }
