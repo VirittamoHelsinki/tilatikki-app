@@ -44,61 +44,65 @@ const BookingResults = ({ classrooms }) => {
 	return (
 		<Box>
 			<h3>Huoneet</h3>
-			<Box display="flex" justifyContent="center" mb={2}>
-				<Button onClick={() => handleFilterChange('all')} variant={filterMode === 'all' ? 'contained' : 'outlined'}>
-					Kaikki
-				</Button>
-				<Button onClick={() => handleFilterChange('reservations')} variant={filterMode === 'reservations' ? 'contained' : 'outlined'}>
-					Varatut
-				</Button>
-				<Button onClick={() => handleFilterChange('free')} variant={filterMode === 'free' ? 'contained' : 'outlined'}>
-					Vapaat
-				</Button>
-			</Box>
-			<Box sx={{ maxHeight: '500px', overflowY: 'auto' }}>
-				{paginatedClassrooms.map(([key, value]) => (
-					<React.Fragment key={key}>
-						{value.reservations.length > 0 ? (
-							value.reservations.map((reservation) => (
-								<ReservationCard
-									key={reservation._id}
-									roomId={reservation.room}
-									roomNumber={value.number}
-									purpose={reservation.purpose}
-									status="Varattu"
-									capacity={value.capacity}
-									startTime={reservation.startTime}
-									endTime={reservation.endTime}
-									groupsize={reservation.groupsize}
-								/>
-							))
-						) : (
-							<ReservationCard
-								key={key}
-								roomId={value._id}
-								roomNumber={value.number}
-								purpose="Ei varauksia"
-								status="Vapaa"
-								capacity={value.capacity}
-								startTime=""
-								endTime=""
-								groupsize={0}
-							/>
-						)}
-					</React.Fragment>
-				))}
-			</Box>
-			<Box display="flex" justifyContent="space-between" mt={2}>
-				<Button onClick={handlePreviousPage} disabled={currentPage === 0}>
-					Edellinen
-				</Button>
-				<Button
-					onClick={handleNextPage}
-					disabled={currentPage >= Math.ceil(filteredClassrooms.length / itemsPerPage) - 1}
-				>
-					Seuraava
-				</Button>
-			</Box>
+			{Object.keys(classrooms).length > 0 && (
+				<>
+					<Box display="flex" justifyContent="center" mb={2}>
+						<Button onClick={() => handleFilterChange('all')} variant={filterMode === 'all' ? 'contained' : 'outlined'}>
+							Kaikki
+						</Button>
+						<Button onClick={() => handleFilterChange('reservations')} variant={filterMode === 'reservations' ? 'contained' : 'outlined'}>
+							Varatut
+						</Button>
+						<Button onClick={() => handleFilterChange('free')} variant={filterMode === 'free' ? 'contained' : 'outlined'}>
+							Vapaat
+						</Button>
+					</Box>
+					<Box sx={{ maxHeight: '500px', overflowY: 'auto' }}>
+						{paginatedClassrooms.map(([key, value]) => (
+							<React.Fragment key={key}>
+								{value.reservations.length > 0 ? (
+									value.reservations.map((reservation) => (
+										<ReservationCard
+											key={reservation._id}
+											roomId={reservation.room}
+											roomNumber={value.number}
+											purpose={reservation.purpose}
+											status="Varattu"
+											capacity={value.capacity}
+											startTime={reservation.startTime}
+											endTime={reservation.endTime}
+											groupsize={reservation.groupsize}
+										/>
+									))
+								) : (
+									<ReservationCard
+										key={key}
+										roomId={value._id}
+										roomNumber={value.number}
+										purpose="Ei varauksia"
+										status="Vapaa"
+										capacity={value.capacity}
+										startTime=""
+										endTime=""
+										groupsize={0}
+									/>
+								)}
+							</React.Fragment>
+						))}
+					</Box>
+					<Box display="flex" justifyContent="space-between" mt={2}>
+						<Button onClick={handlePreviousPage} disabled={currentPage === 0}>
+							Edellinen
+						</Button>
+						<Button
+							onClick={handleNextPage}
+							disabled={currentPage >= Math.ceil(filteredClassrooms.length / itemsPerPage) - 1}
+						>
+							Seuraava
+						</Button>
+					</Box>
+				</>
+			)}
 		</Box>
 	);
 };
