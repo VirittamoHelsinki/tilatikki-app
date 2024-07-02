@@ -7,7 +7,7 @@ const BookingResults = ({ classrooms }) => {
 
   return (
 	<>
-		<Typography>Luokat</Typography>
+		<Typography></Typography>
 		<ul>
 			{classrooms && Object.entries(classrooms).map(([key, value]) => (
 					<li key={key}>

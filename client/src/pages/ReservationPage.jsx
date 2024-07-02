@@ -97,13 +97,9 @@ const ReservationPage = () => {
               </Box>
               <Box sx={{ width: '30%', padding: '20px', border: '1px solid #ddd', borderRadius: '4px' }}>
                 <Typography variant="h6" gutterBottom>
-                  Data Display
+                  Vapaat tilat
                 </Typography>
                 <Box>
-                  {/* Placeholder for dynamic data */}
-                  <Typography variant="body1">
-                    No data to display yet.
-                  </Typography>
 
                   <BookingResults classrooms={filteredClassrooms} />
 
