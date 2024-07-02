@@ -2,8 +2,39 @@ import { Grid, Typography, Divider, TextField, MenuItem, Select, FormControl, In
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import Calendar from "./Calendar"
+import { useEffect, useState } from "react"
+import { getReservations } from "../api/reservations"
+import moment from "moment"
 
 const AdminSemesterReservation = () => {
+
+  const [ reservations, setReservations ] = useState([])
+
+  useEffect(() => {
+    const fetchReservations = async () => {
+      const fetchedReservations = (await getReservations())
+        .map(reservation => {
+          const startDate = moment(reservation.startTime);
+          const endDate = moment(reservation.endTime);
+          console.log(startDate.day());
+          return {
+            ...reservation,
+            
+            label: reservation.purpose,
+            startDate: startDate,
+            startTime: startDate.format('HH:mm'),
+            endDate: endDate,
+            endTime: endDate.format('HH:mm'),
+          }
+        })
+
+      setReservations(fetchedReservations)
+
+      console.log('Fetched reservations:', fetchedReservations);
+    }
+    
+    fetchReservations()
+  }, [])
 
   const hours = 24
   const divideHourIntoSections = 4
@@ -216,7 +247,7 @@ const AdminSemesterReservation = () => {
 
       </Grid>
       <Grid item xs={8}>
-        <Calendar />
+        <Calendar calendarData={reservations}/>
       </Grid>
     </Grid>  
     
