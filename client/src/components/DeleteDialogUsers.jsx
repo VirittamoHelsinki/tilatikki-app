@@ -7,9 +7,6 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/material/IconButton';
-import Switch from '@mui/material/Switch';
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
 
 export default function DeleteDialogUsers({ open, handleClose, handleDelete, user}) {
 
@@ -39,7 +36,7 @@ export default function DeleteDialogUsers({ open, handleClose, handleDelete, use
                         color: 'white',
                         textTransform: 'none',
                         marginBottom: '10px',
-                        backgroundColor: '#EF4444;',
+                        backgroundColor: '#B21010;',
                         '&:hover': {
                             backgroundColor: '#8b0000',
                         }

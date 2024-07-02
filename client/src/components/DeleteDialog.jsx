@@ -47,7 +47,7 @@ export default function DeleteDialog({ open, handleClose, handleDelete, course, 
                     sx={{
                         color: 'white',
                         textTransform: 'none',
-                        backgroundColor: '#EF4444;',
+                        backgroundColor: '#B21010;',
                         '&:hover': {
                             backgroundColor: '#8b0000',
                         }
