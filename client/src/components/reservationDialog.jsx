@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
 	Dialog,
-	DialogTitle,
 	DialogContent,
 	DialogActions,
 	Button,
@@ -18,14 +17,12 @@ import {
 } from '@mui/material';
 import PeopleIcon from '@mui/icons-material/People';
 import { useCreateReservationMutation } from '../api/reservations';
-import { useTotalPeopleReservedQuery } from '../api/rooms';
 import { LocalizationProvider, DatePicker, TimePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import 'dayjs/locale/en-gb';  // Import Finnish locale
 import { getCookie } from '../utils/Cookies';
 import { fetchUserDataByEmail } from '../api/userApi';
-import { useRoomQuery } from '../api/rooms';
 
 dayjs.locale('en-gb');
 
@@ -60,9 +57,8 @@ const theme = createTheme({
 const ReservationDialog = ({ roomId, isOpen, onClose, roomNumber, capacity, groupsize }) => {
 	const [title, setTitle] = useState('');
 	const [groupSize, setGroupSize] = useState('');
-	const [startDate, setStartDate] = useState(null);
+	const [reservationDate, setReservationDate] = useState(null)
 	const [startTime, setStartTime] = useState(null);
-	const [endDate, setEndDate] = useState(null);
 	const [endTime, setEndTime] = useState(null);
 	const [recurrence, setRecurrence] = useState('');
 	const [additionalInfo, setAdditionalInfo] = useState('');
@@ -84,17 +80,6 @@ const ReservationDialog = ({ roomId, isOpen, onClose, roomNumber, capacity, grou
 	}, []);
 
 
-	useEffect(() => {
-		console.log('groupsize: ', groupsize)
-		console.log('roomId in reservationDialog: ', roomId)
-	}, [])
-
-	// useEffect(() => {
-	// 	if (!totalPeopleLoading && !totalPeopleLoading) {
-	// 		setPeopleInside(totalPeople)
-	// 	}
-	// }, [totalPeopleLoading, totalPeople])
-
 
 	const handleTitleChange = (event) => {
 		setTitle(event.target.value);
@@ -104,16 +89,12 @@ const ReservationDialog = ({ roomId, isOpen, onClose, roomNumber, capacity, grou
 		setGroupSize(event.target.value);
 	};
 
-	const handleStartDateChange = (date) => {
-		setStartDate(date);
+	const handleReservationDateChange = (date) => {
+		setReservationDate(date);
 	};
 
 	const handleStartTimeChange = (time) => {
 		setStartTime(time);
-	};
-
-	const handleEndDateChange = (date) => {
-		setEndDate(date);
 	};
 
 	const handleEndTimeChange = (time) => {
@@ -132,15 +113,15 @@ const ReservationDialog = ({ roomId, isOpen, onClose, roomNumber, capacity, grou
 		// Handle save action
 		e.preventDefault();
 
-		const startDateTime = dayjs(startDate).set('hour', dayjs(startTime).hour()).set('minute', dayjs(startTime).minute()).toISOString();
-		const endDateTime = dayjs(endDate).set('hour', dayjs(endTime).hour()).set('minute', dayjs(endTime).minute()).toISOString();
-
-		console.log('user: ', user)
+		const formatTime = (time) => {
+			return dayjs(time).format('HH:mm');
+		}
 
 		const reservationData = {
 			userId: user._id, // userId
-			startTime: startDateTime, // date
-			endTime: endDateTime, // date
+			reservationDate: reservationDate ? dayjs(reservationDate) : null,
+			startTime: startTime ? formatTime(startTime) : null,
+			endTime: endTime ? formatTime(endTime) : null,
 			purpose: title, // string
 			roomId: roomId, // roomId
 			groupsize: groupSize, // integer
@@ -159,9 +140,6 @@ const ReservationDialog = ({ roomId, isOpen, onClose, roomNumber, capacity, grou
 	};
 
 
-	// if (roomLoading || totalPeopleLoading || !peopleInside.totalPeople || !room.capacity) {
-	// 	return <div>Loading...</div>;
-	// }
 
 	return (
 		<ThemeProvider theme={theme}>
@@ -209,11 +187,11 @@ const ReservationDialog = ({ roomId, isOpen, onClose, roomNumber, capacity, grou
 							</Select>
 						</FormControl>
 						<Grid container spacing={2} marginTop={1}>
-							<Grid item xs={6}>
+							<Grid item xs={12}>
 								<DatePicker
-									label="Aloituspäivä"
-									value={startDate}
-									onChange={handleStartDateChange}
+									label="Varauksen päivämäärä"
+									value={reservationDate}
+									onChange={handleReservationDateChange}
 									renderInput={(params) => <TextField {...params} fullWidth />}
 								/>
 							</Grid>
@@ -223,14 +201,6 @@ const ReservationDialog = ({ roomId, isOpen, onClose, roomNumber, capacity, grou
 									value={startTime}
 									onChange={handleStartTimeChange}
 									ampm={false}
-								/>
-							</Grid>
-							<Grid item xs={6}>
-								<DatePicker
-									label="Lopetuspäivä"
-									value={endDate}
-									onChange={handleEndDateChange}
-									renderInput={(params) => <TextField {...params} fullWidth />}
 								/>
 							</Grid>
 							<Grid item xs={6}>

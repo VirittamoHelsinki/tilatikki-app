@@ -10,16 +10,14 @@ import {
 	Grid,
 	ButtonBase
 } from '@mui/material';
+import dayjs from 'dayjs';
 import PeopleIcon from '@mui/icons-material/People';
 import ReservationDialog from '../components/reservationDialog';
 
-const ReservationCard = ({ roomId, roomNumber, purpose, status, capacity, startTime, endTime, groupsize, creator }) => {
+const ReservationCard = ({ roomId, roomNumber, purpose, status, capacity, reservationDate, startTime, endTime, groupsize, creator }) => {
 
 	const [isOpen, setIsOpen] = useState(false);
 
-	useEffect(() => {
-		console.log('roomId reservation card: ', roomId)
-	}, [])
 
 	const handleOpenDialog = () => {
 		setIsOpen(true);
@@ -34,15 +32,14 @@ const ReservationCard = ({ roomId, roomNumber, purpose, status, capacity, startT
 			<ButtonBase onClick={handleOpenDialog} sx={{ width: '100%', display: 'block', textAlign: 'left' }}>
 				<Card variant="outlined">
 					<CardHeader
-						avatar={<Avatar aria-label="room-number">{roomNumber}</Avatar>}
 						title={
 							<Box display="flex" justifyContent="space-between" alignItems="center">
 								<Typography variant="h6">{`Room ${roomNumber}`}</Typography>
 
 								<Box display="flex" justifyContent="flex-end" flexGrow={1} style={{ marginLeft: 30 }}>
-									{startTime && endTime && (
+									{reservationDate && startTime && endTime && (
 										<Typography variant="body2" color="textSecondary">
-											{new Date(startTime).toLocaleString()} - {new Date(endTime).toLocaleString()}
+											{dayjs(reservationDate).format('DD.MM.YYYY')} {startTime} - {endTime}
 										</Typography>
 									)}
 								</Box>

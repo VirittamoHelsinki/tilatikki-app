@@ -4,9 +4,9 @@ const User = require('../models/User');
 
 exports.createReservation = async (req, res) => {
   try {
-    const { userId, startTime, endTime, purpose, roomId, groupsize, recurrence, additionalInfo } = req.body;
+    const { userId, reservationDate, startTime, endTime, purpose, roomId, groupsize, recurrence, additionalInfo } = req.body;
     console.log('body: ', req.body)
-    const newReservation = new Reservation({ user: userId, startTime, endTime, purpose, room: roomId, groupsize, recurrence, additionalInfo });
+    const newReservation = new Reservation({ user: userId, reservationDate, startTime, endTime, purpose, room: roomId, groupsize, recurrence, additionalInfo });
     const reservation = await newReservation.save();
 
     // Add reservation to the corresponding room

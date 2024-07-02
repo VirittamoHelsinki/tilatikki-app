@@ -8,11 +8,6 @@ import FilterForm from '../components/FilterForm';
 import BookingResults from '../components/BookingResults';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import FloorPlanBase from '../components/floorplans/FloorPlanBase1';
-import FloorPlan1 from '../components/floorplans/FloorPlan1';
-import FloorPlan2 from '../components/floorplans/FloorPlan2';
-import FloorPlan3 from '../components/floorplans/FloorPlan3';
-import FloorPlan4 from '../components/floorplans/FloorPlan4';
 import FloorPlan5 from '../components/floorplans/FloorPlan5';
 import Calendar from '../components/Calendar';
 

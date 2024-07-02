@@ -69,6 +69,7 @@ const BookingResults = ({ classrooms }) => {
 											purpose={reservation.purpose}
 											status="Varattu"
 											capacity={value.capacity}
+											reservationDate={reservation.reservationDate}
 											startTime={reservation.startTime}
 											endTime={reservation.endTime}
 											groupsize={reservation.groupsize}
@@ -82,6 +83,7 @@ const BookingResults = ({ classrooms }) => {
 										purpose="Ei varauksia"
 										status="Vapaa"
 										capacity={value.capacity}
+										reservationDate=""
 										startTime=""
 										endTime=""
 										groupsize={0}
