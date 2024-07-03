@@ -66,9 +66,6 @@ const BookingResults = ({ classrooms }) => {
 	);
 
 
-	//TODO: show reservations as free even if the room has reservations
-
-
 	return (
 		<Box>
 			<h3>Huoneet</h3>
