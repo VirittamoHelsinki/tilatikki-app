@@ -12,7 +12,6 @@ const rows = 6
 
 const Popup = ({ calendarData, date, close }) => {
   const blocks = calendarData.map((data) => {
-
     // Check if block should be rendered
     const isDateBetween = date.isBetween(data.startDate.startOf("day"), data.endDate.endOf("day"), null, "[]")
     if (!isDateBetween) {
@@ -34,7 +33,7 @@ const Popup = ({ calendarData, date, close }) => {
       </div>
     )
 
-  }).filter((a) => !!a)
+  })
   
   const handleClose = (event) => {
     event.stopPropagation()    
@@ -164,7 +163,9 @@ const Calendar = ({ calendarData = [] }) => {
   const blocks = calendarData.map((data) => {
     // Figure out in what column and row the schedule element starts from
     // and how big it should be.
-    const startingColumn = data.startDate.day() - 1
+    let startingColumn = (data.startDate.day() - 1)
+    if (startingColumn < 0) { startingColumn = 6 }
+
     const startingRow = Math.floor(calendarCells.findIndex((item) => item.date.isSame(data.startDate, "day")) / 7)
     const columnsOccupied = data.endDate.diff(data.startDate, "days") + 1
     const rowsOccupied = Math.ceil((columnsOccupied + data.startDate.day()) / columns)
@@ -235,7 +236,7 @@ const Calendar = ({ calendarData = [] }) => {
     }
         
     return blocks
-  }).flat()
+  }).flat().filter(a => !!a)
   
 
   return (
