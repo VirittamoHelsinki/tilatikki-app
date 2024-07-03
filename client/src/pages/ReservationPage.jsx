@@ -96,13 +96,9 @@ const ReservationPage = () => {
                 <FilterForm onClassroomChange={handleClassroomChange} schoolData={data} />
               </Box>
               <Box sx={{ width: '30%', padding: '20px', border: '1px solid #ddd', borderRadius: '4px' }}>
-                <Typography variant="h6" gutterBottom>
-                  Vapaat tilat
-                </Typography>
+
                 <Box>
-
                   <BookingResults classrooms={filteredClassrooms} />
-
                 </Box>
               </Box>
               <Box sx={{ width: '100%', padding: '20px', border: '1px solid #ddd', borderRadius: '4px' }}>
