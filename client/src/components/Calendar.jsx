@@ -172,6 +172,7 @@ const Calendar = ({ calendarData = [] }) => {
     const blocks = []
 
     let currentWeek = data.startDate.week()
+    let currentYear = data.startDate.year()
     let currentColumn = startingColumn
     let currentRow = startingRow
     let cellsToVisit = columnsOccupied
@@ -201,6 +202,7 @@ const Calendar = ({ calendarData = [] }) => {
             </div>
           ),
           week: currentWeek,
+          year: currentYear,
         })
         
         creatingBlock = false 
@@ -208,6 +210,11 @@ const Calendar = ({ calendarData = [] }) => {
         currentRow++ // Increment row
         originColumn = 0 // Next block will start from column 0
         currentWeek++ // Increment week when going to the next row
+
+        if (currentWeek === 53) {
+          currentWeek = 1
+          currentYear++
+        }
       }
       
     }
@@ -223,6 +230,7 @@ const Calendar = ({ calendarData = [] }) => {
           </div>
         ),
         week: currentWeek,
+        year: currentYear,
       })
     }
         
@@ -260,6 +268,7 @@ const Calendar = ({ calendarData = [] }) => {
             Array.from({ length: rows }).map((_, week) => {
               // Get the first top left cell of the calendar and check its week number
               const actualWeekNumber = calendarCells[0].date.week() + week
+              const currentYear = calendarCells[0].date.year()
               
               return (
                 <div className="calendar__week">
@@ -290,6 +299,7 @@ const Calendar = ({ calendarData = [] }) => {
                   <div className="calendar__block-container">
                     {
                       blocks
+                        .filter((data) => data.year === currentYear)
                         .filter((data) => data.week === actualWeekNumber)
                         .map((data) => data.element)
                     }
