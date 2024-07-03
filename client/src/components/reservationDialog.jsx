@@ -122,10 +122,29 @@ const ReservationDialog = ({ roomId, isOpen, onClose, roomNumber, capacity, grou
 			return dayjs(time).format('HH:mm');
 		}
 
+		const generateRecurringReservations = (baseDate, endDate, interval, reservationData) => {
+			let currentDate = dayjs(baseDate);
+			const end = dayjs(endDate);
+			const reservations = [];
+
+			while (currentDate.isBefore(end) || currentDate.isSame(end, 'day')) {
+				reservations.push({
+					...reservationData,
+					reservationDate: currentDate,
+					startTime: startTime ? formatTime(startTime) : null,
+					endTime: endTime ? formatTime(endTime) : null,
+				});
+
+				currentDate = currentDate.add(interval, 'day');
+			}
+
+			return reservations;
+		}
+
 		const reservationData = {
 			userId: user._id, // userId
 			reservationDate: reservationDate ? dayjs(reservationDate) : null,
-			reservationEndDate: reservationEndDate ? days(reservationEndDate) : null,
+			reservationEndDate: reservationEndDate ? dayjs(reservationEndDate) : null,
 			startTime: startTime ? formatTime(startTime) : null,
 			endTime: endTime ? formatTime(endTime) : null,
 			purpose: title, // string
@@ -135,9 +154,24 @@ const ReservationDialog = ({ roomId, isOpen, onClose, roomNumber, capacity, grou
 			additionalInfo: additionalInfo
 		}
 
-		console.log('reservationData: ', reservationData)
 
-		createReservationMutation.mutate(reservationData);
+		if (recurrence === 'none') {
+			createReservationMutation.mutate(reservationData);
+		} else if (recurrence === 'daily' && reservationEndDate) {
+			const reservations = generateRecurringReservations(reservationDate, reservationEndDate, 1, reservationData);
+			reservations.forEach(reservation => {
+				createReservationMutation.mutate(reservation);
+			});
+		} else if (recurrence === 'weekly' && reservationEndDate) {
+			const reservations = generateRecurringReservations(reservationDate, reservationEndDate, 7, reservationData);
+			console.log('weekly reservations: ', reservations)
+			reservations.forEach(reservation => {
+				createReservationMutation.mutate(reservation);
+			});
+		} else {
+			console.error('Invalid recurrence or missing end date');
+		}
+
 		onClose();
 	};
 
