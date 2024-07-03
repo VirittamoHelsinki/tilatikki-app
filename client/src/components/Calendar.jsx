@@ -14,7 +14,7 @@ const Popup = ({ calendarData, date, close }) => {
   const blocks = calendarData.map((data) => {
 
     // Check if block should be rendered
-    const isDateBetween = date.isBetween(data.startDate, data.endDate, null, "[]")
+    const isDateBetween = date.isBetween(data.startDate.startOf("day"), data.endDate.endOf("day"), null, "[]")
     if (!isDateBetween) {
       return
     }
@@ -85,68 +85,7 @@ const Popup = ({ calendarData, date, close }) => {
   )
 }
 
-
-const mockData = [
-  {
-    startDate: moment([2024, 6, 4]),
-    endDate: moment([2024, 6, 10]),
-    startTime: "9:00",
-    endTime: "15:00",
-    label: "Matematiikka 1",
-    teacher: "Onni Opettaja",
-  },
-  {
-    startDate: moment([2024, 6, 6]),
-    endDate: moment([2024, 6, 13]),
-    startTime: "15:15",
-    endTime: "16:00",
-    label: "Äidinkieli 1",
-    teacher: "Onni Opettaja",
-  },
-  {
-    startDate: moment([2024, 6, 11]),
-    endDate: moment([2024, 6, 15]),
-    startTime: "9:00",
-    endTime: "12:00",
-    label: "Biologia 5",
-    teacher: "Onni Opettaja",
-  },
-  {
-    startDate: moment([2024, 6, 18]),
-    endDate: moment([2024, 6, 21]),
-    startTime: "9:00",
-    endTime: "10:00",
-    label: "Matematiikka 2",
-    teacher: "Onni Opettaja",
-  },
-  {
-    startDate: moment([2024, 6, 19]),
-    endDate: moment([2024, 6, 21]),
-    startTime: "9:00",
-    endTime: "11:00",
-    label: "Biologia 2",
-    teacher: "Onni Opettaja",
-  },
-  {
-    startDate: moment([2024, 6, 19]),
-    endDate: moment([2024, 6, 21]),
-    startTime: "11:00",
-    endTime: "12:00",
-    label: "Uskonto 3",
-    teacher: "Onni Opettaja",
-  },
-  {
-    startDate: moment([2024, 6, 19]),
-    endDate: moment([2024, 6, 21]),
-    startTime: "12:00",
-    endTime: "13:00",
-    label: "Psykologia 4",
-    teacher: "Onni Opettaja",
-  },
-]
-
-// { calendarData = mockData } to use mockData
-const Calendar = ({ calendarData = mockData }) => {
+const Calendar = ({ calendarData = [] }) => {
   const [ date, setDate ] = useState(moment())
   const [ modal, setModal ] = useState(-1)
 
