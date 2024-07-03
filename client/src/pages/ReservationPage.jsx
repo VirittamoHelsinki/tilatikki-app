@@ -55,8 +55,6 @@ const ReservationPage = () => {
     setFilteredClassrooms(newClassrooms);
   };
 
-  console.log(data)
-
   return (
     <>
       <Header />
@@ -94,7 +92,6 @@ const ReservationPage = () => {
 
                 <Box>
                   <BookingResults classrooms={filteredClassrooms} />
-
                 </Box>
               </Box>
               <Box sx={{ width: '100%', padding: '20px', border: '1px solid #ddd', borderRadius: '4px' }}>

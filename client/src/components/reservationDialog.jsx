@@ -58,6 +58,7 @@ const ReservationDialog = ({ roomId, isOpen, onClose, roomNumber, capacity, grou
 	const [title, setTitle] = useState('');
 	const [groupSize, setGroupSize] = useState('');
 	const [reservationDate, setReservationDate] = useState(null)
+	const [reservationEndDate, setReservationEndDate] = useState(null)
 	const [startTime, setStartTime] = useState(null);
 	const [endTime, setEndTime] = useState(null);
 	const [recurrence, setRecurrence] = useState('');
@@ -93,6 +94,10 @@ const ReservationDialog = ({ roomId, isOpen, onClose, roomNumber, capacity, grou
 		setReservationDate(date);
 	};
 
+	const handleReservationEndDateChange = (date) => {
+		setReservationEndDate(date);
+	};
+
 	const handleStartTimeChange = (time) => {
 		setStartTime(time);
 	};
@@ -120,6 +125,7 @@ const ReservationDialog = ({ roomId, isOpen, onClose, roomNumber, capacity, grou
 		const reservationData = {
 			userId: user._id, // userId
 			reservationDate: reservationDate ? dayjs(reservationDate) : null,
+			reservationEndDate: reservationEndDate ? days(reservationEndDate) : null,
 			startTime: startTime ? formatTime(startTime) : null,
 			endTime: endTime ? formatTime(endTime) : null,
 			purpose: title, // string
@@ -186,32 +192,37 @@ const ReservationDialog = ({ roomId, isOpen, onClose, roomNumber, capacity, grou
 								})}
 							</Select>
 						</FormControl>
-						<Grid container spacing={2} marginTop={1}>
-							<Grid item xs={12}>
+						<Grid container marginTop={1} marginBottom={1}>
+							<Grid item lg={12}>
 								<DatePicker
 									label="Varauksen päivämäärä"
 									value={reservationDate}
 									onChange={handleReservationDateChange}
 									renderInput={(params) => <TextField {...params} fullWidth />}
+									slotProps={{ textField: { fullWidth: true } }}
 								/>
 							</Grid>
-							<Grid item xs={6}>
-								<TimePicker
-									label="Aloitusaika"
-									value={startTime}
-									onChange={handleStartTimeChange}
-									ampm={false}
-								/>
+							<Grid container display={"flex"} rowSpacing={1} marginTop={1} justifyContent={"space-between"} alignItems={"center"}>
+								<Grid item lg={6}>
+									<TimePicker
+										label="Aloitusaika"
+										value={startTime}
+										onChange={handleStartTimeChange}
+										ampm={false}
+									/>
+								</Grid>
+								<Grid item lg={6} >
+									<TimePicker
+										label="Lopetusaika"
+										value={endTime}
+										onChange={handleEndTimeChange}
+										ampm={false}
+									/>
+								</Grid>
 							</Grid>
-							<Grid item xs={6}>
-								<TimePicker
-									label="Lopetusaika"
-									value={endTime}
-									onChange={handleEndTimeChange}
-									ampm={false}
-								/>
-							</Grid>
+
 						</Grid>
+
 						<FormControl fullWidth margin="dense">
 							<InputLabel id="recurrence-label">Toistuvuus</InputLabel>
 							<Select
@@ -224,9 +235,20 @@ const ReservationDialog = ({ roomId, isOpen, onClose, roomNumber, capacity, grou
 								<MenuItem value="none">Älä toista</MenuItem>
 								<MenuItem value="daily">Päivittäin</MenuItem>
 								<MenuItem value="weekly">Viikottain</MenuItem>
-								<MenuItem value="monthly">Kuukausittain</MenuItem>
 							</Select>
 						</FormControl>
+						{
+							recurrence && recurrence !== "none" &&
+							<>
+								<DatePicker
+									label="Varauksen viimeinen päivämäärä"
+									value={reservationDate}
+									onChange={handleReservationEndDateChange}
+									renderInput={(params) => <TextField {...params} fullWidth />}
+									slotProps={{ textField: { fullWidth: true } }}
+								/>
+							</>
+						}
 						<TextField
 							margin="dense"
 							id="additional-info"
