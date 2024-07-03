@@ -2,6 +2,7 @@ const Room = require('../models/Room');
 const Floor = require('../models/Floor');
 const Reservation = require('../models/Reservation')
 const mongoose = require('mongoose')
+const dayjs = require('dayjs');
 
 exports.createRoom = async (req, res) => {
   try {
@@ -42,6 +43,7 @@ exports.getRoomById = async (req, res) => {
 
 exports.getTotalPeopleReserved = async (req, res) => {
   const roomId = req.params.roomId;
+  const { date, startTime, endTime } = req.query;
 
   try {
     // Ensure the roomId is a valid ObjectId
@@ -49,10 +51,50 @@ exports.getTotalPeopleReserved = async (req, res) => {
       return res.status(400).json({ error: 'Invalid room ID' });
     }
 
-    // Use aggregation to sum the groupsize for the given room
-    const result = await Reservation.aggregate([
-      { $match: { room: new mongoose.Types.ObjectId(roomId) } }, // Match reservations for the specific room
-      { $group: { _id: null, totalPeople: { $sum: '$groupsize' } } } // Sum the groupsize
+    // Parse the date
+    const reservationDate = dayjs(date).startOf('day').toDate();
+
+    // Validate start and end times
+    const isValidTime = (time) => /^[0-9]{2}:[0-9]{2}$/.test(time);
+    if (!isValidTime(startTime) || !isValidTime(endTime)) {
+      return res.status(400).json({ error: 'Invalid time format' });
+    }
+
+    // Use aggregation to look up reservations and sum the groupsize for the given room, date, and time range
+    const result = await Room.aggregate([
+      {
+        $match: { _id: new mongoose.Types.ObjectId(roomId) }
+      },
+      {
+        $lookup: {
+          from: 'reservations',
+          localField: 'reservations',
+          foreignField: '_id',
+          as: 'reservationDetails'
+        }
+      },
+      { $unwind: '$reservationDetails' },
+      {
+        $match: {
+          'reservationDetails.reservationDate': reservationDate,
+          $or: [
+            { 'reservationDetails.startTime': { $lte: endTime, $gte: startTime } },
+            { 'reservationDetails.endTime': { $gte: startTime, $lte: endTime } },
+            {
+              $and: [
+                { 'reservationDetails.startTime': { $lte: startTime } },
+                { 'reservationDetails.endTime': { $gte: endTime } }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalPeople: { $sum: '$reservationDetails.groupsize' }
+        }
+      }
     ]);
 
     // Extract the total people count from the result
