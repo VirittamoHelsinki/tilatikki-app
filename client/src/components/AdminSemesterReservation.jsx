@@ -1,10 +1,12 @@
 import { Grid, Typography, Divider, TextField, MenuItem, Select, FormControl, InputLabel, Button } from "@mui/material"
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers"
+import { DatePicker, LocalizationProvider, TimePicker } from "@mui/x-date-pickers"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import Calendar from "./Calendar"
 import { useEffect, useState } from "react"
 import { getReservations } from "../api/reservations"
 import moment from "moment"
+import { fiFI } from "@mui/x-date-pickers/locales"
+import dayjs from "dayjs"
 
 const AdminSemesterReservation = () => {
 
@@ -63,113 +65,93 @@ const AdminSemesterReservation = () => {
           </Grid>
 
           <Grid item lg={10}>
-            <TextField
-              autoComplete="reservationName"
-              name="reservationName"
-              required
-              fullWidth
-              id="reservationName"
-              label="Varauksen nimi"
-            />
+            <FormControl fullWidth>
+              <TextField
+                autoComplete="reservationName"
+                name="reservationName"
+                required
+                fullWidth
+                id="reservationName"
+                label="Varauksen nimi"
+              />
+            </FormControl>
           </Grid>
 
           <Grid item lg={10}>
-            <TextField
-              autoComplete="reservationName"
-              name="reservationName"
-              required
-              fullWidth
-              id="reservationName"
-              label="Lisää opettaja"
-            />
-          </Grid>
-
-          <Grid item lg={5}>
-            <LocalizationProvider localeText={"fi"} dateAdapter={AdapterDayjs}>
-              <DatePicker
+            <FormControl fullWidth>
+              <TextField
                 autoComplete="reservationName"
                 name="reservationName"
                 required
                 fullWidth
                 id="reservationName"
-                label="Valitse aloituspäivä"
-              />
-            </LocalizationProvider>
+                label="Lisää opettaja"
+                />
+            </FormControl>
+          </Grid>
+
+          <Grid item lg={10}>
+            <FormControl fullWidth>
+              <LocalizationProvider localeText={fiFI.components.MuiLocalizationProvider.defaultProps.localeText} dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  autoComplete="reservationName"
+                  name="reservationName"
+                  required
+                  format="DD/MM/YYYY"
+                  slotProps={{ textField: { fullWidth: true }}}
+                  id="reservationName"
+                  label="Valitse aloituspäivä*"
+                  />
+                </LocalizationProvider>
+            </FormControl>
           </Grid>
 
 
           <Grid item lg={5}>
             <FormControl fullWidth>
-              <InputLabel id="start-time-label">Valitse aloitusaika</InputLabel>
-                <Select
-                  labelId="start-time-label"
-                  id="start-time-selec"
+              <LocalizationProvider localeText={fiFI.components.MuiLocalizationProvider.defaultProps.localeText} dateAdapter={AdapterDayjs}>
+                <TimePicker
+                  label="Aloitusaika*"
                   name="startTime"
                   required
                   fullWidth
-                  label="Valitse aloitusaika"
-                  defaultValue={timeSelectionOptions[0]}
-                >
-                  {
-                    timeSelectionOptions.map((value) => {
-                      return <MenuItem key={`menu-item-${value}`} value={value}>{value}</MenuItem>
-                    })
-                  }
-                </Select>
+                  ampm={false}
+                  defaultValue={dayjs()}
+                />
+              </LocalizationProvider>
             </FormControl>
-          </Grid>
-
-          <Grid item lg={5}>
-            <LocalizationProvider localeText={"fi"} dateAdapter={AdapterDayjs}>
-              <DatePicker
-                autoComplete="reservationName"
-                name="reservationName"
-                required
-                fullWidth
-                id="reservationName"
-                label="Valitse lopetuspäivä"
-              />
-            </LocalizationProvider>
           </Grid>
 
           <Grid item lg={5}>
             <FormControl fullWidth>
-              <InputLabel id="end-time-label">Valitse lopetusaika</InputLabel>
-              <Select
-                labelId="end-time-label"
-                id="end-time-select"
-                name="startTime"
-                required
-                fullWidth
-                label="Valitse lopetusaika"
-                defaultValue={timeSelectionOptions[timeSelectionOptions.length - 1]}
-              >
-                {
-                  timeSelectionOptions.map((value) => {
-                    return <MenuItem key={`menu-item-${value}`} value={value}>{value}</MenuItem>
-                  })
-                }
-              </Select>
+              <LocalizationProvider localeText={fiFI.components.MuiLocalizationProvider.defaultProps.localeText} dateAdapter={AdapterDayjs}>
+                <TimePicker
+                  label="Lopetusaika*"
+                  name="startTime"
+                  required
+                  fullWidth
+                  ampm={false}
+                  defaultValue={dayjs()}
+                />
+              </LocalizationProvider>
             </FormControl>
           </Grid>
 
           <Grid item lg={5}>
-          <FormControl fullWidth>
-              <InputLabel id="group-size-label">Ryhmän koko</InputLabel>
+            <FormControl fullWidth>
+              <InputLabel id="group-size-label">Ryhmän koko*</InputLabel>
               <Select
                 labelId="group-size-label"
                 id="group-size-select"
                 name="groupSize"
                 required
                 fullWidth
-                label="Ryhmäkoko"
-                defaultValue={10}
+                label="Ryhmän koko"
               >
                 {
-                  Array.from({ length: 100 }).map((_, index) => {
-                    const value = index + 1
-                    return <MenuItem key={`menu-item-${value}`} value={value}>{value}</MenuItem>
-                  })
+                  Array.from({ length: 100 }).map((_, index) => (
+                    <MenuItem key={index} value={index + 1}>{index + 1}</MenuItem>
+                  ))
                 }
               </Select>
             </FormControl>
@@ -177,7 +159,7 @@ const AdminSemesterReservation = () => {
 
           <Grid item lg={5}>
             <FormControl fullWidth>
-              <InputLabel id="classroom-label">Opetustila</InputLabel>
+            <InputLabel id="classroom-label">Opetustila*</InputLabel>
               <Select
                 labelId="classroom-label"
                 id="classroom-select"
@@ -185,7 +167,7 @@ const AdminSemesterReservation = () => {
                 required
                 fullWidth
                 label="Opetustila"
-                defaultValue={"Vihreä lohikäärme"}
+                placeholder="Valitse opetustila"
               >
                 <MenuItem value="Vihreä lohikäärme">Vihreä lohikäärme</MenuItem>
                 <MenuItem value="Punainen panda">Punainen panda</MenuItem>
@@ -196,7 +178,7 @@ const AdminSemesterReservation = () => {
 
           <Grid item lg={10}>
             <FormControl fullWidth>
-              <InputLabel id="repetition-label">Toistuvuus</InputLabel>
+              <InputLabel id="repetition-label">Toistuvuus*</InputLabel>
               <Select
                 labelId="repetition-label"
                 id="repetition-select"
@@ -214,17 +196,22 @@ const AdminSemesterReservation = () => {
           </Grid>
 
           <Grid item lg={10}>
-            <TextField
-              autoComplete="reservationName"
-              name="reservationName"
-              fullWidth
-              id="reservationName"
-              label="Lisätietoja"
-              multiline
-              rows={4}
-            />
+            <FormControl fullWidth>
+              <LocalizationProvider localeText={fiFI.components.MuiLocalizationProvider.defaultProps.localeText} dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  autoComplete="reservationName"
+                  name="reservationName"
+                  required
+                  format="DD/MM/YYYY"
+                  slotProps={{ textField: { fullWidth: true }}}
+                  id="reservationName"
+                  label="Varauksen päättymispäivä*"
+                  />
+                </LocalizationProvider>
+            </FormControl>
           </Grid>
 
+          
           <Grid item lg={3}>          
             <Button
               type="submit"
@@ -241,6 +228,8 @@ const AdminSemesterReservation = () => {
               Varaa tila
             </Button>
           </Grid>
+
+          
 
         </Grid>
   
