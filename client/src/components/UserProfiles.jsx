@@ -14,7 +14,7 @@ const columns = (handleClickOpen, handleToEdit) => [
   {
     field: 'käyttäjä',
     headerName: 'Käyttäjä',
-    width: 270,
+    width: 290,
     editable: false,
   },
   {
@@ -26,7 +26,7 @@ const columns = (handleClickOpen, handleToEdit) => [
   {
     field: 'käyttäjärooli',
     headerName: 'Käyttäjärooli',
-    width: 270,
+    width: 290,
     editable: false,
   },
   {
@@ -272,10 +272,12 @@ const UserProfiles = () => {
             },
           }}
           pageSizeOptions={[5]}
-          checkboxSelection
           disableColumnResize
           slots={{ toolbar: GridToolbar }}
           slotProps={{
+            baseButton:{
+              style: { color: 'black'}
+            },
             toolbar: {
               style: { color: 'black', marginLeft: '8px' },
               showQuickFilter: true,

@@ -40,7 +40,7 @@ const columns = (handleClickOpen) => [
     type: 'number',
     headerAlign: 'left',
     align: 'left',
-    width: 180,
+    width: 220,
     editable: false,
   },
   {
@@ -296,10 +296,12 @@ const ReservationHistory = () => {
             },
           }}
           pageSizeOptions={[5]}
-          checkboxSelection
           disableColumnResize
           slots={{ toolbar: GridToolbar }}
           slotProps={{
+            baseButton:{
+              style: { color: 'black'}
+            },
             toolbar: {
               style: { color: 'black', marginLeft: '8px' },
               showQuickFilter: true,

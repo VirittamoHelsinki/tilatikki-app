@@ -4,6 +4,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useNavigate } from 'react-router-dom';
 import { getCookie, removeCookie } from '../utils/Cookies';
 import { fetchUserDataByEmail } from '../api/userApi';
+import TilaTikkiLogo from '../images/TilaTikki_logo.svg';
 
 const Header = () => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -50,11 +51,9 @@ const Header = () => {
   };
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: 'white', boxShadow: 'none', padding: '0 2rem' }}>
+    <AppBar position="static" sx={{ backgroundColor: 'white', boxShadow: 'none'}}>
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Typography variant="h6" component="div" sx={{ color: 'black', cursor: 'pointer' }} onClick={handleClick}>
-          TilaTikki
-        </Typography>
+          <img onClick={handleClick} src={TilaTikkiLogo} alt="TilaTikki Logo" style={{ width: '189px', height: '100%', cursor: 'pointer'  }} />
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <IconButton
             onClick={handleMenuOpen}

@@ -8,6 +8,11 @@ import FilterForm from '../components/FilterForm';
 import BookingResults from '../components/BookingResults';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import FloorPlanBase from '../components/floorplans/FloorPlanBase1';
+import FloorPlan1 from '../components/floorplans/FloorPlan1';
+import FloorPlan2 from '../components/floorplans/FloorPlan2';
+import FloorPlan3 from '../components/floorplans/FloorPlan3';
+import FloorPlan4 from '../components/floorplans/FloorPlan4';
 import FloorPlan5 from '../components/floorplans/FloorPlan5';
 import Calendar from '../components/Calendar';
 
@@ -16,13 +21,13 @@ const ReservationPage = () => {
   const [filterValues, setFilterValues] = useState(null);
   const [floor, setFloor] = React.useState('floor1');
 
-  const [selectedComponent, setSelectedComponent] = React.useState('pohjakarttanäkymä');
+  const [ selectedComponent, setSelectedComponent ] = React.useState('pohjakarttanäkymä');
 
 
   // For calendarview (temporary)
-  const [calendarBuilding, setCalendarBuilding] = useState(null);
-  const [calendarFloor, setCalendarFloor] = useState(null);
-  const [calendarRoom, setCalendarRoom] = useState(null);
+  const [ calendarBuilding, setCalendarBuilding ] = useState(null);
+  const [ calendarFloor, setCalendarFloor ] = useState(null);
+  const [ calendarRoom, setCalendarRoom ] = useState(null);
 
 
   const handleChange = (event, newFloor) => {
@@ -55,6 +60,8 @@ const ReservationPage = () => {
     setFilteredClassrooms(newClassrooms);
   };
 
+  console.log(data)
+
   return (
     <>
       <Header />
@@ -70,8 +77,8 @@ const ReservationPage = () => {
         </Grid>
         <Grid item>
           <Button
-            onClick={() => setSelectedComponent('kalenterinäkymä')}
-            sx={{ color: 'black', padding: '6px 10px', 'borderRadius': '6px', backgroundColor: selectedComponent === 'kalenterinäkymä' ? 'white' : 'transparent', 'fontWeight': 500 }}
+          onClick={() => setSelectedComponent('kalenterinäkymä')}
+          sx={{ color: 'black', padding: '6px 10px', 'borderRadius': '6px', backgroundColor: selectedComponent === 'kalenterinäkymä' ? 'white' : 'transparent', 'fontWeight': 500 }}
           >
             Kalenterinäkymä
           </Button>
@@ -163,7 +170,7 @@ const ReservationPage = () => {
                         labelId="floor-label"
                         id="floor-select"
                         name="floor"
-                        reqed
+                        required
                         fullWidth
                         label="Valitse kerros"
                         placeholder="Valitse kerros"
@@ -171,7 +178,7 @@ const ReservationPage = () => {
                         onChange={(event) => setCalendarFloor(event.target.value)}
                       >
                         {
-                          [1, 2, 3].map((value) => {
+                          [ 1, 2, 3].map((value) => {
                             return <MenuItem key={`menu-item-${value}`} value={value}>{value}</MenuItem>
                           })
                         }

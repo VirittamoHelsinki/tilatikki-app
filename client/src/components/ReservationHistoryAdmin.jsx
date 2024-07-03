@@ -43,7 +43,7 @@ const columns = (handleClickOpen) => [
     type: 'number',
     headerAlign: 'left',
     align: 'left',
-    width: 180,
+    width: 220,
     editable: false,
   },
   {
@@ -226,25 +226,55 @@ const ReservationHistoryAdmin = () => {
   const [rowsData, setRowsData] = useState(rows);
 
   useEffect(() => {
+    const parseTime = (dateTimeString) => {
+      const date = new Date(dateTimeString);
+      const hours = date.getUTCHours();
+      const minutes = date.getUTCMinutes();
+      return { hours, minutes };
+    };
+
+    const formatTimeInterval = (start, end) => {
+      const startTime = parseTime(start);
+      const endTime = parseTime(end);
+      return `${startTime.hours}:${startTime.minutes.toString().padStart(2, '0')} - ${endTime.hours}:${endTime.minutes.toString().padStart(2, '0')}`;
+    };
+
+    const formatDate = (dateString) => {
+      const date = new Date(dateString);
+      const day = date.getUTCDate().toString().padStart(2, '0');
+      const month = (date.getUTCMonth() + 1).toString().padStart(2, '0'); // Months are zero-indexed
+      const year = date.getUTCFullYear();
+      return `${day}.${month}.${year}`;
+    };
+
     const fetchAllReservations = async () => {
       try {
         const reservationsData = await getReservations();
+
         console.log('reservationsData', reservationsData);
 
         // Fetch room and user data for each reservation
         const formattedReservations = await Promise.all(reservationsData.map(async (reservation, index) => {
           const room = await fetchRoomById(reservation.room);
-          const user = await fetchUserById(reservation.user);
+          // const user = await fetchUserById(reservation.user);
           console.log('gagasgassa', room);
-          console.log('user', user);
-          // Format reservation data including room and user details
+          
+
+          const aikaväli = reservation.startTime && reservation.endTime
+            ? formatTimeInterval(reservation.startTime, reservation.endTime)
+            : 'N/A';
+
+          const päivämäärä = reservation.startTime
+            ? formatDate(reservation.startTime)
+            : 'N/A';
+
           return {
             id: index + 1,
             opetustila: room.number || 'N/A',
             toistuva: reservation.toistuva || false,
-            päivämäärä: reservation.päivämäärä || 'N/A',
-            aikaväli: reservation.aikaväli || 'N/A',
-            opettaja: user.name || 'N/A',
+            päivämäärä,
+            aikaväli,
+            opettaja: reservation.user || 'N/A',
             ryhmankoko: reservation.groupsize || 'N/A',
           };
         }));
@@ -321,7 +351,7 @@ const ReservationHistoryAdmin = () => {
       <Divider sx={{ mt: 4, mb: 4 }} />
       <Box sx={{ height: '600', width: '100%' }}>
         <DataGrid
-          rows={rowsData}
+          rows={reservations}
           localeText={fiLocaleText}
           columns={columns(handleClickOpen)}
           disableRowSelectionOnClick
@@ -333,10 +363,12 @@ const ReservationHistoryAdmin = () => {
             },
           }}
           pageSizeOptions={[5]}
-          checkboxSelection
           disableColumnResize
           slots={{ toolbar: GridToolbar }}
           slotProps={{
+            baseButton: {
+              style: { color: 'black' }
+            },
             toolbar: {
               style: { color: 'black', marginLeft: '8px' },
               showQuickFilter: true,
