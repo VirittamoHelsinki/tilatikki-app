@@ -73,7 +73,7 @@ const BookingResults = ({ classrooms }) => {
 				<>
 					<Box display="flex" justifyContent="center" mb={2}>
 						<Button onClick={() => handleFilterChange('reservations')} variant={filterMode === 'reservations' ? 'contained' : 'outlined'}>
-							Varaukset
+							Omat Varaukset
 						</Button>
 						<Button onClick={() => handleFilterChange('free')} variant={filterMode === 'free' ? 'contained' : 'outlined'}>
 							Vapaat
