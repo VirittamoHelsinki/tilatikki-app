@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { createRef, useEffect, useRef, useState } from "react"
 import "./Calendar.css"
 
 import moment from "moment"
@@ -11,7 +11,7 @@ const columns = 7
 const rows = 6
 
 const Popup = ({ calendarData, date, close }) => {
-  const blocks = calendarData.map((data) => {
+  const blocks = calendarData.map((data, index) => {
     // Check if block should be rendered
     const isDateBetween = date.isBetween(data.startDate.startOf("day"), data.endDate.endOf("day"), null, "[]")
     if (!isDateBetween) {
@@ -24,7 +24,7 @@ const Popup = ({ calendarData, date, close }) => {
 
     return (
       <div
-        key={`popup`}
+        key={`popup-block-${data.label}-${index}`}
         className={`block first last`}
         style={{ gridRow: `${rowStart + 1} / ${ rowEnd + 1 }`, zIndex: 10000 }}
       >
@@ -41,7 +41,7 @@ const Popup = ({ calendarData, date, close }) => {
   } 
   
   return (
-    <div className="popup">
+    <div key={`popup-${date.toString()}`} className="popup">
       <div className="popup__header">
         { /* close button */ }
         <svg className="cross" onClick={handleClose} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -86,20 +86,20 @@ const Popup = ({ calendarData, date, close }) => {
 
 const Calendar = ({ calendarData = [] }) => {
   const [ date, setDate ] = useState(moment())
-  const [ modal, setModal ] = useState(-1)
+  const [ selectedDate, setSelectedDate ] = useState(null)
 
   const addMonth = () => {
     setDate((oldDate) => oldDate.clone().add({ month: 1 }))
-    setModal(null)
+    setSelectedDate(null)
   }
 
   const removeMonth = () => {
     setDate((oldDate) => oldDate.clone().subtract({ month: 1 }))
-    setModal(null)
+    setSelectedDate(null)
   }
 
-  const handleModal = (index) => {
-    setModal(index)
+  const handleModal = (date) => {
+    setSelectedDate(date)
   }
 
   const calendarCells = []
@@ -241,7 +241,7 @@ const Calendar = ({ calendarData = [] }) => {
 
   return (
 
-    <>      
+    <>
       <div className="calendar-wrapper">
         <div className="calendar__controls">
           <p className="calendar__current-date">{ date.format("MMMM YYYY") }</p>
@@ -265,6 +265,17 @@ const Calendar = ({ calendarData = [] }) => {
         <div className="calendar__body">
 
           {
+            selectedDate && (
+              <Popup
+                key={`popup-${selectedDate.toString()}`}
+                calendarData={calendarData} 
+                date={selectedDate}
+                close={() => handleModal(null)}
+              />
+            )
+          }
+
+          {
             // Generate each row one by one
             Array.from({ length: rows }).map((_, week) => {
               // Get the first top left cell of the calendar and check its week number
@@ -283,15 +294,11 @@ const Calendar = ({ calendarData = [] }) => {
                           key={`cell-${cellIndex}`}
                           className={`calendar__cell ${item.currentMonth ? "" : "grayed"}`}
                           style={{ gridRow: "1 / 3", gridColumn: day + 1 }}
-                          onClick={() => handleModal(cellIndex)}
+                          onClick={() => handleModal(item.date)}
                         >
                           <p className={`calendar__cell-number ${ item.date.isSame(today, "day") ? "today" : "" }`}>
                             { item.date.date().toString().padStart(2, "0") }
                           </p>
-
-                         {
-                          cellIndex === modal && <Popup calendarData={calendarData} date={item.date} close={() => handleModal(-1)} />
-                         }
                         </div>
                       )
                     })
