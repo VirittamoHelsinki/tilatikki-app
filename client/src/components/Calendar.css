@@ -190,6 +190,7 @@
   box-sizing: border-box;
   border-radius: 8px;
   color: black;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 }
 
 .popup__header {
@@ -249,7 +250,8 @@
   grid-column: 2;
   gap: 1px 0;
 
-  grid-auto-flow: column dense;
+  grid-auto-flow: column dense
+  ;
   pointer-events: none;
 }
 
@@ -260,8 +262,6 @@
   flex-direction: column;
   justify-content: start;
   gap: 2px;
-  
-  box-sizing: border-box;
 }
 
 .day-calendar__blocks-background-container {
