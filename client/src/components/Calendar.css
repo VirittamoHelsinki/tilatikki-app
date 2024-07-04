@@ -242,7 +242,7 @@
 .day-calendar__blocks {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: repeat(24, 1fr);
+  grid-template-rows: repeat(48, 1fr);
   justify-content: center;
   overflow: hidden;
 
@@ -250,8 +250,7 @@
   grid-column: 2;
   gap: 1px 0;
 
-  grid-auto-flow: column dense
-  ;
+  grid-auto-flow: column dense;
   pointer-events: none;
 }
 
