@@ -11,6 +11,54 @@ const columns = 7
 const rows = 6
 
 const Popup = ({ calendarData, date, close }) => {
+  const blockContainerRef = useRef(null)
+  const addNewReservationRef = useRef(null)
+
+  useEffect(() => {
+    const blockContainer = blockContainerRef.current
+    const addNewReservation = addNewReservationRef.current
+    if (!blockContainer) return
+    if (!addNewReservationRef) return
+    
+    const onMouseEnter = (event) => {
+      console.log("hover");
+
+      addNewReservation.style.display = "block"
+    }
+
+    const onMouseLeave = (event) => {
+      console.log("leave");
+      addNewReservation.style.display = "none"
+    }
+
+    const onMouseMove = (event) => {
+      // get mouse coordinates relative to event.target
+      const rect = blockContainer.getBoundingClientRect()
+      const y = event.clientY - rect.top
+
+      const rectHeight = blockContainer.clientHeight
+      console.log(rectHeight);
+
+      const row = Math.floor((y / rectHeight) * 24 * 12)
+
+      console.log(row, y, rectHeight);
+
+      addNewReservation.style.gridRow = `${row} / ${row}`
+    }
+
+    blockContainer.addEventListener("mouseover", onMouseEnter)
+    blockContainer.addEventListener("mousemove", onMouseMove)
+    blockContainer.addEventListener("mouseleave", onMouseLeave)
+
+    return () => {
+      blockContainer.removeEventListener("mouseover", onMouseEnter)
+      blockContainer.removeEventListener("mousemove", onMouseMove)
+      blockContainer.removeEventListener("mouseleave", onMouseLeave)
+    }
+
+
+  }, [ blockContainerRef ])
+
   const dataToRender = calendarData
     .filter((data) => date.isSame(data.startDate, "day"))
 
@@ -76,8 +124,15 @@ const Popup = ({ calendarData, date, close }) => {
             }
           </div>
 
-          <div className="day-calendar__blocks">
-            { blocks}
+          <div className="day-calendar__blocks" ref={blockContainerRef}>
+            { blocks }
+
+            <div
+              className="block block--new"
+              ref={addNewReservationRef}
+            >
+              <p>Luo uusi varaus</p>
+            </div>
           </div>
         </div>
       </div>
@@ -145,7 +200,6 @@ const Calendar = ({ calendarData = [] }) => {
 
 
   const blocks = calendarData.map((data) => {
-    console.log(data);
     return ({
       element: (      
         <div
