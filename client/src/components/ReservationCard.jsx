@@ -27,6 +27,16 @@ const ReservationCard = ({ roomId, roomNumber, purpose, status, capacity, reserv
 		setIsOpen(false);
 	};
 
+	const color = () => {
+		if (status === 'Vapaa') {
+			return 'success'
+		} else if (status === 'Varattu') {
+			return 'error'
+		} else {
+			return 'warning'
+		}
+	}
+
 	return (
 		<>
 			<ButtonBase onClick={handleOpenDialog} sx={{ width: '100%', display: 'block', textAlign: 'left' }}>
@@ -53,7 +63,7 @@ const ReservationCard = ({ roomId, roomNumber, purpose, status, capacity, reserv
 								<Box display="flex" alignItems="center">
 									<Chip
 										label={status}
-										color={status === 'Vapaa' ? 'success' : 'error'}
+										color={color()}
 										size="small"
 										sx={{ marginLeft: 1 }}
 									/>

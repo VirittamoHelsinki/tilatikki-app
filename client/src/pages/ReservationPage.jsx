@@ -60,8 +60,6 @@ const ReservationPage = () => {
     setFilteredClassrooms(newClassrooms);
   };
 
-  console.log(data)
-
   return (
     <>
       <Header />
