@@ -34,15 +34,45 @@ const Popup = ({ calendarData, date, close }) => {
     const onMouseMove = (event) => {
       // get mouse coordinates relative to event.target
       const rect = blockContainer.getBoundingClientRect()
-      const y = event.clientY - rect.top
+      const y = (event.clientY + 5) - rect.top
 
       const rectHeight = blockContainer.clientHeight
-      console.log(rectHeight);
+      const row = Math.max(Math.floor((y / rectHeight) * 24 * 4), 0)
 
-      const row = Math.floor((y / rectHeight) * 24 * 4)
+      // Row check :D
+      // Check if we can move the newReservationButton to the row
+      // This checks if the new reservation button is overlapping with any other blocks
+      const blocks = Array.from(blockContainer.children)
+        .filter((element) => element.classList.contains("block--daily"))
+        .some((element) => {
+          
+          const [ blockStartColumn, blockEndColumn ] = element.style.gridRow
+            .split(" / ")
+            .map((value) => Number(value))
 
-      console.log(row, y, rectHeight);
+          const [ buttonStartColumn, buttonEndColumn ] = [ row, row + 2 ]
 
+          console.log(blockStartColumn, blockEndColumn, row, row + 2);
+
+          if (buttonStartColumn >= blockStartColumn && buttonStartColumn < blockEndColumn) {
+            console.log(1);
+            return true
+          }
+
+          if (buttonEndColumn > blockStartColumn && buttonEndColumn <= blockEndColumn) {
+            console.log(2);
+            return true
+          }
+ 
+          return false
+        })
+      
+      if (blocks) {
+        addNewReservation.style.display = "none"
+        return
+      }
+
+      addNewReservation.style.display = "block"
       addNewReservation.style.gridRow = `${row} / ${row + 2}`
     }
 
