@@ -39,7 +39,7 @@ const Popup = ({ calendarData, date, close }) => {
       const rectHeight = blockContainer.clientHeight
       console.log(rectHeight);
 
-      const row = Math.floor((y / rectHeight) * 24 * 12)
+      const row = Math.floor((y / rectHeight) * 24 * 4)
 
       console.log(row, y, rectHeight);
 
@@ -67,9 +67,9 @@ const Popup = ({ calendarData, date, close }) => {
     const [ startHour, startMinute ] = data.startTime.split(":");
     const [ endHour, endMinute ] = data.endTime.split(":");
 
-    // Each row is 5 minutes, so an hour is 12 rows
-    const rowStart = Number(startHour) * 12 + Number(startMinute) / 5
-    const rowEnd = Number(endHour) * 12 + Number(endMinute) / 5
+    // Each row is 15 minutes, so an hour is 4 rows
+    const rowStart = Number(startHour) * 4 + Number(startMinute) / 15
+    const rowEnd = Number(endHour) * 4 + Number(endMinute) / 15
 
     return (
       <div

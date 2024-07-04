@@ -247,7 +247,7 @@
   position: relative;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: repeat(calc(24 * 12), 1fr);
+  grid-template-rows: repeat(calc(24 * 4), 1fr);
   justify-content: center;
   overflow: hidden;
 
