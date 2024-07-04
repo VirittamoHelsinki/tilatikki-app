@@ -43,7 +43,7 @@ const Popup = ({ calendarData, date, close }) => {
 
       console.log(row, y, rectHeight);
 
-      addNewReservation.style.gridRow = `${row} / ${row}`
+      addNewReservation.style.gridRow = `${row} / ${row + 2}`
     }
 
     blockContainer.addEventListener("mouseover", onMouseEnter)
