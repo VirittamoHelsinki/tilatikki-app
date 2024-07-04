@@ -16,13 +16,11 @@ const AdminSemesterReservation = () => {
     const fetchReservations = async () => {
       const fetchedReservations = (await getReservations())
         .map(reservation => {
-          const startDate = moment(reservation.reservationDate);
-          console.log(reservation);
           return {
             ...reservation,
             
             label: reservation.purpose,
-            startDate: startDate,
+            startDate: moment(reservation.reservationDate),
             startTime: reservation.startTime,
             endTime: reservation.endTime,
           }
