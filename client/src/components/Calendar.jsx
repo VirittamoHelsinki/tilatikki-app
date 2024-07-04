@@ -11,6 +11,7 @@ const columns = 7
 const rows = 6
 
 const Popup = ({ calendarData, date, close }) => {
+  console.log(calendarData)
   const blocks = calendarData.map((data, index) => {
     // Check if block should be rendered
     const isDateBetween = date.isBetween(data.startDate.startOf("day"), data.endDate.endOf("day"), null, "[]")
@@ -26,7 +27,9 @@ const Popup = ({ calendarData, date, close }) => {
       <div
         key={`popup-block-${data.label}-${index}`}
         className={`block first last`}
-        style={{ gridRow: `${rowStart + 1} / ${ rowEnd + 1 }`, zIndex: 10000 }}
+        // if (data.room.size === data.groupSize) gridCol: 1 / 3
+        // 
+        style={{ gridRow: `${rowStart * 2 + 1} / ${ rowEnd * 2 + 1 }`, zIndex: 10 }}
       >
         <p>{data.label}</p>
         <p className="block__teacher-name">{data.teacher}</p>
@@ -75,7 +78,10 @@ const Popup = ({ calendarData, date, close }) => {
           </div>
 
           <div className="day-calendar__blocks">
-            { blocks }
+            
+          </div>
+
+          <div className="day-calendar__add">
           </div>
         </div>
       </div>
