@@ -11,14 +11,12 @@ const columns = 7
 const rows = 6
 
 const Popup = ({ calendarData, date, close }) => {
-  console.log(calendarData)
-  const blocks = calendarData.map((data, index) => {
-    // Check if block should be rendered
-    const isDateBetween = date.isBetween(data.startDate.startOf("day"), data.endDate.endOf("day"), null, "[]")
-    if (!isDateBetween) {
-      return
-    }
+  const dataToRender = calendarData
+    .filter((data) => date.isBetween(data.startDate.startOf("day"), data.endDate.endOf("day"), null, "[]"))
 
+  console.log(dataToRender);
+
+  const blocks = dataToRender.map((data, index) => {
     // Determine the height of the block based on time of the day
     const rowStart = Number(data.startTime.split(":")[0])
     const rowEnd = Number(data.endTime.split(":")[0])  
@@ -78,10 +76,7 @@ const Popup = ({ calendarData, date, close }) => {
           </div>
 
           <div className="day-calendar__blocks">
-            
-          </div>
 
-          <div className="day-calendar__add">
           </div>
         </div>
       </div>
