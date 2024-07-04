@@ -53,7 +53,7 @@
 
 .calendar__header {
   display: grid;
-  grid-template-columns: repeat(7, 160px); /* width of a cell */
+  grid-template-columns: repeat(7, 1fr); /* width of a cell */
   border-radius: 0 10px 10px 0;
 }
 
@@ -68,13 +68,13 @@
 
 .calendar__body {
   display: grid;
-  grid-template-rows: repeat(6, 145px); /* height of a cell */
+  grid-template-rows: repeat(6, 1fr); /* height of a cell */
 }
 
 .calendar__week {
   position: relative;
   display: grid;
-  grid-template-columns: repeat(7, 160px); /* width of a cell */
+  grid-template-columns: repeat(7, 1fr); /* width of a cell */
   grid-template-rows: 32px 1fr;
 }
 
