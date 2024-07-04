@@ -18,16 +18,20 @@ const Popup = ({ calendarData, date, close }) => {
 
   const blocks = dataToRender.map((data, index) => {
     // Determine the height of the block based on time of the day
-    const rowStart = Number(data.startTime.split(":")[0])
-    const rowEnd = Number(data.endTime.split(":")[0])  
+    const [ startHour, startMinute ] = data.startTime.split(":");
+    const [ endHour, endMinute ] = data.endTime.split(":");
+
+    const rowStart = Number(startHour) * 4 + Number(startMinute) / 15
+    const rowEnd = Number(endHour) * 4 + Number(endMinute) / 15
+
+    console.log(data);
 
     return (
       <div
         key={`popup-block-${data.label}-${index}`}
-        className={`block first last`}
+        className={`block block--daily`}
         // if (data.room.size === data.groupSize) gridCol: 1 / 3
-        // 
-        style={{ gridRow: `${rowStart * 2 + 1} / ${ rowEnd * 2 + 1 }`, zIndex: 10 }}
+        style={{ gridRow: `${rowStart + 1} / ${ rowEnd + 1 }`, zIndex: 10 }}
       >
         <p>{data.label}</p>
         <p className="block__teacher-name">{data.teacher}</p>

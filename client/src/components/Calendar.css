@@ -139,6 +139,7 @@
   border-radius: 5px;
   height: 100%;
   overflow: hidden;
+  user-select: none;
 }
 
 
@@ -155,6 +156,10 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.block--daily {
+  white-space: wrap;
 }
 
 .block__teacher-name {
@@ -232,7 +237,7 @@
 .day-calendar__blocks {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: repeat(48, 1fr);
+  grid-template-rows: repeat(calc(24 * 4), 1fr);
   justify-content: center;
   overflow: hidden;
 
