@@ -76,7 +76,7 @@ const Popup = ({ calendarData, date, close }) => {
           </div>
 
           <div className="day-calendar__blocks">
-
+            { blocks}
           </div>
         </div>
       </div>
@@ -86,7 +86,9 @@ const Popup = ({ calendarData, date, close }) => {
 }
 
 const Calendar = ({ calendarData = [] }) => {
+  // Date to display in the monthly view
   const [ date, setDate ] = useState(moment())
+  // Date to display in the daily view
   const [ selectedDate, setSelectedDate ] = useState(null)
 
   const addMonth = () => {
@@ -140,105 +142,21 @@ const Calendar = ({ calendarData = [] }) => {
     })
   }
 
-  // Count number of blocks in each cell
-  for (let i = 0; i < calendarCells.length; i++) {
-    const date = calendarCells[i].date
 
-    for (let j = 0; j < calendarData.length; j++) {
-      const data = calendarData[j]
-      const isDateBetween = date.isBetween(data.startDate, data.endDate, null, "[]")
-
-      if (!isDateBetween) {
-        continue
-      }
-
-      if (!amountOfBlocksInCells[i]) {
-        amountOfBlocksInCells[i] = 0
-      }
-
-      amountOfBlocksInCells[i] = amountOfBlocksInCells[i] + 1
-    }
-  } 
-
-  // Generate calendar schedule blocks
   const blocks = calendarData.map((data) => {
-    // Figure out in what column and row the schedule element starts from
-    // and how big it should be.
-    let startingColumn = (data.startDate.day() - 1)
-    if (startingColumn < 0) { startingColumn = 6 }
+    console.log(data);
+    return ({
+      element: (      
+        <div
+          className={`block first last`}
+        >
+          <p>{ `${data.startTime} ${data.label}` }</p>
+        </div>
 
-    const startingRow = Math.floor(calendarCells.findIndex((item) => item.date.isSame(data.startDate, "day")) / 7)
-    const columnsOccupied = data.endDate.diff(data.startDate, "days") + 1
-    const rowsOccupied = Math.ceil((columnsOccupied + data.startDate.day()) / columns)
-
-    const blocks = []
-
-    let currentWeek = data.startDate.week()
-    let currentYear = data.startDate.year()
-    let currentColumn = startingColumn
-    let currentRow = startingRow
-    let cellsToVisit = columnsOccupied
-    let creatingBlock = true
-    let originColumn = currentColumn
-
-    while (cellsToVisit > 0) {
-      creatingBlock = true
-      currentColumn++
-      cellsToVisit--
-
-      // Current block is starting to be too big for the view
-      if (currentRow === rows) {
-        break
-      }
-
-      // If true, row changes
-      if (currentColumn === columns) {
-
-        blocks.push({
-          element: (      
-            <div
-              className={`block ${blocks.length === 0 ? "first" : ""} ${cellsToVisit === 0 ? "last" : ""}`}
-              style={{ gridColumn: `${originColumn + 1} / ${ currentColumn + 1 }` }}
-            >
-              <p>{ `${data.startTime} ${data.label}` }</p>
-            </div>
-          ),
-          week: currentWeek,
-          year: currentYear,
-        })
-        
-        creatingBlock = false 
-        currentColumn = 0
-        currentRow++ // Increment row
-        originColumn = 0 // Next block will start from column 0
-        currentWeek++ // Increment week when going to the next row
-
-        if (currentWeek === 53) {
-          currentWeek = 1
-          currentYear++
-        }
-      }
-      
-    }
-
-    if (creatingBlock) {
-      blocks.push({
-        element: (      
-          <div
-            className={`block ${blocks.length === 0 ? "first" : ""} last`}
-            style={{ gridColumn: `${originColumn + 1} / ${ currentColumn + 1 }` }}
-          >
-            <p>{ `${data.startTime} ${data.label}` }</p>
-          </div>
-        ),
-        week: currentWeek,
-        year: currentYear,
-      })
-    }
-        
-    return blocks
-  }).flat().filter(a => !!a)
-  
+      ),
+      date: data.startDate,
+    })
+  })  
 
   return (
 
@@ -289,6 +207,10 @@ const Calendar = ({ calendarData = [] }) => {
                     Array.from({ length: columns }).map((_, day) => {
                       const cellIndex = columns * week + day
                       const item = calendarCells[cellIndex]
+
+                      const blocksToRender = blocks
+                        .filter((data) => item.date.isSame(data.date, "day"))
+                        .map((data) => data.element)
                       
                       return (
                         <div
@@ -300,43 +222,15 @@ const Calendar = ({ calendarData = [] }) => {
                           <p className={`calendar__cell-number ${ item.date.isSame(today, "day") ? "today" : "" }`}>
                             { item.date.date().toString().padStart(2, "0") }
                           </p>
+
+                          <div className="calendar__block-container">
+                            { blocksToRender }
+                          </div>
                         </div>
                       )
                     })
                   }
 
-                  <div className="calendar__block-container">
-                    {
-                      blocks
-                        .filter((data) => data.year === currentYear)
-                        .filter((data) => data.week === actualWeekNumber)
-                        .map((data) => data.element)
-                    }
-
-                    {
-                      Array.from({ length: 7 }).map((_, day) => {
-                        const cellIndex = 7 * week + day
-                        const amountOfBlocks = amountOfBlocksInCells[cellIndex]
-
-                        if (!amountOfBlocks || (amountOfBlocks - 3) < 1) {
-                          return
-                        }
-
-                        const blockString = (amountOfBlocks - 3) === 1
-                          ? `+1 muu varaus`
-                          : `+${amountOfBlocks - 3} muuta varausta`
-                        
-                        return (
-                          <div
-                            className={"block first last"}
-                            style={{ gridColumn: day + 1, gridRow: 4, backgroundColor: "#2f4371" }}
-                          >
-                            <p>{ "muut varaukset" }</p>
-                          </div>
-                        )
-                      })
-                    }
-                  </div>
 
                 </div>
               )
