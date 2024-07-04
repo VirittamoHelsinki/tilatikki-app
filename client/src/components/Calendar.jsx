@@ -17,12 +17,13 @@ const Popup = ({ calendarData, date, close }) => {
   console.log(dataToRender);
 
   const blocks = dataToRender.map((data, index) => {
-    // Determine the height of the block based on time of the day
+    // Determine the height and position of the block based on time of the day
     const [ startHour, startMinute ] = data.startTime.split(":");
     const [ endHour, endMinute ] = data.endTime.split(":");
 
-    const rowStart = Number(startHour) * 4 + Number(startMinute) / 15
-    const rowEnd = Number(endHour) * 4 + Number(endMinute) / 15
+    // Each row is 5 minutes, so an hour is 12 rows
+    const rowStart = Number(startHour) * 12 + Number(startMinute) / 5
+    const rowEnd = Number(endHour) * 12 + Number(endMinute) / 5
 
     console.log(data);
 
