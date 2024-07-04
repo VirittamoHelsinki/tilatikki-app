@@ -12,7 +12,7 @@ const rows = 6
 
 const Popup = ({ calendarData, date, close }) => {
   const dataToRender = calendarData
-    .filter((data) => date.isBetween(data.startDate.startOf("day"), data.endDate.endOf("day"), null, "[]"))
+    .filter((data) => date.isSame(data.startDate, "day"))
 
   console.log(dataToRender);
 
@@ -148,8 +148,7 @@ const Calendar = ({ calendarData = [] }) => {
     return ({
       element: (      
         <div
-          className={`block first last`}
-        >
+          className="block">
           <p>{ `${data.startTime} ${data.label}` }</p>
         </div>
 
@@ -211,6 +210,10 @@ const Calendar = ({ calendarData = [] }) => {
                       const blocksToRender = blocks
                         .filter((data) => item.date.isSame(data.date, "day"))
                         .map((data) => data.element)
+
+                      const otherReservationsText = blocksToRender.length === 4
+                        ? "+1 muu varaus"
+                        : `+${blocksToRender.length - 3} muuta varausta`
                       
                       return (
                         <div
@@ -224,7 +227,10 @@ const Calendar = ({ calendarData = [] }) => {
                           </p>
 
                           <div className="calendar__block-container">
-                            { blocksToRender }
+                            { blocksToRender.slice(0, 3) /* Only render the first three blocks*/ }
+                            { blocksToRender.length > 3 && (
+                              <div className="block block--more"><p>{ otherReservationsText }</p></div>
+                            )}
                           </div>
                         </div>
                       )

@@ -141,9 +141,9 @@
   overflow: hidden;
 }
 
-.block:hover {
-  cursor: pointer;
-  background-color: #1e2e4f;
+
+.block--more {
+  background-color: #37446d;
 }
 
 .block > p {
@@ -251,6 +251,11 @@
   flex-direction: column;
   justify-content: start;
   gap: 2px;
+}
+
+.day-calendar__blocks > .block:hover {
+  cursor: pointer;
+  background-color: #1e2e4f;
 }
 
 .day-calendar__blocks-background-container {
