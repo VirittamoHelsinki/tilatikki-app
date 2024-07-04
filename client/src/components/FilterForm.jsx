@@ -38,7 +38,7 @@ const timeSlots = [
 const groupSizes = Array.from({ length: 20 }, (_, index) => (index + 1) * 5);
 
 
-const FilterForm = ({ onClassroomChange, schoolData }) => {
+const FilterForm = ({ onClassroomChange, schoolData, setStartTime, setEndTime, setDate }) => {
 	const [selectedBuildings, setSelectedBuildings] = useState([]);
 	const [availableFloors, setAvailableFloors] = useState([1]);
 	const [selectedFloor, setSelectedFloor] = useState('');
@@ -71,6 +71,7 @@ const FilterForm = ({ onClassroomChange, schoolData }) => {
 
 	const handleStartingTime = (e) => {
 		setStartingTime(e.target.value);
+		setStartTime(e.target.value);
 		if (endingTime) {
 			if (e.target.value >= endingTime) {
 				setEndingTime('');
@@ -80,6 +81,7 @@ const FilterForm = ({ onClassroomChange, schoolData }) => {
 
 	const handleEndingTime = (e) => {
 		setEndingTime(e.target.value);
+		setEndTime(e.target.value);
 		setRequiredEndTime(false);
 	}
 
@@ -363,6 +365,7 @@ const FilterForm = ({ onClassroomChange, schoolData }) => {
 
 	const handleStartingDateChange = (newDate) => {
 		setSelectedDate(newDate);
+		setDate(newDate);
 	}
 
 	useEffect(() => {

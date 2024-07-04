@@ -21,13 +21,17 @@ const ReservationPage = () => {
   const [filterValues, setFilterValues] = useState(null);
   const [floor, setFloor] = React.useState('floor1');
 
-  const [ selectedComponent, setSelectedComponent ] = React.useState('pohjakarttanäkymä');
+  const [selectedComponent, setSelectedComponent] = React.useState('pohjakarttanäkymä');
 
 
   // For calendarview (temporary)
-  const [ calendarBuilding, setCalendarBuilding ] = useState(null);
-  const [ calendarFloor, setCalendarFloor ] = useState(null);
-  const [ calendarRoom, setCalendarRoom ] = useState(null);
+  const [calendarBuilding, setCalendarBuilding] = useState(null);
+  const [calendarFloor, setCalendarFloor] = useState(null);
+  const [calendarRoom, setCalendarRoom] = useState(null);
+
+  const [startTime, setStartTime] = useState(null)
+  const [endTime, setEndTime] = useState(null)
+  const [date, setDate] = useState(null)
 
 
   const handleChange = (event, newFloor) => {
@@ -39,10 +43,6 @@ const ReservationPage = () => {
   const { id } = useParams();
   const { data, error, isLoading } = useSchoolQuery(id);
 
-  useEffect(() => {
-    console.log('id: ', id)
-    console.log('data: ', data)
-  }, [])
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -77,8 +77,8 @@ const ReservationPage = () => {
         </Grid>
         <Grid item>
           <Button
-          onClick={() => setSelectedComponent('kalenterinäkymä')}
-          sx={{ color: 'black', padding: '6px 10px', 'borderRadius': '6px', backgroundColor: selectedComponent === 'kalenterinäkymä' ? 'white' : 'transparent', 'fontWeight': 500 }}
+            onClick={() => setSelectedComponent('kalenterinäkymä')}
+            sx={{ color: 'black', padding: '6px 10px', 'borderRadius': '6px', backgroundColor: selectedComponent === 'kalenterinäkymä' ? 'white' : 'transparent', 'fontWeight': 500 }}
           >
             Kalenterinäkymä
           </Button>
@@ -93,12 +93,12 @@ const ReservationPage = () => {
 
             <>
               <Box sx={{ width: '30%', padding: '20px', border: '1px solid #ddd', borderRadius: '4px' }}>
-                <FilterForm onClassroomChange={handleClassroomChange} schoolData={data} />
+                <FilterForm onClassroomChange={handleClassroomChange} schoolData={data} setStartTime={setStartTime} setEndTime={setEndTime} setDate={setDate} />
               </Box>
               <Box sx={{ width: '30%', padding: '20px', border: '1px solid #ddd', borderRadius: '4px' }}>
 
                 <Box>
-                  <BookingResults classrooms={filteredClassrooms} />
+                  <BookingResults classrooms={filteredClassrooms} date={date} startTime={startTime} endTime={endTime} />
                 </Box>
               </Box>
               <Box sx={{ width: '100%', padding: '20px', border: '1px solid #ddd', borderRadius: '4px' }}>
@@ -178,7 +178,7 @@ const ReservationPage = () => {
                         onChange={(event) => setCalendarFloor(event.target.value)}
                       >
                         {
-                          [ 1, 2, 3].map((value) => {
+                          [1, 2, 3].map((value) => {
                             return <MenuItem key={`menu-item-${value}`} value={value}>{value}</MenuItem>
                           })
                         }

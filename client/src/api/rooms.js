@@ -20,13 +20,26 @@ export const useRoomQuery = (id) => {
 	});
 };
 
-export const fetchTotalPeopleReserved = async (roomId) => {
+
+export const fetchTotalPeopleReserved = async (roomId, date, startTime, endTime) => {
+	const url = new URL(`${API_URL}/rooms/${roomId}/total-people`);
+	url.searchParams.append('date', date);
+	url.searchParams.append('startTime', startTime);
+	url.searchParams.append('endTime', endTime);
+
 	try {
-		const response = await fetch(`${API_URL}/rooms/${roomId}/total-people`);
+		const response = await fetch(url, {
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		});
+
 		if (!response.ok) {
 			throw new Error('Failed to fetch total people reserved');
 		}
-		return response.json();
+
+		const data = await response.json();
+		return data;
 	} catch (error) {
 		console.error('Fetch total people reserved error:', error);
 		throw error;

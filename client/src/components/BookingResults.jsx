@@ -2,14 +2,17 @@ import React, { useState, useEffect } from 'react';
 import ReservationCard from './ReservationCard'; // Make sure this path is correct
 import { Box, Button } from '@mui/material';
 import { fetchUserDataByEmail } from '../api/userApi';
+import { fetchTotalPeopleReserved } from '../api/rooms';
 import { getCookie } from '../utils/Cookies';
 
 
-const BookingResults = ({ classrooms }) => {
+const BookingResults = ({ classrooms, date, startTime, endTime }) => {
 	const [currentPage, setCurrentPage] = useState(0);
 	const [filterMode, setFilterMode] = useState('free');
 	const [user, setUser] = useState({})
-
+	const [freeRooms, setFreeRooms] = useState([])
+	const [partiallyFreeRooms, setPartiallyFreeRooms] = useState([])
+	const [reservedRooms, setReservedRooms] = useState([])
 
 	useEffect(() => {
 		const email = getCookie('UserEmail');
@@ -66,6 +69,43 @@ const BookingResults = ({ classrooms }) => {
 	);
 
 
+	useEffect(() => {
+		const calculateTotalPeopleInTimeSlot = async (roomId) => {
+			const totalPeople = date && startTime && endTime ? await fetchTotalPeopleReserved(roomId, date, startTime, endTime) : null
+			console.log('total people: ', totalPeople ? totalPeople.totalPeople : '')
+			return totalPeople ? totalPeople.totalPeople : null
+		}
+		classrooms.forEach((c) => {
+			const total = calculateTotalPeopleInTimeSlot(c._id)
+			if (total === 0) {
+				setFreeRooms([
+					...freeRooms,
+					c
+				])
+			} else if (total > 0 && total < c.capacity) {
+				setPartiallyFreeRooms([
+					...partiallyFreeRooms,
+					c
+				])
+			} else {
+				setReservedRooms([
+					...reservedRooms,
+					c
+				])
+			}
+		})
+
+	}, [classrooms, date, startTime, endTime])
+
+	useEffect(() => {
+		console.log(freeRooms)
+		console.log(partiallyFreeRooms)
+		console.log(reservedRooms)
+	})
+
+
+
+
 	return (
 		<Box>
 			<h3>Huoneet</h3>
@@ -82,11 +122,11 @@ const BookingResults = ({ classrooms }) => {
 					<Box sx={{ maxHeight: '500px', overflowY: 'auto' }}>
 						{paginatedClassrooms.map(([key, value]) => {
 							// Filter the reservations from the classrooms
-							const filteredReservations = value.reservations.filter(reservation => reservation.user._id === user._id);
+							const filteredUsersReservations = value.reservations.filter(reservation => reservation.user._id === user._id);
 							return (
 								<React.Fragment key={key}>
-									{filteredReservations.length > 0 && filterMode === 'reservations' ? (
-										filteredReservations.map((reservation) => (
+									{filteredUsersReservations.length > 0 && filterMode === 'reservations' ? (
+										filteredUsersReservations.map((reservation) => (
 											<ReservationCard
 												key={reservation._id}
 												roomId={reservation.room}
@@ -102,18 +142,22 @@ const BookingResults = ({ classrooms }) => {
 											/>
 										))
 									) : (
-										<ReservationCard
-											key={key}
-											roomId={value._id}
-											roomNumber={value.number}
-											purpose="Ei varauksia"
-											status="Vapaa"
-											capacity={value.capacity}
-											reservationDate=""
-											startTime=""
-											endTime=""
-											groupsize={0}
-										/>
+										<>
+											{
+												<ReservationCard
+													key={key}
+													roomId={value._id}
+													roomNumber={value.number}
+													purpose="Ei varauksia"
+													status="Vapaa"
+													capacity={value.capacity}
+													reservationDate=""
+													startTime=""
+													endTime=""
+													groupsize={0}
+												/>
+											}
+										</>
 									)}
 								</React.Fragment>
 							);
