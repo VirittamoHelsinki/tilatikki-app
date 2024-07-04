@@ -71,8 +71,8 @@ const UserProfiles = () => {
 
       const formattedUsers = await Promise.all(usersData.map(async (user, index) => {
         try {
-          const isSpecificString = user.admin === 'admin';
-          const toistuvaValue = isSpecificString ? "Opettaja" : "Admin";
+          const isAdmin = user.admin === true;
+          const toistuvaValue = isAdmin ? "Admin" : "Opettaja";
           return {
             id: index + 1,
             käyttäjä: `${user.name} ${user.surname}`,
@@ -142,6 +142,7 @@ const UserProfiles = () => {
     return (
       <EditUsers
         name={selectedRow.käyttäjä}
+        email={selectedRow.sähköposti}
         role={selectedRow.käyttäjärooli}
         otherTeacher={selectedRow.toissijainenopettaja}
         onClose={() => setIsEditing(false)}

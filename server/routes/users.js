@@ -139,7 +139,7 @@ router.delete('/deleteuser/:email', async (req, res) => {
 
 
 router.put('/update/:email', async (req, res) => {
-  const { name, surname, email } = req.body;
+  const { name, surname, email, subteacher, admin } = req.body;
   const currentEmail = req.params.email;
 
   try {
@@ -149,9 +149,11 @@ router.put('/update/:email', async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    user.name = name || user.name;
-    user.surname = surname || user.surname;
-    user.email = email || user.email;
+    if (name) user.name = name;
+    if (surname) user.surname = surname;
+    if (email) user.email = email;
+    if (subteacher !== undefined) user.subteacher = subteacher;
+    if (admin !== undefined) user.admin = admin;
 
     await user.save();
     res.status(200).json({ message: 'User updated successfully', user });
@@ -160,6 +162,7 @@ router.put('/update/:email', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+
 
 router.put('/updatePassword/:email', async (req, res) => {
   const { currentPassword, newPassword } = req.body;
