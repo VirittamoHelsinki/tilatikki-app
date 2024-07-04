@@ -68,7 +68,7 @@
 
 .calendar__body {
   display: grid;
-  grid-template-rows: repeat(6, 1fr); /* height of a cell */
+  grid-template-rows: repeat(6, 140px); /* height of a cell */
 }
 
 .calendar__week {
@@ -98,8 +98,8 @@
 }
 
 .calendar__cell-number {
-  padding: 5px;
-  margin: 4px;
+  padding: 6px;
+  margin: 8px;
   user-select: none;
   font-variant-numeric: tabular-nums;
   font-size: 0.8rem;
