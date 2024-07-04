@@ -195,6 +195,29 @@ const UserProfiles = () => {
               },
             },
           }}
+          getRowClassName={(params) =>
+            params.indexRelativeToCurrentPage % 2 === 0 ? 'greyRow' : ''
+          }
+          sx={{
+            '& .greyRow': {
+              backgroundColor: '#F1F5F9',
+            },
+            '& .MuiDataGrid-columnHeader': {
+              backgroundColor: '#1C2C52'
+            },
+            '& .MuiDataGrid-columnHeaderTitle': {
+              color: '#FFFFFF',
+            },
+            '& .MuiDataGrid-iconButtonContainer': {
+              color: '#FFFFFF', // Change the filter icon color to white
+            },
+            '& .MuiDataGrid-menuIconButton': {
+              color: '#FFFFFF', // Change the filter icon color to white
+            },
+            '& .MuiDataGrid-sortIcon': {
+              color: '#FFFFFF', // Change the sorting icon color to white
+            },
+          }}
         />
       </Box>
       {selectedRow && (
