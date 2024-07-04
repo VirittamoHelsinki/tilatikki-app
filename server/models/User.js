@@ -20,6 +20,10 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  subteacher: {
+    type: String,
+    required: true
+  },
   admin: {
     type: Boolean,
     default: true

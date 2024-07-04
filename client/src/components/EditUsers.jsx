@@ -85,7 +85,7 @@ export default function EditUsers({ name, role, otherTeacher, onClose }) {
           )}
         </Box>
       </Box>
-      <Button
+      <Button onClick={onClose}
         type="submit"
         variant="contained"
         sx={{

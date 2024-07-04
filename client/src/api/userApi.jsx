@@ -65,6 +65,23 @@ export const loginUser = async (credentials) => {
   }
 };
 
+export const deleteUser = async (email) => {
+  try {
+    const response = await fetch(`${API_URL}/deleteuser/${encodeURIComponent(email)}`, {
+      method: 'DELETE'
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to delete user');
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    throw error;
+  }
+};
+
 export const updateUser = async (email, newUserData) => {
   try {
     const response = await fetch(`${API_URL}/update/${encodeURIComponent(email)}`, {
