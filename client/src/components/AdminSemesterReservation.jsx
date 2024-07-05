@@ -21,7 +21,7 @@ const AdminSemesterReservation = () => {
             ...reservation,
             
             label: reservation.purpose,
-            startDate: moment(reservation.reservationDate),
+            date: moment(reservation.reservationDate),
             startTime: reservation.startTime,
             endTime: reservation.endTime,
           }

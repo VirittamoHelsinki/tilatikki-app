@@ -10,7 +10,7 @@ const days = [ "Ma", "Ti", "Ke", "To", "Pe", "La", "Su" ]
 const columns = 7
 const rows = 6
 
-const Popup = ({ calendarData, date, close }) => {
+const Popup = ({ calendarData, date, close, handleBlockClick }) => {
   const blockContainerRef = useRef(null)
   const addNewReservationRef = useRef(null)
 
@@ -127,7 +127,7 @@ const Popup = ({ calendarData, date, close }) => {
   }, [ blockContainerRef ])
 
   const dataToRender = calendarData
-    .filter((data) => date.isSame(data.startDate, "day"))
+    .filter((data) => date.isSame(data.date, "day"))
 
   const blocks = dataToRender.map((data, index) => {
     // Determine the height and position of the block based on time of the day
@@ -142,7 +142,7 @@ const Popup = ({ calendarData, date, close }) => {
       <div
         key={`popup-block-${data.label}-${index}`}
         className={`block block--daily`}
-        // if (data.room.size === data.groupSize) gridCol: 1 / 3
+        onClick={() => handleBlockClick(data.date)}
         style={{ gridRow: `${rowStart + 1} / ${ rowEnd + 1 }`, zIndex: 10 }}
       >
         <p>{data.label}</p>
@@ -208,6 +208,14 @@ const Popup = ({ calendarData, date, close }) => {
   )
 }
 
+
+
+
+
+
+
+
+
 const Calendar = ({ calendarData = [] }) => {
   // Date to display in the monthly view
   const [ date, setDate ] = useState(moment())
@@ -228,15 +236,18 @@ const Calendar = ({ calendarData = [] }) => {
     setSelectedDate(date)
   }
 
+  const handleBlockClick = (date) => {
+    console.log("Block clicked", date)
+
+  }
+
   const calendarCells = []
-  const amountOfBlocksInCells = []
 
   const today = moment()
   const lastMonth = date.clone().subtract({ month: 1 })
   const daysInLastMonth = lastMonth.daysInMonth()
 
   const nextMonth = date.clone().add({ month: 1 })
-  const daysInNextMonth = nextMonth.daysInMonth()
  
   const firstDayOfCurrentMonth = moment([ date.year(), date.month(), 1 ]).day() - 1
   
@@ -270,12 +281,14 @@ const Calendar = ({ calendarData = [] }) => {
     return ({
       element: (      
         <div
-          className="block">
+          className="block"
+          onClick={() => handleBlockClick(data.date)}
+        >
           <p>{ `${data.startTime} ${data.label}` }</p>
         </div>
 
       ),
-      date: data.startDate,
+      date: data.date,
     })
   })  
 
@@ -310,6 +323,7 @@ const Calendar = ({ calendarData = [] }) => {
                 key={`popup-${selectedDate.toString()}`}
                 calendarData={calendarData} 
                 date={selectedDate}
+                handleBlockClick={handleBlockClick}
                 close={() => handleModal(null)}
               />
             )
