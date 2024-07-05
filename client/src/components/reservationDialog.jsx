@@ -23,6 +23,7 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/en-gb';  // Import Finnish locale
 import { getCookie } from '../utils/Cookies';
 import { fetchUserDataByEmail } from '../api/userApi';
+import CreateReservationForm from '../components/CreateReservationForm';
 
 dayjs.locale('en-gb');
 
@@ -186,6 +187,7 @@ const ReservationDialog = ({ roomId, isOpen, onClose, roomNumber, capacity, grou
 			<LocalizationProvider dateAdapter={AdapterDayjs}>
 				<Dialog open={isOpen} onClose={onClose} maxWidth="sm" fullWidth>
 					<DialogContent>
+					<CreateReservationForm roomNumber={roomNumber} groupsize={groupsize} capacity={capacity} user={user} />
 						<Box sx={{ marginTop: 0, marginBottom: 1 }}>
 							<Typography variant="h4">{roomNumber}</Typography>
 						</Box>
