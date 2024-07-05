@@ -35,14 +35,6 @@ const AdminSemesterReservation = () => {
     fetchReservations()
   }, [])
 
-  const hours = 24
-  const divideHourIntoSections = 4
-  const timeSelectionOptions = Array.from({ length: hours * divideHourIntoSections }).map((_, index) => {
-    const hour = Math.floor(index / divideHourIntoSections)
-    const minute = (index % 4) * 15
-    return `${hour}:${minute.toString().padStart(2, '0')}`
-  })
-
   return (
 
     <Grid container spacing={0}>
