@@ -1,4 +1,4 @@
-import { Grid, Typography, Divider, TextField, MenuItem, Select, FormControl, InputLabel, Button } from "@mui/material"
+import { Grid, Typography, Divider, TextField, MenuItem, Select, FormControl, InputLabel, Button, FormControlLabel, Switch } from "@mui/material"
 import { DatePicker, LocalizationProvider, TimePicker } from "@mui/x-date-pickers"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import Calendar from "./Calendar"
@@ -82,7 +82,7 @@ const AdminSemesterReservation = () => {
                 fullWidth
                 id="reservationName"
                 label="Lisää opettaja"
-                />
+              />
             </FormControl>
           </Grid>
 
@@ -207,14 +207,36 @@ const AdminSemesterReservation = () => {
             </FormControl>
           </Grid>
 
+          <Grid item lg={10}>
+            <FormControlLabel control={<Switch />} label="Varauksessa on poikkeuksia" />
+          </Grid>
+
+          <Grid item lg={10}>
+            <FormControl fullWidth>
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                autoComplete="additionalInformation"
+                name="additionalInformation"
+                required
+                fullWidth
+                id="additionalInformation"
+                label="Lisätietoa"
+                multiline
+                placeholder="Kirjoita tähän tarvittaessa varaukseen liittyvää tietoa"
+                minRows={3}
+              />
+            </FormControl>
+          </Grid>
+
           
-          <Grid item lg={3}>          
+          <Grid item lg={4}>          
             <Button
               type="submit"
               variant="contained"
               sx={{ 
                 mt: 3, 
                 mb: 2,
+                textTransform: "initial",
                 backgroundColor: '#18181B', // Change this to your desired color
                 '&:hover': {
                   backgroundColor: '#2b2b2b' // Change this to a lighter shade of your color
