@@ -19,6 +19,8 @@ const Popup = ({ calendarData, date, close }) => {
     const addNewReservation = addNewReservationRef.current
     if (!blockContainer) return
     if (!addNewReservationRef) return
+
+    addNewReservation.style.display = "none"
     
     const onMouseEnter = (event) => {
       console.log("hover");
@@ -37,12 +39,12 @@ const Popup = ({ calendarData, date, close }) => {
       const y = (event.clientY + 5) - rect.top
 
       const rectHeight = blockContainer.clientHeight
-      const row = Math.max(Math.floor((y / rectHeight) * 24 * 4), 0)
+      const row = Math.max(Math.floor((y / rectHeight) * 24 * 4), 1)
 
       // Row check :D
       // Check if we can move the newReservationButton to the row
       // This checks if the new reservation button is overlapping with any other blocks
-      const blocks = Array.from(blockContainer.children)
+      const blocked = Array.from(blockContainer.children)
         .filter((element) => element.classList.contains("block--daily"))
         .some((element) => {
           
@@ -67,7 +69,7 @@ const Popup = ({ calendarData, date, close }) => {
           return false
         })
       
-      if (blocks) {
+      if (blocked) {
         addNewReservation.style.display = "none"
         return
       }
