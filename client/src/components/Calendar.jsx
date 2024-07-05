@@ -44,9 +44,9 @@ const Popup = ({ calendarData, date, close }) => {
       // Row check :D
       // Check if we can move the newReservationButton to the row
       // This checks if the new reservation button is overlapping with any other blocks
-      const blocked = Array.from(blockContainer.children)
+      const blockedBy = Array.from(blockContainer.children)
         .filter((element) => element.classList.contains("block--daily"))
-        .some((element) => {
+        .map((element) => {
           
           const [ blockStartColumn, blockEndColumn ] = element.style.gridRow
             .split(" / ")
@@ -58,20 +58,30 @@ const Popup = ({ calendarData, date, close }) => {
 
           if (buttonStartColumn >= blockStartColumn && buttonStartColumn < blockEndColumn) {
             console.log(1);
-            return true
+            return element
           }
 
           if (buttonEndColumn > blockStartColumn && buttonEndColumn <= blockEndColumn) {
             console.log(2);
-            return true
+            return element
           }
  
-          return false
-        })
+          return null
+        }).filter((element) => !!element)
+
+      console.log(blockedBy.length);
       
-      if (blocked) {
+      if (blockedBy.length === 2) {
         addNewReservation.style.display = "none"
         return
+      }
+
+      if (blockedBy.length === 1) {
+        addNewReservation.style.gridColumn = "2 / 3"
+      }
+
+      if (blockedBy.length === 0) {
+        addNewReservation.style.gridColumn = "1 / 3"
       }
 
       addNewReservation.style.display = "block"
