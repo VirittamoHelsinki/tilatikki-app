@@ -26,6 +26,13 @@ const Popup = ({ calendarData, date, close }) => {
       console.log("hover");
 
       addNewReservation.style.display = "block"
+      const rect = blockContainer.getBoundingClientRect()
+      const y = (event.clientY + 5) - rect.top
+
+      const rectHeight = blockContainer.clientHeight
+      const row = Math.max(Math.floor((y / rectHeight) * 24 * 4), 1)
+      
+      addNewReservation.style.gridRow = `${row} / ${row + 2}`
     }
 
     const onMouseLeave = (event) => {
