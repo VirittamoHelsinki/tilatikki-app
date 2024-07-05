@@ -45,6 +45,11 @@ const Popup = ({ calendarData, date, close }) => {
       const rect = blockContainer.getBoundingClientRect()
       const y = (event.clientY + 5) - rect.top
 
+      // get mouse position relative to the block container
+      const rectWidth = blockContainer.clientWidth
+      const mousePositionXRatioToBlockContainerWidth = (event.clientX - rect.left) / rectWidth
+      console.log(mousePositionXRatioToBlockContainerWidth);
+
       const rectHeight = blockContainer.clientHeight
       const row = Math.max(Math.floor((y / rectHeight) * 24 * 4), 1)
 
@@ -61,22 +66,17 @@ const Popup = ({ calendarData, date, close }) => {
 
           const [ buttonStartColumn, buttonEndColumn ] = [ row, row + 2 ]
 
-          console.log(blockStartColumn, blockEndColumn, row, row + 2);
-
+          // Check if element is blocking the new reservation button
           if (buttonStartColumn >= blockStartColumn && buttonStartColumn < blockEndColumn) {
-            console.log(1);
             return element
           }
 
           if (buttonEndColumn > blockStartColumn && buttonEndColumn <= blockEndColumn) {
-            console.log(2);
             return element
           }
  
           return null
         }).filter((element) => !!element)
-
-      console.log(blockedBy.length);
       
       if (blockedBy.length === 2) {
         addNewReservation.style.display = "none"
@@ -84,6 +84,11 @@ const Popup = ({ calendarData, date, close }) => {
       }
 
       if (blockedBy.length === 1) {
+        if (mousePositionXRatioToBlockContainerWidth < 0.5) {
+          addNewReservation.style.display = "none"
+          return
+        }
+        
         addNewReservation.style.gridColumn = "2 / 3"
       }
 
