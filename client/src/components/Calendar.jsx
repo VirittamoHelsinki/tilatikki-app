@@ -282,7 +282,10 @@ const Calendar = ({ calendarData = [] }) => {
       element: (      
         <div
           className="block"
-          onClick={() => handleBlockClick(data.date)}
+          onClick={(event) => {
+            event.stopPropagation()
+            handleBlockClick(data.date)
+          }}
         >
           <p>{ `${data.startTime} ${data.label}` }</p>
         </div>
