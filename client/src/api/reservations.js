@@ -40,8 +40,6 @@ export const getReservations = async () => {
 	  throw error;
 	}
   };
-  
-
 
 export const useCreateReservationMutation = () => {
 	const queryClient = useQueryClient();

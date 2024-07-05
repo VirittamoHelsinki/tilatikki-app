@@ -41,9 +41,34 @@ exports.getReservationById = async (req, res) => {
   }
 };
 
+exports.getReservationsByUserId = async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    const reservations = await Reservation.find({ user: userId }).populate({
+      path: 'room',
+      populate: {
+        path: 'reservations',
+        populate: {
+          path: 'user'
+        }
+      }
+    }).populate('user');
+
+    if (!reservations || reservations.length === 0) {
+      return res.status(404).json({ message: 'No reservations found for this user' });
+    }
+
+    res.status(200).json(reservations);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
 exports.getReservations = async (req, res) => {
   try {
-    const reservations = await Reservation.find();
+    const reservations = await Reservation.find().populate('user');;
     res.status(200).json(reservations);
   } catch (error) {
     res.status(500).json({ error: error.message });

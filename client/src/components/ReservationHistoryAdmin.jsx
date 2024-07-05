@@ -10,7 +10,6 @@ import DeleteDialog from './DeleteDialog';
 import Snackbar from '@mui/material/Snackbar';
 import { getReservations } from '../api/reservations';
 import { fetchRoomById } from '../api/rooms';
-import { fetchUserById } from '../api/userApi';
 
 const columns = (handleClickOpen) => [
   {
@@ -78,140 +77,6 @@ const columns = (handleClickOpen) => [
   },
 ];
 
-const rows = [
-  {
-    id: 1,
-    opetustila: 'Classroom 1',
-    toistuva: true,
-    päivämäärä: '2024-06-07',
-    aikaväli: "12:00-13:00",
-    opettaja: 'John Doe',
-    ryhmankoko: 25,
-    toiminnot: 'Edit/Delete',
-  },
-  {
-    id: 2,
-    opetustila: 'Classroom 2',
-    toistuva: false,
-    päivämäärä: '2024-06-08',
-    aikaväli: "10:00-11:00",
-    opettaja: 'Jane Smith',
-    ryhmankoko: 30,
-    toiminnot: 'Edit/Delete',
-  },
-  {
-    id: 3,
-    opetustila: 'Classroom 3',
-    toistuva: true,
-    päivämäärä: '2024-06-09',
-    aikaväli: "8:00-10:00",
-    opettaja: 'Alice Johnson',
-    ryhmankoko: 20,
-    toiminnot: 'Edit/Delete',
-  },
-  {
-    id: 4,
-    opetustila: 'Classroom 4',
-    toistuva: false,
-    päivämäärä: '2024-06-10',
-    aikaväli: "14:00-15:00",
-    opettaja: 'Mark Davis',
-    ryhmankoko: 28,
-    toiminnot: 'Edit/Delete',
-  },
-  {
-    id: 5,
-    opetustila: 'Classroom 5',
-    toistuva: true,
-    päivämäärä: '2024-06-11',
-    aikaväli: "8:00-8:45",
-    opettaja: 'Emily Wilson',
-    ryhmankoko: 22,
-    toiminnot: 'Edit/Delete',
-  },
-  {
-    id: 6,
-    opetustila: 'Classroom 6',
-    toistuva: false,
-    päivämäärä: '2024-06-12',
-    aikaväli: "13:00-13:45",
-    opettaja: 'Michael Brown',
-    ryhmankoko: 35,
-    toiminnot: 'Edit/Delete',
-  },
-  {
-    id: 7,
-    opetustila: 'Classroom 7',
-    toistuva: true,
-    päivämäärä: '2024-06-13',
-    aikaväli: "9:00-11:00",
-    opettaja: 'Sarah Martinez',
-    ryhmankoko: 18,
-    toiminnot: 'Edit/Delete',
-  },
-  {
-    id: 8,
-    opetustila: 'Classroom 8',
-    toistuva: false,
-    päivämäärä: '2024-06-14',
-    aikaväli: "10:00-11:00",
-    opettaja: 'Andrew Taylor',
-    ryhmankoko: 27,
-    toiminnot: 'Edit/Delete',
-  },
-  {
-    id: 9,
-    opetustila: 'Classroom 9',
-    toistuva: true,
-    päivämäärä: '2024-06-15',
-    aikaväli: "7:30-8:00",
-    opettaja: 'Jessica Thomas',
-    ryhmankoko: 29,
-    toiminnot: 'Edit/Delete',
-  },
-  {
-    id: 10,
-    opetustila: 'Classroom 10',
-    toistuva: false,
-    päivämäärä: '2024-06-16',
-    aikaväli: "9:00-10:15",
-    opettaja: 'David jeeeriguez',
-    ryhmankoko: 64,
-    toiminnot: 'Edit/Delete',
-  },
-  {
-    id: 11,
-    opetustila: 'Classroom 11',
-    toistuva: false,
-    päivämäärä: '2024-09-16',
-    aikaväli: "9:00-10:00",
-    opettaja: 'David sdgsdgfsuez',
-    ryhmankoko: 24,
-    toiminnot: 'Edit/Delete',
-  },
-  {
-    id: 12,
-    opetustila: 'Classroom 12',
-    toistuva: false,
-    päivämäärä: '2024-08-16',
-    aikaväli: "12:00-10:00",
-    opettaja: 'David Rodriguez',
-    ryhmankoko: 24,
-    toiminnot: 'Edit/Delete',
-  },
-  {
-    id: 13,
-    opetustila: 'Classroom 13',
-    toistuva: false,
-    päivämäärä: '2024-06-29',
-    aikaväli: "9:00-10:00",
-    opettaja: 'David Rgegedriguez',
-    ryhmankoko: 34,
-    toiminnot: 'Edit/Delete',
-  },
-];
-
-
 const fiLocaleText = {
   ...fiFI.components.MuiDataGrid.defaultProps.localeText,
 };
@@ -223,21 +88,20 @@ const ReservationHistoryAdmin = () => {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [reservations, setReservations] = useState([]);
-  const [rowsData, setRowsData] = useState(rows);
 
   useEffect(() => {
-    const parseTime = (dateTimeString) => {
-      const date = new Date(dateTimeString);
-      const hours = date.getUTCHours();
-      const minutes = date.getUTCMinutes();
-      return { hours, minutes };
-    };
+    // const parseTime = (dateTimeString) => {
+    //   const date = new Date(dateTimeString);
+    //   const hours = date.getUTCHours();
+    //   const minutes = date.getUTCMinutes();
+    //   return { hours, minutes };
+    // };
 
-    const formatTimeInterval = (start, end) => {
-      const startTime = parseTime(start);
-      const endTime = parseTime(end);
-      return `${startTime.hours}:${startTime.minutes.toString().padStart(2, '0')} - ${endTime.hours}:${endTime.minutes.toString().padStart(2, '0')}`;
-    };
+    // const formatTimeInterval = (start, end) => {
+    //   const startTime = parseTime(start);
+    //   const endTime = parseTime(end);
+    //   return `${startTime.hours}:${startTime.minutes.toString().padStart(2, '0')} - ${endTime.hours}:${endTime.minutes.toString().padStart(2, '0')}`;
+    // };
 
     const formatDate = (dateString) => {
       const date = new Date(dateString);
@@ -251,39 +115,50 @@ const ReservationHistoryAdmin = () => {
       try {
         const reservationsData = await getReservations();
 
-        console.log('reservationsData', reservationsData);
 
-        // Fetch room and user data for each reservation
         const formattedReservations = await Promise.all(reservationsData.map(async (reservation, index) => {
-          const room = await fetchRoomById(reservation.room);
-          // const user = await fetchUserById(reservation.user);
-          console.log('gagasgassa', room);
-          
+          try {
+            const room = await fetchRoomById(reservation.room);
 
-          const aikaväli = reservation.startTime && reservation.endTime
-            ? formatTimeInterval(reservation.startTime, reservation.endTime)
-            : 'N/A';
+            let userName = 'N/A';
+            if (reservation.user) {
+              userName = reservation.user.name;
+            }
 
-          const päivämäärä = reservation.startTime
-            ? formatDate(reservation.startTime)
-            : 'N/A';
+            // const aikaväli = reservation.startTime && reservation.endTime
+            //   ? formatTimeInterval(reservation.startTime, reservation.endTime)
+            //   : 'N/A';
 
-          return {
-            id: index + 1,
-            opetustila: room.number || 'N/A',
-            toistuva: reservation.toistuva || false,
-            päivämäärä,
-            aikaväli,
-            opettaja: reservation.user || 'N/A',
-            ryhmankoko: reservation.groupsize || 'N/A',
-          };
+            const päivämäärä = reservation.reservationDate
+              ? formatDate(reservation.reservationDate)
+              : 'N/A';
+
+            console.log('reservation.startTime', reservation);
+            const isSpecificString = reservation.recurrence === 'none';
+            const toistuvaValue = isSpecificString ? false : true;
+
+            return {
+              id: index + 1,
+              opetustila: room.number || 'N/A',
+              toistuva: toistuvaValue,
+              päivämäärä,
+              aikaväli: reservation.startTime + " - " + reservation.endTime,
+              opettaja: userName,
+              ryhmankoko: reservation.groupsize + " / " + room.capacity || 'N/A',
+            };
+          } catch (innerError) {
+            console.error('Error processing reservation:', reservation, innerError);
+            throw innerError;
+          }
         }));
 
+
         setReservations(formattedReservations);
+
       } catch (error) {
         setError(error.message);
       } finally {
-        setLoading(false);
+        //setLoading(false);
       }
     };
     fetchAllReservations();
@@ -307,6 +182,7 @@ const ReservationHistoryAdmin = () => {
   };
 
   const handleDelete = () => {
+
     if (selectedRow) {
       setOpen(true); // Open confirmation dialog
     }
@@ -375,6 +251,29 @@ const ReservationHistoryAdmin = () => {
               quickFilterProps: {
                 style: { marginRight: '20px' },
               },
+            },
+          }}
+          getRowClassName={(params) =>
+            params.indexRelativeToCurrentPage % 2 === 0 ? 'greyRow' : ''
+          }
+          sx={{
+            '& .greyRow': {
+              backgroundColor: '#F1F5F9',
+            },
+            '& .MuiDataGrid-columnHeader': {
+              backgroundColor: '#1C2C52'
+            },
+            '& .MuiDataGrid-columnHeaderTitle': {
+              color: '#FFFFFF',
+            },
+            '& .MuiDataGrid-iconButtonContainer': {
+              color: '#FFFFFF', // Change the filter icon color to white
+            },
+            '& .MuiDataGrid-menuIconButton': {
+              color: '#FFFFFF', // Change the filter icon color to white
+            },
+            '& .MuiDataGrid-sortIcon': {
+              color: '#FFFFFF', // Change the sorting icon color to white
             },
           }}
         />

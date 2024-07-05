@@ -5,12 +5,14 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
 import TextField from '@mui/material/TextField';
+import { updateUser } from '../api/userApi';
 
-export default function EditUsers({ name, role, otherTeacher, onClose }) {
-  const [roleName, setRole] = useState('Opettaja');
-  const [chipVisible, setChipVisible] = useState(true);
+export default function EditUsers({ name, email, role, otherTeacher, onClose }) {
+  const [roleName, setRoleName] = useState(role === 'Admin' ? true : false);
+  const [chipVisible, setChipVisible] = useState(!!otherTeacher);
   const [inputValue, setInputValue] = useState('');
-  const [otherTeacherName, setOtherTeacherName] = useState(otherTeacher)
+  const [otherTeacherName, setOtherTeacherName] = useState(otherTeacher || '');
+  const [snackbarMessage, setSnackbarMessage ] = useState('');
 
   const handleChipDelete = () => {
     setChipVisible(false);
@@ -23,17 +25,40 @@ export default function EditUsers({ name, role, otherTeacher, onClose }) {
 
   const handleInputSubmit = (event) => {
     if (event.key === 'Enter') {
-      setChipVisible(true)
+      setChipVisible(true);
       setOtherTeacherName(inputValue);
       setInputValue('');
     }
   };
-  const handleChange = (event) => {
-    setRole(event.target.value);
+
+  const handleChangeRole = (event) => {
+    setRoleName(event.target.value);
+  };
+
+  const handleUserDataSubmit = async () => {
+    try {
+      const updatedData = {
+        subteacher: otherTeacherName,
+        admin: roleName,
+      };
+
+      console.log(updatedData[0] + "XSSSSSS")
+      console.log(email + "kfkefkekfk")
+
+      const { message, user: updatedUser } = await updateUser(email, updatedData);
+
+      // Update form fields or state based on the updated user data if needed
+      // For example, updating role or other display fields
+
+      setSnackbarMessage('Sub teacher and admin updated successfully!');
+      onClose(); // Close modal or navigate back after successful update
+    } catch (error) {
+      setSnackbarMessage('Failed to update sub teacher and admin.');
+      console.error(error);
+    }
   };
 
   return (
-
     <Typography variant="body1" component="div" sx={{ width: '1000px' }}>
       <Typography
         variant="subtitle1"
@@ -58,10 +83,10 @@ export default function EditUsers({ name, role, otherTeacher, onClose }) {
             <Select
               id="select"
               value={roleName}
-              onChange={handleChange}
+              onChange={handleChangeRole}
             >
-              <MenuItem value={"Opettaja"}>Opettaja</MenuItem>
-              <MenuItem value={"admin"}>Admin</MenuItem>
+              <MenuItem value={false}>Opettaja</MenuItem>
+              <MenuItem value={true}>Admin</MenuItem>
             </Select>
           </FormControl>
         </Box>
@@ -86,7 +111,7 @@ export default function EditUsers({ name, role, otherTeacher, onClose }) {
         </Box>
       </Box>
       <Button
-        type="submit"
+        onClick={handleUserDataSubmit}
         variant="contained"
         sx={{
           mt: 1,
