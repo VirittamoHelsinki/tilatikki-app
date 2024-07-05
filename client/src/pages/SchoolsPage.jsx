@@ -11,7 +11,7 @@ const cardData = [
     title: 'Pakilan peruskoulu',
     description: 'Kolmikerroksinen koulurakennus, jossa on noin 150 opetustilaa',
     image: pakilaKoulu,
-    link: '/reservations/666b2dd4f92c418afe6e698b'
+    link: '/reservations/6666fdca9786f9616159b55f'
   },
   {
     title: 'Jätkäsaaren peruskoulu',
