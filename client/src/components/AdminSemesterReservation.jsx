@@ -7,7 +7,7 @@ import { getReservations } from "../api/reservations"
 import moment from "moment"
 import { fiFI } from "@mui/x-date-pickers/locales"
 import dayjs from "dayjs"
-import CreateReservationForm from "./CreateReservationForm"
+import AdminCreateReservationDialog from "./AdminCreateReservationDialog"
 
 const AdminSemesterReservation = () => {
 
@@ -48,7 +48,7 @@ const AdminSemesterReservation = () => {
     <Grid container spacing={0}>
       <Grid item xs={4}>
         
-        <CreateReservationForm />
+        <AdminCreateReservationDialog />
   
 
       </Grid>

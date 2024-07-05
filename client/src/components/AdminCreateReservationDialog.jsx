@@ -6,7 +6,7 @@ import dayjs from "dayjs"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 
-const CreateReservationForm = () => {
+const AdminCreateReservationDialog = () => {
   const { register, handleSubmit, watch } = useForm()
 
   const [ reservationHasExceptions, setReservationHasExceptions ] = useState(false);
@@ -288,4 +288,4 @@ const CreateReservationForm = () => {
   );
 }
 
-export default CreateReservationForm;
+export default AdminCreateReservationDialog;
