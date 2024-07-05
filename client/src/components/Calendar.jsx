@@ -14,6 +14,12 @@ const Popup = ({ calendarData, date, close }) => {
   const blockContainerRef = useRef(null)
   const addNewReservationRef = useRef(null)
 
+  /*
+    This effect is responsible for handling the mouse events for the new reservation button.
+    It will display the new reservation button when the mouse is over the block container.
+    It will also move the new reservation button to the correct row based on the mouse position
+    and check if the new reservation button is overlapping with any other blocks.
+  */
   useEffect(() => {
     const blockContainer = blockContainerRef.current
     const addNewReservation = addNewReservationRef.current
@@ -22,9 +28,9 @@ const Popup = ({ calendarData, date, close }) => {
 
     addNewReservation.style.display = "none"
     
+    // When mouse enters the block container, display the new reservation button
+    // and position it accordingly
     const onMouseEnter = (event) => {
-      console.log("hover");
-
       addNewReservation.style.display = "block"
       const rect = blockContainer.getBoundingClientRect()
       const y = (event.clientY + 5) - rect.top
@@ -35,11 +41,14 @@ const Popup = ({ calendarData, date, close }) => {
       addNewReservation.style.gridRow = `${row} / ${row + 2}`
     }
 
+    // When mouse leaves the block container, hide the new reservation button
     const onMouseLeave = (event) => {
-      console.log("leave");
       addNewReservation.style.display = "none"
     }
 
+    // When mouse moves inside the block container, move the new reservation button.
+    // Also check if the new reservation button is overlapping with any other blocks
+    // to adjust its column
     const onMouseMove = (event) => {
       // get mouse coordinates relative to event.target
       const rect = blockContainer.getBoundingClientRect()
@@ -47,51 +56,55 @@ const Popup = ({ calendarData, date, close }) => {
 
       // get mouse position relative to the block container
       const rectWidth = blockContainer.clientWidth
+      // Used to check if mouse is on the left half or right half of the block container
       const mousePositionXRatioToBlockContainerWidth = (event.clientX - rect.left) / rectWidth
-      console.log(mousePositionXRatioToBlockContainerWidth);
 
       const rectHeight = blockContainer.clientHeight
       const row = Math.max(Math.floor((y / rectHeight) * 24 * 4), 1)
 
-      // Row check :D
-      // Check if we can move the newReservationButton to the row
-      // This checks if the new reservation button is overlapping with any other blocks
+      // Get all blocks that overlap with new reservation button
       const blockedBy = Array.from(blockContainer.children)
         .filter((element) => element.classList.contains("block--daily"))
         .map((element) => {
           
-          const [ blockStartColumn, blockEndColumn ] = element.style.gridRow
+          // Use gridRow to check for overlaps
+          const [ blockStartRow, blockEndRow ] = element.style.gridRow
             .split(" / ")
             .map((value) => Number(value))
 
-          const [ buttonStartColumn, buttonEndColumn ] = [ row, row + 2 ]
+          const [ buttonStartRow, buttonEndRow ] = [ row, row + 2 ]
 
           // Check if element is blocking the new reservation button
-          if (buttonStartColumn >= blockStartColumn && buttonStartColumn < blockEndColumn) {
+          if (buttonStartRow >= blockStartRow && buttonStartRow < blockEndRow) {
             return element
           }
 
-          if (buttonEndColumn > blockStartColumn && buttonEndColumn <= blockEndColumn) {
+          if (buttonEndRow > blockStartRow && buttonEndRow <= blockEndRow) {
             return element
           }
  
           return null
         }).filter((element) => !!element)
       
+      // If there are two blocks blocking the new reservation button, hide it
       if (blockedBy.length === 2) {
         addNewReservation.style.display = "none"
         return
       }
 
+      // If there is one block blocking the new reservation button
       if (blockedBy.length === 1) {
+        // If the mouse is on the left half of the block container, hide the new reservation button
         if (mousePositionXRatioToBlockContainerWidth < 0.5) {
           addNewReservation.style.display = "none"
           return
         }
-        
+
         addNewReservation.style.gridColumn = "2 / 3"
       }
 
+      // If there are no blocks blocking the new reservation button,
+      // the button is full width
       if (blockedBy.length === 0) {
         addNewReservation.style.gridColumn = "1 / 3"
       }
