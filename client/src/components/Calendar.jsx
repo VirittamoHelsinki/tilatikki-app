@@ -216,7 +216,7 @@ const Popup = ({ calendarData, date, close, handleBlockClick, modalPosition }) =
 
 
 
-const Calendar = ({ calendarData = [] }) => {
+const Calendar = ({ calendarData = [], callbackFn = () => console.log("Default callback for calendar") }) => {
   // Date to display in the monthly view
   const [ date, setDate ] = useState(moment())
   // Date to display in the daily view
@@ -235,11 +235,8 @@ const Calendar = ({ calendarData = [] }) => {
   }
 
   const handleModal = (date, clickedCalendarCell) => {
-    // Determine modal location inside the calendar to match user click location
-    console.log("Modal clicked", date, clickedCalendarCell)
-
-    // Calculate the position of the modal based on clickCalenderCell
     if (clickedCalendarCell) {
+      // Determine modal location inside the calendar to match user click location
       const calendarBody = clickedCalendarCell.parentElement.parentElement
       const calendarWeek = clickedCalendarCell.parentElement
       const modalWidth = 400
@@ -249,11 +246,9 @@ const Calendar = ({ calendarData = [] }) => {
       const weekY = calendarWeek.offsetTop
 
       const cellWidth = clickedCalendarCell.clientWidth
-      const cellHeight = clickedCalendarCell.clientHeight
       
       const calendarBodyWidth = calendarBody.clientWidth
       const calendarBodyHeight = calendarBody.clientHeight
-
 
       const padding = 10
 
@@ -275,7 +270,7 @@ const Calendar = ({ calendarData = [] }) => {
   }
 
   const handleBlockClick = (date) => {
-    console.log("Block clicked", date)
+    callbackFn(date)
   }
 
   const calendarCells = []
