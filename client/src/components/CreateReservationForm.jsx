@@ -1,3 +1,4 @@
+import React from 'react';
 import { Box, Grid, Typography, Divider, TextField, MenuItem, Select, FormControl, InputLabel, Button, FormControlLabel, Switch } from "@mui/material"
 import { DatePicker, LocalizationProvider, TimePicker } from "@mui/x-date-pickers"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
@@ -136,10 +137,30 @@ const CreateReservationForm = ({
 
         <Grid item lg={10}>
           <FormControl fullWidth>
+            <LocalizationProvider
+              localeText={fiFI.components.MuiLocalizationProvider.defaultProps.localeText}
+              dateAdapter={AdapterDayjs}
+            >
+              <DatePicker
+                autoComplete="reservationDate"
+                name={"reservationDate"}
+                required
+                format="DD/MM/YYYY" // Verify that this format is supported
+                slotProps={{ textField: { fullWidth: true } }}
+                id="reservationDate"
+                label="Varauksen päivämäärä*"
+                {...register("reservationDate")}
+              />
+            </LocalizationProvider>
+          </FormControl>
+        </Grid>
+
+        <Grid item lg={10}>
+          <FormControl fullWidth>
             <LocalizationProvider localeText={fiFI.components.MuiLocalizationProvider.defaultProps.localeText} dateAdapter={AdapterDayjs}>
               <DatePicker
                 autoComplete="reservationDate"
-                name="reservationDate"
+                name={"reservationDate"}
                 required
                 format="DD/MM/YYYY"
                 slotProps={{ textField: { fullWidth: true } }}
