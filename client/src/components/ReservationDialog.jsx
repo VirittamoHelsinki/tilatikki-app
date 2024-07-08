@@ -64,6 +64,7 @@ const ReservationDialog = ({ roomId, isOpen, onClose, roomNumber, capacity, grou
 	const [endTime, setEndTime] = useState(null);
 	const [recurrence, setRecurrence] = useState('');
 	const [additionalInfo, setAdditionalInfo] = useState('');
+	const [reservationData, setReservationData] = useState({})
 	const [user, setUser] = useState({ name: '' })
 
 	const createReservationMutation = useCreateReservationMutation();
@@ -115,9 +116,7 @@ const ReservationDialog = ({ roomId, isOpen, onClose, roomNumber, capacity, grou
 		setAdditionalInfo(event.target.value);
 	};
 
-	const handleSave = (e) => {
-		// Handle save action
-		e.preventDefault();
+	const handleSave = () => {
 
 		const formatTime = (time) => {
 			return dayjs(time).format('HH:mm');
@@ -176,132 +175,24 @@ const ReservationDialog = ({ roomId, isOpen, onClose, roomNumber, capacity, grou
 		onClose();
 	};
 
-	const handleCancel = () => {
-		onClose();
-	};
-
-
 
 	return (
 		<ThemeProvider theme={theme}>
 			<LocalizationProvider dateAdapter={AdapterDayjs}>
 				<Dialog open={isOpen} onClose={onClose} maxWidth="sm" fullWidth>
 					<DialogContent>
-					<CreateReservationForm roomNumber={roomNumber} groupsize={groupsize} capacity={capacity} user={user} />
-						<Box sx={{ marginTop: 0, marginBottom: 1 }}>
-							<Typography variant="h4">{roomNumber}</Typography>
-						</Box>
-						<Box sx={{ marginTop: 0, marginBottom: 0, display: 'flex', alignItems: 'center' }}>
-							{<Typography variant="h6" sx={{ display: 'flex', alignItems: 'center' }}>
-								<PeopleIcon sx={{ marginRight: 1 }} />{groupsize} / {capacity}
-							</Typography>}
-						</Box>
-						<Box sx={{ marginTop: 1, marginBottom: 2 }}>
-							<Typography variant="h6">Varauksen tekijä</Typography>
-							<Typography variant="body2">{user.name} {user.surname}</Typography>
-						</Box>
-						<TextField
-							autoFocus
-							margin="dense"
-							id="title"
-							label="Varauksen nimi"
-							fullWidth
-							value={title}
-							onChange={handleTitleChange}
+						<CreateReservationForm
+							roomNumber={roomNumber}
+							roomId={roomId}
+							reservationGroupSize={groupSize}
+							handleGroupSizeChange={handleGroupSizeChange}
+							groupsize={groupsize}
+							capacity={capacity}
+							user={user}
+							onClose={onClose}
 						/>
-						<FormControl fullWidth margin="dense">
-							<InputLabel id="group-size-label">Ryhmän koko (max. {capacity - groupsize} oppilasta)</InputLabel>
-							<Select
-								labelId="group-size-label"
-								id="group-size"
-								value={groupSize}
-								onChange={handleGroupSizeChange}
-								label={`Ryhmän koko (max. ${capacity - groupsize} oppilasta)`}  // Ensure the label is also set in the Select
-							>
-								{[...Array(capacity - groupsize).keys()].map((index) => {
-									const size = index + 1; // Shift the range to start from 1
-									return (
-										<MenuItem key={size} value={size}>
-											{size}
-										</MenuItem>
-									);
-								})}
-							</Select>
-						</FormControl>
-						<Grid container marginTop={1} marginBottom={1}>
-							<Grid item lg={12}>
-								<DatePicker
-									label="Varauksen päivämäärä"
-									value={reservationDate}
-									onChange={handleReservationDateChange}
-									renderInput={(params) => <TextField {...params} fullWidth />}
-									slotProps={{ textField: { fullWidth: true } }}
-								/>
-							</Grid>
-							<Grid container display={"flex"} rowSpacing={1} marginTop={1} justifyContent={"space-between"} alignItems={"center"}>
-								<Grid item lg={6}>
-									<TimePicker
-										label="Aloitusaika"
-										value={startTime}
-										onChange={handleStartTimeChange}
-										ampm={false}
-									/>
-								</Grid>
-								<Grid item lg={6} >
-									<TimePicker
-										label="Lopetusaika"
-										value={endTime}
-										onChange={handleEndTimeChange}
-										ampm={false}
-									/>
-								</Grid>
-							</Grid>
 
-						</Grid>
-
-						<FormControl fullWidth margin="dense">
-							<InputLabel id="recurrence-label">Toistuvuus</InputLabel>
-							<Select
-								labelId="recurrence-label"
-								id="recurrence"
-								value={recurrence}
-								label={'Toistuvuus'}
-								onChange={handleRecurrenceChange}
-							>
-								<MenuItem value="none">Älä toista</MenuItem>
-								<MenuItem value="daily">Päivittäin</MenuItem>
-								<MenuItem value="weekly">Viikottain</MenuItem>
-							</Select>
-						</FormControl>
-						{
-							recurrence && recurrence !== "none" &&
-							<>
-								<DatePicker
-									label="Varauksen viimeinen päivämäärä"
-									value={reservationDate}
-									onChange={handleReservationEndDateChange}
-									renderInput={(params) => <TextField {...params} fullWidth />}
-									slotProps={{ textField: { fullWidth: true } }}
-								/>
-							</>
-						}
-						<TextField
-							margin="dense"
-							id="additional-info"
-							label="Lisätietoa"
-							fullWidth
-							multiline
-							rows={4}
-							value={additionalInfo}
-							onChange={handleAdditionalInfoChange}
-						/>
 					</DialogContent>
-					<DialogActions>
-						<Button onClick={handleCancel} style={{ color: 'black' }}>Peruuta</Button>
-						<Button onClick={handleSave} variant="contained" style={{ backgroundColor: 'black', color: 'white' }}>
-							Varaa tila
-						</Button>
-					</DialogActions>
 				</Dialog>
 			</LocalizationProvider>
 		</ThemeProvider>

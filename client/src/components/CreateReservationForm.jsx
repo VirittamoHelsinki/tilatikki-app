@@ -8,14 +8,75 @@ import { useForm } from "react-hook-form"
 import PeopleIcon from '@mui/icons-material/People';
 
 
-const CreateReservationForm = ({ roomId, isOpen, onClose, roomNumber, capacity, groupsize, user }) => {
+const CreateReservationForm = ({
+  roomNumber,
+  roomId,
+  capacity,
+  groupsize,
+  user,
+  onClose }) => {
   const { register, handleSubmit, watch } = useForm()
 
-  const [ reservationHasExceptions, setReservationHasExceptions ] = useState(false);
+  const [reservationHasExceptions, setReservationHasExceptions] = useState(false);
+
   const handleReservationSwitchChange = () => setReservationHasExceptions(!reservationHasExceptions);
 
   const onSubmit = (data) => {
     console.log(data)
+
+    const generateRecurringReservations = (baseDate, endDate, interval, reservationData) => {
+      let currentDate = dayjs(baseDate);
+      const end = dayjs(endDate);
+      const reservations = [];
+
+      while (currentDate.isBefore(end) || currentDate.isSame(end, 'day')) {
+        reservations.push({
+          ...reservationData,
+          reservationDate: currentDate,
+          startTime: startTime ? formatTime(startTime) : null,
+          endTime: endTime ? formatTime(endTime) : null,
+        });
+
+        currentDate = currentDate.add(interval, 'day');
+      }
+
+      return reservations;
+    }
+
+    const reservationData = {
+      userId: user._id, // userId
+      reservationDate: data.reservationDate ? data.reservationDate : null,
+      reservationEndDate: data.reservationEndDate ? data.reservationEndDate : null,
+      startTime: data.startTime,
+      endTime: data.endTime,
+      purpose: data.reservationName, // string
+      roomId: roomId, // roomId
+      groupsize: data.reservationGroupSize, // integer
+      recurrence: data.recurrence,
+      additionalInfo: data.additionalInfo
+    }
+
+
+    console.log('reservationData: ', reservationData)
+
+    // if (recurrence === 'none') {
+    //   createReservationMutation.mutate(reservationData);
+    // } else if (recurrence === 'daily' && reservationEndDate) {
+    //   const reservations = generateRecurringReservations(reservationDate, reservationEndDate, 1, reservationData);
+    //   reservations.forEach(reservation => {
+    //     createReservationMutation.mutate(reservation);
+    //   });
+    // } else if (recurrence === 'weekly' && reservationEndDate) {
+    //   const reservations = generateRecurringReservations(reservationDate, reservationEndDate, 7, reservationData);
+    //   console.log('weekly reservations: ', reservations)
+    //   reservations.forEach(reservation => {
+    //     createReservationMutation.mutate(reservation);
+    //   });
+    // } else {
+    //   console.error('Invalid recurrence or missing end date');
+    // }
+
+    onClose();
   }
 
   return (
@@ -23,18 +84,18 @@ const CreateReservationForm = ({ roomId, isOpen, onClose, roomNumber, capacity, 
 
       <Grid container spacing={2}>
         <Grid item xs={10}>
-			<Box sx={{ marginTop: 0, marginBottom: 1 }}>
-				<Typography variant="h4">{roomNumber}</Typography>
-			</Box>
-			<Box sx={{ marginTop: 0, marginBottom: 0, display: 'flex', alignItems: 'center' }}>
-			    {<Typography variant="h6" sx={{ display: 'flex', alignItems: 'center' }}>
-				    <PeopleIcon sx={{ marginRight: 1 }} />{groupsize} / {capacity}
-				</Typography>}
-			</Box>
-			<Box sx={{ marginTop: 1, marginBottom: 2 }}>
-				<Typography variant="h6">Varauksen tekijä</Typography>
-				<Typography style={{color: 'gray'}} variant="body1">{user.name} {user.surname}</Typography>
-			</Box>
+          <Box sx={{ marginTop: 0, marginBottom: 0 }}>
+            <Typography variant="h4">{roomNumber}</Typography>
+          </Box>
+          <Box sx={{ marginTop: 0, marginBottom: 0, display: 'flex', alignItems: 'center' }}>
+            {<Typography variant="h6" sx={{ display: 'flex', alignItems: 'center' }}>
+              <PeopleIcon sx={{ marginRight: 1 }} />{groupsize} / {capacity}
+            </Typography>}
+          </Box>
+          <Box sx={{ marginTop: 1, marginBottom: 0 }}>
+            <Typography variant="h6">Varauksen tekijä</Typography>
+            <Typography style={{ color: 'gray' }} variant="body1">{user.name} {user.surname}</Typography>
+          </Box>
         </Grid>
 
         <Grid item lg={10}>
@@ -46,8 +107,29 @@ const CreateReservationForm = ({ roomId, isOpen, onClose, roomNumber, capacity, 
               fullWidth
               id="reservationName"
               label="Varauksen nimi"
-              { ...register("reservationName") }
+              {...register("reservationName")}
             />
+          </FormControl>
+        </Grid>
+
+        <Grid item lg={10}>
+          <FormControl fullWidth margin="dense">
+            <InputLabel id="group-size-label">Ryhmän koko (max. {capacity - groupsize} oppilasta)</InputLabel>
+            <Select
+              labelId="group-size-label"
+              id="group-size"
+              label={`Ryhmän koko (max. ${capacity - groupsize} oppilasta)`}  // Ensure the label is also set in the Select
+              {...register("reservationGroupSize")}
+            >
+              {[...Array(capacity - groupsize).keys()].map((index) => {
+                const size = index + 1; // Shift the range to start from 1
+                return (
+                  <MenuItem key={size} value={size}>
+                    {size}
+                  </MenuItem>
+                );
+              })}
+            </Select>
           </FormControl>
         </Grid>
 
@@ -60,10 +142,10 @@ const CreateReservationForm = ({ roomId, isOpen, onClose, roomNumber, capacity, 
                 name="reservationDate"
                 required
                 format="DD/MM/YYYY"
-                slotProps={{ textField: { fullWidth: true }}}
+                slotProps={{ textField: { fullWidth: true } }}
                 id="reservationDate"
                 label="Varauksen päivämäärä*"
-              { ...register("reservationDate") }
+                {...register("reservationDate")}
               />
             </LocalizationProvider>
           </FormControl>
@@ -80,7 +162,7 @@ const CreateReservationForm = ({ roomId, isOpen, onClose, roomNumber, capacity, 
                 fullWidth
                 ampm={false}
                 defaultValue={dayjs()}
-                { ...register("startTime") }
+                {...register("startTime")}
               />
             </LocalizationProvider>
           </FormControl>
@@ -96,54 +178,13 @@ const CreateReservationForm = ({ roomId, isOpen, onClose, roomNumber, capacity, 
                 fullWidth
                 ampm={false}
                 defaultValue={dayjs()}
-                { ...register("endTime") }
+                {...register("endTime")}
               />
             </LocalizationProvider>
           </FormControl>
         </Grid>
 
-        <Grid item lg={5}>
-          <FormControl fullWidth>
-            <InputLabel id="group-size-label">Ryhmän koko*</InputLabel>
-            <Select
-              labelId="group-size-label"
-              id="group-size-select"
-              name="groupSize"
-              required
-              fullWidth
-              label="Ryhmän koko"
-              defaultValue={1}
-              { ...register("groupSize") }
-            >
-              {
-                Array.from({ length: 100 }).map((_, index) => (
-                  <MenuItem key={index} value={index + 1}>{index + 1}</MenuItem>
-                ))
-              }
-            </Select>
-          </FormControl>
-        </Grid>
 
-        <Grid item lg={5}>
-          <FormControl fullWidth>
-          <InputLabel id="classroom-label">Opetustila*</InputLabel>
-            <Select
-              labelId="classroom-label"
-              id="classroom-select"
-              name="classroom"
-              required
-              fullWidth
-              label="Opetustila"
-              placeholder="Valitse opetustila"
-              defaultValue="Vihreä lohikäärme"
-              { ...register("classroom") }
-            >
-              <MenuItem value="Vihreä lohikäärme">Vihreä lohikäärme</MenuItem>
-              <MenuItem value="Punainen panda">Punainen panda</MenuItem>
-              <MenuItem value="Sininen siili">Sininen siili</MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
 
         <Grid item lg={10}>
           <FormControl fullWidth>
@@ -156,7 +197,7 @@ const CreateReservationForm = ({ roomId, isOpen, onClose, roomNumber, capacity, 
               fullWidth
               label="Toistuvuus"
               defaultValue={"Älä toista"}
-              { ...register("recurrence") }
+              {...register("recurrence")}
             >
               <MenuItem value="Älä toista">Älä toista</MenuItem>
               <MenuItem value="Päivittäin">Päivittäin</MenuItem>
@@ -165,11 +206,11 @@ const CreateReservationForm = ({ roomId, isOpen, onClose, roomNumber, capacity, 
           </FormControl>
         </Grid>
 
-        { /* IF RESERVATION IS RECURRING */ }
+        { /* IF RESERVATION IS RECURRING */}
         {
           watch("recurrence") !== "Älä toista" && (
             <>
-            
+
               <Grid item lg={10}>
                 <FormControl fullWidth>
                   <LocalizationProvider localeText={fiFI.components.MuiLocalizationProvider.defaultProps.localeText} dateAdapter={AdapterDayjs}>
@@ -178,20 +219,20 @@ const CreateReservationForm = ({ roomId, isOpen, onClose, roomNumber, capacity, 
                       name="endDate"
                       required
                       format="DD/MM/YYYY"
-                      slotProps={{ textField: { fullWidth: true }}}
+                      slotProps={{ textField: { fullWidth: true } }}
                       id="endDate"
                       label="Varauksen päättymispäivä*"
-                      { ...register("endDate") }
-                      />
-                    </LocalizationProvider>
+                      {...register("endDate")}
+                    />
+                  </LocalizationProvider>
                 </FormControl>
               </Grid>
-        
+
               <Grid item lg={10}>
-                <FormControlLabel control={<Switch onChange={handleReservationSwitchChange}/>} label="Varauksessa on poikkeuksia" />
+                <FormControlLabel control={<Switch onChange={handleReservationSwitchChange} />} label="Varauksessa on poikkeuksia" />
               </Grid>
-        
-              { /* EXCEPTIONS */ }
+
+              { /* EXCEPTIONS */}
               {
                 reservationHasExceptions ? (
                   <>
@@ -203,18 +244,18 @@ const CreateReservationForm = ({ roomId, isOpen, onClose, roomNumber, capacity, 
                             name="exceptionDays"
                             required
                             format="DD/MM/YYYY"
-                            slotProps={{ textField: { fullWidth: true }}}
+                            slotProps={{ textField: { fullWidth: true } }}
                             id="exceptionDays"
                             label="Poikkeavat päivät"
-                            { ...register("exceptionDays") }
+                            {...register("exceptionDays")}
                           />
                         </LocalizationProvider>
                       </FormControl>
                     </Grid>
-        
+
                     <Grid item lg={10}>
                       <FormControl fullWidth>
-                      <InputLabel id="exception-week-label">Poikkeavat viikot</InputLabel>
+                        <InputLabel id="exception-week-label">Poikkeavat viikot</InputLabel>
                         <Select
                           labelId="exception-week-label"
                           id="exception-week-select"
@@ -223,8 +264,8 @@ const CreateReservationForm = ({ roomId, isOpen, onClose, roomNumber, capacity, 
                           fullWidth
                           label="exception-week-label"
                           placeholder="Valitse viikot"
-                          
-                          { ...register("exceptionDays") }
+
+                          {...register("exceptionDays")}
                         >
                           <MenuItem value="Vihreä lohikäärme">Vihreä lohikäärme</MenuItem>
                           <MenuItem value="Punainen panda">Punainen panda</MenuItem>
@@ -235,7 +276,7 @@ const CreateReservationForm = ({ roomId, isOpen, onClose, roomNumber, capacity, 
                   </>
                 ) : null
               }
-              { /* EXCEPTIONS END */ }
+              { /* EXCEPTIONS END */}
             </>
           )
         }
@@ -252,17 +293,19 @@ const CreateReservationForm = ({ roomId, isOpen, onClose, roomNumber, capacity, 
               multiline
               placeholder="Kirjoita tähän tarvittaessa varaukseen liittyvää tietoa"
               minRows={3}
+              {...register("additionalInfo")}
+
             />
           </FormControl>
         </Grid>
 
-        
-        <Grid item lg={4}>          
+
+        <Grid item lg={4}>
           <Button
             type="submit"
             variant="contained"
-            sx={{ 
-              mt: 3, 
+            sx={{
+              mt: 3,
               mb: 2,
               textTransform: "initial",
               backgroundColor: '#18181B', // Change this to your desired color

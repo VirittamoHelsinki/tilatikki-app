@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import dayjs from 'dayjs';
 import PeopleIcon from '@mui/icons-material/People';
-import ReservationDialog from '../components/reservationDialog';
+import ReservationDialog from '../components/ReservationDialog';
 
 const ReservationCard = ({ roomId, roomNumber, purpose, status, capacity, reservationDate, startTime, endTime, groupsize, creator }) => {
 
