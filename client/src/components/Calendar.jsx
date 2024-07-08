@@ -309,10 +309,11 @@ const Calendar = ({ calendarData = [], callbackFn = () => console.log("Default c
   }
 
 
-  const blocks = calendarData.map((data) => {
+  const blocks = calendarData.map((data, index) => {
     return ({
       element: (      
         <div
+          key={`block-${data.label}-${index}`}
           className="block"
           onClick={(event) => {
             event.stopPropagation()
@@ -369,7 +370,7 @@ const Calendar = ({ calendarData = [], callbackFn = () => console.log("Default c
             // Generate each row one by one
             Array.from({ length: rows }).map((_, week) => {              
               return (
-                <div className="calendar__week">
+                <div key={`week-${week}`} className="calendar__week">
                   {
                     Array.from({ length: columns }).map((_, day) => {
                       const cellIndex = columns * week + day
@@ -395,7 +396,7 @@ const Calendar = ({ calendarData = [], callbackFn = () => console.log("Default c
                           </p>
 
                           <div className="calendar__block-container">
-                            { blocksToRender.slice(0, 3) /* Only render the first three blocks*/ }
+                            { blocksToRender.slice(0, 3) }
                             { blocksToRender.length > 3 && (
                               <div className="block block--more"><p>{ otherReservationsText }</p></div>
                             )}
