@@ -10,7 +10,7 @@ const days = [ "Ma", "Ti", "Ke", "To", "Pe", "La", "Su" ]
 const columns = 7
 const rows = 6
 
-const Popup = ({ calendarData, date, close, handleBlockClick, modalPosition }) => {
+const Popup = ({ calendarData, date, close, handleBlockClickFn, handleNewReservationFn, modalPosition }) => {
   const blockContainerRef = useRef(null)
   const addNewReservationRef = useRef(null)
 
@@ -142,7 +142,7 @@ const Popup = ({ calendarData, date, close, handleBlockClick, modalPosition }) =
       <div
         key={`popup-block-${data.label}-${index}`}
         className={`block block--daily`}
-        onClick={() => handleBlockClick(data.date)}
+        onClick={() => handleBlockClickFn(data.date)}
         style={{ gridRow: `${rowStart + 1} / ${ rowEnd + 1 }`, zIndex: 10 }}
       >
         <p>{data.label}</p>
@@ -196,6 +196,7 @@ const Popup = ({ calendarData, date, close, handleBlockClick, modalPosition }) =
 
             <div
               className="block block--new"
+              onClick={() => console.log("New reservation")}
               ref={addNewReservationRef}
             >
               <p>Luo uusi varaus</p>
@@ -216,7 +217,11 @@ const Popup = ({ calendarData, date, close, handleBlockClick, modalPosition }) =
 
 
 
-const Calendar = ({ calendarData = [], callbackFn = () => console.log("Default callback for calendar") }) => {
+const Calendar = ({
+  calendarData = [],
+  onBlockClickFn = () => console.log("Default callback for clickin nlok"),
+  onNewReservationFn = () => console.log("Default callback for new reservation"),
+}) => {
   // Date to display in the monthly view
   const [ date, setDate ] = useState(moment())
   // Date to display in the daily view
@@ -262,7 +267,6 @@ const Calendar = ({ calendarData = [], callbackFn = () => console.log("Default c
         calendarBodyHeight - modalHeight - padding
       )
 
-      console.log("Modal position", x, y);
       setModalPosition({ x, y })
     }
 
@@ -270,7 +274,7 @@ const Calendar = ({ calendarData = [], callbackFn = () => console.log("Default c
   }
 
   const handleBlockClick = (date) => {
-    callbackFn(date)
+    onBlockClickFn(date)
   }
 
   const calendarCells = []
@@ -361,6 +365,7 @@ const Calendar = ({ calendarData = [], callbackFn = () => console.log("Default c
                 calendarData={calendarData} 
                 date={selectedDate}
                 handleBlockClick={handleBlockClick}
+                handleNewReservationFn={onNewReservationFn}
                 close={() => handleModal(null)}
               />
             )
