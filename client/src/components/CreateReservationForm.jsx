@@ -84,7 +84,7 @@ const CreateReservationForm = ({
     <form onSubmit={handleSubmit(onSubmit)}>
 
       <Grid container spacing={2}>
-        <Grid item xs={10}>
+        <Grid item xs={12}>
           <Box sx={{ marginTop: 0, marginBottom: 0 }}>
             <Typography variant="h4">{roomNumber}</Typography>
           </Box>
@@ -99,7 +99,7 @@ const CreateReservationForm = ({
           </Box>
         </Grid>
 
-        <Grid item lg={10}>
+        <Grid item lg={12}>
           <FormControl fullWidth>
             <TextField
               autoComplete="reservationName"
@@ -113,7 +113,7 @@ const CreateReservationForm = ({
           </FormControl>
         </Grid>
 
-        <Grid item lg={10}>
+        <Grid item lg={12}>
           <FormControl fullWidth margin="dense">
             <InputLabel id="group-size-label">Ryhmän koko (max. {capacity - groupsize} oppilasta)</InputLabel>
             <Select
@@ -135,27 +135,7 @@ const CreateReservationForm = ({
         </Grid>
 
 
-        <Grid item lg={10}>
-          <FormControl fullWidth>
-            <LocalizationProvider
-              localeText={fiFI.components.MuiLocalizationProvider.defaultProps.localeText}
-              dateAdapter={AdapterDayjs}
-            >
-              <DatePicker
-                autoComplete="reservationDate"
-                name={"reservationDate"}
-                required
-                format="DD/MM/YYYY" // Verify that this format is supported
-                slotProps={{ textField: { fullWidth: true } }}
-                id="reservationDate"
-                label="Varauksen päivämäärä*"
-                {...register("reservationDate")}
-              />
-            </LocalizationProvider>
-          </FormControl>
-        </Grid>
-
-        <Grid item lg={10}>
+        <Grid item lg={12}>
           <FormControl fullWidth>
             <LocalizationProvider localeText={fiFI.components.MuiLocalizationProvider.defaultProps.localeText} dateAdapter={AdapterDayjs}>
               <DatePicker
@@ -173,7 +153,7 @@ const CreateReservationForm = ({
         </Grid>
 
 
-        <Grid item lg={5}>
+        <Grid item lg={6}>
           <FormControl fullWidth>
             <LocalizationProvider localeText={fiFI.components.MuiLocalizationProvider.defaultProps.localeText} dateAdapter={AdapterDayjs}>
               <TimePicker
@@ -189,7 +169,7 @@ const CreateReservationForm = ({
           </FormControl>
         </Grid>
 
-        <Grid item lg={5}>
+        <Grid item lg={6}>
           <FormControl fullWidth>
             <LocalizationProvider localeText={fiFI.components.MuiLocalizationProvider.defaultProps.localeText} dateAdapter={AdapterDayjs}>
               <TimePicker
@@ -207,7 +187,7 @@ const CreateReservationForm = ({
 
 
 
-        <Grid item lg={10}>
+        <Grid item lg={12}>
           <FormControl fullWidth>
             <InputLabel id="recurrence-label">Toistuvuus*</InputLabel>
             <Select
@@ -232,7 +212,7 @@ const CreateReservationForm = ({
           watch("recurrence") !== "Älä toista" && (
             <>
 
-              <Grid item lg={10}>
+              <Grid item lg={12}>
                 <FormControl fullWidth>
                   <LocalizationProvider localeText={fiFI.components.MuiLocalizationProvider.defaultProps.localeText} dateAdapter={AdapterDayjs}>
                     <DatePicker
@@ -249,7 +229,7 @@ const CreateReservationForm = ({
                 </FormControl>
               </Grid>
 
-              <Grid item lg={10}>
+              <Grid item lg={12}>
                 <FormControlLabel control={<Switch onChange={handleReservationSwitchChange} />} label="Varauksessa on poikkeuksia" />
               </Grid>
 
@@ -274,7 +254,7 @@ const CreateReservationForm = ({
                       </FormControl>
                     </Grid>
 
-                    <Grid item lg={10}>
+                    <Grid item lg={12}>
                       <FormControl fullWidth>
                         <InputLabel id="exception-week-label">Poikkeavat viikot</InputLabel>
                         <Select
@@ -302,7 +282,7 @@ const CreateReservationForm = ({
           )
         }
 
-        <Grid item lg={10}>
+        <Grid item lg={12}>
           <FormControl fullWidth>
             <TextField
               InputLabelProps={{ shrink: true }}
