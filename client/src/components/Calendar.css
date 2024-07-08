@@ -67,6 +67,7 @@
 }
 
 .calendar__body {
+  position: relative;
   display: grid;
   grid-template-rows: repeat(6, 140px); /* height of a cell */
 }

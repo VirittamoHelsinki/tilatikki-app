@@ -10,7 +10,7 @@ const days = [ "Ma", "Ti", "Ke", "To", "Pe", "La", "Su" ]
 const columns = 7
 const rows = 6
 
-const Popup = ({ calendarData, date, close, handleBlockClick }) => {
+const Popup = ({ calendarData, date, close, handleBlockClick, modalPosition }) => {
   const blockContainerRef = useRef(null)
   const addNewReservationRef = useRef(null)
 
@@ -158,7 +158,7 @@ const Popup = ({ calendarData, date, close, handleBlockClick }) => {
   } 
   
   return (
-    <div key={`popup-${date.toString()}`} className="popup">
+    <div key={`popup-${date.toString()}`} className="popup" style={{ left: modalPosition.x, top: modalPosition.y }}>
       <div className="popup__header">
         { /* close button */ }
         <svg className="cross" onClick={handleClose} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -221,6 +221,8 @@ const Calendar = ({ calendarData = [] }) => {
   const [ date, setDate ] = useState(moment())
   // Date to display in the daily view
   const [ selectedDate, setSelectedDate ] = useState(null)
+  // Position of modal
+  const [ modalPosition, setModalPosition ] = useState({ x: 0, y: 0 })
 
   const addMonth = () => {
     setDate((oldDate) => oldDate.clone().add({ month: 1 }))
@@ -232,13 +234,48 @@ const Calendar = ({ calendarData = [] }) => {
     setSelectedDate(null)
   }
 
-  const handleModal = (date) => {
+  const handleModal = (date, clickedCalendarCell) => {
+    // Determine modal location inside the calendar to match user click location
+    console.log("Modal clicked", date, clickedCalendarCell)
+
+    // Calculate the position of the modal based on clickCalenderCell
+    if (clickedCalendarCell) {
+      const calendarBody = clickedCalendarCell.parentElement.parentElement
+      const calendarWeek = clickedCalendarCell.parentElement
+      const modalWidth = 400
+      const modalHeight = 600
+
+      const cellX = clickedCalendarCell.offsetLeft
+      const weekY = calendarWeek.offsetTop
+
+      const cellWidth = clickedCalendarCell.clientWidth
+      const cellHeight = clickedCalendarCell.clientHeight
+      
+      const calendarBodyWidth = calendarBody.clientWidth
+      const calendarBodyHeight = calendarBody.clientHeight
+
+
+      const padding = 10
+
+      const x = Math.min(
+        Math.max( padding, cellX + cellWidth / 2 - modalWidth / 2 ),
+        calendarBodyWidth - modalWidth - padding
+      )
+
+      const y = Math.min(
+        Math.max( padding, weekY + calendarWeek.clientHeight / 2 - modalHeight / 2 ),
+        calendarBodyHeight - modalHeight - padding
+      )
+
+      console.log("Modal position", x, y);
+      setModalPosition({ x, y })
+    }
+
     setSelectedDate(date)
   }
 
   const handleBlockClick = (date) => {
     console.log("Block clicked", date)
-
   }
 
   const calendarCells = []
@@ -324,6 +361,7 @@ const Calendar = ({ calendarData = [] }) => {
             selectedDate && (
               <Popup
                 key={`popup-${selectedDate.toString()}`}
+                modalPosition={modalPosition}
                 calendarData={calendarData} 
                 date={selectedDate}
                 handleBlockClick={handleBlockClick}
@@ -334,11 +372,7 @@ const Calendar = ({ calendarData = [] }) => {
 
           {
             // Generate each row one by one
-            Array.from({ length: rows }).map((_, week) => {
-              // Get the first top left cell of the calendar and check its week number
-              const actualWeekNumber = calendarCells[0].date.week() + week
-              const currentYear = calendarCells[0].date.year()
-              
+            Array.from({ length: rows }).map((_, week) => {              
               return (
                 <div className="calendar__week">
                   {
@@ -359,7 +393,7 @@ const Calendar = ({ calendarData = [] }) => {
                           key={`cell-${cellIndex}`}
                           className={`calendar__cell ${item.currentMonth ? "" : "grayed"}`}
                           style={{ gridRow: "1 / 3", gridColumn: day + 1 }}
-                          onClick={() => handleModal(item.date)}
+                          onClick={(event) => handleModal(item.date, event.target)}
                         >
                           <p className={`calendar__cell-number ${ item.date.isSame(today, "day") ? "today" : "" }`}>
                             { item.date.date().toString().padStart(2, "0") }
