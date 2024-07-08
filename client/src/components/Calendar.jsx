@@ -196,7 +196,7 @@ const Popup = ({ calendarData, date, close, handleBlockClickFn, handleNewReserva
 
             <div
               className="block block--new"
-              onClick={() => console.log("New reservation")}
+              onClick={() => handleNewReservationFn(date)}
               ref={addNewReservationRef}
             >
               <p>Luo uusi varaus</p>
@@ -219,7 +219,7 @@ const Popup = ({ calendarData, date, close, handleBlockClickFn, handleNewReserva
 
 const Calendar = ({
   calendarData = [],
-  onBlockClickFn = () => console.log("Default callback for clickin nlok"),
+  onBlockClickFn = () => console.log("Default callback for clicking a block"),
   onNewReservationFn = () => console.log("Default callback for new reservation"),
 }) => {
   // Date to display in the monthly view
@@ -267,6 +267,7 @@ const Calendar = ({
         calendarBodyHeight - modalHeight - padding
       )
 
+      console.log("Modal position", x, y);
       setModalPosition({ x, y })
     }
 
@@ -364,7 +365,7 @@ const Calendar = ({
                 modalPosition={modalPosition}
                 calendarData={calendarData} 
                 date={selectedDate}
-                handleBlockClick={handleBlockClick}
+                handleBlockClickFn={handleBlockClick}
                 handleNewReservationFn={onNewReservationFn}
                 close={() => handleModal(null)}
               />
