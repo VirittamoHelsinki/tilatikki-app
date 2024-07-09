@@ -1,13 +1,25 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Box, FormControl, Grid, InputLabel, MenuItem, Select, Typography } from '@mui/material'
+import { getReservations } from '../api/reservations';
+import moment from 'moment';
 
 import Calendar from './Calendar';
 
 const ReservationPageCalendar = ({ data }) => {
-
   const [calendarBuilding, setCalendarBuilding] = useState(null);
   const [calendarFloor, setCalendarFloor] = useState(null);
   const [calendarRoom, setCalendarRoom] = useState(null);
+
+  useEffect(() => {
+    if (calendarBuilding === null) {
+      setCalendarFloor(null)
+      setCalendarRoom(null)
+    }
+
+    if (calendarFloor === null) {
+      setCalendarRoom(null)
+    }
+  }, [ calendarBuilding, calendarFloor, calendarRoom ])
 
   const numbersToWord = [
     "Yksi", "Kaksi", "Kolmi", "Neli", "Viisi", "Kuusi", "Seitsen", "Kahdeksan", "Yhdeksän", "Kymmenen"
@@ -21,6 +33,23 @@ const ReservationPageCalendar = ({ data }) => {
   console.log(data);
   console.log(calendarBuilding, calendarFloor, calendarRoom);
   console.log(data.buildings[calendarBuilding]);
+
+  const reservations = data
+    .buildings[calendarBuilding]
+    ?.floors[calendarFloor]
+    ?.rooms[calendarRoom]
+    ?.reservations
+    .map(reservation => {
+      return {
+        ...reservation,
+        
+        label: reservation.purpose,
+        date: moment(reservation.reservationDate),
+        startTime: reservation.startTime,
+        endTime: reservation.endTime,
+      }
+    })
+
 
   return (
     <>
@@ -90,8 +119,8 @@ const ReservationPageCalendar = ({ data }) => {
                 disabled={calendarFloor === null || calendarBuilding === null}
               >
                 {
-                  calendarBuilding !== null && calendarFloor !== null && data.buildings[calendarBuilding].floors[calendarFloor].rooms.map((room) => {
-                    return <MenuItem key={`menu-item-${room.number}`} value={room.number}>{room.number}</MenuItem>
+                  calendarBuilding !== null && calendarFloor !== null && data.buildings[calendarBuilding].floors[calendarFloor].rooms.map((room, index) => {
+                    return <MenuItem key={`menu-item-${room.number}`} value={index}>{room.number}</MenuItem>
                   })
                 }
               </Select>
@@ -103,7 +132,7 @@ const ReservationPageCalendar = ({ data }) => {
       <Box sx={{ width: '100%', padding: '20px', border: '1px solid #ddd', borderRadius: '4px', backgroundColor: '#fbfbfb' }}>
         {
           (calendarBuilding !== null && calendarFloor !== null && calendarRoom !== null)
-            ? <Calendar />
+            ? <Calendar calendarData={reservations} />
             : <Typography>Nähdäksesi kalenterin valitse ensin rakennus, kerros ja opetustila.</Typography>
         }
       </Box>
