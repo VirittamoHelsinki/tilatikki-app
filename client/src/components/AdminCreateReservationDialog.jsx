@@ -19,20 +19,8 @@ const AdminCreateReservationDialog = () => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
 
-      <Grid container spacing={2}>
-        <Grid item xs={10}>
-          <Typography component="h1" variant="h5">
-            Lukukausivaraukset
-          </Typography>
-
-          <Typography component="p" variant="subtitle1">
-            Tee varauksia koko lukukaudelle.
-          </Typography>
-
-          <Divider sx={{ mt: 4, mb: 4 }} />
-        </Grid>
-
-        <Grid item lg={10}>
+      <Grid container spacing={2} padding={0} margin={0} style={{ width: "100%" }}>
+        <Grid item lg={12}>
           <FormControl fullWidth>
             <TextField
               autoComplete="reservationName"
@@ -46,7 +34,7 @@ const AdminCreateReservationDialog = () => {
           </FormControl>
         </Grid>
 
-        <Grid item lg={10}>
+        <Grid item lg={12}>
           <FormControl fullWidth>
             <TextField
               autoComplete="reservationName"
@@ -60,7 +48,7 @@ const AdminCreateReservationDialog = () => {
           </FormControl>
         </Grid>
 
-        <Grid item lg={10}>
+        <Grid item lg={12}>
           <FormControl fullWidth>
             <LocalizationProvider localeText={fiFI.components.MuiLocalizationProvider.defaultProps.localeText} dateAdapter={AdapterDayjs}>
               <DatePicker
@@ -78,7 +66,7 @@ const AdminCreateReservationDialog = () => {
         </Grid>
 
 
-        <Grid item lg={5}>
+        <Grid item lg={6}>
           <FormControl fullWidth>
             <LocalizationProvider localeText={fiFI.components.MuiLocalizationProvider.defaultProps.localeText} dateAdapter={AdapterDayjs}>
               <TimePicker
@@ -94,7 +82,7 @@ const AdminCreateReservationDialog = () => {
           </FormControl>
         </Grid>
 
-        <Grid item lg={5}>
+        <Grid item lg={6}>
           <FormControl fullWidth>
             <LocalizationProvider localeText={fiFI.components.MuiLocalizationProvider.defaultProps.localeText} dateAdapter={AdapterDayjs}>
               <TimePicker
@@ -110,7 +98,7 @@ const AdminCreateReservationDialog = () => {
           </FormControl>
         </Grid>
 
-        <Grid item lg={5}>
+        <Grid item lg={6}>
           <FormControl fullWidth>
             <InputLabel id="group-size-label">Ryhmän koko*</InputLabel>
             <Select
@@ -132,7 +120,7 @@ const AdminCreateReservationDialog = () => {
           </FormControl>
         </Grid>
 
-        <Grid item lg={5}>
+        <Grid item lg={6}>
           <FormControl fullWidth>
           <InputLabel id="classroom-label">Opetustila*</InputLabel>
             <Select
@@ -153,7 +141,7 @@ const AdminCreateReservationDialog = () => {
           </FormControl>
         </Grid>
 
-        <Grid item lg={10}>
+        <Grid item lg={12}>
           <FormControl fullWidth>
             <InputLabel id="recurrence-label">Toistuvuus*</InputLabel>
             <Select
@@ -178,7 +166,7 @@ const AdminCreateReservationDialog = () => {
           watch("recurrence") !== "Älä toista" && (
             <>
             
-              <Grid item lg={10}>
+              <Grid item lg={12}>
                 <FormControl fullWidth>
                   <LocalizationProvider localeText={fiFI.components.MuiLocalizationProvider.defaultProps.localeText} dateAdapter={AdapterDayjs}>
                     <DatePicker
@@ -195,7 +183,7 @@ const AdminCreateReservationDialog = () => {
                 </FormControl>
               </Grid>
         
-              <Grid item lg={10}>
+              <Grid item lg={12}>
                 <FormControlLabel control={<Switch onChange={handleReservationSwitchChange}/>} label="Varauksessa on poikkeuksia" />
               </Grid>
         
@@ -203,7 +191,7 @@ const AdminCreateReservationDialog = () => {
               {
                 reservationHasExceptions ? (
                   <>
-                    <Grid item lg={10}>
+                    <Grid item lg={12}>
                       <FormControl fullWidth>
                         <LocalizationProvider localeText={fiFI.components.MuiLocalizationProvider.defaultProps.localeText} dateAdapter={AdapterDayjs}>
                           <DatePicker
@@ -220,7 +208,7 @@ const AdminCreateReservationDialog = () => {
                       </FormControl>
                     </Grid>
         
-                    <Grid item lg={10}>
+                    <Grid item lg={12}>
                       <FormControl fullWidth>
                       <InputLabel id="exception-week-label">Poikkeavat viikot</InputLabel>
                         <Select
@@ -248,7 +236,7 @@ const AdminCreateReservationDialog = () => {
           )
         }
 
-        <Grid item lg={10}>
+        <Grid item lg={12}>
           <FormControl fullWidth>
             <TextField
               InputLabelProps={{ shrink: true }}
