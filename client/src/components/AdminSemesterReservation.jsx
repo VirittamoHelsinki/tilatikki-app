@@ -117,7 +117,7 @@ const AdminSemesterReservation = () => {
 
 
       <Box>
-        <Calendar reservations={reservations} />
+        <Calendar calendarData={reservations} />
       </Box>
     </Box>  
     
