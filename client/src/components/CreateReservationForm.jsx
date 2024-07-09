@@ -5,18 +5,20 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { fiFI } from "@mui/x-date-pickers/locales"
 import dayjs from "dayjs"
 import { useState } from "react"
-import { useForm } from "react-hook-form"
+import { useForm, Controller } from "react-hook-form"
 import PeopleIcon from '@mui/icons-material/People';
 
 
+
 const CreateReservationForm = ({
+  createReservationMutation,
   roomNumber,
   roomId,
   capacity,
   groupsize,
   user,
   onClose }) => {
-  const { register, handleSubmit, watch } = useForm()
+  const { control, register, handleSubmit, watch } = useForm()
 
   const [reservationHasExceptions, setReservationHasExceptions] = useState(false);
 
@@ -44,38 +46,39 @@ const CreateReservationForm = ({
       return reservations;
     }
 
+
     const reservationData = {
       userId: user._id, // userId
       reservationDate: data.reservationDate ? data.reservationDate : null,
-      reservationEndDate: data.reservationEndDate ? data.reservationEndDate : null,
+      reservationEndDate: data.endDate ? data.reservationEndDate : null,
       startTime: data.startTime,
       endTime: data.endTime,
       purpose: data.reservationName, // string
       roomId: roomId, // roomId
       groupsize: data.reservationGroupSize, // integer
-      recurrence: data.recurrence,
+      recurrence: data.recurrence ? data.recurrence : 'none',
       additionalInfo: data.additionalInfo
     }
 
 
     console.log('reservationData: ', reservationData)
 
-    // if (recurrence === 'none') {
-    //   createReservationMutation.mutate(reservationData);
-    // } else if (recurrence === 'daily' && reservationEndDate) {
-    //   const reservations = generateRecurringReservations(reservationDate, reservationEndDate, 1, reservationData);
-    //   reservations.forEach(reservation => {
-    //     createReservationMutation.mutate(reservation);
-    //   });
-    // } else if (recurrence === 'weekly' && reservationEndDate) {
-    //   const reservations = generateRecurringReservations(reservationDate, reservationEndDate, 7, reservationData);
-    //   console.log('weekly reservations: ', reservations)
-    //   reservations.forEach(reservation => {
-    //     createReservationMutation.mutate(reservation);
-    //   });
-    // } else {
-    //   console.error('Invalid recurrence or missing end date');
-    // }
+    if (data.recurrence === 'none') {
+      createReservationMutation.mutate(reservationData);
+    } else if (data.recurrence === 'daily' && data.reservationEndDate) {
+      const reservations = generateRecurringReservations(data.reservationDate, data.reservationEndDate, 1, reservationData);
+      reservations.forEach(reservation => {
+        createReservationMutation.mutate(reservation);
+      });
+    } else if (data.recurrence === 'weekly' && data.reservationEndDate) {
+      const reservations = generateRecurringReservations(data.reservationDate, data.reservationEndDate, 7, reservationData);
+      console.log('weekly reservations: ', reservations)
+      reservations.forEach(reservation => {
+        createReservationMutation.mutate(reservation);
+      });
+    } else {
+      console.error('Invalid recurrence or missing end date');
+    }
 
     onClose();
   }
@@ -138,15 +141,18 @@ const CreateReservationForm = ({
         <Grid item lg={12}>
           <FormControl fullWidth>
             <LocalizationProvider localeText={fiFI.components.MuiLocalizationProvider.defaultProps.localeText} dateAdapter={AdapterDayjs}>
-              <DatePicker
-                autoComplete="reservationDate"
-                name={"reservationDate"}
-                required
-                format="DD/MM/YYYY"
-                slotProps={{ textField: { fullWidth: true } }}
-                id="reservationDate"
-                label="Varauksen päivämäärä*"
-                {...register("reservationDate")}
+              <Controller
+                name="reservationDate"
+                control={control}
+                defaultValue={null}
+                render={({ field }) => (
+                  <DatePicker
+                    {...field}
+                    label="Varauksen päivämäärä*"
+                    renderInput={(params) => <TextField {...params} fullWidth />}
+                    format="DD/MM/YYYY"
+                  />
+                )}
               />
             </LocalizationProvider>
           </FormControl>
@@ -200,9 +206,9 @@ const CreateReservationForm = ({
               defaultValue={"Älä toista"}
               {...register("recurrence")}
             >
-              <MenuItem value="Älä toista">Älä toista</MenuItem>
-              <MenuItem value="Päivittäin">Päivittäin</MenuItem>
-              <MenuItem value="Viikottain">Viikottain</MenuItem>
+              <MenuItem value="none">Älä toista</MenuItem>
+              <MenuItem value="daily">Päivittäin</MenuItem>
+              <MenuItem value="weekly">Viikottain</MenuItem>
             </Select>
           </FormControl>
         </Grid>
@@ -320,7 +326,7 @@ const CreateReservationForm = ({
         </Grid>
       </Grid>
 
-    </form>
+    </form >
   );
 }
 
