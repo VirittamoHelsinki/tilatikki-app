@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import dayjs from 'dayjs';
 import PeopleIcon from '@mui/icons-material/People';
-import ReservationDialog from '../components/reservationDialog';
+import ReservationDialog from '../components/ReservationDialog';
 
 const ReservationCard = ({ roomId, roomNumber, purpose, status, capacity, reservationDate, startTime, endTime, groupsize, creator }) => {
 
@@ -26,6 +26,16 @@ const ReservationCard = ({ roomId, roomNumber, purpose, status, capacity, reserv
 	const handleCloseDialog = () => {
 		setIsOpen(false);
 	};
+
+	const color = () => {
+		if (status === 'Vapaa') {
+			return 'success'
+		} else if (status === 'Varattu') {
+			return 'error'
+		} else {
+			return 'warning'
+		}
+	}
 
 	return (
 		<>
@@ -53,7 +63,7 @@ const ReservationCard = ({ roomId, roomNumber, purpose, status, capacity, reserv
 								<Box display="flex" alignItems="center">
 									<Chip
 										label={status}
-										color={status === 'Vapaa' ? 'success' : 'error'}
+										color={color()}
 										size="small"
 										sx={{ marginLeft: 1 }}
 									/>

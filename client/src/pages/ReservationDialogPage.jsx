@@ -1,5 +1,5 @@
 import React from "react";
-import ReservationDialog from "../components/reservationDialog";
+import ReservationDialog from "../components/ReservationDialog";
 
 const ReservationDialogPage = () => {
   // Define state for managing dialog open/close if needed
