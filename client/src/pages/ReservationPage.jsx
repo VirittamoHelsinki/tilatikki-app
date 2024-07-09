@@ -15,6 +15,7 @@ import FloorPlan3 from '../components/floorplans/FloorPlan3';
 import FloorPlan4 from '../components/floorplans/FloorPlan4';
 import FloorPlan5 from '../components/floorplans/FloorPlan5';
 import Calendar from '../components/Calendar';
+import ReservationPageCalendar from '../components/ReservationPageCalendar';
 
 const ReservationPage = () => {
   const [filteredClassrooms, setFilteredClassrooms] = useState([]);
@@ -22,7 +23,6 @@ const ReservationPage = () => {
   const [floor, setFloor] = React.useState('floor1');
 
   const [ selectedComponent, setSelectedComponent ] = React.useState('pohjakarttanäkymä');
-
 
   // For calendarview (temporary)
   const [ calendarBuilding, setCalendarBuilding ] = useState(null);
@@ -134,92 +134,7 @@ const ReservationPage = () => {
         }
 
         {
-          selectedComponent === "kalenterinäkymä" && (
-            <>
-              <Box sx={{ width: '30%', padding: '20px', border: '1px solid #ddd', borderRadius: '4px' }}>
-                <Typography sx={{ marginBottom: '20px', fontWeight: 'bold' }} variant="h5">{data.name}</Typography>
-                <Typography sx={{ marginBottom: '40px' }}>Kolmikerroksinen koulurakennus, jossa on noin 150 opetustilaa</Typography>
-
-                <Grid container spacing={2} fullWidth>
-                  <Grid item lg={5}>
-                    <FormControl fullWidth>
-                      <InputLabel id="building-label">Rakennus</InputLabel>
-                      <Select
-                        labelId="building-label"
-                        id="building-select"
-                        name="building"
-                        required
-                        fullWidth
-                        label="Rakennus"
-                        placeholder="Valitse rakennus"
-                        value={calendarBuilding}
-                        onChange={(event) => setCalendarBuilding(event.target.value)}
-                      >
-                        {
-                          data.buildings.map((buildingData) => {
-                            return <MenuItem key={`menu-item-${buildingData.name}`} value={buildingData.name}>{buildingData.name}</MenuItem>
-                          })
-                        }
-                      </Select>
-                    </FormControl>
-                  </Grid>
-                  <Grid item lg={5}>
-                    <FormControl fullWidth>
-                      <InputLabel id="floor-label">Valitse kerros</InputLabel>
-                      <Select
-                        labelId="floor-label"
-                        id="floor-select"
-                        name="floor"
-                        required
-                        fullWidth
-                        label="Valitse kerros"
-                        placeholder="Valitse kerros"
-                        value={calendarFloor}
-                        onChange={(event) => setCalendarFloor(event.target.value)}
-                      >
-                        {
-                          [ 1, 2, 3].map((value) => {
-                            return <MenuItem key={`menu-item-${value}`} value={value}>{value}</MenuItem>
-                          })
-                        }
-                      </Select>
-                    </FormControl>
-                  </Grid>
-
-                  <Grid item lg={10}>
-                    <FormControl fullWidth>
-                      <InputLabel id="room-label">Opetustila</InputLabel>
-                      <Select
-                        labelId="room-label"
-                        id="room-select"
-                        name="room"
-                        required
-                        fullWidth
-                        label="Valitse opetustila"
-                        placeholder="Valitse opetustila"
-                        value={calendarRoom}
-                        onChange={(event) => setCalendarRoom(event.target.value)}
-                      >
-                        {
-                          data.buildings[0].floors[0].rooms.map((room) => {
-                            return <MenuItem key={`menu-item-${room.number}`} value={room.number}>{room.number}</MenuItem>
-                          })
-                        }
-                      </Select>
-                    </FormControl>
-                  </Grid>
-                </Grid>
-
-              </Box>
-              <Box sx={{ width: '100%', padding: '20px', border: '1px solid #ddd', borderRadius: '4px', backgroundColor: '#fbfbfb' }}>
-                {
-                  (calendarBuilding && calendarFloor && calendarRoom)
-                    ? <Calendar />
-                    : <Typography>Nähdäksesi kalenterin valitse ensin rakennus, kerros ja opetustila.</Typography>
-                }
-              </Box>
-            </>
-          )
+          selectedComponent === "kalenterinäkymä" && <ReservationPageCalendar data={data} />
         }
 
       </Container>
