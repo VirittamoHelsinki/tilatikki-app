@@ -59,11 +59,11 @@ const BookingResults = ({ classrooms }) => {
 		return false;
 	});
 
-
 	const paginatedClassrooms = filteredClassrooms.slice(
 		currentPage * itemsPerPage,
 		(currentPage + 1) * itemsPerPage
 	);
+
 
 
 	return (
@@ -82,11 +82,12 @@ const BookingResults = ({ classrooms }) => {
 					<Box sx={{ maxHeight: '500px', overflowY: 'auto' }}>
 						{paginatedClassrooms.map(([key, value]) => {
 							// Filter the reservations from the classrooms
-							const filteredReservations = value.reservations.filter(reservation => reservation.user._id === user._id);
+							const filteredUserReservations = value.reservations.filter(reservation => reservation.user._id === user._id);
+							const partiallyReserved = value.reservations.filter(reservation => reservation.groupsize < value.capacity)
 							return (
 								<React.Fragment key={key}>
-									{filteredReservations.length > 0 && filterMode === 'reservations' ? (
-										filteredReservations.map((reservation) => (
+									{filteredUserReservations.length > 0 && filterMode === 'reservations' ? (
+										filteredUserReservations.map((reservation) => (
 											<ReservationCard
 												key={reservation._id}
 												roomId={reservation.room}
@@ -102,18 +103,40 @@ const BookingResults = ({ classrooms }) => {
 											/>
 										))
 									) : (
-										<ReservationCard
-											key={key}
-											roomId={value._id}
-											roomNumber={value.number}
-											purpose="Ei varauksia"
-											status="Vapaa"
-											capacity={value.capacity}
-											reservationDate=""
-											startTime=""
-											endTime=""
-											groupsize={0}
-										/>
+
+										<>
+											{
+												partiallyReserved.length > 0 &&
+												partiallyReserved.map((reservation) => (
+													<>
+														<ReservationCard
+															key={reservation._id}
+															roomId={reservation.room}
+															roomNumber={value.number}
+															purpose={reservation.purpose}
+															status="Osittain vapaa"
+															capacity={value.capacity}
+															reservationDate={reservation.reservationDate}
+															reservationEndDate={reservation.reservationEndDate}
+															startTime={reservation.startTime}
+															endTime={reservation.endTime}
+															groupsize={reservation.groupsize}
+														/>
+													</>
+												))}
+											<ReservationCard
+												key={key}
+												roomId={value._id}
+												roomNumber={value.number}
+												purpose="Ei varauksia"
+												status="Vapaa"
+												capacity={value.capacity}
+												reservationDate=""
+												startTime=""
+												endTime=""
+												groupsize={0}
+											/>
+										</>
 									)}
 								</React.Fragment>
 							);
