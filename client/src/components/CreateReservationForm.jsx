@@ -203,7 +203,7 @@ const CreateReservationForm = ({
               required
               fullWidth
               label="Toistuvuus"
-              defaultValue={"Älä toista"}
+              defaultValue={"none"}
               {...register("recurrence")}
             >
               <MenuItem value="none">Älä toista</MenuItem>
@@ -213,9 +213,12 @@ const CreateReservationForm = ({
           </FormControl>
         </Grid>
 
-        { /* IF RESERVATION IS RECURRING */}
+        { /* IF RESERVATION IS RECURRING */
+
+          console.log('recurrence: ', watch("recurrence"))
+        }
         {
-          watch("recurrence") !== "Älä toista" && (
+          watch("recurrence") !== "none" && watch("recurrence") && (
             <>
 
               <Grid item lg={12}>
