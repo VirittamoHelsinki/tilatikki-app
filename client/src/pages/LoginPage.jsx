@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Container, CssBaseline, Box, Typography, Grid, TextField, Button, Link,} from '@mui/material';
+import { Container, CssBaseline, Box, Typography, Grid, TextField, Button, Link, } from '@mui/material';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import LoggedIn from '../utils/LoggedIn';
 import { setCookie } from '../utils/Cookies';
 import { loginUser } from '../api/userApi';
+import TilaTikkiLogoWhite from '../images/logo-white.svg';
 
 
 export default function SignIn() {
@@ -34,19 +35,7 @@ export default function SignIn() {
       <LoggedIn redirectTo="/schools" />
       <CssBaseline />
       <Box sx={{ position: 'relative', flex: 1, backgroundColor: 'black', height: '100%' }}>
-        <Typography
-          variant="h6"
-          component="div"
-          sx={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            color: 'white',
-            padding: 2,
-          }}
-        >
-          TilaTikki
-        </Typography>
+        <img src={TilaTikkiLogoWhite} alt="TilaTikki Logo" style={{ position: 'absolute', top: 0, left: 0, width: '189px', height: 'auto', margin: 20 }} />
       </Box>
       <Box
         sx={{
@@ -84,17 +73,17 @@ export default function SignIn() {
           />
           <Button
             type="submit"
-            fullWidth           
+            fullWidth
             variant="contained"
-            sx={{ 
-                mt: 3, 
-                mb: 2,
-                textTransform: 'none',
-                backgroundColor: '#18181B', // Change this to your desired color
-                '&:hover': {
-                  backgroundColor: '#2b2b2b' // Change this to a lighter shade of your color
-                }
-              }}
+            sx={{
+              mt: 3,
+              mb: 2,
+              textTransform: 'none',
+              backgroundColor: '#18181B', // Change this to your desired color
+              '&:hover': {
+                backgroundColor: '#2b2b2b' // Change this to a lighter shade of your color
+              }
+            }}
           >
             Kirjaudu sisään
           </Button>
