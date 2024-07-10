@@ -2,13 +2,17 @@ import React, { useState, useEffect } from 'react';
 import ReservationCard from './ReservationCard'; // Make sure this path is correct
 import { Box, Button } from '@mui/material';
 import { fetchUserDataByEmail } from '../api/userApi';
+import { fetchTotalPeopleReserved } from '../api/rooms';
 import { getCookie } from '../utils/Cookies';
 
 
-const BookingResults = ({ classrooms }) => {
+const BookingResults = ({ classrooms, filterValues }) => {
 	const [currentPage, setCurrentPage] = useState(0);
 	const [filterMode, setFilterMode] = useState('free');
 	const [user, setUser] = useState({})
+	const [freeRooms, setFreeRooms] = useState([]);
+	const [partiallyFreeRooms, setPartiallyFreeRooms] = useState([]);
+	const [reservedRooms, setReservedRooms] = useState([]);
 
 
 	useEffect(() => {
@@ -27,6 +31,8 @@ const BookingResults = ({ classrooms }) => {
 	const itemsPerPage = 5;
 
 	console.log('classrooms: ', classrooms);
+	console.log('part rooms: ', partiallyFreeRooms)
+	console.log('filterValues: ', filterValues)
 
 	const handleNextPage = () => {
 		if (currentPage < Math.ceil(Object.keys(classrooms).length / itemsPerPage) - 1) {
@@ -44,6 +50,46 @@ const BookingResults = ({ classrooms }) => {
 		setFilterMode(mode);
 		setCurrentPage(0);
 	};
+
+	useEffect(() => {
+		const setRooms = async () => {
+			const calculateTotalPeopleInTimeSlot = async (roomId) => {
+				const totalPeople = filterValues.selectedDate && filterValues.startingTime && filterValues.endingTime ? await fetchTotalPeopleReserved(roomId, filterValues.selectedDate, filterValues.startingTime, filterValues.endingTime) : null;
+				return totalPeople ? totalPeople.totalPeople : null;
+			};
+
+			// Temporary arrays to hold the rooms
+			const freeRoomsTemp = [];
+			const partiallyFreeRoomsTemp = [];
+			const reservedRoomsTemp = [];
+
+			// Loop through the classrooms and classify them based on the total people
+			for (const room of classrooms) {
+				const total = await calculateTotalPeopleInTimeSlot(room._id);
+
+				if (total === null) {
+					return;
+				}
+
+				if (total === 0) {
+					freeRoomsTemp.push({ ...room, total: total });
+				} else if (total > 0 && total < room.capacity) {
+					partiallyFreeRoomsTemp.push({ ...room, total: total });
+				} else {
+					reservedRoomsTemp.push({ ...room, total: total });
+				}
+			}
+
+			// Set the state with the classified rooms
+			setFreeRooms(freeRoomsTemp);
+			setPartiallyFreeRooms(partiallyFreeRoomsTemp);
+			setReservedRooms(reservedRoomsTemp);
+		};
+
+		if (classrooms.length > 0) {
+			setRooms();
+		}
+	}, [classrooms, filterValues, fetchTotalPeopleReserved]);
 
 	// Filter the classrooms
 
@@ -102,7 +148,9 @@ const BookingResults = ({ classrooms }) => {
 							// Filter the reservations from the classrooms
 							const filteredUserReservations = value.reservations.filter(reservation => reservation.user._id === user._id);
 							const partiallyReserved = value.reservations.filter(reservation => reservation.groupsize < value.capacity)
-							{ console.log('value: ', value) }
+							const matchRoom = partiallyFreeRooms.filter((room) => room._id === value._id)
+							console.log('matchRoom: ', matchRoom)
+							console.log('value: ', value._id)
 							return (
 								<React.Fragment key={key}>
 									{filteredUserReservations.length > 0 && filterMode === 'reservations' ? (
@@ -134,7 +182,7 @@ const BookingResults = ({ classrooms }) => {
 														reservationDate=""
 														startTime=""
 														endTime=""
-														groupsize={0}
+														groupsize={matchRoom.length > 0 && matchRoom[0].total}
 														capacity={value.capacity}
 													/>
 													: (<ReservationCard
