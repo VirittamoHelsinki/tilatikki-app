@@ -42,7 +42,7 @@ export default function DeleteDialogUsers({ open, handleClose, handleDelete, use
                         }
                     }}
                 >
-                    Poista varaus
+                    Poista käyttäjä
                 </Button>
             </DialogActions>
         </Dialog>

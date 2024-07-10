@@ -123,7 +123,7 @@ const UserProfiles = () => {
       try {
         // Make API call to delete user
         await deleteUser(selectedRow.sähköposti);
-        setSnackbarMessage('User deleted successfully');
+        setSnackbarMessage('Käyttäjä poistettu onnistuneesti!');
         setSnackbarOpen(true);
 
         // Close the confirmation dialog
@@ -132,7 +132,7 @@ const UserProfiles = () => {
         getUsers()
       } catch (error) {
         console.error('Error deleting user:', error);
-        setSnackbarMessage('Failed to delete user');
+        setSnackbarMessage('Käyttäjän poistaminen epäonnistui!');
         setSnackbarOpen(true);
       }
     }
