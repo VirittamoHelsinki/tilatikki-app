@@ -110,7 +110,8 @@ const ReservationPage = () => {
 
             <>
               <Box sx={{ width: '30%', padding: '20px', border: '1px solid #ddd', borderRadius: '4px' }}>
-                <FilterForm onClassroomChange={handleClassroomChange} schoolData={data} onApply={handleFilterApply} />
+                <FilterForm onClassroomChange={handleClassroomChange} schoolData={data} onApply={handleFilterApply} onFilterChange={handleFilterValues}/>
+
               </Box>
               <Box sx={{ width: '30%', padding: '20px', border: '1px solid #ddd', borderRadius: '4px' }}>
 
