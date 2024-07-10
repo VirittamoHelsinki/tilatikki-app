@@ -67,7 +67,7 @@ Login nonexistent user
 
 # OK
 Login wrong password
-    [tags]  login  invalid
+    [Tags]  login  invalid
     Go To Loginpage
 	Enter Login Credentials  ${email}  ${pw}123123
 	Create Session           MySession    http://localhost:5050/
@@ -200,11 +200,30 @@ Navigate back from logout
 
 
 Update user information
-    [Tags]  login  settings  valid
+    [Tags]  login  settings  valid  update
 	Login User Detailed         ${email}  ${pw}  ${firstname}  ${lastname}
 
     Change User Information    ${firstname}-test  ${lastname}-test  testoman-test@test.com
 	Go To Schoolpage From Logo
     Change User Information    ${firstname}  ${lastname}  testoman@test.com
+	# Logout User Detailed
 
 
+# Update user password
+#     [Tags]  login  logout  settings  valid  update
+# 	Login User Detailed         ${email}  ${pw}  ${firstname}  ${lastname}
+# 	Go To Settingspage
+# 	Click Element       xpath=//*[@id="root"]/div/div/div[3]/div[1]/nav/li[1]
+# 	sleep  4
+
+
+
+
+
+# Update user information field missing
+#     [Tags]  settings  invalid
+
+# Navigate without login
+# Create booking
+# Create continuous booking
+# Delete booking
