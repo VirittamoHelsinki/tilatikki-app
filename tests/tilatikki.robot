@@ -65,3 +65,14 @@ Login nonexistent user
 	Status Should Be           404
     Location Should Be         ${url}/login
 
+# OK
+Login wrong password
+    [tags]  login  invalid
+    Go To Loginpage
+	Enter Login Credentials  ${email}  ${pw}123123
+	Create Session           MySession    http://localhost:5050/
+	&{user}=                 Create Dictionary  email=${email}  password=${pw}123123
+    POST On Session          MySession  /login  json=${user}  expected_status=any
+	Status Should Be         401
+    Location Should Be       ${url}/login
+
