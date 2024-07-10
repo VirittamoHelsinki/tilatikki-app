@@ -18,6 +18,13 @@ Enter Registeration Credentials
     Sleep              0.5
 
 
+Go To Reservationpage
+    Go To Schoolpage From Logo
+	Wait Until Element Is Visible  xpath=//*[@id="root"]/div/div/div/div[1]/div/button    2
+	Click Element                  xpath=//*[@id="root"]/div/div/div/div[1]/div/button
+	Location Should Contain        reservations
+
+
 Login User Detailed
     [Arguments]                 ${email}  ${pw}  ${new_firstname}  ${new_lastname}
     Go To Loginpage

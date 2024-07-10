@@ -81,3 +81,8 @@ Login existing user
     [Tags]  login  valid
 	Login User Detailed    ${email}  ${pw}  ${firstname}  ${lastname}
 
+# OK
+Select school
+    [Tags]  navigate  valid
+	Go To Reservationpage
+
