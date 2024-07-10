@@ -79,181 +79,55 @@ const reservations = [
   }
 ];
 
-const FloorPlan2 = () => {
-  const [selectedRoom, setSelectedRoom] = useState(null);
-  const [roomData, setRoomData] = useState(null);
-
-  const handleRoomClick = (roomId) => {
-    setSelectedRoom(roomId);
-    fetchRoomData(roomId);
+const FloorPlan2 = ({ floorData }) => {
+  
+  const isRoomInFloorData = (roomNumber) => {
+    const exists = floorData.some(room => {
+      return room.number === roomNumber;
+    });
+    return exists;
   };
 
-  const fetchRoomData = (roomId) => {
-    const reservation = reservations.find(res => res.room._id === roomId);
-    if (reservation) {
-      setRoomData({ id: roomId, info: `Reservation: ${reservation.name}, Time: ${new Date(reservation.time).toLocaleString()}` });
-    } else {
-      setRoomData({ id: roomId, info: `No reservations for ${roomId}` });
-    }
+  const getRoomColor = (roomNumber) => {
+    const color = isRoomInFloorData(roomNumber) ? '#94D0AD' : '#EA7272';
+    return color;
   };
 
-  const getRoomColor = (roomId) => {
-    const reservation = reservations.find(res => res.room._id === roomId);
-    if (reservation) {
-      if (reservation.room.capacity > reservation.groupsize) {
-        return '#F4BD89';
-      } else if (reservation.room.capacity <= reservation.groupsize) {
-        return '#EA7272';
-      }
-    } else {
-      return '#94D0AD';
-    }
+  const roomProps = {
+    201: { x: 242, y: 0, width: 107, height: 60 },
+    202: { x: 353, y: 0, width: 45, height: 45 },
+    203: { x: 402, y: 0, width: 150, height: 81 },
+    204: { x: 468, y: 85, width: 84, height: 78 },
+    205: { x: 512, y: 167, width: 40, height: 46 },
+    206: { x: 468, y: 217, width: 84, height: 46 },
+    207: { x: 512, y: 267, width: 40, height: 40 },
+    208: { x: 131, y: 0, width: 107, height: 81 },
+    209: { x: 0, y: 0, width: 127, height: 81 },
+    210: { x: 0, y: 85, width: 82, height: 81 },
+    211: { x: 0, y: 170, width: 82, height: 47 },
   };
 
   return (
     <div className="floor-plan">
       <svg viewBox="0 0 552 307" xmlns="http://www.w3.org/2000/svg">
-      <rect x="0.5" y="0.5" width="551" height="306" stroke="#B7B7B7" fill="none"/>
-        {/* Room 1 */}
-        <rect
-          id="room1"
-          x="242"
-          y="0"
-          width="107"
-          height="60"
-          fill={getRoomColor('room1')}
-          onClick={() => handleRoomClick('room1')}
-          className="room"
-        />
-
-        {/* Room 2 */}
-        <rect
-          id="room2"
-          x="353"
-          y="0"
-          width="45"
-          height="45"
-          fill={getRoomColor('room2')}
-          onClick={() => handleRoomClick('room2')}
-          className="room"
-        />
-
-        {/* Room 3 */}
-        <rect
-          id="room3"
-          x="402"
-          y="0"
-          width="150"
-          height="81"
-          fill={getRoomColor('room3')}
-          onClick={() => handleRoomClick('room3')}
-          className="room"
-        />
-
-        {/* Room 4 */}
-        <rect
-          id="room4"
-          x="468"
-          y="85"
-          width="84"
-          height="78"
-          fill={getRoomColor('room4')}
-          onClick={() => handleRoomClick('room4')}
-          className="room"
-        />
-
-        {/* Room 5 */}
-        <rect
-          id="room5"
-          x="512"
-          y="167"
-          width="40"
-          height="46"
-          fill={getRoomColor('room5')}
-          onClick={() => handleRoomClick('room5')}
-          className="room"
-        />
-
-        {/* Room 6 */}
-        <rect
-          id="room6"
-          x="468"
-          y="217"
-          width="84"
-          height="46"
-          fill={getRoomColor('room6')}
-          onClick={() => handleRoomClick('room6')}
-          className="room"
-        />
-
-        {/* Room 7 */}
-        <rect
-          id="room7"
-          x="512"
-          y="267"
-          width="40"
-          height="40"
-          fill={getRoomColor('room7')}
-          onClick={() => handleRoomClick('room7')}
-          className="room"
-        />
-
-        {/* Room 8 */}
-        <rect
-          id="room8"
-          x="131"
-          y="0"
-          width="107"
-          height="81"
-          fill={getRoomColor('room8')}
-          onClick={() => handleRoomClick('room8')}
-          className="room"
-        />
-
-        {/* Room 9 */}
-        <rect
-          id="room9"
-          x="0"
-          y="0"
-          width="127"
-          height="81"
-          fill={getRoomColor('room9')}
-          onClick={() => handleRoomClick('room9')}
-          className="room"
-        />
-
-        {/* Room 10 */}
-        <rect
-          id="room10"
-          x="0"
-          y="85"
-          width="82"
-          height="81"
-          fill={getRoomColor('room10')}
-          onClick={() => handleRoomClick('room10')}
-          className="room"
-        />
-
-        {/* Room 11 */}
-        <rect
-          id="room11"
-          x="0"
-          y="170"
-          width="82"
-          height="47"
-          fill={getRoomColor('room11')}
-          onClick={() => handleRoomClick('room11')}
-          className="room"
-        />
+        <rect x="0.5" y="0.5" width="551" height="306" stroke="#B7B7B7" fill="none" />
+        {Object.keys(roomProps).map(roomId => (
+          <rect
+            key={roomId}
+            id={roomId}
+            x={roomProps[roomId].x}
+            y={roomProps[roomId].y}
+            width={roomProps[roomId].width}
+            height={roomProps[roomId].height}
+            fill={getRoomColor(roomId)}
+            onClick={() => handleRoomClick(roomId)}
+            className="room"
+          />
+        ))}
         <path d="M339 112H213V195H339V112Z" stroke="#B7B7B7" fill="none" />
         <path d="M333 199V219M327 199V219M321 199V219M315 199V219M309 199V219M303 199V219M297 199V219M291 199V219M285 199V219M279 199V219M273 199V219M267 199V219M261 199V219M255 199V219M249 199V219M243 199V219M237 199V219M231 199V219M225 199V219M219 199V219M213 199H339V219H213V199Z" stroke="#B7B7B7" fill="none" />
         <path d="M333 223V243M327 223V243M321 223V243M315 223V243M309 223V243M303 223V243M297 223V243M291 223V243M285 223V243M279 223V243M273 223V243M267 223V243M261 223V243M255 223V243M249 223V243M243 223V243M237 223V243M231 223V243M225 223V243M219 223V243M213 223H339V243H213V223Z" stroke="#B7B7B7" fill="none" />
       </svg>
-      {roomData && (
-        <div className="room-data">
-          <h2>{roomData.info}</h2>
-        </div>
-      )}
     </div>
   );
 };
