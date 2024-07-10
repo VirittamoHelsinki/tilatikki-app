@@ -188,3 +188,13 @@ Register with short password
 	# statuscode for invalid password?
 	Status Should Be                 500
     Location Should Be               ${url}/register
+
+# OK
+Navigate back from logout
+    [Tags]  login  logout  navigate  valid
+	Login User Detailed         ${email}  ${pw}  ${firstname}  ${lastname}
+	Go To Schoolpage From Logo
+	Logout User Detailed
+	Go Back
+	Location Should Be          ${url}/login
+
