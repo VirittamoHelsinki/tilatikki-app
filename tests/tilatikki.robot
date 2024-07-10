@@ -53,3 +53,15 @@ Register new randomized user
 	Wait Until Location Is Not       ${url}/register    2
 	Location Should Be               ${url}/login
 
+# OK
+Login nonexistent user
+    [Tags]  login  invalid
+    Go To Loginpage
+	${user}=                   Create Random User
+	Enter Login Credentials    ${user['email']}  ${pw}
+	Create Session             MySession    http://localhost:5050/
+	&{user}=                   Create Dictionary  email=${user['email']}  password=${pw}
+    POST On Session            MySession  /login  json=${user}  expected_status=any
+	Status Should Be           404
+    Location Should Be         ${url}/login
+
