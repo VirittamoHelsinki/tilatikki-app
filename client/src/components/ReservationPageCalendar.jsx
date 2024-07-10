@@ -6,18 +6,26 @@ import moment from 'moment';
 import Calendar from './Calendar';
 
 const ReservationPageCalendar = ({ data }) => {
-  const [calendarBuilding, setCalendarBuilding] = useState(null);
-  const [calendarFloor, setCalendarFloor] = useState(null);
-  const [calendarRoom, setCalendarRoom] = useState(null);
+  // Store ids in state
+  const [calendarBuilding, setCalendarBuilding] = useState(data.buildings[0]._id);
+  const [calendarFloor, setCalendarFloor] = useState(data.buildings[0].floors[0]._id);
+  const [calendarRoom, setCalendarRoom] = useState(data.buildings[0].floors[0].rooms[0]._id);
 
   useEffect(() => {
-    setCalendarRoom(null)
-  }, [ calendarFloor ])
+    const building = data.buildings.find((building) => building._id === calendarBuilding)
 
-  useEffect(() => {
-    setCalendarFloor(null)
+    setCalendarFloor( building.floors[0]._id )
+    setCalendarRoom( building.floors[0].rooms[0]._id )
   }, [ calendarBuilding ])
 
+  useEffect(() => {
+    const building = data.buildings.find((building) => building._id === calendarBuilding)
+    const floor = building.floors.find((floor) => floor._id === calendarFloor)
+
+    setCalendarRoom( floor.rooms[0]._id )
+  }, [ calendarFloor ])
+  
+  
   const numbersToWord = [
     "Yksi", "Kaksi", "Kolmi", "Neli", "Viisi", "Kuusi", "Seitsen", "Kahdeksan", "Yhdeksän", "Kymmenen"
   ]
@@ -27,22 +35,23 @@ const ReservationPageCalendar = ({ data }) => {
 
   const descriptionString = `${numbersToWord[floorCount - 1]}kerroksinen koulurakennus, jossa on ${roomCount} opetustilaa.`
 
-  const reservations = data
-    .buildings[calendarBuilding]
-    ?.floors[calendarFloor]
-    ?.rooms[calendarRoom]
-    ?.reservations
-    .map(reservation => {
-      return {
-        ...reservation,
-        
-        label: reservation.purpose,
-        date: moment(reservation.reservationDate),
-        startTime: reservation.startTime,
-        endTime: reservation.endTime,
-      }
-    })
 
+  const building = data.buildings.find((building) => building._id === calendarBuilding)
+  const floor = building?.floors.find((floor) => floor._id === calendarFloor)
+  const room = floor?.rooms.find((room) => room._id === calendarRoom)
+
+  const reservations = room?.reservations.map(reservation => {
+    return {
+      ...reservation,
+      
+      label: reservation.purpose,
+      date: moment(reservation.reservationDate),
+      startTime: reservation.startTime,
+      endTime: reservation.endTime,
+    }
+  })
+    
+  
 
   return (
     <>
@@ -67,7 +76,7 @@ const ReservationPageCalendar = ({ data }) => {
               >
                 {
                   data.buildings.map((buildingData, index) => {
-                    return <MenuItem key={`menu-item-building-${buildingData.name}`} value={index}>{buildingData.name}</MenuItem>
+                    return <MenuItem key={`menu-item-building-${buildingData.name}`} value={buildingData._id}>{buildingData.name}</MenuItem>
                   })
                 }
               </Select>
@@ -85,12 +94,11 @@ const ReservationPageCalendar = ({ data }) => {
                 label="Valitse kerros"
                 placeholder="Valitse kerros"
                 onChange={(event) => setCalendarFloor(event.target.value)}
-                disabled={calendarBuilding === null}
                 value={calendarFloor}
               >
                 {
-                  data.buildings[calendarBuilding]?.floors.map((floorData, index) => {
-                    return <MenuItem key={`menu-item-building-${floorData.number}`} value={index}>{`${floorData.number}. kerros`}</MenuItem>
+                  building?.floors.map((floorData, index) => {
+                    return <MenuItem key={`menu-item-building-${floorData.number}`} value={floorData._id}>{`${floorData.number}. kerros`}</MenuItem>
                   })
                 }
               </Select>
@@ -110,11 +118,10 @@ const ReservationPageCalendar = ({ data }) => {
                 placeholder="Valitse opetustila"
                 value={calendarRoom}
                 onChange={(event) => setCalendarRoom(event.target.value)}
-                disabled={calendarFloor === null || calendarBuilding === null}
               >
                 {
-                  data.buildings[calendarBuilding]?.floors[calendarFloor]?.rooms.map((room, index) => {
-                    return <MenuItem key={`menu-item-${room.number}`} value={index}>{room.number}</MenuItem>
+                  floor?.rooms.map((floorData, index) => {
+                    return <MenuItem key={`menu-item-${floorData.number}`} value={floorData._id}>{floorData.number}</MenuItem>
                   })
                 }
               </Select>
