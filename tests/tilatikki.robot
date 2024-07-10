@@ -43,3 +43,13 @@ Register with missing fields
 	Status Should Be                 500
     Location Should Be               ${url}/register
 
+# OK
+Register new randomized user
+    [Tags]  register  valid
+    Go To Registerationpage
+	${user}=                         Create Random User
+	Enter Registeration Credentials  ${user['firstname']}  ${user['lastname']}  ${user['email']}  ${pw}
+	Click Register Button
+	Wait Until Location Is Not       ${url}/register    2
+	Location Should Be               ${url}/login
+
