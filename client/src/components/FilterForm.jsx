@@ -11,6 +11,8 @@ import Chip from '@mui/material/Chip';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import 'dayjs/locale/de';
+import {filterFieldContainer, timeSlotStyle, buildingStyle, groupStyle, sizeStyle, selectWrapper, buildingStyleLeft, dateStyle, floorStyle, clearButtonStyle} from '../styles/filterformStyles';
+
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -391,69 +393,6 @@ const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) 
 		setClassroom('');
 	}, [selectedBuildings, selectedFloor]);
 
-	const filterFieldContainer = {
-		display: 'flex',
-		gap: '7%',
-		alignItems: 'center'
-	};
-
-	const timeSlotStyle = {
-		display: 'flex',
-		flexDirection: 'column',
-		minWidth: '50px',
-		maxWidth: '100px',
-		paddingLeft: '10px',
-		paddingTop: '10px'
-	};
-
-	const buildingStyle = {
-		display: 'flex',
-		flexDirection: 'column',
-		paddingTop: '10px',
-		paddingBottom: '10px',
-		width: '80%'
-	};
-
-	const groupStyle = {
-		display: 'flex',
-		flexDirection: 'column'
-	};
-
-	const sizeStyle = {
-		paddingRight: '10px',
-		marginTop: '4%'
-	};
-
-	const selectWrapper = {
-		display: 'flex',
-		flexDirection: 'column',
-		width: '310px',
-		paddingLeft: '8px'
-	};
-
-	const buildingStyleLeft = {
-		paddingTop: '20px'
-	};
-
-	const dateStyle = {
-		paddingTop: '15px'
-	};
-
-	const floorStyle = {
-		marginTop: '4%'
-	};
-
-	const clearButtonStyle = {
-		marginLeft: '10px',
-		marginTop: '10px',
-		border: 'none',
-		background: 'none',
-		textDecoration: 'underline',
-		cursor: 'pointer',
-		padding: '0',
-		fontSize: 'inherit'
-	};
-
 	return (
 		<>
 			<Typography variant="h6" gutterBottom>
@@ -472,7 +411,6 @@ const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) 
 							<Select
 								labelId="building-checkbox-label"
 								id="building-multiple-checkbox"
-								multiple
 								value={selectedBuildings.map(building => building.name)}
 								onChange={handleSelectedBuildings}
 								input={<OutlinedInput label="Rakennus" />}
