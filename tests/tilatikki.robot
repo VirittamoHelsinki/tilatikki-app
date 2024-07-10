@@ -150,3 +150,11 @@ Search rooms by room
 	Select First Room In Filter
 	Filter Search Button
 
+# OK
+Search rooms by groupsize
+    [Tags]  navigate  valid  filter
+	Go To Reservationpage
+	Select First Building In Filter
+    Select Groupsize Five In Filter
+	Filter Search Button
+
