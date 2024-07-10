@@ -80,7 +80,7 @@ const ReservationCard = ({ roomId, roomNumber, purpose, status, capacity, reserv
 									<Chip
 										label={status}
 										size="small"
-										sx={{ marginLeft: 1, ...getColorStyle() }}
+										sx={{ marginLeft: 1, ...getColorStyle(), fontWeight: 600, padding: 1 }}
 									/>
 								</Box>
 							</Grid>
