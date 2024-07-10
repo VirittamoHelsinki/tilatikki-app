@@ -10,6 +10,8 @@ import DeleteDialog from './DeleteDialog';
 import Snackbar from '@mui/material/Snackbar';
 import { fetchRoomById } from '../api/rooms';
 import { fetchUserDataByEmail } from '../api/userApi';
+import { getCookie } from '../utils/Cookies';
+import { deleteReservation } from '../api/reservations';
 
 const columns = (handleClickOpen) => [
   {
@@ -97,84 +99,70 @@ const ReservationHistory = () => {
   const [reservations, setReservations] = useState([]);
 
   useEffect(() => {
-    const parseTime = (dateTimeString) => {
-      const date = new Date(dateTimeString);
-      const hours = date.getUTCHours();
-      const minutes = date.getUTCMinutes();
-      return { hours, minutes };
-    };
-
-    const formatTimeInterval = (start, end) => {
-      const startTime = parseTime(start);
-      const endTime = parseTime(end);
-      return `${startTime.hours}:${startTime.minutes.toString().padStart(2, '0')} - ${endTime.hours}:${endTime.minutes.toString().padStart(2, '0')}`;
-    };
-
-    const formatDate = (dateString) => {
-      const date = new Date(dateString);
-      const day = date.getUTCDate().toString().padStart(2, '0');
-      const month = (date.getUTCMonth() + 1).toString().padStart(2, '0');
-      const year = date.getUTCFullYear();
-      return `${day}.${month}.${year}`;
-    };
-
-    const fetchAllReservations = async () => {
-      try {
-        // Fetch user data by email
-        const userData = await fetchUserDataByEmail("f@f.fi");
-    
-        // Ensure user data contains reservations
-        if (!userData || !userData.reservations) {
-          throw new Error('No reservations found for this user');
-        }
-    
-        const reservationsData = userData.reservations;
-        
-        console.log('reservationData', reservationsData);
-    
-        const formattedReservations = await Promise.all(reservationsData.map(async (reservation, index) => {
-          try {
-            // Fetch room data by reservation room ID
-            const room = await fetchRoomById(reservation.room._id);
-    
-            const aikaväli = reservation.startTime && reservation.endTime
-              ? formatTimeInterval(reservation.startTime, reservation.endTime)
-              : 'N/A';
-    
-            const päivämäärä = reservation.startTime
-              ? formatDate(reservation.startTime)
-              : 'N/A';
-    
-            const isSpecificString = reservation.recurrence === 'none';
-            const toistuvaValue = isSpecificString ? false : true;
-    
-            return {
-              id: index + 1,
-              opetustila: room.number || 'N/A',
-              toistuva: toistuvaValue,
-              päivämäärä,
-              aikaväli,
-              opettaja: userData.name,
-              toissijainenopettaja: userData.subteacher,
-              ryhmankoko: reservation.groupsize + " / " + (room.capacity || 'N/A'),
-            };
-          } catch (innerError) {
-            console.error('Error processing reservation:', reservation, innerError);
-            throw innerError; // Ensure we propagate the error to the main catch block
-          }
-        }));
-    
-        // Set formatted reservations to state
-        setReservations(formattedReservations);
-    
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchAllReservations();
   }, []);
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = date.getUTCDate().toString().padStart(2, '0');
+    const month = (date.getUTCMonth() + 1).toString().padStart(2, '0');
+    const year = date.getUTCFullYear();
+    return `${day}.${month}.${year}`;
+  };
+
+  const fetchAllReservations = async () => {
+    try {
+      // Fetch user data by email
+      const email = getCookie('UserEmail');
+      const userData = await fetchUserDataByEmail(email);
+
+      // Ensure user data contains reservations
+      if (!userData || !userData.reservations) {
+        throw new Error('No reservations found for this user');
+      }
+
+      const reservationsData = userData.reservations;
+
+      console.log('reservationData', reservationsData);
+
+      const formattedReservations = await Promise.all(reservationsData.map(async (reservation, index) => {
+        try {
+          // Fetch room data by reservation room ID
+          const room = await fetchRoomById(reservation.room._id);
+
+          const päivämäärä = reservation.reservationDate
+            ? formatDate(reservation.reservationDate)
+            : 'N/A';
+
+          const isSpecificString = reservation.recurrence === 'none';
+          const toistuvaValue = isSpecificString ? false : true;
+
+          return {
+            reservationid: reservation._id,
+            id: index + 1,
+            opetustila: room.number || 'N/A',
+            toistuva: toistuvaValue,
+            päivämäärä,
+            aikaväli: reservation.startTime + " - " + reservation.endTime,
+            opettaja: userData.name,
+            toissijainenopettaja: userData.subteacher,
+            ryhmankoko: reservation.groupsize + " / " + (room.capacity || 'N/A'),
+          };
+        } catch (innerError) {
+          console.error('Error processing reservation:', reservation, innerError);
+          throw innerError; // Ensure we propagate the error to the main catch block
+        }
+      }));
+
+      // Set formatted reservations to state
+      setReservations(formattedReservations);
+
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSnackbarClose = (_event, reason) => {
     if (reason === 'clickaway') {
@@ -193,25 +181,20 @@ const ReservationHistory = () => {
     setSelectedRow(null);
   };
 
-  const handleDelete = () => {
+  const handleDeleteConfirmed = async () => {
     if (selectedRow) {
-      setOpen(true); // Open confirmation dialog
-    }
-  };
-
-  const handleDeleteConfirmed = () => {
-    if (selectedRow) {
-      // Filter out the row to be deleted
-      const updatedRows = rowsData.filter(row => row.id !== selectedRow.id);
-      setRowsData(updatedRows);
-
-      // Show snackbar message
-      setSnackbarMessage('Varaus on poistettu onnistuneesti');
-      setSnackbarOpen(true);
-
-      // Close the confirmation dialog
-      setOpen(false);
-      setSelectedRow(null);
+      try {
+        await deleteReservation(selectedRow.reservationid);
+        setSnackbarMessage('Varaus poistettu onnistuneesti!');
+        setSnackbarOpen(true);
+        setOpen(false);
+        setSelectedRow(null);
+        fetchAllReservations()
+      } catch (error) {
+        console.error('Error deleting user:', error);
+        setSnackbarMessage('Varausksen poistaminen epäonnistui!');
+        setSnackbarOpen(true);
+      }
     }
   };
 

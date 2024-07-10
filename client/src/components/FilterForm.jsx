@@ -38,7 +38,8 @@ const timeSlots = [
 const groupSizes = Array.from({ length: 20 }, (_, index) => (index + 1) * 5);
 
 
-const FilterForm = ({ onClassroomChange, schoolData, onFilterChange }) => {
+
+const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) => {
 	const [selectedBuildings, setSelectedBuildings] = useState([]);
 	const [availableFloors, setAvailableFloors] = useState([1]);
 	const [selectedFloor, setSelectedFloor] = useState('');
@@ -320,6 +321,8 @@ const FilterForm = ({ onClassroomChange, schoolData, onFilterChange }) => {
 	const handleSubmit = (e) => {
 		e.preventDefault();
 
+		onApply();
+
 		if (selectedBuildings.length > 0) {
 			if (startingTime && !endingTime) {
 				setRequiredEndTime(true);
@@ -369,7 +372,7 @@ const FilterForm = ({ onClassroomChange, schoolData, onFilterChange }) => {
 
 	useEffect(() => {
 		console.log('schoolData', schoolData);
-
+		console.log('schoolData floor', schoolData.buildings[0].floors[0]._id);
 		const maxFloorValue = selectedBuildings.reduce((max, building) =>
 			Object.keys(building.floors).length > max ? Object.keys(building.floors).length : max, 1
 		)

@@ -113,6 +113,7 @@ const FloorPlan2 = () => {
   return (
     <div className="floor-plan">
       <svg viewBox="0 0 552 307" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0.5" y="0.5" width="551" height="306" stroke="#B7B7B7" fill="none"/>
         {/* Room 1 */}
         <rect
           id="room1"
@@ -244,6 +245,9 @@ const FloorPlan2 = () => {
           onClick={() => handleRoomClick('room11')}
           className="room"
         />
+        <path d="M339 112H213V195H339V112Z" stroke="#B7B7B7" fill="none" />
+        <path d="M333 199V219M327 199V219M321 199V219M315 199V219M309 199V219M303 199V219M297 199V219M291 199V219M285 199V219M279 199V219M273 199V219M267 199V219M261 199V219M255 199V219M249 199V219M243 199V219M237 199V219M231 199V219M225 199V219M219 199V219M213 199H339V219H213V199Z" stroke="#B7B7B7" fill="none" />
+        <path d="M333 223V243M327 223V243M321 223V243M315 223V243M309 223V243M303 223V243M297 223V243M291 223V243M285 223V243M279 223V243M273 223V243M267 223V243M261 223V243M255 223V243M249 223V243M243 223V243M237 223V243M231 223V243M225 223V243M219 223V243M213 223H339V243H213V223Z" stroke="#B7B7B7" fill="none" />
       </svg>
       {roomData && (
         <div className="room-data">

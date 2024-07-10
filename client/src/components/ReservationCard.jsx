@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import dayjs from 'dayjs';
 import PeopleIcon from '@mui/icons-material/People';
-import ReservationDialog from '../components/reservationDialog';
+import ReservationDialog from '../components/ReservationDialog';
 
 const ReservationCard = ({ roomId, roomNumber, purpose, status, capacity, reservationDate, startTime, endTime, groupsize, creator }) => {
 
@@ -25,6 +25,32 @@ const ReservationCard = ({ roomId, roomNumber, purpose, status, capacity, reserv
 
 	const handleCloseDialog = () => {
 		setIsOpen(false);
+	};
+
+
+	const colorStyles = {
+		Vapaa: {
+			backgroundColor: '#D3FCE5', // custom green color
+			color: '#008A2E'
+		},
+		Varattu: {
+			backgroundColor: '#FFE0E1', // custom red color
+			color: '#E60000'
+		},
+		Osittain: {
+			backgroundColor: '#FDF5D3', // custom orange color
+			color: '#DC7609'
+		}
+	}
+
+	const getColorStyle = () => {
+		if (status === 'Vapaa') {
+			return colorStyles.Vapaa;
+		} else if (status === 'Varattu') {
+			return colorStyles.Varattu;
+		} else {
+			return colorStyles.Osittain;
+		}
 	};
 
 	return (
@@ -53,9 +79,8 @@ const ReservationCard = ({ roomId, roomNumber, purpose, status, capacity, reserv
 								<Box display="flex" alignItems="center">
 									<Chip
 										label={status}
-										color={status === 'Vapaa' ? 'success' : 'error'}
 										size="small"
-										sx={{ marginLeft: 1 }}
+										sx={{ marginLeft: 1, ...getColorStyle(), fontWeight: 600, padding: 1 }}
 									/>
 								</Box>
 							</Grid>

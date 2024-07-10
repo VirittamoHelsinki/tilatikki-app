@@ -50,10 +50,10 @@ export default function EditUsers({ name, email, role, otherTeacher, onClose }) 
       // Update form fields or state based on the updated user data if needed
       // For example, updating role or other display fields
 
-      setSnackbarMessage('Sub teacher and admin updated successfully!');
+      setSnackbarMessage('Tiedot päivitetty onnistuneesti!');
       onClose(); // Close modal or navigate back after successful update
     } catch (error) {
-      setSnackbarMessage('Failed to update sub teacher and admin.');
+      setSnackbarMessage('Tietojen päivittäminen epäonnistui!');
       console.error(error);
     }
   };
