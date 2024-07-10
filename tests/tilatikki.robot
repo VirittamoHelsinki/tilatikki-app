@@ -134,3 +134,11 @@ Search rooms without required field
 	Select First Building In Filter
 	Wait Until Page Does Not Contain  Pakollinen  2
 
+# OK
+Search rooms by times
+    [Tags]  navigate  valid  filter
+	Go To Reservationpage
+	Select First Building In Filter
+    Select Twelve To One Timeslot In Filter
+	Filter Search Button
+

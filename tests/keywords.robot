@@ -119,6 +119,26 @@ Select Next Month In Filter
 	Click Element 	                 xpath=/html/body/div[2]/div[2]/div/div/div/div[2]/div/div/div[2]/div/div[2]/button[2]
 
 
+Select Starttime In Filter
+    Wait Until Element Is Visible  xpath=//*[@id="starttime-select"]        2
+	Click Element                  xpath=//*[@id="starttime-select"]
+    Wait Until Element Is Visible  xpath=//*[@id="menu-"]/div[3]            2
+	Scroll Element Into View       xpath=//*[@id="menu-"]/div[3]/ul/li[25]
+    Click Element                  xpath=//*[@id="menu-"]/div[3]/ul/li[25]
+
+
+Select Endtime In Filter
+    Wait Until Element Is Visible    xpath=//*[@id="endtime-select"]           2
+	Click Element                    xpath=//*[@id="endtime-select"]
+	Wait Until Element Is Visible    xpath=//*[@id="menu-"]/div[3]             2
+	Scroll Element Into View         xpath=//*[@id="menu-"]/div[3]/ul/li[29]
+	Click Element                    xpath=//*[@id="menu-"]/div[3]/ul/li[29]
+
+
+Select Twelve To One Timeslot In Filter
+    Select Starttime In Filter
+	Select Endtime In Filter
+
 
 Filter Search Button
     Click Button        xpath=//*[@id="root"]/div/div[2]/div[1]/form/button
