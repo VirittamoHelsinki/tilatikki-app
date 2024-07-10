@@ -3,6 +3,8 @@ import { Box, FormControl, Grid, InputLabel, MenuItem, Select, Typography } from
 import { getReservations } from '../api/reservations';
 import moment from 'moment';
 
+import ReservationDialog from './ReservationDialog';
+
 import Calendar from './Calendar';
 
 const ReservationPageCalendar = ({ data }) => {
@@ -10,6 +12,9 @@ const ReservationPageCalendar = ({ data }) => {
   const [calendarBuilding, setCalendarBuilding] = useState(data.buildings[0]._id);
   const [calendarFloor, setCalendarFloor] = useState(data.buildings[0].floors[0]._id);
   const [calendarRoom, setCalendarRoom] = useState(data.buildings[0].floors[0].rooms[0]._id);
+
+  // State for displaying the reservationdialog modal
+  const [ isReservationDialogOpen, setReservationDialogOpen ] = useState(false);
 
   useEffect(() => {
     const building = data.buildings.find((building) => building._id === calendarBuilding)
@@ -24,8 +29,15 @@ const ReservationPageCalendar = ({ data }) => {
 
     setCalendarRoom( floor.rooms[0]._id )
   }, [ calendarFloor ])
+
+
+  const calendarBlockClick = (date) => {
+    console.log(date)
+    
+    setReservationDialogOpen(true)
+  }
   
-  
+
   const numbersToWord = [
     "Yksi", "Kaksi", "Kolmi", "Neli", "Viisi", "Kuusi", "Seitsen", "Kahdeksan", "Yhdeksän", "Kymmenen"
   ]
@@ -55,6 +67,18 @@ const ReservationPageCalendar = ({ data }) => {
 
   return (
     <>
+      {
+        isReservationDialogOpen && (
+          <ReservationDialog
+            roomId={room._id}
+            roomNumber={room.number}
+            capacity={room.capacity}
+            groupsize={5}
+            onClose={() => setReservationDialogOpen(false)}
+            isOpen={isReservationDialogOpen}
+          />
+        )
+      }
       <Box sx={{ width: '30%', padding: '20px', border: '1px solid #ddd', borderRadius: '4px' }}>
         <Typography sx={{ marginBottom: '20px', fontWeight: 'bold' }} variant="h5">{data.name}</Typography>
         <Typography sx={{ marginBottom: '40px' }}>{ descriptionString }</Typography>
@@ -133,7 +157,7 @@ const ReservationPageCalendar = ({ data }) => {
       <Box sx={{ width: '100%', padding: '20px', border: '1px solid #ddd', borderRadius: '4px', backgroundColor: '#fbfbfb' }}>
         {
           (calendarBuilding !== null && calendarFloor !== null && calendarRoom !== null)
-            ? <Calendar calendarData={reservations} />
+            ? <Calendar calendarData={reservations} onBlockClickFn={calendarBlockClick} onNewReservationFn={calendarBlockClick} />
             : <Typography>Nähdäksesi kalenterin valitse ensin rakennus, kerros ja opetustila.</Typography>
         }
       </Box>
