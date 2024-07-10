@@ -200,7 +200,7 @@ Navigate back from logout
 
 
 Update user information
-    [Tags]  settings  valid
+    [Tags]  login  settings  valid
 	Login User Detailed         ${email}  ${pw}  ${firstname}  ${lastname}
 
     Change User Information    ${firstname}-test  ${lastname}-test  testoman-test@test.com
