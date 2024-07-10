@@ -76,3 +76,8 @@ Login wrong password
 	Status Should Be         401
     Location Should Be       ${url}/login
 
+# OK
+Login existing user
+    [Tags]  login  valid
+	Login User Detailed    ${email}  ${pw}  ${firstname}  ${lastname}
+

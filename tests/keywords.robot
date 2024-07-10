@@ -18,6 +18,16 @@ Enter Registeration Credentials
     Sleep              0.5
 
 
+Login User Detailed
+    [Arguments]                 ${email}  ${pw}  ${new_firstname}  ${new_lastname}
+    Go To Loginpage
+	Enter Login Credentials     ${email}  ${pw}
+	Click Login Button
+	Wait Until Location Is Not  ${url}/login     2
+	Location Should Be          ${url}/schools
+	Page Should Contain         ${new_firstname} ${new_lastname}
+
+
 Click Register Button
     Click Button    xpath=//*[@id="root"]/div/main/div[2]/form/button
 
