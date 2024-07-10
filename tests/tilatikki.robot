@@ -173,3 +173,7 @@ Clear filtervalues
 	Filter Clear Button
     Validate Empty Filters
 
+# OK
+Logout user
+	Logout User Detailed
+

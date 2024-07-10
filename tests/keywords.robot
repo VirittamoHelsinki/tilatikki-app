@@ -102,12 +102,35 @@ Click Register Button
     Click Button    xpath=//*[@id="root"]/div/main/div[2]/form/button
 
 
+Click Update Information Button
+    Click Button    xpath=//*[@id="root"]/div/div/div[3]/div[2]/div/div[1]/form/button
+
+
+Create Random User
+    ${current_time}=  Evaluate   time.time()  time
+    Evaluate          random.seed(${current_time})  random
+    ${firstname}=     Evaluate   random.choice(@{r_firstnames})   random
+	${lastname}=      Evaluate   random.choice(@{r_lastnames})    random
+	${provider}=      Evaluate   random.choice(@{r_providers})    random
+	${tld}=           Evaluate   random.choice(@{r_tlds})         random
+	${email}=         Evaluate   '${firstname}.${lastname}@${provider}.${tld}'.lower()
+	${user}=          Create Dictionary  firstname=${firstname}  lastname=${lastname}  provider=${provider}  tld=${tld}  email=${email}
+	[Return]          ${user}
+
+
 Select First Building In Filter
 	Wait Until Element Is Visible  xpath=//*[@id="building-multiple-checkbox"]    2
 	Click Element                  xpath=//*[@id="building-multiple-checkbox"]
     Wait Until Element Is Visible  xpath=//*[@id="menu-"]/div[3]                  2
 	Click Element                  xpath=//*[@id="menu-"]/div[3]/ul/li
 	Press Keys                     xpath=//*[@id="building-multiple-checkbox"]    ESCAPE
+
+
+Select First Floor In Filter
+	Wait Until Element Is Visible  xpath=//*[@id="floor-select"]        2
+	Click Element                  xpath=//*[@id="floor-select"]
+	Wait Until Element Is Visible  xpath=//*[@id="menu-"]/div[3]        2
+	Click Element                  xpath=//*[@id="menu-"]/div[3]/ul/li
 
 
 Select Next Month In Filter
@@ -178,6 +201,7 @@ Filter Clear Button
 
 Filter Search Button
     Click Button        xpath=//*[@id="root"]/div/div[2]/div[1]/form/button
+
 
 
 
