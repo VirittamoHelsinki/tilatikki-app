@@ -163,6 +163,19 @@ Select All Filters
 	Select Groupsize Five In Filter
 
 
+Validate Empty Filters
+    Element Text Should Be         xpath=//*[@id="building-multiple-checkbox"]  ${EMPTY}
+	Element Text Should Be         xpath=//*[@id="floor-select"]         ${EMPTY}
+	Element Text Should Be         xpath=//*[@id="starttime-select"]     ${EMPTY}
+    Element Should Not Be Visible  xpath=//*[@id="endtime-select"]
+	Element Text Should Be         xpath=//*[@id="classroom-select"]     ${EMPTY}
+	Element Text Should Be         xpath=//*[@id="groupsize-select"]     ${EMPTY}
+
+
+Filter Clear Button
+    Click Button   xpath=//*[@id="root"]/div/div[2]/div[1]/form/div[6]/button
+
+
 Filter Search Button
     Click Button        xpath=//*[@id="root"]/div/div[2]/div[1]/form/button
 

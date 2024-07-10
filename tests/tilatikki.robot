@@ -165,3 +165,11 @@ Search rooms by all filters
 	Select All Filters
     Filter Search Button
 
+# OK
+Clear filtervalues
+    [Tags]  navigate  invalid  filter
+	Go To Reservationpage
+	Select All Filters
+	Filter Clear Button
+    Validate Empty Filters
+
