@@ -134,6 +134,8 @@ const BookingResults = ({ classrooms }) => {
 														reservationDate=""
 														startTime=""
 														endTime=""
+														groupsize={0}
+														capacity={value.capacity}
 													/>
 													: (<ReservationCard
 														key={key}
@@ -143,6 +145,8 @@ const BookingResults = ({ classrooms }) => {
 														reservationDate=""
 														startTime=""
 														endTime=""
+														groupsize={0}
+														capacity={value.capacity}
 													/>))
 											}
 										</>

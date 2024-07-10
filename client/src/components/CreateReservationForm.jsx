@@ -32,7 +32,11 @@ const CreateReservationForm = ({
   const handleDisableSubmitButton = () => setDisableSubmitButton(!disableSubmitButton)
 
   const onSubmit = (data) => {
-    console.log(data)
+    data = {
+      ...data,
+      startTime: data.startTime.format("H:mm"),
+      endTime: data.endTime.format("H:mm")
+    }
 
     const generateRecurringReservations = (baseDate, endDate, interval, reservationData) => {
       let currentDate = dayjs(baseDate);
@@ -89,6 +93,8 @@ const CreateReservationForm = ({
 
     onClose();
   }
+
+  console.log(watch("startTime"));
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -152,9 +158,10 @@ const CreateReservationForm = ({
                 name="reservationDate"
                 control={control}
                 defaultValue={null}
-                render={({ field }) => (
+                render={({ field: { value, ...rest } }) => (
                   <DatePicker
-                    {...field}
+                    {...rest}
+                    value={value}
                     label="Varauksen päivämäärä*"
                     renderInput={(params) => <TextField {...params} fullWidth />}
                     format="DD/MM/YYYY"
@@ -169,15 +176,24 @@ const CreateReservationForm = ({
         <Grid item lg={6}>
           <FormControl fullWidth>
             <LocalizationProvider localeText={fiFI.components.MuiLocalizationProvider.defaultProps.localeText} dateAdapter={AdapterDayjs}>
-              <TimePicker
-                label="Aloitusaika*"
+
+              <Controller
                 name="startTime"
-                required
-                fullWidth
-                ampm={false}
+                label="Aloitusaika*"
+                control={control}
                 defaultValue={dayjs()}
-                {...register("startTime")}
+                render={({ field: { value, ...rest } }) => (
+                  <TimePicker
+                    {...rest}
+                    value={value}
+                    label="Aloitusaika*"
+                    ampm={false}
+                    defaultValue={dayjs()}
+                    renderInput={(params) => <TextField {...params} fullWidth />}
+                  />
+                )}
               />
+
             </LocalizationProvider>
           </FormControl>
         </Grid>
@@ -185,15 +201,24 @@ const CreateReservationForm = ({
         <Grid item lg={6}>
           <FormControl fullWidth>
             <LocalizationProvider localeText={fiFI.components.MuiLocalizationProvider.defaultProps.localeText} dateAdapter={AdapterDayjs}>
-              <TimePicker
+
+              <Controller
+                name="endTime"
                 label="Lopetusaika*"
-                name="startTime"
-                required
-                fullWidth
-                ampm={false}
+                control={control}
                 defaultValue={dayjs()}
-                {...register("endTime")}
+                render={({ field: { value, ...rest } }) => (
+                  <TimePicker
+                    {...rest}
+                    value={value}
+                    label="Lopetusaika*"
+                    ampm={false}
+                    defaultValue={dayjs()}
+                    renderInput={(params) => <TextField {...params} fullWidth />}
+                  />
+                )}
               />
+
             </LocalizationProvider>
           </FormControl>
         </Grid>
