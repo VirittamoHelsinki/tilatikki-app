@@ -86,3 +86,17 @@ Select school
     [Tags]  navigate  valid
 	Go To Reservationpage
 
+# OK
+Navigate back from pages
+    [Tags]  logout  login  navigate  valid
+	Logout User Detailed
+	Login User Detailed      ${email}  ${pw}  ${firstname}  ${lastname}
+	Go Back
+	Location Should Be       ${url}/schools
+	Go To Reservationpage
+	Go Back
+	Location Should Be       ${url}/schools
+	Go To Settingspage
+	Go Back
+	Location Should Be       ${url}/schools
+
