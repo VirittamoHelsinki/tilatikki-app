@@ -177,3 +177,14 @@ Clear filtervalues
 Logout user
 	Logout User Detailed
 
+Register with short password
+    [Tags]  register  invalid
+    Go To Registerationpage
+	${user}=                         Create Random User
+	Enter Registeration Credentials  ${user['firstname']}  ${user['lastname']}  ${user['email']}  ${short_pw}
+	Create Session                   MySession    http://localhost:5050/
+	&{user}=                         Create Dictionary  name=${user['firstname']}  surname=${user['lastname']}  email=${user['email']}  password=${short_pw}
+    POST On Session                  MySession  /register  json=${user}  expected_status=any
+	# statuscode for invalid password?
+	Status Should Be                 500
+    Location Should Be               ${url}/register
