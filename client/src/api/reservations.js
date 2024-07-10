@@ -41,6 +41,27 @@ export const getReservations = async () => {
 	}
   };
 
+  export const deleteReservation = async (reservationId) => {
+	try {
+	  const response = await fetch(`${API_URL}/reservations/${reservationId}`, {
+		method: 'DELETE',
+	  });
+  
+	  const responseData = await response.json();
+  
+	  if (!response.ok) {
+		console.error('Server response:', responseData);
+		throw new Error('Failed to delete reservation');
+	  }
+  
+	  return responseData;
+	} catch (error) {
+	  console.error('Delete reservation error:', error);
+	  throw error;
+	}
+  };
+  
+
 export const useCreateReservationMutation = () => {
 	const queryClient = useQueryClient();
 

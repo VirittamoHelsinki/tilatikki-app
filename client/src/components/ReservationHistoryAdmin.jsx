@@ -8,7 +8,7 @@ import { Typography, Divider } from '@mui/material';
 import { fiFI } from '@mui/x-data-grid/locales';
 import DeleteDialog from './DeleteDialog';
 import Snackbar from '@mui/material/Snackbar';
-import { getReservations } from '../api/reservations';
+import { getReservations, deleteReservation } from '../api/reservations';
 import { fetchRoomById } from '../api/rooms';
 
 const columns = (handleClickOpen) => [
@@ -90,79 +90,64 @@ const ReservationHistoryAdmin = () => {
   const [reservations, setReservations] = useState([]);
 
   useEffect(() => {
-    // const parseTime = (dateTimeString) => {
-    //   const date = new Date(dateTimeString);
-    //   const hours = date.getUTCHours();
-    //   const minutes = date.getUTCMinutes();
-    //   return { hours, minutes };
-    // };
-
-    // const formatTimeInterval = (start, end) => {
-    //   const startTime = parseTime(start);
-    //   const endTime = parseTime(end);
-    //   return `${startTime.hours}:${startTime.minutes.toString().padStart(2, '0')} - ${endTime.hours}:${endTime.minutes.toString().padStart(2, '0')}`;
-    // };
-
-    const formatDate = (dateString) => {
-      const date = new Date(dateString);
-      const day = date.getUTCDate().toString().padStart(2, '0');
-      const month = (date.getUTCMonth() + 1).toString().padStart(2, '0'); // Months are zero-indexed
-      const year = date.getUTCFullYear();
-      return `${day}.${month}.${year}`;
-    };
-
-    const fetchAllReservations = async () => {
-      try {
-        const reservationsData = await getReservations();
-
-
-        const formattedReservations = await Promise.all(reservationsData.map(async (reservation, index) => {
-          try {
-            const room = await fetchRoomById(reservation.room);
-
-            let userName = 'N/A';
-            if (reservation.user) {
-              userName = reservation.user.name;
-            }
-
-            // const aikaväli = reservation.startTime && reservation.endTime
-            //   ? formatTimeInterval(reservation.startTime, reservation.endTime)
-            //   : 'N/A';
-
-            const päivämäärä = reservation.reservationDate
-              ? formatDate(reservation.reservationDate)
-              : 'N/A';
-
-            console.log('reservation.startTime', reservation);
-            const isSpecificString = reservation.recurrence === 'none';
-            const toistuvaValue = isSpecificString ? false : true;
-
-            return {
-              id: index + 1,
-              opetustila: room.number || 'N/A',
-              toistuva: toistuvaValue,
-              päivämäärä,
-              aikaväli: reservation.startTime + " - " + reservation.endTime,
-              opettaja: userName,
-              ryhmankoko: reservation.groupsize + " / " + room.capacity || 'N/A',
-            };
-          } catch (innerError) {
-            console.error('Error processing reservation:', reservation, innerError);
-            throw innerError;
-          }
-        }));
-
-
-        setReservations(formattedReservations);
-
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        //setLoading(false);
-      }
-    };
     fetchAllReservations();
   }, []);
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = date.getUTCDate().toString().padStart(2, '0');
+    const month = (date.getUTCMonth() + 1).toString().padStart(2, '0'); // Months are zero-indexed
+    const year = date.getUTCFullYear();
+    return `${day}.${month}.${year}`;
+  };
+
+  const fetchAllReservations = async () => {
+
+    try {
+      const reservationsData = await getReservations();
+
+      const formattedReservations = await Promise.all(reservationsData.map(async (reservation, index) => {
+        try {
+          const room = await fetchRoomById(reservation.room);
+
+          let userName = 'N/A';
+          if (reservation.user) {
+            userName = reservation.user.name;
+          }
+
+          const päivämäärä = reservation.reservationDate
+            ? formatDate(reservation.reservationDate)
+            : 'N/A';
+
+
+          const isSpecificString = reservation.recurrence === 'none';
+          const toistuvaValue = isSpecificString ? false : true;
+
+          return {
+            reservationid: reservation._id,
+            id: index + 1,
+            opetustila: room.number || 'N/A',
+            toistuva: toistuvaValue,
+            päivämäärä,
+            aikaväli: reservation.startTime + " - " + reservation.endTime,
+            opettaja: userName,
+            ryhmankoko: reservation.groupsize + " / " + room.capacity || 'N/A',
+          };
+        } catch (innerError) {
+          console.error('Error processing reservation:', reservation, innerError);
+          throw innerError;
+        }
+      }));
+
+
+      setReservations(formattedReservations);
+
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      //setLoading(false);
+    }
+  };
 
   const handleSnackbarClose = (_event, reason) => {
     if (reason === 'clickaway') {
@@ -181,26 +166,20 @@ const ReservationHistoryAdmin = () => {
     setSelectedRow(null);
   };
 
-  const handleDelete = () => {
-
+  const handleDeleteConfirmed = async () => {
     if (selectedRow) {
-      setOpen(true); // Open confirmation dialog
-    }
-  };
-
-  const handleDeleteConfirmed = () => {
-    if (selectedRow) {
-      // Filter out the row to be deleted
-      const updatedRows = rowsData.filter(row => row.id !== selectedRow.id);
-      setRowsData(updatedRows);
-
-      // Show snackbar message
-      setSnackbarMessage('Varaus on poistettu onnistuneesti');
-      setSnackbarOpen(true);
-
-      // Close the confirmation dialog
-      setOpen(false);
-      setSelectedRow(null);
+      try {
+        await deleteReservation(selectedRow.reservationid);
+        setSnackbarMessage('Varaus poistettu onnistuneesti!');
+        setSnackbarOpen(true);
+        setOpen(false);
+        setSelectedRow(null);
+        fetchAllReservations()
+      } catch (error) {
+        console.error('Error deleting user:', error);
+        setSnackbarMessage('Varausksen poistaminen epäonnistui!');
+        setSnackbarOpen(true);
+      }
     }
   };
 
