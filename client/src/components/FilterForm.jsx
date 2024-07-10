@@ -169,6 +169,7 @@ const FilterForm = ({ onClassroomChange, schoolData, onApply }) => {
 	}
 
 	// format the date to match timeslots format -> '08:15'
+	// not needed?, backend schema changed
 	const formatTimestringToTimeslot = (timestring) => {
 		const timeObject = new Date(timestring);
 		const hour = timeObject.getHours();
@@ -183,26 +184,25 @@ const FilterForm = ({ onClassroomChange, schoolData, onApply }) => {
 		return time >= startTime && time < endTime;
 	}
 
+	// calculate rooms every timeslots occupancies to see if its full/partly free
 	const createRoomTimeslotOccupancy = (room, selectedDay) => {
 		const roomTimeslots = [];
 
 		for (let i = 0; i < timeSlots.length; i++) {
 			roomTimeslots.push({
-				time: timeSlots[i],
-				occupancy: 0,
+				time: timeSlots[i],  // '09:00'
+				occupancy: 0,        // every reservations groupsize added
 				isFull: false,
 			});
 		};
 
 		room.reservations.forEach((reservation) => {
 			// if sameday reservation found, add occupancies to roomTimeslots
-			if (isSameDate(selectedDay, new Date(reservation.startTime))) {
-				const startTime = formatTimestringToTimeslot(reservation.startTime);
-				const endTime = formatTimestringToTimeslot(reservation.endTime);
+			if (isSameDate(selectedDay, new Date(reservation.reservationDate))) {
+				const startTime = reservation.startTime;
+				const endTime = reservation.endTime;
 
-				console.log('reservation', reservation);
-
-				// add groupsize to timeslot occupancy-property
+				// add groupsize to timeslot occupancy
 				for (let i = 0; i < roomTimeslots.length; i++) {
 					if (isWithinTimeslot(roomTimeslots[i].time, startTime, endTime)) {
 						roomTimeslots[i].occupancy += reservation.groupsize;
