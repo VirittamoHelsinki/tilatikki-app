@@ -142,3 +142,11 @@ Search rooms by times
     Select Twelve To One Timeslot In Filter
 	Filter Search Button
 
+# OK
+Search rooms by room
+    [Tags]  navigate  valid  filter
+	Go To Reservationpage
+	Select First Building In Filter
+	Select First Room In Filter
+	Filter Search Button
+

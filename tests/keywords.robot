@@ -140,6 +140,14 @@ Select Twelve To One Timeslot In Filter
 	Select Endtime In Filter
 
 
+Select First Room In Filter
+	Wait Until Element Is Visible    xpath=//*[@id="classroom-select"]    2
+	Click Element                    xpath=//*[@id="classroom-select"]
+	Wait Until Element Is Visible    xpath=//*[@id="menu-"]/div[3]        2
+	Click Element                    xpath=//*[@id="menu-"]/div[3]/ul/li
+
+
+
 Filter Search Button
     Click Button        xpath=//*[@id="root"]/div/div[2]/div[1]/form/button
 
