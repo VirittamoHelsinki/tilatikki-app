@@ -154,6 +154,14 @@ Select Groupsize Five In Filter
 	Click Element                    xpath=//*[@id="menu-"]/div[3]/ul/li
 
 
+Select All Filters
+    Select First Building In Filter
+	Select First Floor In Filter
+	Select Next Month In Filter
+	Select Twelve To One Timeslot In Filter
+	Select First Room In Filter
+	Select Groupsize Five In Filter
+
 
 Filter Search Button
     Click Button        xpath=//*[@id="root"]/div/div[2]/div[1]/form/button

@@ -158,3 +158,10 @@ Search rooms by groupsize
     Select Groupsize Five In Filter
 	Filter Search Button
 
+# OK
+Search rooms by all filters
+    [Tags]  navigate  valid  filter
+	Go To Reservationpage
+	Select All Filters
+    Filter Search Button
+
