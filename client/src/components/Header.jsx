@@ -68,7 +68,7 @@ const Header = () => {
               src=""
               sx={{ width: 40, height: 40, marginRight: 2, backgroundColor: 'grey' }}
             >
-              {name.charAt(0)}  {surname.charAt(0)}
+              {name.charAt(0)}{surname.charAt(0)}
             </Avatar>
             <Typography variant="body1" component="div" sx={{ color: 'black', marginRight: 2 }}>
               {name}{" "}{surname}
