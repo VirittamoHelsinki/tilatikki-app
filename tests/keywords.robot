@@ -1,3 +1,30 @@
+*** Settings ***
+Library     SeleniumLibrary
+Library     Telnet
+Library     String
+Library     BuiltIn
+Library     RequestsLibrary
+Library     Collections
+Library     OperatingSystem
+Resource    variables.robot
+
+
+*** Keywords ***
+Open Browserwindow
+    # for debugging
+	# Set Selenium Speed   0.1
+
+	Set Selenium Implicit Wait    2
+    Open Browser         ${url}     ${browser}
+
+
+Go To Frontpage
+    Go To                ${url}
+
+
+Close Browserwindow
+    Close Browser
+
 
 Go To Registerationpage
     Go To                            ${url}/register
@@ -38,6 +65,12 @@ Go To Reservationpage
 	Location Should Contain        reservations
 
 
+Go To Schoolpage From Logo
+	Wait Until Element Is Visible  xpath=//*[@id="root"]/div/header/div/div[1]   2
+	Click Element                  xpath=//*[@id="root"]/div/header/div/div[1]
+	Location Should Be             ${url}/schools
+
+
 Enter Login Credentials
     [Arguments]        ${email}  ${pw}
     Input Text         xpath=//*[@id="email"]             ${email}
@@ -54,6 +87,31 @@ Login User Detailed
 	Page Should Contain         ${new_firstname} ${new_lastname}
 
 
+Logout User Detailed
+	Click Element                  xpath=//*[@id="root"]/div/header/div/div/button
+	Wait Until Element Is Visible  xpath=/html/body/div[2]/div[3]/ul/li[2]    2
+	Click Element                  xpath=/html/body/div[2]/div[3]/ul/li[2]
+	Location Should Be             ${url}/login
+
+
+Click Login Button
+	Click Button    xpath=//*[@id="root"]/div/main/div[2]/form/button
+
+
 Click Register Button
     Click Button    xpath=//*[@id="root"]/div/main/div[2]/form/button
+
+
+Select First Building In Filter
+	Wait Until Element Is Visible  xpath=//*[@id="building-multiple-checkbox"]    2
+	Click Element                  xpath=//*[@id="building-multiple-checkbox"]
+    Wait Until Element Is Visible  xpath=//*[@id="menu-"]/div[3]                  2
+	Click Element                  xpath=//*[@id="menu-"]/div[3]/ul/li
+	Press Keys                     xpath=//*[@id="building-multiple-checkbox"]    ESCAPE
+
+
+Filter Search Button
+    Click Button        xpath=//*[@id="root"]/div/div[2]/div[1]/form/button
+
+
 

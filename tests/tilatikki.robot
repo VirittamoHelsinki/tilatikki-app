@@ -100,3 +100,20 @@ Navigate back from pages
 	Go Back
 	Location Should Be       ${url}/schools
 
+# OK
+Navigate between pages
+    [Tags]  navigate  valid
+	Go To Reservationpage
+	Go To Settingspage
+	Go To Schoolpage From Logo
+	Go To Reservationpage
+	Go To Schoolpage From Logo
+	Go To Settingspage
+
+# OK
+Search rooms by building
+    [Tags]  navigate  valid  filter
+	Go To Reservationpage
+	Select First Building In Filter
+	Filter Search Button
+
