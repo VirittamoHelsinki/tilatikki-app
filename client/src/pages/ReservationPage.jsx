@@ -8,7 +8,6 @@ import FilterForm from '../components/FilterForm';
 import BookingResults from '../components/BookingResults';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import FloorPlanBase from '../components/floorplans/FloorPlanBase1';
 import FloorPlan1 from '../components/floorplans/FloorPlan1';
 import FloorPlan2 from '../components/floorplans/FloorPlan2';
 import FloorPlan3 from '../components/floorplans/FloorPlan3';
@@ -20,6 +19,7 @@ const ReservationPage = () => {
   const [filteredClassrooms, setFilteredClassrooms] = useState([]);
   const [filterValues, setFilterValues] = useState(null);
   const [floor, setFloor] = React.useState('floor1');
+  const [isFilterApplied, setIsFilterApplied] = useState(false);
 
   const [ selectedComponent, setSelectedComponent ] = React.useState('pohjakarttanäkymä');
 
@@ -34,7 +34,9 @@ const ReservationPage = () => {
     setFloor(newFloor);
   };
 
-
+  const handleFilterApply = () => {
+    setIsFilterApplied(true);
+  };
 
   const { id } = useParams();
   const { data, error, isLoading } = useSchoolQuery(id);
@@ -60,7 +62,22 @@ const ReservationPage = () => {
     setFilteredClassrooms(newClassrooms);
   };
 
-  console.log(data)
+  const renderFloorPlan = (filteredClassrooms) => {
+    switch(filteredClassrooms[0].floor) {
+      case '6666fdca9786f9616159b563':
+        return <FloorPlan1 floorData={filteredClassrooms}/>;
+      case '6666fdca9786f9616159b570':
+        return <FloorPlan2 floorData={filteredClassrooms}/>;
+      case '6666fe699786f9616159b57e':
+        return <FloorPlan3 floorData={filteredClassrooms}/>;
+      case '6666fe699786f9616159b58b':
+        return <FloorPlan4 floorData={filteredClassrooms}/>;
+      case '6666fe699786f9616159b594':
+        return <FloorPlan5 floorData={filteredClassrooms}/>;
+      default:
+        return <div>Floor plan not available</div>;
+    }
+  };
 
   return (
     <>
@@ -93,7 +110,7 @@ const ReservationPage = () => {
 
             <>
               <Box sx={{ width: '30%', padding: '20px', border: '1px solid #ddd', borderRadius: '4px' }}>
-                <FilterForm onClassroomChange={handleClassroomChange} schoolData={data} />
+                <FilterForm onClassroomChange={handleClassroomChange} schoolData={data} onApply={handleFilterApply} />
               </Box>
               <Box sx={{ width: '30%', padding: '20px', border: '1px solid #ddd', borderRadius: '4px' }}>
 
@@ -102,7 +119,7 @@ const ReservationPage = () => {
                 </Box>
               </Box>
               <Box sx={{ width: '100%', padding: '20px', border: '1px solid #ddd', borderRadius: '4px' }}>
-                <ToggleButtonGroup
+                {/* <ToggleButtonGroup
                   color="primary"
                   value={floor}
                   exclusive
@@ -123,10 +140,9 @@ const ReservationPage = () => {
                 >
                   <ToggleButton value="buildingA">Rakennus A</ToggleButton>
                   <ToggleButton value="buildingB">Rakennus B</ToggleButton>
-                </ToggleButtonGroup>
+                </ToggleButtonGroup> */}
                 <Box>
-                  {/* <FloorPlanBase></FloorPlanBase> */}
-                  <FloorPlan5 />
+                {isFilterApplied && renderFloorPlan(filteredClassrooms)}
                 </Box>
               </Box>
             </>
