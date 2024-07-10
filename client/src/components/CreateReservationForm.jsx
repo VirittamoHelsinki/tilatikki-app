@@ -1,5 +1,5 @@
-import React from 'react';
-import { Box, Grid, Typography, Divider, TextField, MenuItem, Select, FormControl, InputLabel, Button, FormControlLabel, Switch } from "@mui/material"
+import React, { useEffect } from 'react';
+import { Box, Grid, Typography, Checkbox, TextField, MenuItem, Select, FormControl, InputLabel, Button, FormControlLabel, Switch } from "@mui/material"
 import { DatePicker, LocalizationProvider, TimePicker } from "@mui/x-date-pickers"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { fiFI } from "@mui/x-date-pickers/locales"
@@ -21,8 +21,15 @@ const CreateReservationForm = ({
   const { control, register, handleSubmit, watch } = useForm()
 
   const [reservationHasExceptions, setReservationHasExceptions] = useState(false);
+  const [disableSubmitButton, setDisableSubmitButton] = useState(false);
+
+  useEffect(() => {
+    groupsize > 0 && groupsize < capacity && setDisableSubmitButton(true)
+  }, [])
 
   const handleReservationSwitchChange = () => setReservationHasExceptions(!reservationHasExceptions);
+
+  const handleDisableSubmitButton = () => setDisableSubmitButton(!disableSubmitButton)
 
   const onSubmit = (data) => {
     console.log(data)
@@ -309,11 +316,20 @@ const CreateReservationForm = ({
           </FormControl>
         </Grid>
 
+        {groupsize > 0 && groupsize < capacity && <Grid item lg={12}>
+          <FormControlLabel
+            control={<Checkbox />}
+            label="Olen huomioinut sen, että tilassa on muita varauksia samanaikaisesti"
+            onChange={handleDisableSubmitButton}
+          />
+        </Grid>}
+
 
         <Grid item lg={4}>
           <Button
             type="submit"
             variant="contained"
+            disabled={disableSubmitButton}
             sx={{
               mt: 3,
               mb: 2,

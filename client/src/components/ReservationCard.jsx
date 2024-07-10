@@ -27,15 +27,31 @@ const ReservationCard = ({ roomId, roomNumber, purpose, status, capacity, reserv
 		setIsOpen(false);
 	};
 
-	const color = () => {
-		if (status === 'Vapaa') {
-			return 'success'
-		} else if (status === 'Varattu') {
-			return 'error'
-		} else {
-			return 'warning'
+
+	const colorStyles = {
+		Vapaa: {
+			backgroundColor: '#D3FCE5', // custom green color
+			color: '#008A2E'
+		},
+		Varattu: {
+			backgroundColor: '#FFE0E1', // custom red color
+			color: '#E60000'
+		},
+		Osittain: {
+			backgroundColor: '#FDF5D3', // custom orange color
+			color: '#DC7609'
 		}
 	}
+
+	const getColorStyle = () => {
+		if (status === 'Vapaa') {
+			return colorStyles.Vapaa;
+		} else if (status === 'Varattu') {
+			return colorStyles.Varattu;
+		} else {
+			return colorStyles.Osittain;
+		}
+	};
 
 	return (
 		<>
@@ -63,9 +79,8 @@ const ReservationCard = ({ roomId, roomNumber, purpose, status, capacity, reserv
 								<Box display="flex" alignItems="center">
 									<Chip
 										label={status}
-										color={color()}
 										size="small"
-										sx={{ marginLeft: 1 }}
+										sx={{ marginLeft: 1, ...getColorStyle() }}
 									/>
 								</Box>
 							</Grid>
