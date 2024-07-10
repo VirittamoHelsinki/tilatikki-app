@@ -136,7 +136,13 @@ const Popup = ({ calendarData, date, close, handleBlockClickFn, handleNewReserva
 
     // Each row is 15 minutes, so an hour is 4 rows
     const rowStart = Number(startHour) * 4 + Number(startMinute) / 15
-    const rowEnd = Number(endHour) * 4 + Number(endMinute) / 15
+    let rowEnd = Number(endHour) * 4 + Number(endMinute) / 15
+
+    if (rowStart === rowEnd) {
+      rowEnd++
+    }
+
+    //console.log(data.startTime, data.endTime, rowStart, rowEnd);
 
     return (
       <div
@@ -146,7 +152,7 @@ const Popup = ({ calendarData, date, close, handleBlockClickFn, handleNewReserva
         style={{ gridRow: `${rowStart + 1} / ${ rowEnd + 1 }`, zIndex: 10 }}
       >
         <p>{data.label}</p>
-        <p className="block__teacher-name">{data.teacher}</p>
+        <p className="block__teacher-name">{data.user.name} {data.user.surname}</p>
       </div>
     )
 
@@ -169,6 +175,7 @@ const Popup = ({ calendarData, date, close, handleBlockClickFn, handleNewReserva
 
       <div className="popup__container">
         <div className="day-calendar">
+
           <div className="day-calendar__time">
             {
               Array.from({ length: 24 }).map((_, index) => {
@@ -177,31 +184,35 @@ const Popup = ({ calendarData, date, close, handleBlockClickFn, handleNewReserva
             }
           </div>
 
-          <div className="day-calendar__blocks-background-container">
-            {
-              // Generate the background for blocks
-              Array.from({ length: 24 }).map((_, index) => {
-                return (
-                  <div
-                    key={`block-background-${index}`}
-                    className="day-calendar__blocks-background"
-                  ></div>
-                )
-              })
-            }
-          </div>
+          
+          <div className="test">
+            <div className="day-calendar__blocks-background-container">
+              {
+                // Generate the background for blocks
+                Array.from({ length: 24 }).map((_, index) => {
+                  return (
+                    <div
+                      key={`block-background-${index}`}
+                      className="day-calendar__blocks-background"
+                    ></div>
+                  )
+                })
+              }
+            </div>
 
-          <div className="day-calendar__blocks" ref={blockContainerRef}>
-            { blocks }
+            <div className="day-calendar__blocks" ref={blockContainerRef}>
+              { blocks }
 
-            <div
-              className="block block--new"
-              onClick={() => handleNewReservationFn(date)}
-              ref={addNewReservationRef}
-            >
-              <p>Luo uusi varaus</p>
+              <div
+                className="block block--new"
+                onClick={() => handleNewReservationFn(date)}
+                ref={addNewReservationRef}
+              >
+                <p>Luo uusi varaus</p>
+              </div>
             </div>
           </div>
+
         </div>
       </div>
 

@@ -170,6 +170,10 @@
 
 .block--daily {
   white-space: wrap;
+
+}
+
+.block--daily * {
 }
 
 .block__teacher-name {
@@ -229,12 +233,14 @@
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 20px;
+
+  min-height: calc(24 * 4 * 15px);
 }
 
 .day-calendar__time {
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: repeat(24, 40px);
+  grid-template-rows: repeat(24, 1fr);
   text-align: right;
   font-weight: 500;
   font-variant-numeric: tabular-nums;
@@ -246,6 +252,7 @@
 
 .day-calendar__blocks {
   position: relative;
+  height: 100%;
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: repeat(calc(24 * 4), 1fr);
@@ -273,7 +280,17 @@
   background-color: #1e2e4f;
 }
 
+.test {
+  position: relative;
+}
+
 .day-calendar__blocks-background-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 100%;
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: repeat(24, 1fr);
