@@ -180,6 +180,7 @@ const BookingResults = ({ classrooms, filterValues }) => {
 														endTime=""
 														groupsize={matchRoom.length > 0 && matchRoom[0].total}
 														capacity={value.capacity}
+														filterValues={filterValues}
 													/>
 													: (<ReservationCard
 														key={key}
@@ -191,6 +192,7 @@ const BookingResults = ({ classrooms, filterValues }) => {
 														endTime=""
 														groupsize={0}
 														capacity={value.capacity}
+														filterValues={filterValues}
 													/>))
 											}
 										</>

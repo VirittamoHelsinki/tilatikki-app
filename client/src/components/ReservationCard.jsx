@@ -14,7 +14,7 @@ import dayjs from 'dayjs';
 import PeopleIcon from '@mui/icons-material/People';
 import ReservationDialog from '../components/ReservationDialog';
 
-const ReservationCard = ({ roomId, roomNumber, purpose, status, capacity, reservationDate, startTime, endTime, groupsize, creator }) => {
+const ReservationCard = ({ roomId, roomNumber, purpose, status, capacity, reservationDate, startTime, endTime, groupsize, creator, filterValues }) => {
 
 	const [isOpen, setIsOpen] = useState(false);
 
@@ -97,7 +97,7 @@ const ReservationCard = ({ roomId, roomNumber, purpose, status, capacity, reserv
 				</Card>
 			</ButtonBase>
 			<ReservationDialog isOpen={isOpen} onClose={handleCloseDialog} roomId={roomId} roomNumber={roomNumber}
-				capacity={capacity} groupsize={groupsize} creator={creator} />
+				capacity={capacity} groupsize={groupsize} creator={creator} filterValues={filterValues} />
 		</>
 	);
 };
