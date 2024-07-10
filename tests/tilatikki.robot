@@ -125,3 +125,12 @@ Search rooms by date
 	Select Next Month In Filter
 	Filter Search Button
 
+# OK
+Search rooms without required field
+    [Tags]  navigate  invalid  filter
+	Go To Reservationpage
+	Filter Search Button
+	Wait Until Page Contains          Pakollinen  2
+	Select First Building In Filter
+	Wait Until Page Does Not Contain  Pakollinen  2
+
