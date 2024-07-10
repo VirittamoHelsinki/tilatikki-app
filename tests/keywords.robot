@@ -77,6 +77,55 @@ Enter Login Credentials
     Input Password     xpath=//*[@id="password"]          ${pw}
 
 
+Clear User Information
+    Go To Settingspage
+	Click Element       xpath=//*[@id="root"]/div/div/div[3]/div[1]/nav/li[1]
+	Clear Element Text  xpath=//*[@id="name"]
+	Clear Element Text  xpath=//*[@id="surname"]
+	Clear Element Text  xpath=//*[@id="email"]
+
+
+Validate Updated Information
+    [Arguments]  ${new_firstname}  ${new_lastname}  ${new_email}
+	Go To Schoolpage From Logo
+	Go To Settingspage
+	Click Element             xpath=//*[@id="root"]/div/div/div[3]/div[1]/nav/li[1]
+	sleep  1
+	Wait Until Element Is Visible    xpath=//*[@id="name"]   2
+	${name}=     Get Value           xpath=//*[@id="name"]
+	Should Be Equal    ${name}    ${new_firstname}
+
+	Wait Until Element Is Visible        xpath=//*[@id="surname"]   2
+	${lastname}=     Get Value           xpath=//*[@id="surname"]
+	Should Be Equal    ${lastname}    ${new_lastname}
+
+	Wait Until Element Is Visible     xpath=//*[@id="email"]   2
+	${email}=     Get Value           xpath=//*[@id="email"]
+	Should Be Equal    ${email}    ${new_email}
+
+	Logout User Detailed
+	Login User Detailed    ${new_email}  ${pw}  ${new_firstname}  ${new_lastname}
+
+
+Update User Information
+    [Arguments]  ${new_firstname}  ${new_lastname}  ${new_email}
+	Wait Until Element Is Visible    xpath=//*[@id="name"]   2
+	Input Text          xpath=//*[@id="name"]  ${new_firstname}
+	Wait Until Element Is Visible    xpath=//*[@id="surname"]   2
+	Input Text          xpath=//*[@id="surname"]  ${new_lastname}
+	Wait Until Element Is Visible    xpath=//*[@id="email"]   2
+	Input Text          xpath=//*[@id="email"]  ${new_email}
+	Click Update Information Button
+	# validate should be alert
+
+
+Change User Information
+    [Arguments]  ${new_firstname}  ${new_lastname}  ${new_email}
+	Clear User Information
+	Update User Information  ${new_firstname}  ${new_lastname}  ${new_email}
+	Validate Updated Information  ${new_firstname}  ${new_lastname}  ${new_email}
+
+
 Login User Detailed
     [Arguments]                 ${email}  ${pw}  ${new_firstname}  ${new_lastname}
     Go To Loginpage

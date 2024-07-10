@@ -198,3 +198,13 @@ Navigate back from logout
 	Go Back
 	Location Should Be          ${url}/login
 
+
+Update user information
+    [Tags]  settings  valid
+	Login User Detailed         ${email}  ${pw}  ${firstname}  ${lastname}
+
+    Change User Information    ${firstname}-test  ${lastname}-test  testoman-test@test.com
+	Go To Schoolpage From Logo
+    Change User Information    ${firstname}  ${lastname}  testoman@test.com
+
+
