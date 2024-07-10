@@ -119,6 +119,7 @@ const FloorPlan5 = () => {
   return (
     <div className="floor-plan">
       <svg viewBox="0 0 552 307" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0.5" y="0.5" width="368" height="227" stroke="#B7B7B7" fill="none"/>
         {/* Room 1 */}
         <rect
           id="room1"
@@ -238,6 +239,7 @@ const FloorPlan5 = () => {
           onClick={() => handleRoomClick('room10')}
           className="room"
         />
+        <path d="M225 100H145V158H225V100Z" stroke="#B7B7B7" fill="none"/>
       </svg>
       {roomData && (
         <div className="room-data">

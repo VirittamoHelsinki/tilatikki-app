@@ -26,6 +26,8 @@ const BookingResults = ({ classrooms }) => {
 
 	const itemsPerPage = 5;
 
+	console.log('classrooms: ', classrooms);
+
 	const handleNextPage = () => {
 		if (currentPage < Math.ceil(Object.keys(classrooms).length / itemsPerPage) - 1) {
 			setCurrentPage(currentPage + 1);
