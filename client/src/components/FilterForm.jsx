@@ -38,7 +38,7 @@ const timeSlots = [
 const groupSizes = Array.from({ length: 20 }, (_, index) => (index + 1) * 5);
 
 
-const FilterForm = ({ onClassroomChange, schoolData }) => {
+const FilterForm = ({ onClassroomChange, schoolData, onFilterChange }) => {
 	const [selectedBuildings, setSelectedBuildings] = useState([]);
 	const [availableFloors, setAvailableFloors] = useState([1]);
 	const [selectedFloor, setSelectedFloor] = useState('');
@@ -304,10 +304,7 @@ const FilterForm = ({ onClassroomChange, schoolData }) => {
 		console.log('classrooms', classrooms);
 
 		onClassroomChange(classrooms);
-	}
 
-	const handleSubmit = (e) => {
-		e.preventDefault();
 		const filterData = {
 			selectedBuildings,
 			selectedFloor,
@@ -316,7 +313,12 @@ const FilterForm = ({ onClassroomChange, schoolData }) => {
 			endingTime,
 			selectedGroupSize,
 			classroom,
-		}
+		};
+		onFilterChange(filterData);
+	};
+
+	const handleSubmit = (e) => {
+		e.preventDefault();
 
 		if (selectedBuildings.length > 0) {
 			if (startingTime && !endingTime) {
@@ -339,7 +341,7 @@ const FilterForm = ({ onClassroomChange, schoolData }) => {
 		else {
 			setRequired(true);
 		}
-	}
+	};
 
 	const checkRequired = () => {
 		if (startingTime && !endingTime) {
