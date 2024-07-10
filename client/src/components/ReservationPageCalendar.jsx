@@ -11,15 +11,12 @@ const ReservationPageCalendar = ({ data }) => {
   const [calendarRoom, setCalendarRoom] = useState(null);
 
   useEffect(() => {
-    if (calendarBuilding === null) {
-      setCalendarFloor(null)
-      setCalendarRoom(null)
-    }
+    setCalendarRoom(null)
+  }, [ calendarFloor ])
 
-    if (calendarFloor === null) {
-      setCalendarRoom(null)
-    }
-  }, [ calendarBuilding, calendarFloor, calendarRoom ])
+  useEffect(() => {
+    setCalendarFloor(null)
+  }, [ calendarBuilding ])
 
   const numbersToWord = [
     "Yksi", "Kaksi", "Kolmi", "Neli", "Viisi", "Kuusi", "Seitsen", "Kahdeksan", "Yhdeksän", "Kymmenen"
@@ -29,10 +26,6 @@ const ReservationPageCalendar = ({ data }) => {
   const roomCount = data.buildings[0].floors.reduce((acc, floor) => acc + floor.rooms.length, 0)
 
   const descriptionString = `${numbersToWord[floorCount - 1]}kerroksinen koulurakennus, jossa on ${roomCount} opetustilaa.`
-
-  console.log(data);
-  console.log(calendarBuilding, calendarFloor, calendarRoom);
-  console.log(data.buildings[calendarBuilding]);
 
   const reservations = data
     .buildings[calendarBuilding]
@@ -92,10 +85,11 @@ const ReservationPageCalendar = ({ data }) => {
                 label="Valitse kerros"
                 placeholder="Valitse kerros"
                 onChange={(event) => setCalendarFloor(event.target.value)}
-
+                disabled={calendarBuilding === null}
+                value={calendarFloor}
               >
                 {
-                  calendarBuilding !== null && data.buildings[calendarBuilding].floors.map((floorData, index) => {
+                  data.buildings[calendarBuilding]?.floors.map((floorData, index) => {
                     return <MenuItem key={`menu-item-building-${floorData.number}`} value={index}>{`${floorData.number}. kerros`}</MenuItem>
                   })
                 }
@@ -119,7 +113,7 @@ const ReservationPageCalendar = ({ data }) => {
                 disabled={calendarFloor === null || calendarBuilding === null}
               >
                 {
-                  calendarBuilding !== null && calendarFloor !== null && data.buildings[calendarBuilding].floors[calendarFloor].rooms.map((room, index) => {
+                  data.buildings[calendarBuilding]?.floors[calendarFloor]?.rooms.map((room, index) => {
                     return <MenuItem key={`menu-item-${room.number}`} value={index}>{room.number}</MenuItem>
                   })
                 }
