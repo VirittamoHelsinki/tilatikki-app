@@ -32,3 +32,14 @@ Register existing user
 	Status Should Be                 400
     Location Should Be               ${url}/register
 
+# OK
+Register with missing fields
+    [Tags]  register  invalid
+    Go To Registerationpage
+    Enter Registeration Credentials  ${firstname}  ${lastname}  ${EMPTY}  ${pw}
+	Create Session                   MySession    http://localhost:5050/
+	&{user}=                         Create Dictionary  name=${firstname}  surname=${EMPTY}  email=${EMPTY}  password=${EMPTY}
+    POST On Session                  MySession  /register  json=${user}  expected_status=any
+	Status Should Be                 500
+    Location Should Be               ${url}/register
+
