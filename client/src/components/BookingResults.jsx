@@ -26,8 +26,6 @@ const BookingResults = ({ classrooms }) => {
 
 	const itemsPerPage = 5;
 
-	console.log('classrooms: ', classrooms);
-
 	const handleNextPage = () => {
 		if (currentPage < Math.ceil(Object.keys(classrooms).length / itemsPerPage) - 1) {
 			setCurrentPage(currentPage + 1);
@@ -72,10 +70,28 @@ const BookingResults = ({ classrooms }) => {
 			{Object.keys(classrooms).length > 0 && (
 				<>
 					<Box display="flex" justifyContent="center" mb={2}>
-						<Button onClick={() => handleFilterChange('reservations')} variant={filterMode === 'reservations' ? 'contained' : 'outlined'}>
+						<Button onClick={() => handleFilterChange('reservations')} variant={filterMode === 'reservations' ? 'contained' : 'outlined'}
+							sx={{
+								backgroundColor: filterMode === 'reservations' ? '#0f172A' : 'transparent',
+								color: filterMode === 'reservations' ? '#FFFFFF' : '#0f172A',
+								borderColor: '#0f172A',
+								'&:hover': {
+									backgroundColor: filterMode === 'reservations' ? '#0f172A' : '#e0e0e0',
+								},
+							}}
+						>
 							Omat Varaukset
 						</Button>
-						<Button onClick={() => handleFilterChange('free')} variant={filterMode === 'free' ? 'contained' : 'outlined'}>
+						<Button onClick={() => handleFilterChange('free')} variant={filterMode === 'free' ? 'contained' : 'outlined'}
+							sx={{
+								backgroundColor: filterMode === 'free' ? '#0f172A' : 'transparent',
+								color: filterMode === 'free' ? '#FFFFFF' : '#0f172A',
+								borderColor: '#0f172A',
+								'&:hover': {
+									backgroundColor: filterMode === 'free' ? '#0f172A' : '#e0e0e0',
+								},
+							}}
+						>
 							Vapaat
 						</Button>
 					</Box>
@@ -143,12 +159,35 @@ const BookingResults = ({ classrooms }) => {
 						})}
 					</Box>
 					<Box display="flex" justifyContent="space-between" mt={2}>
-						<Button onClick={handlePreviousPage} disabled={currentPage === 0}>
+						<Button onClick={handlePreviousPage} disabled={currentPage === 0}
+							sx={{
+								backgroundColor: '#0f172A',
+								color: '#FFFFFF',
+								'&:hover': {
+									backgroundColor: '#0f172A',
+								},
+								'&:disabled': {
+									backgroundColor: '#e0e0e0',
+									color: '#9e9e9e',
+								},
+							}}
+						>
 							Edellinen
 						</Button>
 						<Button
 							onClick={handleNextPage}
 							disabled={currentPage >= Math.ceil(filteredClassrooms.length / itemsPerPage) - 1}
+							sx={{
+								backgroundColor: '#0f172A',
+								color: '#FFFFFF',
+								'&:hover': {
+									backgroundColor: '#0f172A',
+								},
+								'&:disabled': {
+									backgroundColor: '#e0e0e0',
+									color: '#9e9e9e',
+								},
+							}}
 						>
 							Seuraava
 						</Button>
