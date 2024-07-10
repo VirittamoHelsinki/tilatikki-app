@@ -30,9 +30,7 @@ const BookingResults = ({ classrooms, filterValues }) => {
 
 	const itemsPerPage = 5;
 
-	console.log('classrooms: ', classrooms);
 	console.log('part rooms: ', partiallyFreeRooms)
-	console.log('filterValues: ', filterValues)
 
 	const handleNextPage = () => {
 		if (currentPage < Math.ceil(Object.keys(classrooms).length / itemsPerPage) - 1) {
@@ -111,7 +109,6 @@ const BookingResults = ({ classrooms, filterValues }) => {
 	);
 
 
-
 	return (
 		<Box>
 			<h3>Huoneet</h3>
@@ -147,10 +144,9 @@ const BookingResults = ({ classrooms, filterValues }) => {
 						{paginatedClassrooms.map(([key, value]) => {
 							// Filter the reservations from the classrooms
 							const filteredUserReservations = value.reservations.filter(reservation => reservation.user._id === user._id);
-							const partiallyReserved = value.reservations.filter(reservation => reservation.groupsize < value.capacity)
+
 							const matchRoom = partiallyFreeRooms.filter((room) => room._id === value._id)
 							console.log('matchRoom: ', matchRoom)
-							console.log('value: ', value._id)
 							return (
 								<React.Fragment key={key}>
 									{filteredUserReservations.length > 0 && filterMode === 'reservations' ? (
@@ -173,7 +169,7 @@ const BookingResults = ({ classrooms, filterValues }) => {
 
 										<>
 											{
-												(value.reservations.length > 0 ?
+												(matchRoom.length > 0 && matchRoom[0]._id === value._id ?
 													<ReservationCard
 														key={key}
 														roomId={value._id}
