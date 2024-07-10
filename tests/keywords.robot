@@ -110,6 +110,16 @@ Select First Building In Filter
 	Press Keys                     xpath=//*[@id="building-multiple-checkbox"]    ESCAPE
 
 
+Select Next Month In Filter
+    Wait Until Element Is Visible    xpath=//*[@id="root"]/div/div[2]/div[1]/form/div[2]/div/div/div/div/button              2
+	Click Element                    xpath=//*[@id="root"]/div/div[2]/div[1]/form/div[2]/div/div/div/div/button
+	Wait Until Element Is Visible    xpath=/html/body/div[2]/div[2]/div/div/div/div[1]/div[2]/button[2]                         2
+	Click Element	                 xpath=/html/body/div[2]/div[2]/div/div/div/div[1]/div[2]/button[2]
+	Wait Until Element Is Visible    xpath=/html/body/div[2]/div[2]/div/div/div/div[2]/div/div/div[2]/div/div[2]/button[2]    2
+	Click Element 	                 xpath=/html/body/div[2]/div[2]/div/div/div/div[2]/div/div/div[2]/div/div[2]/button[2]
+
+
+
 Filter Search Button
     Click Button        xpath=//*[@id="root"]/div/div[2]/div[1]/form/button
 

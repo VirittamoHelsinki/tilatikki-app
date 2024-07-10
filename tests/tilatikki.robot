@@ -117,3 +117,11 @@ Search rooms by building
 	Select First Building In Filter
 	Filter Search Button
 
+# OK
+Search rooms by date
+    [Tags]  navigate  valid  filter
+	Go To Reservationpage
+	Select First Building In Filter
+	Select Next Month In Filter
+	Filter Search Button
+
