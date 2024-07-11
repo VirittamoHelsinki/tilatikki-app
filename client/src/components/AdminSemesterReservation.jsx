@@ -1,224 +1,148 @@
-import { Grid, Typography, Divider, TextField, MenuItem, Select, FormControl, InputLabel, Button } from "@mui/material"
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers"
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
+import { Box, Grid, Typography, Divider, TextField, MenuItem, Select, FormControl, InputLabel, Button, FormControlLabel, Switch } from "@mui/material"
 import Calendar from "./Calendar"
+import { useEffect, useState } from "react"
+import { getReservations } from "../api/reservations"
+import { useAllSchoolsQuery } from "../api/schools"
+import moment from "moment"
+import AdminCreateReservationDialog from "./AdminCreateReservationDialog"
+import { useForm } from "react-hook-form"
 
 const AdminSemesterReservation = () => {
+  const { data: schoolData } = useAllSchoolsQuery()
 
-  const hours = 24
-  const divideHourIntoSections = 4
-  const timeSelectionOptions = Array.from({ length: hours * divideHourIntoSections }).map((_, index) => {
-    const hour = Math.floor(index / divideHourIntoSections)
-    const minute = (index % 4) * 15
-    return `${hour}:${minute.toString().padStart(2, '0')}`
-  })
-
-  return (
-
-    <Grid container spacing={0}>
-      <Grid item xs={4}>
-        
-        <Grid container spacing={2}>
-          <Grid item xs={10}>
-            <Typography component="h1" variant="h5">
-              Lukukausivaraukset
-            </Typography>
-
-            <Typography component="p" variant="subtitle1">
-              Tee varauksia koko lukukaudelle.
-            </Typography>
-
-            <Divider sx={{ mt: 4, mb: 4 }} />
-          </Grid>
-
-          <Grid item lg={10}>
-            <TextField
-              autoComplete="reservationName"
-              name="reservationName"
-              required
-              fullWidth
-              id="reservationName"
-              label="Varauksen nimi"
-            />
-          </Grid>
-
-          <Grid item lg={10}>
-            <TextField
-              autoComplete="reservationName"
-              name="reservationName"
-              required
-              fullWidth
-              id="reservationName"
-              label="Lisää opettaja"
-            />
-          </Grid>
-
-          <Grid item lg={5}>
-            <LocalizationProvider localeText={"fi"} dateAdapter={AdapterDayjs}>
-              <DatePicker
-                autoComplete="reservationName"
-                name="reservationName"
-                required
-                fullWidth
-                id="reservationName"
-                label="Valitse aloituspäivä"
-              />
-            </LocalizationProvider>
-          </Grid>
-
-
-          <Grid item lg={5}>
-            <FormControl fullWidth>
-              <InputLabel id="start-time-label">Valitse aloitusaika</InputLabel>
-                <Select
-                  labelId="start-time-label"
-                  id="start-time-selec"
-                  name="startTime"
-                  required
-                  fullWidth
-                  label="Valitse aloitusaika"
-                  defaultValue={timeSelectionOptions[0]}
-                >
-                  {
-                    timeSelectionOptions.map((value) => {
-                      return <MenuItem key={`menu-item-${value}`} value={value}>{value}</MenuItem>
-                    })
-                  }
-                </Select>
-            </FormControl>
-          </Grid>
-
-          <Grid item lg={5}>
-            <LocalizationProvider localeText={"fi"} dateAdapter={AdapterDayjs}>
-              <DatePicker
-                autoComplete="reservationName"
-                name="reservationName"
-                required
-                fullWidth
-                id="reservationName"
-                label="Valitse lopetuspäivä"
-              />
-            </LocalizationProvider>
-          </Grid>
-
-          <Grid item lg={5}>
-            <FormControl fullWidth>
-              <InputLabel id="end-time-label">Valitse lopetusaika</InputLabel>
-              <Select
-                labelId="end-time-label"
-                id="end-time-select"
-                name="startTime"
-                required
-                fullWidth
-                label="Valitse lopetusaika"
-                defaultValue={timeSelectionOptions[timeSelectionOptions.length - 1]}
-              >
-                {
-                  timeSelectionOptions.map((value) => {
-                    return <MenuItem key={`menu-item-${value}`} value={value}>{value}</MenuItem>
-                  })
-                }
-              </Select>
-            </FormControl>
-          </Grid>
-
-          <Grid item lg={5}>
-          <FormControl fullWidth>
-              <InputLabel id="group-size-label">Ryhmän koko</InputLabel>
-              <Select
-                labelId="group-size-label"
-                id="group-size-select"
-                name="groupSize"
-                required
-                fullWidth
-                label="Ryhmäkoko"
-                defaultValue={10}
-              >
-                {
-                  Array.from({ length: 100 }).map((_, index) => {
-                    const value = index + 1
-                    return <MenuItem key={`menu-item-${value}`} value={value}>{value}</MenuItem>
-                  })
-                }
-              </Select>
-            </FormControl>
-          </Grid>
-
-          <Grid item lg={5}>
-            <FormControl fullWidth>
-              <InputLabel id="classroom-label">Opetustila</InputLabel>
-              <Select
-                labelId="classroom-label"
-                id="classroom-select"
-                name="classroom"
-                required
-                fullWidth
-                label="Opetustila"
-                defaultValue={"Vihreä lohikäärme"}
-              >
-                <MenuItem value="Vihreä lohikäärme">Vihreä lohikäärme</MenuItem>
-                <MenuItem value="Punainen panda">Punainen panda</MenuItem>
-                <MenuItem value="Sininen siili">Sininen siili</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-
-          <Grid item lg={10}>
-            <FormControl fullWidth>
-              <InputLabel id="repetition-label">Toistuvuus</InputLabel>
-              <Select
-                labelId="repetition-label"
-                id="repetition-select"
-                name="repetition"
-                required
-                fullWidth
-                label="Toistuvuus"
-                defaultValue={"Älä toista"}
-              >
-                <MenuItem value="Älä toista">Älä toista</MenuItem>
-                <MenuItem value="Päivittäin">Päivittäin</MenuItem>
-                <MenuItem value="Viikottain">Viikottain</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-
-          <Grid item lg={10}>
-            <TextField
-              autoComplete="reservationName"
-              name="reservationName"
-              fullWidth
-              id="reservationName"
-              label="Lisätietoja"
-              multiline
-              rows={4}
-            />
-          </Grid>
-
-          <Grid item lg={3}>          
-            <Button
-              type="submit"
-              variant="contained"
-              sx={{ 
-                mt: 3, 
-                mb: 2,
-                backgroundColor: '#18181B', // Change this to your desired color
-                '&:hover': {
-                  backgroundColor: '#2b2b2b' // Change this to a lighter shade of your color
-                }
-              }}
-            >
-              Varaa tila
-            </Button>
-          </Grid>
-
-        </Grid>
+  console.log(schoolData);
   
 
+  const { watch, register } = useForm({
+    defaultValues: {
+      school: null,
+      building: null,
+    }
+  })
+
+  const [ selectedSchool, setSelectedSchool ] = useState(null)
+  const [ selectedBuilding, setSelectedBuilding ] = useState(null)
+  const [ reservations, setReservations ] = useState([])
+
+  console.log("WATCH", watch("school"), watch("building"));
+
+  useEffect(() => {
+    console.log("USE EFFECT");
+    const fetchReservations = async () => {
+      const fetchedReservations = (await getReservations())
+        .map(reservation => {
+          return {
+            ...reservation,
+            
+            label: reservation.purpose,
+            date: moment(reservation.reservationDate),
+            startTime: reservation.startTime,
+            endTime: reservation.endTime,
+          }
+        })
+
+      setReservations(fetchedReservations)
+      console.log('Fetched reservations:', fetchedReservations);
+    }
+    
+    if (watch("school") && watch("building")) {
+      console.log("USE EFFECT", watch("school"), watch("building"));
+      fetchReservations()
+    } else {
+      setReservations([])
+    }
+    
+  }, [ watch("school"), watch("building") ])
+
+  if (!schoolData) {
+    return <p>loading... :P</p>
+  }
+
+  return (
+    <Box sx={{ display: "grid", gridTemplateColumns: "4fr 8fr", gap: "32px", }}>
+      <Grid item lg={4}>
+
+        <Box>
+          <Grid container spacing={2}>
+            <Grid item lg={12}>
+              <Typography component="h1" variant="h5">Lukukausivaraukset</Typography>
+            </Grid>
+
+            <Grid item lg={12}>
+              <Typography component="p" variant="subtitle1">Tee varauksia koko lukukaudelle.</Typography>
+            </Grid>
+
+            <Grid item lg={12}>
+              <Divider />
+            </Grid>
+
+            <Grid item lg={12}>
+              <Typography component="p" variant="subtitle1">Näytä varaukset kalenterissa</Typography>
+            </Grid>
+
+            <Grid item lg={6}>
+              <FormControl fullWidth>
+                <InputLabel id="school-filter-label">Koulussa*</InputLabel>
+                <Select
+                  labelId="school-filter-label"
+                  id="school-filter"
+                  name="school"
+                  required
+                  fullWidth
+                  label="Koulussa"
+                  { ...register("school") }
+                >
+                  {
+                    schoolData.map((school, index) => (
+                      <MenuItem key={index} value={school}>{ school.name }</MenuItem>
+                    ))
+                  }
+                </Select>
+              </FormControl>
+
+            </Grid>
+
+            <Grid item lg={6}>
+              <FormControl fullWidth>
+                <InputLabel id="building-filter-label">Rakennuksessa*</InputLabel>
+                <Select
+                  labelId="building-filter-label"
+                  id="building-filter"
+                  name="building"
+                  required
+                  fullWidth
+                  label="Rakennuksessa"
+                  disabled={!watch("school")}
+                  { ...register("building") }
+                >
+                  {
+                    watch("school")?.buildings.map((building, index) => (
+                      <MenuItem key={index} value={building}>{ building.name }</MenuItem>
+                    ))
+                  }
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item lg={12}>
+              <Divider />
+            </Grid>
+
+
+            <AdminCreateReservationDialog />
+          </Grid>
+
+        </Box>
+      
       </Grid>
-      <Grid item xs={8}>
-        <Calendar />
-      </Grid>
-    </Grid>  
+      
+
+
+
+      <Box>
+        <Calendar calendarData={reservations} />
+      </Box>
+    </Box>  
     
 
 

@@ -17,10 +17,24 @@ router.get('/userdata', async (req, res) => {
 router.get('/userdata/:email', async (req, res) => {
   try {
     const userEmail = req.params.email;
-    const userData = await User.findOne({ email: userEmail });
+    // Find the user by email and populate the reservations
+    const userData = await User.findOne({ email: userEmail }).populate({
+      path: 'reservations',
+      populate: {
+        path: 'room', // If you need to populate room data within reservations
+        populate: {
+          path: 'reservations', // Populating reservations of the room if necessary
+          populate: {
+            path: 'user', // If you need to populate user data within reservations of the room
+          }
+        }
+      }
+    });
+
     if (!userData) {
       return res.status(404).json({ message: 'User not found' });
     }
+
     res.status(200).json(userData);
   } catch (error) {
     console.error('Error fetching user data:', error);
@@ -50,7 +64,7 @@ router.get('/userdata/:id', async (req, res) => {
 
 
 router.post('/register', async (req, res) => {
-  const { name, surname, email, password } = req.body;
+  const { name, surname, email, password, subteacher} = req.body;
 
   try {
     let user = await User.findOne({ email });
@@ -63,7 +77,8 @@ router.post('/register', async (req, res) => {
       name,
       surname,
       email,
-      password
+      password,
+      subteacher: "Alma Ahkera"
     });
 
     await user.save();
@@ -103,9 +118,28 @@ router.post('/login', async (req, res) => {
   }
 });
 
+router.delete('/deleteuser/:email', async (req, res) => {
+  const userEmail = req.params.email;
+
+  try {
+    // Find the user by email
+    const result = await User.deleteOne({ email: userEmail });
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    // Perform any additional cleanup or cascading deletions if necessary
+    // For example, you might delete related reservations or other associated data
+    res.status(200).json({ message: 'User deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+
 
 router.put('/update/:email', async (req, res) => {
-  const { name, surname, email } = req.body;
+  const { name, surname, email, subteacher, admin } = req.body;
   const currentEmail = req.params.email;
 
   try {
@@ -115,9 +149,11 @@ router.put('/update/:email', async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    user.name = name || user.name;
-    user.surname = surname || user.surname;
-    user.email = email || user.email;
+    if (name) user.name = name;
+    if (surname) user.surname = surname;
+    if (email) user.email = email;
+    if (subteacher !== undefined) user.subteacher = subteacher;
+    if (admin !== undefined) user.admin = admin;
 
     await user.save();
     res.status(200).json({ message: 'User updated successfully', user });
@@ -126,6 +162,7 @@ router.put('/update/:email', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+
 
 router.put('/updatePassword/:email', async (req, res) => {
   const { currentPassword, newPassword } = req.body;

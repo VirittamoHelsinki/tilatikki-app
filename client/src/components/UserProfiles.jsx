@@ -9,12 +9,13 @@ import DeleteDialogUsers from './DeleteDialogUsers';
 import Snackbar from '@mui/material/Snackbar';
 import EditUsers from './EditUsers';
 import { fetchAllUsers } from '../api/userApi';
+import { deleteUser } from '../api/userApi';
 
 const columns = (handleClickOpen, handleToEdit) => [
   {
     field: 'käyttäjä',
     headerName: 'Käyttäjä',
-    width: 270,
+    width: 290,
     editable: false,
   },
   {
@@ -26,7 +27,7 @@ const columns = (handleClickOpen, handleToEdit) => [
   {
     field: 'käyttäjärooli',
     headerName: 'Käyttäjärooli',
-    width: 270,
+    width: 290,
     editable: false,
   },
   {
@@ -52,105 +53,6 @@ const columns = (handleClickOpen, handleToEdit) => [
   },
 ];
 
-const rows = [
-  {
-    id: 1,
-    käyttäjä: 'Matti Meikäläinen',
-    sähköposti: 'matti.meikalainen@example.com',
-    käyttäjärooli: 'Opettaja',
-    toissijainenopettaja: 'Maija Mallinen',
-    toiminnot: 'Edit/Delete',
-  },
-  {
-    id: 2,
-    käyttäjä: 'Anna Ankka',
-    sähköposti: 'anna.ankka@example.com',
-    käyttäjärooli: 'Opettaja',
-    toissijainenopettaja: 'Kalle Kukko',
-    toiminnot: 'Edit/Delete',
-  },
-  {
-    id: 3,
-    käyttäjä: 'Pekka Pouta',
-    sähköposti: 'pekka.pouta@example.com',
-    käyttäjärooli: 'Admin',
-    toissijainenopettaja: 'Sanna Sateenkaari',
-    toiminnot: 'Edit/Delete',
-  },
-  {
-    id: 4,
-    käyttäjä: 'Teemu Teekkari',
-    sähköposti: 'teemu.teekkari@example.com',
-    käyttäjärooli: 'Opettaja',
-    toissijainenopettaja: 'Liisa Laakso',
-    toiminnot: 'Edit/Delete',
-  },
-  {
-    id: 5,
-    käyttäjä: 'Olga Onnekas',
-    sähköposti: 'olga.onnekas@example.com',
-    käyttäjärooli: 'Admin',
-    toissijainenopettaja: 'Mikko Maanviljelijä',
-    toiminnot: 'Edit/Delete',
-  },
-  {
-    id: 6,
-    käyttäjä: 'Jussi Jokinen',
-    sähköposti: 'jussi.jokinen@example.com',
-    käyttäjärooli: 'Admin',
-    toissijainenopettaja: 'Elina Elo',
-    toiminnot: 'Edit/Delete',
-  },
-  {
-    id: 7,
-    käyttäjä: 'Riikka Rinne',
-    sähköposti: 'riikka.rinne@example.com',
-    käyttäjärooli: 'Opettaja',
-    toissijainenopettaja: 'Ville Virtanen',
-    toiminnot: 'Edit/Delete',
-  },
-  {
-    id: 8,
-    käyttäjä: 'Kalle Kuusi',
-    sähköposti: 'kalle.kuusi@example.com',
-    käyttäjärooli: 'Opettaja',
-    toissijainenopettaja: 'Päivi Pihlaja',
-    toiminnot: 'Edit/Delete',
-  },
-  {
-    id: 9,
-    käyttäjä: 'Sanna Suutari',
-    sähköposti: 'sanna.suutari@example.com',
-    käyttäjärooli: 'Admin',
-    toissijainenopettaja: 'Hanna Haukka',
-    toiminnot: 'Edit/Delete',
-  },
-  {
-    id: 10,
-    käyttäjä: 'Mikko Miettinen',
-    sähköposti: 'mikko.miettinen@example.com',
-    käyttäjärooli: 'Opettaja',
-    toissijainenopettaja: 'Tiina Talvi',
-    toiminnot: 'Edit/Delete',
-  },
-  {
-    id: 11,
-    käyttäjä: 'Liisa Laine',
-    sähköposti: 'liisa.laine@example.com',
-    käyttäjärooli: 'Opettaja',
-    toissijainenopettaja: 'Kari Kevät',
-    toiminnot: 'Edit/Delete',
-  },
-  {
-    id: 12,
-    käyttäjä: 'Pekka Pelto',
-    sähköposti: 'pekka.pelto@example.com',
-    käyttäjärooli: 'Admin',
-    toissijainenopettaja: 'Jari Joki',
-    toiminnot: 'Edit/Delete',
-  },
-];
-
 const fiLocaleText = {
   ...fiFI.components.MuiDataGrid.defaultProps.localeText,
 };
@@ -162,26 +64,36 @@ const UserProfiles = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [users, setUsers] = useState([]);
-  const [rowsData, setRowsData] = useState(rows);
+
+  const getUsers = async () => {
+    try {
+      const usersData = await fetchAllUsers();
+
+      const formattedUsers = await Promise.all(usersData.map(async (user, index) => {
+        try {
+          const isAdmin = user.admin === true;
+          const toistuvaValue = isAdmin ? "Admin" : "Opettaja";
+          return {
+            id: index + 1,
+            käyttäjä: `${user.name} ${user.surname}`,
+            sähköposti: user.email,
+            käyttäjärooli: toistuvaValue,
+            toissijainenopettaja: user.subteacher
+          };
+        } catch (innerError) {
+          console.error('Error processing user:', user, innerError);
+          throw innerError; // Ensure we propagate the error to the main catch block
+        }
+      }));
+      setUsers(formattedUsers);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const getUsers = async () => {
-      try {
-        const usersData = await fetchAllUsers();
-        const formattedUsers = usersData.map((user, index) => ({
-          id: index + 1,
-          käyttäjä: `${user.name} ${user.surname}`,
-          sähköposti: user.email,
-          käyttäjärooli: user.role,
-          toissijainenopettaja: user.secondaryTeacher || 'N/A',
-        }));
-        setUsers(formattedUsers);
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
     getUsers();
   }, []);
 
@@ -204,28 +116,25 @@ const UserProfiles = () => {
 
   const handleClose = () => {
     setOpen(false);
-    setSelectedRow(null);
   };
 
-  const handleDelete = () => {
+  const handleDeleteConfirmed = async () => {
     if (selectedRow) {
-      setOpen(true); // Open confirmation dialog
-    }
-  };
+      try {
+        // Make API call to delete user
+        await deleteUser(selectedRow.sähköposti);
+        setSnackbarMessage('Käyttäjä poistettu onnistuneesti!');
+        setSnackbarOpen(true);
 
-  const handleDeleteConfirmed = () => {
-    if (selectedRow) {
-      // Filter out the row to be deleted
-      const updatedRows = rowsData.filter(row => row.id !== selectedRow.id);
-      setRowsData(updatedRows);
-
-      // Show snackbar message
-      setSnackbarMessage('Varaus on poistettu onnistuneesti');
-      setSnackbarOpen(true);
-
-      // Close the confirmation dialog
-      setOpen(false);
-      setSelectedRow(null);
+        // Close the confirmation dialog
+        setOpen(false);
+        setSelectedRow(null);
+        getUsers()
+      } catch (error) {
+        console.error('Error deleting user:', error);
+        setSnackbarMessage('Käyttäjän poistaminen epäonnistui!');
+        setSnackbarOpen(true);
+      }
     }
   };
 
@@ -233,6 +142,7 @@ const UserProfiles = () => {
     return (
       <EditUsers
         name={selectedRow.käyttäjä}
+        email={selectedRow.sähköposti}
         role={selectedRow.käyttäjärooli}
         otherTeacher={selectedRow.toissijainenopettaja}
         onClose={() => setIsEditing(false)}
@@ -260,7 +170,7 @@ const UserProfiles = () => {
       <Divider sx={{ mt: 4, mb: 4 }} />
       <Box sx={{ height: 600, width: '100%' }}>
         <DataGrid
-          rows={rows}
+          rows={users}
           localeText={fiLocaleText}
           columns={columns(handleClickOpen, handleToEdit)}
           disableRowSelectionOnClick
@@ -272,16 +182,41 @@ const UserProfiles = () => {
             },
           }}
           pageSizeOptions={[5]}
-          checkboxSelection
           disableColumnResize
           slots={{ toolbar: GridToolbar }}
           slotProps={{
+            baseButton: {
+              style: { color: 'black' }
+            },
             toolbar: {
               style: { color: 'black', marginLeft: '8px' },
               showQuickFilter: true,
               quickFilterProps: {
                 style: { marginRight: '20px' },
               },
+            },
+          }}
+          getRowClassName={(params) =>
+            params.indexRelativeToCurrentPage % 2 === 0 ? 'greyRow' : ''
+          }
+          sx={{
+            '& .greyRow': {
+              backgroundColor: '#F1F5F9',
+            },
+            '& .MuiDataGrid-columnHeader': {
+              backgroundColor: '#1C2C52'
+            },
+            '& .MuiDataGrid-columnHeaderTitle': {
+              color: '#FFFFFF',
+            },
+            '& .MuiDataGrid-iconButtonContainer': {
+              color: '#FFFFFF', // Change the filter icon color to white
+            },
+            '& .MuiDataGrid-menuIconButton': {
+              color: '#FFFFFF', // Change the filter icon color to white
+            },
+            '& .MuiDataGrid-sortIcon': {
+              color: '#FFFFFF', // Change the sorting icon color to white
             },
           }}
         />

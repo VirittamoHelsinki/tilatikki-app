@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { createRef, useEffect, useRef, useState } from "react"
 import "./Calendar.css"
 
 import moment from "moment"
@@ -10,31 +10,154 @@ const days = [ "Ma", "Ti", "Ke", "To", "Pe", "La", "Su" ]
 const columns = 7
 const rows = 6
 
-const Popup = ({ calendarData, date, close }) => {
-  const blocks = calendarData.map((data) => {
+const Popup = ({ calendarData, date, close, handleBlockClickFn, handleNewReservationFn, modalPosition }) => {
+  const blockContainerRef = useRef(null)
+  const addNewReservationRef = useRef(null)
 
-    // Check if block should be rendered
-    const isDateBetween = date.isBetween(data.startDate, data.endDate, null, "[]")
-    if (!isDateBetween) {
-      return
+  /*
+    This effect is responsible for handling the mouse events for the new reservation button.
+    It will display the new reservation button when the mouse is over the block container.
+    It will also move the new reservation button to the correct row based on the mouse position
+    and check if the new reservation button is overlapping with any other blocks.
+  */
+  useEffect(() => {
+    const blockContainer = blockContainerRef.current
+    const addNewReservation = addNewReservationRef.current
+    if (!blockContainer) return
+    if (!addNewReservationRef) return
+
+    addNewReservation.style.display = "none"
+    
+    // When mouse enters the block container, display the new reservation button
+    // and position it accordingly
+    const onMouseEnter = (event) => {
+      addNewReservation.style.display = "block"
+      const rect = blockContainer.getBoundingClientRect()
+      const y = (event.clientY + 5) - rect.top
+
+      const rectHeight = blockContainer.clientHeight
+      const row = Math.max(Math.floor((y / rectHeight) * 24 * 4), 1)
+      
+      addNewReservation.style.gridRow = `${row} / ${row + 2}`
     }
 
-    // Determine the height of the block based on time of the day
-    const rowStart = Number(data.startTime.split(":")[0])
-    const rowEnd = Number(data.endTime.split(":")[0])  
+    // When mouse leaves the block container, hide the new reservation button
+    const onMouseLeave = (event) => {
+      addNewReservation.style.display = "none"
+    }
+
+    // When mouse moves inside the block container, move the new reservation button.
+    // Also check if the new reservation button is overlapping with any other blocks
+    // to adjust its column
+    const onMouseMove = (event) => {
+      // get mouse coordinates relative to event.target
+      const rect = blockContainer.getBoundingClientRect()
+      const y = (event.clientY + 5) - rect.top
+
+      // get mouse position relative to the block container
+      const rectWidth = blockContainer.clientWidth
+      // Used to check if mouse is on the left half or right half of the block container
+      const mousePositionXRatioToBlockContainerWidth = (event.clientX - rect.left) / rectWidth
+
+      const rectHeight = blockContainer.clientHeight
+      const row = Math.max(Math.floor((y / rectHeight) * 24 * 4), 1)
+
+      // Get all blocks that overlap with new reservation button
+      const blockedBy = Array.from(blockContainer.children)
+        .filter((element) => element.classList.contains("block--daily"))
+        .map((element) => {
+          
+          // Use gridRow to check for overlaps
+          const [ blockStartRow, blockEndRow ] = element.style.gridRow
+            .split(" / ")
+            .map((value) => Number(value))
+
+          const [ buttonStartRow, buttonEndRow ] = [ row, row + 2 ]
+
+          // Check if element is blocking the new reservation button
+          if (buttonStartRow >= blockStartRow && buttonStartRow < blockEndRow) {
+            return element
+          }
+
+          if (buttonEndRow > blockStartRow && buttonEndRow <= blockEndRow) {
+            return element
+          }
+ 
+          return null
+        }).filter((element) => !!element)
+      
+      // If there are two blocks blocking the new reservation button, hide it
+      if (blockedBy.length === 2) {
+        addNewReservation.style.display = "none"
+        return
+      }
+
+      // If there is one block blocking the new reservation button
+      if (blockedBy.length === 1) {
+        // If the mouse is on the left half of the block container, hide the new reservation button
+        if (mousePositionXRatioToBlockContainerWidth < 0.5) {
+          addNewReservation.style.display = "none"
+          return
+        }
+
+        addNewReservation.style.gridColumn = "2 / 3"
+      }
+
+      // If there are no blocks blocking the new reservation button,
+      // the button is full width
+      if (blockedBy.length === 0) {
+        addNewReservation.style.gridColumn = "1 / 3"
+      }
+
+      addNewReservation.style.display = "block"
+      addNewReservation.style.gridRow = `${row} / ${row + 2}`
+    }
+
+    blockContainer.addEventListener("mouseover", onMouseEnter)
+    blockContainer.addEventListener("mousemove", onMouseMove)
+    blockContainer.addEventListener("mouseleave", onMouseLeave)
+
+    return () => {
+      blockContainer.removeEventListener("mouseover", onMouseEnter)
+      blockContainer.removeEventListener("mousemove", onMouseMove)
+      blockContainer.removeEventListener("mouseleave", onMouseLeave)
+    }
+
+
+  }, [ blockContainerRef ])
+
+  const dataToRender = calendarData
+    .filter((data) => date.isSame(data.date, "day"))
+
+  const blocks = dataToRender.map((data, index) => {
+    // Determine the height and position of the block based on time of the day
+    const [ startHour, startMinute ] = data.startTime.split(":");
+    const [ endHour, endMinute ] = data.endTime.split(":");
+
+    // Each row is 15 minutes, so an hour is 4 rows
+    const rowStart = Number(startHour) * 4 + Number(startMinute) / 15
+    let rowEnd = Number(endHour) * 4 + Number(endMinute) / 15
+
+    if (rowStart === rowEnd) {
+      rowEnd++
+    }
+
+    //console.log(data.startTime, data.endTime, rowStart, rowEnd);
 
     return (
       <div
-        key={`popup`}
-        className={`block first last`}
-        style={{ gridRow: `${rowStart + 1} / ${ rowEnd + 1 }`, zIndex: 10000 }}
+        key={`popup-block-${data.label}-${index}`}
+        className={`block block--daily`}
+        onClick={() => handleBlockClickFn(data)}
+        style={{ gridRow: `${rowStart + 1} / ${ rowEnd + 1 }`, zIndex: 10 }}
       >
         <p>{data.label}</p>
-        <p className="block__teacher-name">{data.teacher}</p>
+        <p className="block__small-text">{data.user.name} {data.user.surname}</p>
+        <p className="block__small-text"><i>room name</i></p> { /* TODO: ROOM NAME HERE */ }
       </div>
     )
 
-  }).filter((a) => !!a)
+  })
   
   const handleClose = (event) => {
     event.stopPropagation()    
@@ -42,7 +165,7 @@ const Popup = ({ calendarData, date, close }) => {
   } 
   
   return (
-    <div className="popup">
+    <div key={`popup-${date.toString()}`} className="popup" style={{ left: modalPosition.x, top: modalPosition.y }}>
       <div className="popup__header">
         { /* close button */ }
         <svg className="cross" onClick={handleClose} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -53,6 +176,7 @@ const Popup = ({ calendarData, date, close }) => {
 
       <div className="popup__container">
         <div className="day-calendar">
+
           <div className="day-calendar__time">
             {
               Array.from({ length: 24 }).map((_, index) => {
@@ -61,23 +185,35 @@ const Popup = ({ calendarData, date, close }) => {
             }
           </div>
 
-          <div className="day-calendar__blocks-background-container">
-            {
-              // Generate the background for blocks
-              Array.from({ length: 24 }).map((_, index) => {
-                return (
-                  <div
-                    key={`block-background-${index}`}
-                    className="day-calendar__blocks-background"
-                  ></div>
-                )
-              })
-            }
+          
+          <div className="test">
+            <div className="day-calendar__blocks-background-container">
+              {
+                // Generate the background for blocks
+                Array.from({ length: 24 }).map((_, index) => {
+                  return (
+                    <div
+                      key={`block-background-${index}`}
+                      className="day-calendar__blocks-background"
+                    ></div>
+                  )
+                })
+              }
+            </div>
+
+            <div className="day-calendar__blocks" ref={blockContainerRef}>
+              { blocks }
+
+              <div
+                className="block block--new"
+                onClick={() => handleNewReservationFn(date, addNewReservationRef.current.style.gridRow)}
+                ref={addNewReservationRef}
+              >
+                <p>Luo uusi varaus</p>
+              </div>
+            </div>
           </div>
 
-          <div className="day-calendar__blocks">
-            { blocks }
-          </div>
         </div>
       </div>
 
@@ -86,93 +222,81 @@ const Popup = ({ calendarData, date, close }) => {
 }
 
 
-const mockData = [
-  {
-    startDate: moment([2024, 5, 4]),
-    endDate: moment([2024, 5, 10]),
-    startTime: "9:00",
-    endTime: "15:00",
-    label: "Matematiikka 1",
-    teacher: "Onni Opettaja",
-  },
-  {
-    startDate: moment([2024, 5, 6]),
-    endDate: moment([2024, 5, 13]),
-    startTime: "15:15",
-    endTime: "16:00",
-    label: "Äidinkieli 1",
-    teacher: "Onni Opettaja",
-  },
-  {
-    startDate: moment([2024, 5, 11]),
-    endDate: moment([2024, 5, 15]),
-    startTime: "9:00",
-    endTime: "12:00",
-    label: "Biologia 5",
-    teacher: "Onni Opettaja",
-  },
-  {
-    startDate: moment([2024, 5, 18]),
-    endDate: moment([2024, 5, 21]),
-    startTime: "9:00",
-    endTime: "10:00",
-    label: "Matematiikka 2",
-    teacher: "Onni Opettaja",
-  },
-  {
-    startDate: moment([2024, 5, 19]),
-    endDate: moment([2024, 5, 21]),
-    startTime: "9:00",
-    endTime: "11:00",
-    label: "Biologia 2",
-    teacher: "Onni Opettaja",
-  },
-  {
-    startDate: moment([2024, 5, 19]),
-    endDate: moment([2024, 5, 21]),
-    startTime: "11:00",
-    endTime: "12:00",
-    label: "Uskonto 3",
-    teacher: "Onni Opettaja",
-  },
-  {
-    startDate: moment([2024, 5, 19]),
-    endDate: moment([2024, 5, 21]),
-    startTime: "12:00",
-    endTime: "13:00",
-    label: "Psykologia 4",
-    teacher: "Onni Opettaja",
-  },
-]
 
-// { calendarData = mockData } to use mockData
-const Calendar = ({ calendarData = mockData }) => {
+
+
+
+
+
+
+const Calendar = ({
+  calendarData = [],
+  onBlockClickFn = () => console.log("Default callback for clicking a block"),
+  onNewReservationFn = () => console.log("Default callback for new reservation"),
+}) => {
+  // Date to display in the monthly view
   const [ date, setDate ] = useState(moment())
-  const [ modal, setModal ] = useState(-1)
+  // Date to display in the daily view
+  const [ selectedDate, setSelectedDate ] = useState(null)
+  // Position of modal
+  const [ modalPosition, setModalPosition ] = useState({ x: 0, y: 0 })
 
   const addMonth = () => {
     setDate((oldDate) => oldDate.clone().add({ month: 1 }))
-    setModal(null)
+    setSelectedDate(null)
   }
 
   const removeMonth = () => {
     setDate((oldDate) => oldDate.clone().subtract({ month: 1 }))
-    setModal(null)
+    setSelectedDate(null)
   }
 
-  const handleModal = (index) => {
-    setModal(index)
+  const handleModal = (date, clickedCalendarCell) => {
+    if (clickedCalendarCell) {
+      // Determine modal location inside the calendar to match user click location
+      const calendarBody = clickedCalendarCell.parentElement.parentElement
+      const calendarWeek = clickedCalendarCell.parentElement
+      const modalWidth = 400
+      const modalHeight = 600
+
+      const cellX = clickedCalendarCell.offsetLeft
+      const weekY = calendarWeek.offsetTop
+
+      const cellWidth = clickedCalendarCell.clientWidth
+      
+      const calendarBodyWidth = calendarBody.clientWidth
+      const calendarBodyHeight = calendarBody.clientHeight
+
+      const padding = 10
+
+      const x = Math.min(
+        Math.max( padding, cellX + cellWidth / 2 - modalWidth / 2 ),
+        calendarBodyWidth - modalWidth - padding
+      )
+
+      const y = Math.min(
+        Math.max( padding, weekY + calendarWeek.clientHeight / 2 - modalHeight / 2 ),
+        calendarBodyHeight - modalHeight - padding
+      )
+
+      console.log("Modal position", x, y);
+      setModalPosition({ x, y })
+    }
+
+    setSelectedDate(date)
+  }
+
+  const handleBlockClick = (date) => {
+    onBlockClickFn(date)
   }
 
   const calendarCells = []
-  const amountOfBlocksInCells = []
 
   const today = moment()
   const lastMonth = date.clone().subtract({ month: 1 })
   const daysInLastMonth = lastMonth.daysInMonth()
 
   const nextMonth = date.clone().add({ month: 1 })
-  const daysInNextMonth = nextMonth.daysInMonth()
  
   const firstDayOfCurrentMonth = moment([ date.year(), date.month(), 1 ]).day() - 1
   
@@ -201,99 +325,29 @@ const Calendar = ({ calendarData = mockData }) => {
     })
   }
 
-  // Count number of blocks in each cell
-  for (let i = 0; i < calendarCells.length; i++) {
-    const date = calendarCells[i].date
 
-    for (let j = 0; j < calendarData.length; j++) {
-      const data = calendarData[j]
-      const isDateBetween = date.isBetween(data.startDate, data.endDate, null, "[]")
+  const blocks = calendarData.map((data, index) => {
+    return ({
+      element: (      
+        <div
+          key={`block-${data.label}-${index}`}
+          className="block"
+          onClick={(event) => {
+            event.stopPropagation()
+            handleBlockClick(data)
+          }}
+        >
+          <p>{ `${data.startTime} ${data.label}` }</p>
+        </div>
 
-      if (!isDateBetween) {
-        continue
-      }
-
-      if (!amountOfBlocksInCells[i]) {
-        amountOfBlocksInCells[i] = 0
-      }
-
-      amountOfBlocksInCells[i] = amountOfBlocksInCells[i] + 1
-    }
-  } 
-
-  // Generate calendar schedule blocks
-  const blocks = calendarData.map((data) => {
-    // Figure out in what column and row the schedule element starts from
-    // and how big it should be.
-    const startingColumn = data.startDate.day() - 1
-    const startingRow = Math.floor(calendarCells.findIndex((item) => item.date.isSame(data.startDate, "day")) / 7)
-    const columnsOccupied = data.endDate.diff(data.startDate, "days") + 1
-    const rowsOccupied = Math.ceil((columnsOccupied + data.startDate.day()) / columns)
-
-    const blocks = []
-
-    let currentWeek = data.startDate.week()
-    let currentColumn = startingColumn
-    let currentRow = startingRow
-    let cellsToVisit = columnsOccupied
-    let creatingBlock = true
-    let originColumn = currentColumn
-
-    while (cellsToVisit > 0) {
-      creatingBlock = true
-      currentColumn++
-      cellsToVisit--
-
-      // Current block is starting to be too big for the view
-      if (currentRow === rows) {
-        break
-      }
-
-      // If true, row changes
-      if (currentColumn === columns) {
-
-        blocks.push({
-          element: (      
-            <div
-              className={`block ${blocks.length === 0 ? "first" : ""} ${cellsToVisit === 0 ? "last" : ""}`}
-              style={{ gridColumn: `${originColumn + 1} / ${ currentColumn + 1 }` }}
-            >
-              <p>{ `${data.startTime} ${data.label}` }</p>
-            </div>
-          ),
-          week: currentWeek,
-        })
-        
-        creatingBlock = false 
-        currentColumn = 0
-        currentRow++ // Increment row
-        originColumn = 0 // Next block will start from column 0
-        currentWeek++ // Increment week when going to the next row
-      }
-      
-    }
-
-    if (creatingBlock) {
-      blocks.push({
-        element: (      
-          <div
-            className={`block ${blocks.length === 0 ? "first" : ""} last`}
-            style={{ gridColumn: `${originColumn + 1} / ${ currentColumn + 1 }` }}
-          >
-            <p>{ `${data.startTime} ${data.label}` }</p>
-          </div>
-        ),
-        week: currentWeek,
-      })
-    }
-        
-    return blocks
-  }).flat()
-  
+      ),
+      date: data.date,
+    })
+  })  
 
   return (
 
-    <>      
+    <>
       <div className="calendar-wrapper">
         <div className="calendar__controls">
           <p className="calendar__current-date">{ date.format("MMMM YYYY") }</p>
@@ -317,68 +371,59 @@ const Calendar = ({ calendarData = mockData }) => {
         <div className="calendar__body">
 
           {
+            selectedDate && (
+              <Popup
+                key={`popup-${selectedDate.toString()}`}
+                modalPosition={modalPosition}
+                calendarData={calendarData} 
+                date={selectedDate}
+                handleBlockClickFn={handleBlockClick}
+                handleNewReservationFn={onNewReservationFn}
+                close={() => handleModal(null)}
+              />
+            )
+          }
+
+          {
             // Generate each row one by one
-            Array.from({ length: rows }).map((_, week) => {
-              // Get the first top left cell of the calendar and check its week number
-              const actualWeekNumber = calendarCells[0].date.week() + week
-              
+            Array.from({ length: rows }).map((_, week) => {              
               return (
-                <div className="calendar__week">
+                <div key={`week-${week}`} className="calendar__week">
                   {
                     Array.from({ length: columns }).map((_, day) => {
                       const cellIndex = columns * week + day
                       const item = calendarCells[cellIndex]
+
+                      const blocksToRender = blocks
+                        .filter((data) => item.date.isSame(data.date, "day"))
+                        .map((data) => data.element)
+
+                      const otherReservationsText = blocksToRender.length === 4
+                        ? "+1 muu varaus"
+                        : `+${blocksToRender.length - 3} muuta varausta`
                       
                       return (
                         <div
                           key={`cell-${cellIndex}`}
                           className={`calendar__cell ${item.currentMonth ? "" : "grayed"}`}
                           style={{ gridRow: "1 / 3", gridColumn: day + 1 }}
-                          onClick={() => handleModal(cellIndex)}
+                          onClick={(event) => handleModal(item.date, event.target)}
                         >
                           <p className={`calendar__cell-number ${ item.date.isSame(today, "day") ? "today" : "" }`}>
                             { item.date.date().toString().padStart(2, "0") }
                           </p>
 
-                         {
-                          cellIndex === modal && <Popup calendarData={calendarData} date={item.date} close={() => handleModal(-1)} />
-                         }
+                          <div className="calendar__block-container">
+                            { blocksToRender.slice(0, 3) }
+                            { blocksToRender.length > 3 && (
+                              <div className="block block--more"><p>{ otherReservationsText }</p></div>
+                            )}
+                          </div>
                         </div>
                       )
                     })
                   }
 
-                  <div className="calendar__block-container">
-                    {
-                      blocks
-                        .filter((data) => data.week === actualWeekNumber)
-                        .map((data) => data.element)
-                    }
-
-                    {
-                      Array.from({ length: 7 }).map((_, day) => {
-                        const cellIndex = 7 * week + day
-                        const amountOfBlocks = amountOfBlocksInCells[cellIndex]
-
-                        if (!amountOfBlocks || (amountOfBlocks - 3) < 1) {
-                          return
-                        }
-
-                        const blockString = (amountOfBlocks - 3) === 1
-                          ? `+1 muu varaus`
-                          : `+${amountOfBlocks - 3} muuta varausta`
-                        
-                        return (
-                          <div
-                            className={"block first last"}
-                            style={{ gridColumn: day + 1, gridRow: 4, backgroundColor: "#2f4371" }}
-                          >
-                            <p>{ "muut varaukset" }</p>
-                          </div>
-                        )
-                      })
-                    }
-                  </div>
 
                 </div>
               )
