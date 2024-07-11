@@ -14,7 +14,7 @@ const ReservationPageCalendar = ({ data }) => {
   const [calendarRoom, setCalendarRoom] = useState(data.buildings[0].floors[0].rooms[0]._id);
 
   // State for displaying the reservationdialog modal
-  const [ reservationDialogDefaultDataExists, setReservationDialogDefaultData ] = useState(null);
+  const [ newReservationDialogDefaultData, setReservationDialogDefaultData ] = useState(null);
 
   useEffect(() => {
     const building = data.buildings.find((building) => building._id === calendarBuilding)
@@ -51,7 +51,7 @@ const ReservationPageCalendar = ({ data }) => {
     const endTime = `${endHour}:${endMinute}`
 
     console.log(startTime, endTime);
-
+    setReservationDialogDefaultData({ date: date.toDate(), startTime, endTime })
   }
   
 
@@ -85,14 +85,14 @@ const ReservationPageCalendar = ({ data }) => {
   return (
     <>
       {
-        reservationDialogDefaultDataExists && (
+        newReservationDialogDefaultData && (
           <ReservationDialog
             roomId={room._id}
             roomNumber={room.number}
             capacity={room.capacity}
             groupsize={5}
             onClose={() => setReservationDialogDefaultData(null)}
-            isOpen={reservationDialogDefaultDataExists}
+            isOpen={!!newReservationDialogDefaultData}
           />
         )
       }
