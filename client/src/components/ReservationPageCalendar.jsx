@@ -6,9 +6,9 @@ import moment from 'moment';
 import ReservationDialog from './ReservationDialog';
 
 import Calendar from './Calendar';
+import { fetchRoomById } from '../api/rooms';
 
 const ReservationPageCalendar = ({ data }) => {
-  console.log("!!!!!!!!!!!", data);
   // Store ids in state
   const [calendarBuilding, setCalendarBuilding] = useState(data.buildings[0]._id);
   const [calendarFloor, setCalendarFloor] = useState(data.buildings[0].floors[0]._id);
@@ -41,12 +41,22 @@ const ReservationPageCalendar = ({ data }) => {
 
   // When a user clicks a block, get its data and open the modal
   // for editing purposes
-  const calendarBlockClickFn = (reservationData) => {
+  const calendarBlockClickFn = async (reservationData) => {
+    console.log("calendarBlockClickFn");
     console.log(reservationData);
+
+    const room = await fetchRoomById(reservationData.room);
+
+    setReservationDialogDefaultData({
+      room,
+      date: reservationData.date,
+      startTime: reservationData.startTime,
+      endTime: reservationData.endTime,
+    })
   }
 
   // This is called when a user is in the daily view and clicks "luo uusi varaus"
-  const calendarNewReservationFn = (date, gridRow) => {
+  const calendarNewReservationFn = async (date, gridRow) => {
     // Calculate time of day from the "luo uusi varaus" element's gridRow
     const [ start, end ] = gridRow.split(" / ").map((value) => Number(value) - 1) // -1 because gridRow is 1-based
     const startHour = Math.floor(start / 4)
@@ -57,9 +67,11 @@ const ReservationPageCalendar = ({ data }) => {
 
     const startTime = `${startHour}:${startMinute}`
     const endTime = `${endHour}:${endMinute}`
+    
 
-    console.log(startTime, endTime);
-    setReservationDialogDefaultData({ date: date.toDate(), startTime, endTime })
+    const room = await fetchRoomById(reservationData.room);
+
+    setReservationDialogDefaultData({ room, date: date.toDate(), startTime, endTime })
   }
   
 
