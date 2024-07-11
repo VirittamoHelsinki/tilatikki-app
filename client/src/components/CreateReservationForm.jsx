@@ -17,7 +17,9 @@ const CreateReservationForm = ({
   capacity,
   groupsize,
   user,
-  onClose }) => {
+  onClose,
+  filterValues,
+}) => {
   const { control, register, handleSubmit, watch } = useForm()
 
   const [reservationHasExceptions, setReservationHasExceptions] = useState(false);
@@ -31,12 +33,19 @@ const CreateReservationForm = ({
 
   const handleDisableSubmitButton = () => setDisableSubmitButton(!disableSubmitButton)
 
+  useEffect(() => {
+    console.log('filter values: ', filterValues)
+  }, [])
+
   const onSubmit = (data) => {
     data = {
       ...data,
-      startTime: data.startTime.format("H:mm"),
-      endTime: data.endTime.format("H:mm")
+
+      startTime: data.startTime.format("HH:mm"),
+      endTime: data.endTime.format("HH:mm")
     }
+
+    console.log('data: ', data)
 
     const generateRecurringReservations = (baseDate, endDate, interval, reservationData) => {
       let currentDate = dayjs(baseDate);
@@ -47,8 +56,8 @@ const CreateReservationForm = ({
         reservations.push({
           ...reservationData,
           reservationDate: currentDate,
-          startTime: startTime ? formatTime(startTime) : null,
-          endTime: endTime ? formatTime(endTime) : null,
+          startTime: data.startTime ? formatTime(data.startTime) : null,
+          endTime: data.endTime ? formatTime(data.endTime) : null,
         });
 
         currentDate = currentDate.add(interval, 'day');
@@ -134,6 +143,7 @@ const CreateReservationForm = ({
             <InputLabel id="group-size-label">Ryhmän koko (max. {capacity - groupsize} oppilasta)</InputLabel>
             <Select
               labelId="group-size-label"
+              defaultValue={filterValues.selectedGroupSize && filterValues.selectedGroupSize <= (capacity - groupsize) ? filterValues.selectedGroupSize : null}
               id="group-size"
               label={`Ryhmän koko (max. ${capacity - groupsize} oppilasta)`}  // Ensure the label is also set in the Select
               {...register("reservationGroupSize")}
@@ -157,8 +167,8 @@ const CreateReservationForm = ({
               <Controller
                 name="reservationDate"
                 control={control}
-                defaultValue={null}
-                render={({ field: { value, ...rest }}) => (
+                defaultValue={filterValues.selectedDate ? dayjs(filterValues.selectedDate) : null}
+                render={({ field: { value, ...rest } }) => (
                   <DatePicker
                     {...rest}
                     value={value}
@@ -181,8 +191,13 @@ const CreateReservationForm = ({
                 name="startTime"
                 label="Aloitusaika*"
                 control={control}
-                defaultValue={dayjs()}
-                render={({ field: { value, ...rest }}) => (
+
+                defaultValue={
+                  filterValues.startingTime
+                    ? dayjs(`1970-01-01T${filterValues.startingTime.split(':').map(part => part.padStart(2, '0')).join(':')}`)
+                    : dayjs()
+                }
+                render={({ field: { value, ...rest } }) => (
                   <TimePicker
                     {...rest}
                     value={value}
@@ -206,8 +221,12 @@ const CreateReservationForm = ({
                 name="endTime"
                 label="Lopetusaika*"
                 control={control}
-                defaultValue={dayjs()}
-                render={({ field: { value, ...rest }}) => (
+                defaultValue={
+                  filterValues.endingTime
+                    ? dayjs(`1970-01-01T${filterValues.endingTime.split(':').map(part => part.padStart(2, '0')).join(':')}`)
+                    : dayjs()
+                }
+                render={({ field: { value, ...rest } }) => (
                   <TimePicker
                     {...rest}
                     value={value}

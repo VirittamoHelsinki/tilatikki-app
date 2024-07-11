@@ -79,179 +79,65 @@ const reservations = [
   }
 ];
 
-const FloorPlan1 = () => {
-  const [selectedRoom, setSelectedRoom] = useState(null);
-  const [roomData, setRoomData] = useState(null);
+const FloorPlan1 = ({ floorData }) => {
 
-  const handleRoomClick = (roomId) => {
-    setSelectedRoom(roomId);
-    fetchRoomData(roomId);
+
+  const handleRoomClick = (roomNumber) => {
+    console.log(roomNumber + "Moi")
   };
 
-  const fetchRoomData = (roomId) => {
-    const reservation = reservations.find(res => res.room._id === roomId);
-    if (reservation) {
-      setRoomData({ id: roomId, info: `Reservation: ${reservation.name}, Time: ${new Date(reservation.time).toLocaleString()}` });
-    } else {
-      setRoomData({ id: roomId, info: `No reservations for ${roomId}` });
-    }
+  const isRoomInFloorData = (roomNumber) => {
+    const exists = floorData.some(room => {
+      return Number(room.number) === roomNumber;
+    });
+    return exists;
   };
 
-  const getRoomColor = (roomId) => {
-    const reservation = reservations.find(res => res.room._id === roomId);
-    if (reservation) {
-      if (reservation.room.capacity > reservation.groupsize) {
-        return '#F4BD89';
-      } else if (reservation.room.capacity <= reservation.groupsize) {
-        return '#EA7272';
-      }
-    } else {
-      return '#94D0AD';
-    }
+  const getRoomColor = (roomNumber) => {
+    const color = isRoomInFloorData(roomNumber) ? '#94D0AD' : '#EA7272';
+    return color;
   };
 
   return (
     <div className="floor-plan">
       <svg viewBox="0 0 552 307" xmlns="http://www.w3.org/2000/svg">
-        {/* Room 1 */}
-        <rect
-          className='room'
-          id="room1"
-          x="0"
-          y="0"
-          width="127"
-          height="81"
-          fill={getRoomColor('room1')}
-          onClick={() => handleRoomClick('room1')}
-        />
+        <rect x="0.5" y="0.5" width="551" height="306" stroke="#B7B7B7" fill="none" />
+        {/* Rooms */}
+        {[101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111].map((roomNumber) => {
+          const roomProps = {
+            101: { x: 0, y: 0, width: 127, height: 81 },
+            102: { x: 0, y: 85, width: 82, height: 81 },
+            103: { x: 0, y: 170, width: 48, height: 47 },
+            104: { x: 402, y: 0, width: 150, height: 81 },
+            105: { x: 131, y: 0, width: 107, height: 60 },
+            106: { x: 242, y: 0, width: 107, height: 60 },
+            107: { x: 353, y: 0, width: 45, height: 45 },
+            108: { x: 468, y: 85, width: 84, height: 78 },
+            109: { x: 468, y: 167, width: 84, height: 46 },
+            110: { x: 468, y: 217, width: 84, height: 46 },
+            111: { x: 512, y: 267, width: 40, height: 40 },
+          };
 
-        {/* Room 2 */}
-        <rect
-          className='room'
-          id="room2"
-          x="0"
-          y="85"
-          width="82"
-          height="81"
-          fill={getRoomColor('room2')}
-          onClick={() => handleRoomClick('room2')}
-        />
-
-        {/* Room 3 */}
-        <rect
-          className='room'
-          id="room3"
-          x="0"
-          y="170"
-          width="48"
-          height="47"
-          fill={getRoomColor('room3')}
-          onClick={() => handleRoomClick('room3')}
-        />
-
-        {/* Room 4 */}
-        <rect
-          className='room'
-          id="room4"
-          x="402"
-          y="0"
-          width="150"
-          height="81"
-          fill={getRoomColor('room4')}
-          onClick={() => handleRoomClick('room4')}
-        />
-
-        {/* Room 5 */}
-        <rect
-          className='room'
-          id="room5"
-          x="131"
-          y="0"
-          width="107"
-          height="60"
-          fill={getRoomColor('room5')}
-          onClick={() => handleRoomClick('room5')}
-        />
-
-        {/* Room 6 */}
-        <rect
-          className='room'
-          id="room6"
-          x="242"
-          y="0"
-          width="107"
-          height="60"
-          fill={getRoomColor('room6')}
-          onClick={() => handleRoomClick('room6')}
-        />
-
-        {/* Room 7 */}
-        <rect
-          className='room'
-          id="room7"
-          x="353"
-          y="0"
-          width="45"
-          height="45"
-          fill={getRoomColor('room7')}
-          onClick={() => handleRoomClick('room7')}
-        />
-
-        {/* Room 8 */}
-        <rect
-          className='room'
-          id="room8"
-          x="468"
-          y="85"
-          width="84"
-          height="78"
-          fill={getRoomColor('room8')}
-          onClick={() => handleRoomClick('room8')}
-        />
-
-        {/* Room 9 */}
-        <rect
-          className='room'
-          id="room9"
-          x="468"
-          y="167"
-          width="84"
-          height="46"
-          fill={getRoomColor('room9')}
-          onClick={() => handleRoomClick('room9')}
-        />
-
-        {/* Room 10 */}
-        <rect
-          className='room'
-          id="room10"
-          x="468"
-          y="217"
-          width="84"
-          height="46"
-          fill={getRoomColor('room10')}
-          onClick={() => handleRoomClick('room10')}
-          style={{ cursor: 'pointer' }}
-        />
-
-        {/* Room 11 */}
-        <rect
-          className='room'
-          id="room11"
-          x="512"
-          y="267"
-          width="40"
-          height="40"
-          fill={getRoomColor('room11')}
-          onClick={() => handleRoomClick('room11')}
-          style={{ cursor: 'pointer' }}
-        />
+          return (
+            <rect
+              key={roomNumber}
+              id={`room${roomNumber}`}
+              x={roomProps[roomNumber].x}
+              y={roomProps[roomNumber].y}
+              width={roomProps[roomNumber].width}
+              height={roomProps[roomNumber].height}
+              fill={getRoomColor(roomNumber)}
+              onClick={() => handleRoomClick(roomNumber)}
+              style={{ cursor: 'pointer' }}
+            />
+          );
+        })}
+        {/* Non-interactable Areas */}
+        <path d="M339 112H213V195H339V112Z" stroke="#B7B7B7" fill="none" />
+        <path d="M131 222H0V307H131V222Z" stroke="#B7B7B7" fill="none" />
+        <path d="M333 199V219M327 199V219M321 199V219M315 199V219M309 199V219M303 199V219M297 199V219M291 199V219M285 199V219M279 199V219M273 199V219M267 199V219M261 199V219M255 199V219M249 199V219M243 199V219M237 199V219M231 199V219M225 199V219M219 199V219M213 199H339V219H213V199Z" stroke="#B7B7B7" fill="none" />
+        <path d="M333 223V243M327 223V243M321 223V243M315 223V243M309 223V243M303 223V243M297 223V243M291 223V243M285 223V243M279 223V243M273 223V243M267 223V243M261 223V243M255 223V243M249 223V243M243 223V243M237 223V243M231 223V243M225 223V243M219 223V243M213 223H339V243H213V223Z" stroke="#B7B7B7" fill="none" />
       </svg>
-      {roomData && (
-        <div className="room-data">
-          <h2>{roomData.info}</h2>
-        </div>
-      )}
     </div>
   );
 };

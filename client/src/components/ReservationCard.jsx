@@ -14,7 +14,7 @@ import dayjs from 'dayjs';
 import PeopleIcon from '@mui/icons-material/People';
 import ReservationDialog from '../components/ReservationDialog';
 
-const ReservationCard = ({ roomId, roomNumber, purpose, status, capacity, reservationDate, startTime, endTime, groupsize, creator }) => {
+const ReservationCard = ({ roomId, roomNumber, purpose, status, capacity, reservationDate, startTime, endTime, groupsize, creator, filterValues }) => {
 
 	const [isOpen, setIsOpen] = useState(false);
 
@@ -80,24 +80,24 @@ const ReservationCard = ({ roomId, roomNumber, purpose, status, capacity, reserv
 									<Chip
 										label={status}
 										size="small"
-										sx={{ marginLeft: 1, ...getColorStyle() }}
+										sx={{ marginLeft: 1, ...getColorStyle(), fontWeight: 600, padding: 1 }}
 									/>
 								</Box>
 							</Grid>
-							<Grid item xs={12} sm={6}>
+							{<Grid item xs={12} sm={6}>
 								<Box display="flex" alignItems="center">
 									<PeopleIcon sx={{ marginRight: 1 }} />
 									<Typography variant="body2" color="textSecondary">
 										{groupsize}/{capacity}
 									</Typography>
 								</Box>
-							</Grid>
+							</Grid>}
 						</Grid>
 					</CardContent>
 				</Card>
 			</ButtonBase>
 			<ReservationDialog isOpen={isOpen} onClose={handleCloseDialog} roomId={roomId} roomNumber={roomNumber}
-				capacity={capacity} groupsize={groupsize} creator={creator} />
+				capacity={capacity} groupsize={groupsize} creator={creator} filterValues={filterValues} />
 		</>
 	);
 };

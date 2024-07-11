@@ -38,7 +38,8 @@ const timeSlots = [
 const groupSizes = Array.from({ length: 20 }, (_, index) => (index + 1) * 5);
 
 
-const FilterForm = ({ onClassroomChange, schoolData }) => {
+
+const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) => {
 	const [selectedBuildings, setSelectedBuildings] = useState([]);
 	const [availableFloors, setAvailableFloors] = useState([1]);
 	const [selectedFloor, setSelectedFloor] = useState('');
@@ -169,6 +170,7 @@ const FilterForm = ({ onClassroomChange, schoolData }) => {
 	}
 
 	// format the date to match timeslots format -> '08:15'
+	// not needed?, backend schema changed
 	const formatTimestringToTimeslot = (timestring) => {
 		const timeObject = new Date(timestring);
 		const hour = timeObject.getHours();
@@ -183,26 +185,25 @@ const FilterForm = ({ onClassroomChange, schoolData }) => {
 		return time >= startTime && time < endTime;
 	}
 
+	// calculate rooms every timeslots occupancies to see if its full/partly free
 	const createRoomTimeslotOccupancy = (room, selectedDay) => {
 		const roomTimeslots = [];
 
 		for (let i = 0; i < timeSlots.length; i++) {
 			roomTimeslots.push({
-				time: timeSlots[i],
-				occupancy: 0,
+				time: timeSlots[i],  // '09:00'
+				occupancy: 0,        // every reservations groupsize added
 				isFull: false,
 			});
 		};
 
 		room.reservations.forEach((reservation) => {
 			// if sameday reservation found, add occupancies to roomTimeslots
-			if (isSameDate(selectedDay, new Date(reservation.startTime))) {
-				const startTime = formatTimestringToTimeslot(reservation.startTime);
-				const endTime = formatTimestringToTimeslot(reservation.endTime);
+			if (isSameDate(selectedDay, new Date(reservation.reservationDate))) {
+				const startTime = reservation.startTime;
+				const endTime = reservation.endTime;
 
-				console.log('reservation', reservation);
-
-				// add groupsize to timeslot occupancy-property
+				// add groupsize to timeslot occupancy
 				for (let i = 0; i < roomTimeslots.length; i++) {
 					if (isWithinTimeslot(roomTimeslots[i].time, startTime, endTime)) {
 						roomTimeslots[i].occupancy += reservation.groupsize;
@@ -304,10 +305,7 @@ const FilterForm = ({ onClassroomChange, schoolData }) => {
 		console.log('classrooms', classrooms);
 
 		onClassroomChange(classrooms);
-	}
 
-	const handleSubmit = (e) => {
-		e.preventDefault();
 		const filterData = {
 			selectedBuildings,
 			selectedFloor,
@@ -316,7 +314,14 @@ const FilterForm = ({ onClassroomChange, schoolData }) => {
 			endingTime,
 			selectedGroupSize,
 			classroom,
-		}
+		};
+		onFilterChange(filterData);
+	};
+
+	const handleSubmit = (e) => {
+		e.preventDefault();
+
+		onApply();
 
 		if (selectedBuildings.length > 0) {
 			if (startingTime && !endingTime) {
@@ -339,7 +344,7 @@ const FilterForm = ({ onClassroomChange, schoolData }) => {
 		else {
 			setRequired(true);
 		}
-	}
+	};
 
 	const checkRequired = () => {
 		if (startingTime && !endingTime) {
@@ -367,7 +372,7 @@ const FilterForm = ({ onClassroomChange, schoolData }) => {
 
 	useEffect(() => {
 		console.log('schoolData', schoolData);
-
+		console.log('schoolData floor', schoolData.buildings[0].floors[0]._id);
 		const maxFloorValue = selectedBuildings.reduce((max, building) =>
 			Object.keys(building.floors).length > max ? Object.keys(building.floors).length : max, 1
 		)
