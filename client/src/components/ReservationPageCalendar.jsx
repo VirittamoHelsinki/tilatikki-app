@@ -8,6 +8,7 @@ import ReservationDialog from './ReservationDialog';
 import Calendar from './Calendar';
 
 const ReservationPageCalendar = ({ data }) => {
+  console.log("!!!!!!!!!!!", data);
   // Store ids in state
   const [calendarBuilding, setCalendarBuilding] = useState(data.buildings[0]._id);
   const [calendarFloor, setCalendarFloor] = useState(data.buildings[0].floors[0]._id);
@@ -15,6 +16,13 @@ const ReservationPageCalendar = ({ data }) => {
 
   // State for displaying the reservationdialog modal
   const [ newReservationDialogDefaultData, setReservationDialogDefaultData ] = useState(null);
+
+  // Filtervalues because code reusability is horrible
+  const [filterValues, setFilterValues] = useState({
+    selectedDate: null,
+    startingTime: null,
+    endingTime: null,
+  })
 
   useEffect(() => {
     const building = data.buildings.find((building) => building._id === calendarBuilding)
@@ -90,9 +98,15 @@ const ReservationPageCalendar = ({ data }) => {
             roomId={room._id}
             roomNumber={room.number}
             capacity={room.capacity}
-            groupsize={5}
+            groupsize={0} // CURRENTLY REVERSED SPOTS IN A ROOM
             onClose={() => setReservationDialogDefaultData(null)}
             isOpen={!!newReservationDialogDefaultData}
+            filterValues={{
+              selectedGroupSize: 0, // HOW MANY SPOTS A USER WANTS IN A ROOM
+              selectedDate: newReservationDialogDefaultData.date,
+              startingTime: newReservationDialogDefaultData.startTime,
+              endingTime: newReservationDialogDefaultData.endTime,
+            }}
           />
         )
       }
