@@ -12,7 +12,7 @@ import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import 'dayjs/locale/de';
 import {filterFieldContainer, timeSlotStyle, buildingStyle, groupStyle, sizeStyle, selectWrapper, buildingStyleLeft, dateStyle, floorStyle, clearButtonStyle} from '../styles/filterformStyles';
-
+import InfoIcon from '@mui/icons-material/Info';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -102,7 +102,7 @@ const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) 
 
 				const floorObject = building.floors.find(floor => floor.number === selectedFloor);
 				if (floorObject) {
-					allRooms = allRooms.concat(floorObject.rooms.map((room) => `${building.name} - ${room.number} - ${selectedFloor}`));
+					allRooms = allRooms.concat(floorObject.rooms.map((room) => `${building.name} - ${room.number} - ${selectedFloor}. krs`));
 				}
 			}
 			else {
@@ -224,7 +224,6 @@ const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) 
 		if (room.reservations.length == 0) {
 			return true;
 		}
-
 		const roomTimeSlots = createRoomTimeslotOccupancy(room, selectedDate.$d);
 		return roomTimeSlots.some((timeslot) => {
 			if (selectedGroupSize) {
@@ -255,7 +254,6 @@ const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) 
 				})
 			}
 		}
-		// no date selected, add all rooms
 		else {
 			filteredClassrooms = [...classrooms];
 		}
@@ -323,28 +321,14 @@ const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) 
 	const handleSubmit = (e) => {
 		e.preventDefault();
 
-		onApply();
-
-		if (selectedBuildings.length > 0) {
-			if (startingTime && !endingTime) {
-				setRequiredEndTime(true);
-			}
-			else {
-				filterResults();
-				// // clears form when sent
-				// resetStates();
-
-				// not needed if resetStates() is called
-				setRequired(false);
-				setRequiredEndTime(false);
-			}
-		}
-		else if (startingTime && !endingTime) {
-			setRequiredEndTime(true);
-			setRequired(true);
-		}
-		else {
-			setRequired(true);
+		if (selectedBuildings
+		  && selectedFloor
+		  && selectedDate
+		  && startingTime
+		  && endingTime
+		  && selectedGroupSize) {
+			onApply();
+			filterResults();
 		}
 	};
 
@@ -410,6 +394,7 @@ const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) 
 							<InputLabel id="building-checkbox-label" > </InputLabel>
 							<Select
 								labelId="building-checkbox-label"
+								required
 								id="building-multiple-checkbox"
 								value={selectedBuildings.map(building => building.name)}
 								onChange={handleSelectedBuildings}
@@ -433,11 +418,12 @@ const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) 
 						</FormControl>
 					</div>
 					<div style={{ buildingStyle, floorStyle }}>
-						<InputLabel id="floor-select-label">Kerros</InputLabel>
+						<InputLabel required id="floor-select-label">Kerros</InputLabel>
 						<Select
 							labelId="floor-select-label"
 							id="floor-select"
 							label="Kerros"
+							required
 							value={selectedFloor}
 							onChange={handleSelectedFloor}
 							input={<OutlinedInput label="Kerros" />}
@@ -452,58 +438,31 @@ const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) 
 					</div>
 				</div>
 
-				<>
-					{required && (
-						<p style={{
-							color: 'red', paddingLeft: '10px', marginTop: '0', marginBottom: '20px',
-							fontFamily: "Helvetica"
-						}}>
-							*Pakollinen
-						</p>
-					)}
-				</>
-
 				<div style={dateStyle}>
 					<Box sx={selectWrapper}>
-						<FormLabel id="date-top-label">Päivämäärä</FormLabel>
+						<FormLabel required id="date-top-label">Päivämäärä</FormLabel>
 						<LocalizationProvider dateAdapter={AdapterDayjs} >
 							<DatePicker
-								// label="Päivämäärä"
 								value={selectedDate}
+								required
 								onChange={handleStartingDateChange}
 								format="DD.MM.YYYY"
 								slotProps={{
-									textField: { fullWidth: true },
+									textField: { fullWidth: true, required: true },
 								}}
 							/>
 						</LocalizationProvider>
 					</Box>
 				</div>
 
-				{/* V1 with endDate */}
-				{/* <div style={dateStyle}>
-				<Box sx={selectWrapper}>
-					<LocalizationProvider dateAdapter={AdapterDayjs} >
-					<DatePicker
-						label="Lopetuspäivämä	ärä"
-						value={selectedEndDate}
-						onChange={handleEndingDateChange}
-						format="DD.MM.YYYY"
-						slotProps={{
-							textField: { fullWidth: true },
-						}}
-						/>
-					</LocalizationProvider>
-				</Box>
-			</div> */}
-
 				<div style={filterFieldContainer}>
 					<div style={timeSlotStyle}>
-						<InputLabel id="starttime-select-label">Aloitusaika</InputLabel>
+						<InputLabel id="starttime-select-label">Aloitusaika<InfoIcon></InfoIcon></InputLabel>
 						<Select
 							labelId="starttime-select-label"
 							id="starttime-select"
 							label="Aloitusaika"
+							required
 							value={startingTime}
 							onChange={handleStartingTime}
 							input={<OutlinedInput label="Aloitusaika" />}
@@ -517,50 +476,37 @@ const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) 
 						</Select>
 					</div>
 
-					{startingTime && (
-						<div style={timeSlotStyle}>
-							<InputLabel required id="endtime-select-label">Lopetusaika</InputLabel>
-							<Select
-								labelId="endtime-select-label"
-								id="endtime-select"
-								label="Lopetusaika"
-								value={endingTime}
-								onChange={handleEndingTime}
-								input={<OutlinedInput label="Lopetusaika" />}
-								MenuProps={MenuProps}
-							>
-								{timeSlots.map((time) => (
-									startingTime ? (
-										startingTime >= time ? (
-											<MenuItem disabled={true} key={time} value={time}>
-												<ListItemText primary={time} />
-											</MenuItem>
-										) : (
-											<MenuItem key={time} value={time}>
-												<ListItemText primary={time} />
-											</MenuItem>
-										)
+					<div style={timeSlotStyle}>
+						<InputLabel required id="endtime-select-label">Lopetusaika<InfoIcon></InfoIcon></InputLabel>
+						<Select
+							labelId="endtime-select-label"
+							id="endtime-select"
+							label="Lopetusaika"
+							required
+							value={endingTime}
+							onChange={handleEndingTime}
+							input={<OutlinedInput label="Lopetusaika" />}
+							MenuProps={MenuProps}
+						>
+							{timeSlots.map((time) => (
+								startingTime ? (
+									startingTime >= time ? (
+										<MenuItem disabled={true} key={time} value={time}>
+											<ListItemText primary={time} />
+										</MenuItem>
 									) : (
 										<MenuItem key={time} value={time}>
 											<ListItemText primary={time} />
 										</MenuItem>
 									)
-								))}
-							</Select>
-
-						</div>
-					)}
-				</div>
-
-				<div>
-					{requiredEndTime && (
-						<p style={{
-							color: 'red', marginLeft: '40%', marginBottom: '-3%', marginTop: '0',
-							fontFamily: "Helvetica"
-						}}>
-							*Pakollinen
-						</p>
-					)}
+								) : (
+									<MenuItem key={time} value={time}>
+										<ListItemText primary={time} />
+									</MenuItem>
+								)
+							))}
+						</Select>
+					</div>
 				</div>
 
 				<div style={filterFieldContainer}>
@@ -586,11 +532,12 @@ const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) 
 						</FormControl>
 					</div>
 					<div style={groupStyle, sizeStyle}>
-						<InputLabel id="groupsize-select-label">Ryhmäkoko</InputLabel>
+						<InputLabel required id="groupsize-select-label">Ryhmäkoko</InputLabel>
 						<Select
 							labelId="groupsize-select-label"
 							id="groupsize-select"
 							label="Ryhmäkoko"
+							required
 							value={selectedGroupSize}
 							onChange={handleGroupSize}
 							input={<OutlinedInput label="Ryhmäkoko" />}
