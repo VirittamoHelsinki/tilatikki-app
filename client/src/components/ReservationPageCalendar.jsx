@@ -69,8 +69,7 @@ const ReservationPageCalendar = ({ data }) => {
     const endTime = `${endHour}:${endMinute}`
     
 
-    const room = await fetchRoomById(reservationData.room);
-
+    const room = calendarRoom
     setReservationDialogDefaultData({ room, date: date.toDate(), startTime, endTime })
   }
   
