@@ -17,13 +17,6 @@ const ReservationPageCalendar = ({ data }) => {
   // State for displaying the reservationdialog modal
   const [ newReservationDialogDefaultData, setReservationDialogDefaultData ] = useState(null);
 
-  // Filtervalues because code reusability is horrible
-  const [filterValues, setFilterValues] = useState({
-    selectedDate: null,
-    startingTime: null,
-    endingTime: null,
-  })
-
   useEffect(() => {
     const building = data.buildings.find((building) => building._id === calendarBuilding)
 
@@ -42,9 +35,6 @@ const ReservationPageCalendar = ({ data }) => {
   // When a user clicks a block, get its data and open the modal
   // for editing purposes
   const calendarBlockClickFn = async (reservationData) => {
-    console.log("calendarBlockClickFn");
-    console.log(reservationData);
-
     const room = await fetchRoomById(reservationData.room);
 
     setReservationDialogDefaultData({
@@ -73,7 +63,6 @@ const ReservationPageCalendar = ({ data }) => {
     setReservationDialogDefaultData({ room, date: date.toDate(), startTime, endTime })
   }
   
-
   const numbersToWord = [
     "Yksi", "Kaksi", "Kolmi", "Neli", "Viisi", "Kuusi", "Seitsen", "Kahdeksan", "Yhdeksän", "Kymmenen"
   ]
@@ -99,8 +88,6 @@ const ReservationPageCalendar = ({ data }) => {
     }
   })
     
-  
-
   return (
     <>
       {
