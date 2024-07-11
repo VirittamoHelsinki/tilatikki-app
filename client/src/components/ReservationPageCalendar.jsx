@@ -14,7 +14,7 @@ const ReservationPageCalendar = ({ data }) => {
   const [calendarRoom, setCalendarRoom] = useState(data.buildings[0].floors[0].rooms[0]._id);
 
   // State for displaying the reservationdialog modal
-  const [ isReservationDialogOpen, setReservationDialogOpen ] = useState(false);
+  const [ reservationDialogDefaultDataExists, setReservationDialogDefaultData ] = useState(null);
 
   useEffect(() => {
     const building = data.buildings.find((building) => building._id === calendarBuilding)
@@ -31,10 +31,27 @@ const ReservationPageCalendar = ({ data }) => {
   }, [ calendarFloor ])
 
 
-  const calendarBlockClick = (date) => {
-    console.log(date)
-    
-    setReservationDialogOpen(true)
+  // When a user clicks a block, get its data and open the modal
+  // for editing purposes
+  const calendarBlockClickFn = (reservationData) => {
+    console.log(reservationData);
+  }
+
+  // This is called when a user is in the daily view and clicks "luo uusi varaus"
+  const calendarNewReservationFn = (date, gridRow) => {
+    // Calculate time of day from the "luo uusi varaus" element's gridRow
+    const [ start, end ] = gridRow.split(" / ").map((value) => Number(value) - 1) // -1 because gridRow is 1-based
+    const startHour = Math.floor(start / 4)
+    const startMinute = ((start % 4) * 15).toString().padEnd(2, "0")
+
+    const endHour = Math.floor(end / 4)
+    const endMinute = ((end % 4) * 15).toString().padEnd(2, "0")
+
+    const startTime = `${startHour}:${startMinute}`
+    const endTime = `${endHour}:${endMinute}`
+
+    console.log(startTime, endTime);
+
   }
   
 
@@ -68,14 +85,14 @@ const ReservationPageCalendar = ({ data }) => {
   return (
     <>
       {
-        isReservationDialogOpen && (
+        reservationDialogDefaultDataExists && (
           <ReservationDialog
             roomId={room._id}
             roomNumber={room.number}
             capacity={room.capacity}
             groupsize={5}
-            onClose={() => setReservationDialogOpen(false)}
-            isOpen={isReservationDialogOpen}
+            onClose={() => setReservationDialogDefaultData(null)}
+            isOpen={reservationDialogDefaultDataExists}
           />
         )
       }
@@ -157,7 +174,7 @@ const ReservationPageCalendar = ({ data }) => {
       <Box sx={{ width: '100%', padding: '20px', border: '1px solid #ddd', borderRadius: '4px', backgroundColor: '#fbfbfb' }}>
         {
           (calendarBuilding !== null && calendarFloor !== null && calendarRoom !== null)
-            ? <Calendar calendarData={reservations} onBlockClickFn={calendarBlockClick} onNewReservationFn={calendarBlockClick} />
+            ? <Calendar calendarData={reservations} onBlockClickFn={calendarBlockClickFn} onNewReservationFn={calendarNewReservationFn} />
             : <Typography>Nähdäksesi kalenterin valitse ensin rakennus, kerros ja opetustila.</Typography>
         }
       </Box>

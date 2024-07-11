@@ -152,9 +152,13 @@
   grid-column: 1 / 3;
   height: 100%;
   width: 100%;
-  padding: 0 8px;
 
   position: absolute;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .block > p {
@@ -170,13 +174,9 @@
 
 .block--daily {
   white-space: wrap;
-
 }
 
-.block--daily * {
-}
-
-.block__teacher-name {
+.block__small-text {
   font-size: 0.7rem !important;
 }
 

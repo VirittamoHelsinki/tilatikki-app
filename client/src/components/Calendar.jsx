@@ -148,11 +148,12 @@ const Popup = ({ calendarData, date, close, handleBlockClickFn, handleNewReserva
       <div
         key={`popup-block-${data.label}-${index}`}
         className={`block block--daily`}
-        onClick={() => handleBlockClickFn(data.date)}
+        onClick={() => handleBlockClickFn(data)}
         style={{ gridRow: `${rowStart + 1} / ${ rowEnd + 1 }`, zIndex: 10 }}
       >
         <p>{data.label}</p>
-        <p className="block__teacher-name">{data.user.name} {data.user.surname}</p>
+        <p className="block__small-text">{data.user.name} {data.user.surname}</p>
+        <p className="block__small-text"><i>room name</i></p> { /* TODO: ROOM NAME HERE */ }
       </div>
     )
 
@@ -205,7 +206,7 @@ const Popup = ({ calendarData, date, close, handleBlockClickFn, handleNewReserva
 
               <div
                 className="block block--new"
-                onClick={() => handleNewReservationFn(date)}
+                onClick={() => handleNewReservationFn(date, addNewReservationRef.current.style.gridRow)}
                 ref={addNewReservationRef}
               >
                 <p>Luo uusi varaus</p>
@@ -333,7 +334,7 @@ const Calendar = ({
           className="block"
           onClick={(event) => {
             event.stopPropagation()
-            handleBlockClick(data.date)
+            handleBlockClick(data)
           }}
         >
           <p>{ `${data.startTime} ${data.label}` }</p>
