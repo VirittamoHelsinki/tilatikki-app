@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Button, Typography, FormLabel } from '@mui/material';
+import { Box, Button, Typography, FormLabel, Tooltip } from '@mui/material';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
@@ -393,23 +393,23 @@ const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) 
 					<FormControl fullWidth>
 						<InputLabel id="building-checkbox-label">Rakennus*</InputLabel>
 						<Select
-						labelId="building-checkbox-label"
-						id="building-multiple-checkbox"
-						name="selectedBuilding"
-						required
-						fullWidth
-						label="Rakennus"
-						value={selectedBuildings.map(building => building.name)}
-						onChange={handleSelectedBuildings}
-						input={<OutlinedInput label="Rakennus" />}
-						renderValue={(selected) => (
-							<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-							{selected.map((value) => (
-								<Chip key={value} label={value} />
-							))}
-							</Box>
-						)}
-						MenuProps={MenuProps}
+							labelId="building-checkbox-label"
+							id="building-multiple-checkbox"
+							name="selectedBuilding"
+							required
+							fullWidth
+							label="Rakennus"
+							value={selectedBuildings.map(building => building.name)}
+							onChange={handleSelectedBuildings}
+							input={<OutlinedInput label="Rakennus" />}
+							renderValue={(selected) => (
+								<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+								{selected.map((value) => (
+									<Chip key={value} label={value} />
+								))}
+								</Box>
+							)}
+							MenuProps={MenuProps}
 						>
 						{schoolData.buildings.map((building) => (
 							<MenuItem key={building.name} value={building.name}>
@@ -424,14 +424,14 @@ const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) 
 					<FormControl fullWidth>
 						<InputLabel id="floor-select-label">Kerros*</InputLabel>
 						<Select
-						labelId="floor-select-label"
-						id="floor-select"
-						label="Kerros"
-						required
-						value={selectedFloor}
-						onChange={handleSelectedFloor}
-						input={<OutlinedInput label="Kerros" />}
-						MenuProps={MenuProps}
+							labelId="floor-select-label"
+							id="floor-select"
+							label="Kerros"
+							required
+							value={selectedFloor}
+							onChange={handleSelectedFloor}
+							input={<OutlinedInput label="Kerros" />}
+							MenuProps={MenuProps}
 						>
 						{availableFloors.map((floor) => (
 							<MenuItem key={floor} value={floor}>
@@ -447,13 +447,13 @@ const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) 
 					<FormLabel required id="date-top-label">Päivämäärä</FormLabel>
 					<LocalizationProvider dateAdapter={AdapterDayjs}>
 						<DatePicker
-						value={selectedDate}
-						required
-						onChange={handleStartingDateChange}
-						format="DD.MM.YYYY"
-						slotProps={{
-							textField: { fullWidth: true, required: true },
-						}}
+							value={selectedDate}
+							required
+							onChange={handleStartingDateChange}
+							format="DD.MM.YYYY"
+							slotProps={{
+								textField: { fullWidth: true, required: true },
+							}}
 						/>
 					</LocalizationProvider>
 				</Box>
@@ -461,7 +461,12 @@ const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) 
 				<Box sx={{ display: "flex", gap: "32px", marginBottom: "16px" }}>
 					{/* startTime */}
 					<FormControl fullWidth>
-						<InputLabel id="starttime-select-label" shrink>Aloitusaika<InfoIcon /></InputLabel>
+						<InputLabel id="starttime-select-label" shrink>
+							Aloitusaika
+							<Tooltip title={<div style={{ fontSize: "18px" }}>Varauksen aloitusaika</div>} placement='top'>
+								<InfoIcon />
+							</Tooltip>
+						</InputLabel>
 						<Select
 							labelId="starttime-select-label"
 							id="starttime-select"
@@ -476,13 +481,18 @@ const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) 
 							<MenuItem key={time} value={time}>
 							<ListItemText primary={time} />
 							</MenuItem>
-						))}
+							))}
 						</Select>
 					</FormControl>
 
 					{/* endTime */}
 					<FormControl fullWidth>
-						<InputLabel id="endtime-select-label" shrink>Lopetusaika<InfoIcon /></InputLabel>
+						<InputLabel id="endtime-select-label" shrink>
+							Lopetusaika
+							<Tooltip title={<div style={{ fontSize: "18px" }}>Varauksen lopetusaika</div>} placement='top'>
+								<InfoIcon />
+							</Tooltip>
+						</InputLabel>
 						<Select
 							labelId="endtime-select-label"
 							id="endtime-select"
@@ -512,14 +522,12 @@ const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) 
 						))}
 						</Select>
 					</FormControl>
-
 				</Box>
 
 				<Box>
-					<FormControl fullWidth>
-
 				 {/* groupSize */}
-				<InputLabel fullWidth required id="groupsize-select-label">Ryhmäkoko</InputLabel>
+					<FormControl fullWidth>
+						<InputLabel	InputLabel fullWidth required id="groupsize-select-label">Ryhmäkoko</InputLabel>
 						<Select
 							labelId="groupsize-select-label"
 							id="groupsize-select"
@@ -536,7 +544,7 @@ const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) 
 								</MenuItem>
 							))}
 						</Select>
-						</FormControl>
+					</FormControl>
 				</Box>
 
 				 {/* classroom */}
@@ -552,7 +560,7 @@ const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) 
 							onChange={handleClassroom}
 							input={<OutlinedInput label="Opetustila" />}
 							MenuProps={MenuProps}
-							>
+						>
 							{availableClassrooms.map((room) => (
 								<MenuItem key={room} value={room}>
 									<ListItemText primary={room} />
@@ -573,6 +581,7 @@ const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) 
 					}}>
 					Hae tiloja
 				</Button> <br />
+
 				<button type="button" onClick={resetStates} style={clearButtonStyle}>
 					Tyhjennä hakuehdot
 				</button>
