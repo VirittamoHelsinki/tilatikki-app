@@ -1,19 +1,33 @@
 import { Box, Grid, Typography, Divider, TextField, MenuItem, Select, FormControl, InputLabel, Button, FormControlLabel, Switch } from "@mui/material"
-import { DatePicker, LocalizationProvider, TimePicker } from "@mui/x-date-pickers"
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import Calendar from "./Calendar"
 import { useEffect, useState } from "react"
 import { getReservations } from "../api/reservations"
+import { useAllSchoolsQuery } from "../api/schools"
 import moment from "moment"
-import { fiFI } from "@mui/x-date-pickers/locales"
-import dayjs from "dayjs"
 import AdminCreateReservationDialog from "./AdminCreateReservationDialog"
+import { useForm } from "react-hook-form"
 
 const AdminSemesterReservation = () => {
+  const { data: schoolData } = useAllSchoolsQuery()
 
+  console.log(schoolData);
+  
+
+  const { watch, register } = useForm({
+    defaultValues: {
+      school: null,
+      building: null,
+    }
+  })
+
+  const [ selectedSchool, setSelectedSchool ] = useState(null)
+  const [ selectedBuilding, setSelectedBuilding ] = useState(null)
   const [ reservations, setReservations ] = useState([])
 
+  console.log("WATCH", watch("school"), watch("building"));
+
   useEffect(() => {
+    console.log("USE EFFECT");
     const fetchReservations = async () => {
       const fetchedReservations = (await getReservations())
         .map(reservation => {
@@ -28,12 +42,21 @@ const AdminSemesterReservation = () => {
         })
 
       setReservations(fetchedReservations)
-
       console.log('Fetched reservations:', fetchedReservations);
     }
     
-    fetchReservations()
-  }, [])
+    if (watch("school") && watch("building")) {
+      console.log("USE EFFECT", watch("school"), watch("building"));
+      fetchReservations()
+    } else {
+      setReservations([])
+    }
+    
+  }, [ watch("school"), watch("building") ])
+
+  if (!schoolData) {
+    return <p>loading... :P</p>
+  }
 
   return (
     <Box sx={{ display: "grid", gridTemplateColumns: "4fr 8fr", gap: "32px", }}>
@@ -59,19 +82,19 @@ const AdminSemesterReservation = () => {
 
             <Grid item lg={6}>
               <FormControl fullWidth>
-                <InputLabel id="group-size-label">Koulussa*</InputLabel>
+                <InputLabel id="school-filter-label">Koulussa*</InputLabel>
                 <Select
-                  labelId="group-size-label"
-                  id="group-size-select"
-                  name="groupSize"
+                  labelId="school-filter-label"
+                  id="school-filter"
+                  name="school"
                   required
                   fullWidth
                   label="Koulussa"
-                  defaultValue={1}
+                  { ...register("school") }
                 >
                   {
-                    Array.from({ length: 100 }).map((_, index) => (
-                      <MenuItem key={index} value={index + 1}>{index + 1}</MenuItem>
+                    schoolData.map((school, index) => (
+                      <MenuItem key={index} value={school}>{ school.name }</MenuItem>
                     ))
                   }
                 </Select>
@@ -81,20 +104,20 @@ const AdminSemesterReservation = () => {
 
             <Grid item lg={6}>
               <FormControl fullWidth>
-                <InputLabel id="group-size-label">Rakennuksessa*</InputLabel>
+                <InputLabel id="building-filter-label">Rakennuksessa*</InputLabel>
                 <Select
-                  labelId="group-size-label"
-                  id="group-size-select"
-                  name="groupSize"
+                  labelId="building-filter-label"
+                  id="building-filter"
+                  name="building"
                   required
                   fullWidth
                   label="Rakennuksessa"
-                  defaultValue={1}
-                  disabled
+                  disabled={!watch("school")}
+                  { ...register("building") }
                 >
                   {
-                    Array.from({ length: 100 }).map((_, index) => (
-                      <MenuItem key={index} value={index + 1}>{index + 1}</MenuItem>
+                    watch("school")?.buildings.map((building, index) => (
+                      <MenuItem key={index} value={building}>{ building.name }</MenuItem>
                     ))
                   }
                 </Select>

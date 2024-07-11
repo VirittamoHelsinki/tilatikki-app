@@ -40,6 +40,7 @@ const CreateReservationForm = ({
   const onSubmit = (data) => {
     data = {
       ...data,
+
       startTime: data.startTime.format("HH:mm"),
       endTime: data.endTime.format("HH:mm")
     }
@@ -190,6 +191,7 @@ const CreateReservationForm = ({
                 name="startTime"
                 label="Aloitusaika*"
                 control={control}
+
                 defaultValue={
                   filterValues.startingTime
                     ? dayjs(`1970-01-01T${filterValues.startingTime.split(':').map(part => part.padStart(2, '0')).join(':')}`)
