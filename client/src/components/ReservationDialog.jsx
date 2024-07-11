@@ -39,7 +39,7 @@ const theme = createTheme({
 	},
 });
 
-const ReservationDialog = ({ roomId, isOpen, onClose, roomNumber, capacity, groupsize }) => {
+const ReservationDialog = ({ roomId, isOpen, onClose, roomNumber, capacity, groupsize, filterValues }) => {
 	const [groupSize, setGroupSize] = useState(null);
 	const [user, setUser] = useState({})
 
@@ -77,6 +77,7 @@ const ReservationDialog = ({ roomId, isOpen, onClose, roomNumber, capacity, grou
 						capacity={capacity}
 						user={user}
 						onClose={onClose}
+						filterValues={filterValues}
 					/>
 
 				</DialogContent>

@@ -30,7 +30,6 @@ const BookingResults = ({ classrooms, filterValues }) => {
 
 	const itemsPerPage = 5;
 
-	console.log('part rooms: ', partiallyFreeRooms)
 
 	const handleNextPage = () => {
 		if (currentPage < Math.ceil(Object.keys(classrooms).length / itemsPerPage) - 1) {
@@ -146,7 +145,6 @@ const BookingResults = ({ classrooms, filterValues }) => {
 							const filteredUserReservations = value.reservations.filter(reservation => reservation.user._id === user._id);
 
 							const matchRoom = partiallyFreeRooms.filter((room) => room._id === value._id)
-							console.log('matchRoom: ', matchRoom)
 							return (
 								<React.Fragment key={key}>
 									{filteredUserReservations.length > 0 && filterMode === 'reservations' ? (
@@ -163,6 +161,7 @@ const BookingResults = ({ classrooms, filterValues }) => {
 												startTime={reservation.startTime}
 												endTime={reservation.endTime}
 												groupsize={reservation.groupsize}
+												filterValues={filterValues}
 											/>
 										))
 									) : (
@@ -180,6 +179,8 @@ const BookingResults = ({ classrooms, filterValues }) => {
 														endTime=""
 														groupsize={matchRoom.length > 0 && matchRoom[0].total}
 														capacity={value.capacity}
+														filterValues={filterValues}
+
 													/>
 													: (<ReservationCard
 														key={key}
@@ -191,6 +192,8 @@ const BookingResults = ({ classrooms, filterValues }) => {
 														endTime=""
 														groupsize={0}
 														capacity={value.capacity}
+														filterValues={filterValues}
+
 													/>))
 											}
 										</>
