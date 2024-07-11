@@ -21,13 +21,13 @@ const ReservationPage = () => {
   const [floor, setFloor] = React.useState('floor1');
   const [isFilterApplied, setIsFilterApplied] = useState(false);
 
-  const [ selectedComponent, setSelectedComponent ] = React.useState('pohjakarttanäkymä');
+  const [selectedComponent, setSelectedComponent] = React.useState('pohjakarttanäkymä');
 
 
   // For calendarview (temporary)
-  const [ calendarBuilding, setCalendarBuilding ] = useState(null);
-  const [ calendarFloor, setCalendarFloor ] = useState(null);
-  const [ calendarRoom, setCalendarRoom ] = useState(null);
+  const [calendarBuilding, setCalendarBuilding] = useState(null);
+  const [calendarFloor, setCalendarFloor] = useState(null);
+  const [calendarRoom, setCalendarRoom] = useState(null);
 
 
   const handleChange = (event, newFloor) => {
@@ -63,17 +63,17 @@ const ReservationPage = () => {
   };
 
   const renderFloorPlan = (filteredClassrooms) => {
-    switch(filteredClassrooms[0].floor) {
+    switch (filteredClassrooms[0].floor) {
       case '6666fdca9786f9616159b563':
-        return <FloorPlan1 floorData={filteredClassrooms}/>;
+        return <FloorPlan1 floorData={filteredClassrooms} />;
       case '6666fdca9786f9616159b570':
-        return <FloorPlan2 floorData={filteredClassrooms}/>;
+        return <FloorPlan2 floorData={filteredClassrooms} />;
       case '6666fe699786f9616159b57e':
-        return <FloorPlan3 floorData={filteredClassrooms}/>;
+        return <FloorPlan3 floorData={filteredClassrooms} />;
       case '6666fe699786f9616159b58b':
-        return <FloorPlan4 floorData={filteredClassrooms}/>;
+        return <FloorPlan4 floorData={filteredClassrooms} />;
       case '6666fe699786f9616159b594':
-        return <FloorPlan5 floorData={filteredClassrooms}/>;
+        return <FloorPlan5 floorData={filteredClassrooms} />;
       default:
         return <div>Floor plan not available</div>;
     }
@@ -94,8 +94,8 @@ const ReservationPage = () => {
         </Grid>
         <Grid item>
           <Button
-          onClick={() => setSelectedComponent('kalenterinäkymä')}
-          sx={{ color: 'black', padding: '6px 10px', 'borderRadius': '6px', backgroundColor: selectedComponent === 'kalenterinäkymä' ? 'white' : 'transparent', 'fontWeight': 500 }}
+            onClick={() => setSelectedComponent('kalenterinäkymä')}
+            sx={{ color: 'black', padding: '6px 10px', 'borderRadius': '6px', backgroundColor: selectedComponent === 'kalenterinäkymä' ? 'white' : 'transparent', 'fontWeight': 500 }}
           >
             Kalenterinäkymä
           </Button>
@@ -110,13 +110,13 @@ const ReservationPage = () => {
 
             <>
               <Box sx={{ width: '30%', padding: '20px', border: '1px solid #ddd', borderRadius: '4px' }}>
-                <FilterForm onClassroomChange={handleClassroomChange} schoolData={data} onApply={handleFilterApply} onFilterChange={handleFilterValues}/>
+                <FilterForm onClassroomChange={handleClassroomChange} schoolData={data} onApply={handleFilterApply} onFilterChange={handleFilterValues} />
 
               </Box>
               <Box sx={{ width: '30%', padding: '20px', border: '1px solid #ddd', borderRadius: '4px' }}>
 
                 <Box>
-                  <BookingResults classrooms={filteredClassrooms} />
+                  <BookingResults classrooms={filteredClassrooms} filterValues={filterValues} />
                 </Box>
               </Box>
               <Box sx={{ width: '100%', padding: '20px', border: '1px solid #ddd', borderRadius: '4px' }}>
@@ -143,7 +143,7 @@ const ReservationPage = () => {
                   <ToggleButton value="buildingB">Rakennus B</ToggleButton>
                 </ToggleButtonGroup> */}
                 <Box>
-                {isFilterApplied && renderFloorPlan(filteredClassrooms)}
+                  {isFilterApplied && renderFloorPlan(filteredClassrooms)}
                 </Box>
               </Box>
             </>
@@ -195,7 +195,7 @@ const ReservationPage = () => {
                         onChange={(event) => setCalendarFloor(event.target.value)}
                       >
                         {
-                          [ 1, 2, 3].map((value) => {
+                          [1, 2, 3].map((value) => {
                             return <MenuItem key={`menu-item-${value}`} value={value}>{value}</MenuItem>
                           })
                         }
