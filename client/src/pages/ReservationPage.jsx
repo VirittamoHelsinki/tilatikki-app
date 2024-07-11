@@ -8,11 +8,7 @@ import FilterForm from '../components/FilterForm';
 import BookingResults from '../components/BookingResults';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import FloorPlan1 from '../components/floorplans/FloorPlan1';
-import FloorPlan2 from '../components/floorplans/FloorPlan2';
-import FloorPlan3 from '../components/floorplans/FloorPlan3';
-import FloorPlan4 from '../components/floorplans/FloorPlan4';
-import FloorPlan5 from '../components/floorplans/FloorPlan5';
+import FloorPlan from '../components/FloorPlan';
 import Calendar from '../components/Calendar';
 
 const ReservationPage = () => {
@@ -62,20 +58,90 @@ const ReservationPage = () => {
     setFilteredClassrooms(newClassrooms);
   };
 
-  const renderFloorPlan = (filteredClassrooms) => {
+  const roomProps1 = {
+    101: { x: 0, y: 0, width: 127, height: 81, i: 0 },
+    102: { x: 0, y: 85, width: 82, height: 81, i: 1 },
+    103: { x: 0, y: 170, width: 48, height: 47, i: 2 },
+    104: { x: 402, y: 0, width: 150, height: 81, i: 3 },
+    105: { x: 131, y: 0, width: 107, height: 60, i: 4 },
+    106: { x: 242, y: 0, width: 107, height: 60, i: 5 },
+    107: { x: 353, y: 0, width: 45, height: 45, i: 6 },
+    108: { x: 468, y: 85, width: 84, height: 78, i: 7 },
+    109: { x: 468, y: 167, width: 84, height: 46, i: 8 },
+    110: { x: 468, y: 217, width: 84, height: 46, i: 9 },
+    111: { x: 512, y: 267, width: 40, height: 40, i: 10 },
+  };
+
+  const roomProps2 = {
+    201: { x: 242, y: 0, width: 107, height: 60, i: 0 },
+    202: { x: 353, y: 0, width: 45, height: 45, i: 1 },
+    203: { x: 402, y: 0, width: 150, height: 81, i: 2 },
+    204: { x: 468, y: 85, width: 84, height: 78, i: 3 },
+    205: { x: 512, y: 167, width: 40, height: 46, i: 4 },
+    206: { x: 468, y: 217, width: 84, height: 46, i: 5 },
+    207: { x: 512, y: 267, width: 40, height: 40, i: 6 },
+    208: { x: 131, y: 0, width: 107, height: 81, i: 7 },
+    209: { x: 0, y: 0, width: 127, height: 81, i: 8 },
+    210: { x: 0, y: 85, width: 82, height: 81, i: 9 },
+    211: { x: 0, y: 170, width: 82, height: 47, i: 10 },
+  };
+
+  const roomProps3 = {
+    101: { x: 197, y: 0, width: 45, height: 45, i: 0 },
+    102: { x: 246, y: 0, width: 150, height: 45, i: 1 },
+    103: { x: 400, y: 0, width: 84, height: 78, i: 2 },
+    104: { x: 438, y: 82, width: 46, height: 46, i: 3 },
+    105: { x: 438, y: 132, width: 46, height: 46, i: 4 },
+    106: { x: 400, y: 182, width: 84, height: 46, i: 5 },
+    107: { x: 86, y: 0, width: 107, height: 81, i: 6 },
+    108: { x: 0, y: 0, width: 82, height: 81, i: 7 },
+    109: { x: 0, y: 85, width: 82, height: 81, i: 8 },
+    110: { x: 0, y: 170, width: 82, height: 58, i: 9 },
+  };
+
+  const roomProps4 = {
+    201: { x: 197, y: 0, width: 45, height: 45, i: 0 },
+    202: { x: 246, y: 0, width: 63, height: 45, i: 1 },
+    203: { x: 313, y: 0, width: 83, height: 45, i: 2 },
+    204: { x: 400, y: 0, width: 84, height: 78, i: 3 },
+    205: { x: 400, y: 82, width: 84, height: 46, i: 4 },
+    206: { x: 438, y: 132, width: 46, height: 46, i: 5 },
+    207: { x: 400, y: 182, width: 84, height: 46, i: 6 },
+    208: { x: 86, y: 0, width: 107, height: 45, i: 7 },
+    209: { x: 0, y: 0, width: 82, height: 81, i: 8 },
+    210: { x: 0, y: 85, width: 82, height: 81, i: 9 },
+    211: { x: 0, y: 170, width: 82, height: 58, i: 10 },
+  };
+
+  const roomProps5 = {
+    101: { x: 170, y: 0, width: 45, height: 45, i: 0 },
+    102: { x: 219, y: 0, width: 63, height: 45, i: 1 },
+    103: { x: 286, y: 0, width: 83, height: 66, i: 2 },
+    104: { x: 286, y: 70, width: 83, height: 57, i: 3 },
+    105: { x: 286, y: 131, width: 83, height: 46, i: 4 },
+    106: { x: 323, y: 181, width: 46, height: 46, i: 5 },
+    107: { x: 86, y: 0, width: 80, height: 60, i: 6 },
+    108: { x: 0, y: 0, width: 82, height: 81, i: 7 },
+    109: { x: 0, y: 85, width: 82, height: 81, i: 8 },
+    110: { x: 0, y: 170, width: 82, height: 58, i: 9 },
+  };
+
+
+  const passFloorPlanProps = (filteredClassrooms) => {
+    if (filteredClassrooms.length === 0) return { roomProps: {}, floorNumber: null };
     switch (filteredClassrooms[0].floor) {
       case '6666fdca9786f9616159b563':
-        return <FloorPlan1 floorData={filteredClassrooms} />;
+        return { roomProps: roomProps1, floorNumber: 1 };
       case '6666fdca9786f9616159b570':
-        return <FloorPlan2 floorData={filteredClassrooms} />;
+        return { roomProps: roomProps2, floorNumber: 2 };
       case '6666fe699786f9616159b57e':
-        return <FloorPlan3 floorData={filteredClassrooms} />;
+        return { roomProps: roomProps3, floorNumber: 3 };
       case '6666fe699786f9616159b58b':
-        return <FloorPlan4 floorData={filteredClassrooms} />;
+        return { roomProps: roomProps4, floorNumber: 4 };
       case '6666fe699786f9616159b594':
-        return <FloorPlan5 floorData={filteredClassrooms} />;
+        return { roomProps: roomProps5, floorNumber: 5 };
       default:
-        return <div>Floor plan not available</div>;
+        return { roomProps: {}, floorNumber: null };
     }
   };
 
@@ -143,7 +209,13 @@ const ReservationPage = () => {
                   <ToggleButton value="buildingB">Rakennus B</ToggleButton>
                 </ToggleButtonGroup> */}
                 <Box>
-                  {isFilterApplied && renderFloorPlan(filteredClassrooms)}
+                  {isFilterApplied && (
+                    <FloorPlan
+                      floorData={filteredClassrooms}
+                      roomProps={passFloorPlanProps(filteredClassrooms).roomProps}
+                      floorNumber={passFloorPlanProps(filteredClassrooms).floorNumber}
+                    />
+                  )}
                 </Box>
               </Box>
             </>
