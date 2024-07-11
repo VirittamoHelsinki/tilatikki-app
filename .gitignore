@@ -8,3 +8,18 @@
 .DS_Store
 
 .idea
+
+.venv/
+
+# tests & robot-FM
+tests/*
+!tests/**/*.robot
+!tests/*.robot
+!randomizer.py
+!requirements.txt
+log.html
+output.html
+report.html
+selenium*
+output.xml
+interactive_console_output.xml
