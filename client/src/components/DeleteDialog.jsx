@@ -11,7 +11,7 @@ import Switch from '@mui/material/Switch';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
-export default function DeleteDialog({ open, handleClose, handleDelete, course, roomName, date, hours }) {
+export default function DeleteDialog({ open, handleClose, handleDelete, reservationName, teacher, roomName, date, hours }) {
 
     return (
         <Dialog
@@ -27,8 +27,11 @@ export default function DeleteDialog({ open, handleClose, handleDelete, course, 
                 </IconButton>
             </DialogTitle>
             <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+                    {reservationName}
+                </DialogContentText>
                 <DialogContentText id="alert-dialog-description">
-                    {course}
+                    {teacher}
                 </DialogContentText>
                 <DialogContentText id="alert-dialog-description">
                     {roomName}
