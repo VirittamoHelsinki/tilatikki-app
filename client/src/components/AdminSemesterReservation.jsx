@@ -21,8 +21,8 @@ const AdminSemesterReservation = () => {
   console.log("WATCH", watch("school"), watch("building"));
 
   useEffect(() => {
-    console.log("USE EFFECT");
     const fetchReservations = async () => {
+      // Map to change format for reservations to fit calendar
       const fetchedReservations = (await getReservations())
         .map(reservation => {
           return {
