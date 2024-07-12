@@ -6,6 +6,7 @@ import { useAllSchoolsQuery } from "../api/schools"
 import moment from "moment"
 import AdminCreateReservationDialog from "./AdminCreateReservationDialog"
 import { useForm } from "react-hook-form"
+import dayjs from "dayjs"
 
 const AdminSemesterReservation = () => {
   const { data: schoolData } = useAllSchoolsQuery()
@@ -16,9 +17,8 @@ const AdminSemesterReservation = () => {
     }
   })
 
+  const [ reservationDialogDefaultData, setReservationDialogDefaultData ] = useState(null)
   const [ reservations, setReservations ] = useState([])
-
-  console.log("WATCH", watch("school"), watch("building"));
 
   useEffect(() => {
     const fetchReservations = async () => {
@@ -55,7 +55,27 @@ const AdminSemesterReservation = () => {
   }, [ watch("school") ])
 
   const rooms = watch("building")?.floors.flatMap((floor) => floor.rooms) || []
-  console.log(rooms);
+
+  // This is called when a user is in the daily view and clicks "luo uusi varaus"
+  const calendarNewReservationFn = async (date, gridRow) => {
+    // Calculate time of day from the "luo uusi varaus" element's gridRow
+    const [ start, end ] = gridRow.split(" / ").map((value) => Number(value) - 1) // -1 because gridRow is 1-based
+    const startHour = Math.floor(start / 4)
+    const startMinute = ((start % 4) * 15).toString().padEnd(2, "0")
+
+    const endHour = Math.floor(end / 4)
+    const endMinute = ((end % 4) * 15).toString().padEnd(2, "0")
+
+    const startTime = (`${startHour}:${startMinute}`)
+    const endTime = (`${endHour}:${endMinute}`)
+
+    
+    setReservationDialogDefaultData({
+      reservationDate: dayjs(date.toDate()),
+      startTime: dayjs(`1970-01-01T${startTime.split(':').map(part => part.padStart(2, '0')).join(':')}`),
+      endTime:  dayjs(`1970-01-01T${endTime.split(':').map(part => part.padStart(2, '0')).join(':')}`),
+    })
+  }
 
   if (!schoolData) {
     return <p>loading... :P</p>
@@ -132,7 +152,7 @@ const AdminSemesterReservation = () => {
             </Grid>
 
 
-            <AdminCreateReservationDialog rooms={rooms}/>
+            <AdminCreateReservationDialog rooms={rooms} reservationDialogDefaultData={reservationDialogDefaultData}/>
           </Grid>
 
         </Box>
@@ -143,7 +163,7 @@ const AdminSemesterReservation = () => {
 
 
       <Box>
-        <Calendar calendarData={reservations} />
+        <Calendar calendarData={reservations} onNewReservationFn={calendarNewReservationFn}  />
       </Box>
     </Box>  
     

@@ -9,8 +9,8 @@ import { useCreateReservationMutation } from "../api/reservations"
 import { getCookie } from "../utils/Cookies"
 import { fetchUserDataByEmail } from "../api/userApi"
 
-const AdminCreateReservationDialog = ({ rooms }) => {
-  const { register, handleSubmit, watch, control } = useForm();
+const AdminCreateReservationDialog = ({ rooms, reservationDialogDefaultData }) => {
+  const { register, handleSubmit, watch, control, setValue } = useForm();
   const createReservationMutation = useCreateReservationMutation();
 
   const [ reservationHasExceptions, setReservationHasExceptions ] = useState(false);
@@ -30,6 +30,28 @@ const AdminCreateReservationDialog = ({ rooms }) => {
 				});
 		}
 	}, []);
+
+  useEffect(() => {
+    if (reservationDialogDefaultData) {
+
+      const { reservationDate, startTime, endTime } = reservationDialogDefaultData;
+
+      console.log(
+        typeof reservationDate, reservationDate,
+        typeof startTime, startTime,
+        typeof endTime, endTime,
+      )
+
+      setValue("reservationDate", reservationDate);
+      setValue("startTime", startTime);
+      setValue("endTime", endTime);
+    }
+  }, [
+    reservationDialogDefaultData,
+    reservationDialogDefaultData?.reservationDate,
+    reservationDialogDefaultData?.startTime,
+    reservationDialogDefaultData?.endTime
+  ])  
 
   const onSubmit = (data) => {
     data = {
@@ -253,7 +275,7 @@ const AdminCreateReservationDialog = ({ rooms }) => {
               required
               fullWidth
               label="Toistuvuus"
-              defaultValue={"Älä toista"}
+              defaultValue={"none"}
               { ...register("recurrence") }
             >
               <MenuItem value="none">Älä toista</MenuItem>
