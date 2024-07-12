@@ -10,7 +10,11 @@ import { getCookie } from "../utils/Cookies"
 import { fetchUserDataByEmail } from "../api/userApi"
 
 const AdminCreateReservationDialog = ({ rooms, reservationDialogDefaultData, disabled }) => {
-  const { register, handleSubmit, watch, control, setValue } = useForm();
+  const { register, handleSubmit, watch, control, setValue } = useForm({
+    defaultValues: {
+      recurrence: "none",
+    }
+  });
   const createReservationMutation = useCreateReservationMutation();
 
   const [ reservationHasExceptions, setReservationHasExceptions ] = useState(false);
