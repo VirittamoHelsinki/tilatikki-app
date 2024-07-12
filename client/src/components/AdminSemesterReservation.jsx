@@ -78,7 +78,7 @@ const AdminSemesterReservation = () => {
   }
 
   if (!schoolData) {
-    return <p>loading... :P</p>
+    return <p>loading...</p>
   }
 
   return (
@@ -152,7 +152,11 @@ const AdminSemesterReservation = () => {
             </Grid>
 
 
-            <AdminCreateReservationDialog rooms={rooms} reservationDialogDefaultData={reservationDialogDefaultData}/>
+            <AdminCreateReservationDialog
+              rooms={rooms}
+              reservationDialogDefaultData={reservationDialogDefaultData}
+              disabled={ !!!watch("building") }
+            />
           </Grid>
 
         </Box>

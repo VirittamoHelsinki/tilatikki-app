@@ -9,7 +9,7 @@ import { useCreateReservationMutation } from "../api/reservations"
 import { getCookie } from "../utils/Cookies"
 import { fetchUserDataByEmail } from "../api/userApi"
 
-const AdminCreateReservationDialog = ({ rooms, reservationDialogDefaultData }) => {
+const AdminCreateReservationDialog = ({ rooms, reservationDialogDefaultData, disabled }) => {
   const { register, handleSubmit, watch, control, setValue } = useForm();
   const createReservationMutation = useCreateReservationMutation();
 
@@ -128,6 +128,7 @@ const AdminCreateReservationDialog = ({ rooms, reservationDialogDefaultData }) =
               fullWidth
               id="reservationName"
               label="Varauksen nimi"
+              disabled={disabled}
               { ...register("reservationName") }
             />
           </FormControl>
@@ -142,6 +143,7 @@ const AdminCreateReservationDialog = ({ rooms, reservationDialogDefaultData }) =
               fullWidth
               id="reservationName"
               label="Lisää opettaja"
+              disabled={disabled}
               { ...register("teacherName") }
             />
           </FormControl>
@@ -159,6 +161,7 @@ const AdminCreateReservationDialog = ({ rooms, reservationDialogDefaultData }) =
                     {...rest}
                     value={value}
                     label="Varauksen päivämäärä*"
+                    disabled={disabled}
                     renderInput={(params) => <TextField {...params} fullWidth />}
                     format="DD/MM/YYYY"
                   />
@@ -186,6 +189,7 @@ const AdminCreateReservationDialog = ({ rooms, reservationDialogDefaultData }) =
                     label="Aloitusaika*"
                     ampm={false}
                     defaultValue={dayjs()}
+                    disabled={disabled}
                     renderInput={(params) => <TextField {...params} fullWidth />}
                   />
                 )}
@@ -211,6 +215,7 @@ const AdminCreateReservationDialog = ({ rooms, reservationDialogDefaultData }) =
                     label="Lopetusaika*"
                     ampm={false}
                     defaultValue={dayjs()}
+                    disabled={disabled}
                     renderInput={(params) => <TextField {...params} fullWidth />}
                   />
                 )}
@@ -231,6 +236,7 @@ const AdminCreateReservationDialog = ({ rooms, reservationDialogDefaultData }) =
               fullWidth
               label="Ryhmän koko"
               defaultValue={1}
+              disabled={disabled}
               { ...register("reservationGroupSize") }
             >
               {
@@ -254,6 +260,7 @@ const AdminCreateReservationDialog = ({ rooms, reservationDialogDefaultData }) =
               label="Opetustila"
               placeholder="Valitse opetustila"
               defaultValue="Vihreä lohikäärme"
+              disabled={disabled}
               { ...register("classroom") }
             >
             {
@@ -276,6 +283,7 @@ const AdminCreateReservationDialog = ({ rooms, reservationDialogDefaultData }) =
               fullWidth
               label="Toistuvuus"
               defaultValue={"none"}
+              disabled={disabled}
               { ...register("recurrence") }
             >
               <MenuItem value="none">Älä toista</MenuItem>
@@ -301,6 +309,7 @@ const AdminCreateReservationDialog = ({ rooms, reservationDialogDefaultData }) =
                       slotProps={{ textField: { fullWidth: true }}}
                       id="endDate"
                       label="Varauksen päättymispäivä*"
+                      disabled={disabled}
                       { ...register("endDate") }
                       />
                     </LocalizationProvider>
