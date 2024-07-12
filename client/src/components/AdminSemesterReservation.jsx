@@ -54,6 +54,9 @@ const AdminSemesterReservation = () => {
     resetField("building")
   }, [ watch("school") ])
 
+  const rooms = watch("building")?.floors.flatMap((floor) => floor.rooms) || []
+  console.log(rooms);
+
   if (!schoolData) {
     return <p>loading... :P</p>
   }
@@ -129,7 +132,7 @@ const AdminSemesterReservation = () => {
             </Grid>
 
 
-            <AdminCreateReservationDialog />
+            <AdminCreateReservationDialog rooms={rooms}/>
           </Grid>
 
         </Box>

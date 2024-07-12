@@ -3,17 +3,94 @@ import { DatePicker, LocalizationProvider, TimePicker } from "@mui/x-date-picker
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { fiFI } from "@mui/x-date-pickers/locales"
 import dayjs from "dayjs"
-import { useState } from "react"
-import { useForm } from "react-hook-form"
+import { useEffect, useState } from "react"
+import { useForm, Controller } from "react-hook-form"
+import { useCreateReservationMutation } from "../api/reservations"
+import { getCookie } from "../utils/Cookies"
+import { fetchUserDataByEmail } from "../api/userApi"
 
-const AdminCreateReservationDialog = () => {
-  const { register, handleSubmit, watch } = useForm()
+const AdminCreateReservationDialog = ({ rooms }) => {
+  const { register, handleSubmit, watch, control } = useForm();
+  const createReservationMutation = useCreateReservationMutation();
 
   const [ reservationHasExceptions, setReservationHasExceptions ] = useState(false);
+  const [ user, setUser ] = useState({});
+
   const handleReservationSwitchChange = () => setReservationHasExceptions(!reservationHasExceptions);
+  
+  useEffect(() => {
+		const email = getCookie('UserEmail');
+		if (email) {
+			fetchUserDataByEmail(email)
+				.then(userData => {
+					setUser(userData)
+				})
+				.catch(error => {
+					console.error('Error fetching user data:', error);
+				});
+		}
+	}, []);
 
   const onSubmit = (data) => {
-    console.log(data)
+    data = {
+      ...data,
+
+      startTime: data.startTime.format("HH:mm"),
+      endTime: data.endTime.format("HH:mm")
+    }
+
+    console.log('data: ', data)
+
+    const generateRecurringReservations = (baseDate, endDate, interval, reservationData) => {
+      let currentDate = dayjs(baseDate);
+      const end = dayjs(endDate);
+      const reservations = [];
+
+      while (currentDate.isBefore(end) || currentDate.isSame(end, 'day')) {
+        reservations.push({
+          ...reservationData,
+          reservationDate: currentDate,
+          startTime: data.startTime ? formatTime(data.startTime) : null,
+          endTime: data.endTime ? formatTime(data.endTime) : null,
+        });
+
+        currentDate = currentDate.add(interval, 'day');
+      }
+
+      return reservations;
+    }
+
+
+    const reservationData = {
+      userId: user._id, // userId
+      reservationDate: data.reservationDate ? data.reservationDate : null,
+      reservationEndDate: data.endDate ? data.reservationEndDate : null,
+      startTime: data.startTime,
+      endTime: data.endTime,
+      purpose: data.reservationName, // string
+      roomId: data.classroom._id, // roomId
+      groupsize: data.reservationGroupSize, // integer
+      recurrence: data.recurrence ? data.recurrence : 'none',
+      additionalInfo: data.additionalInfo
+    }    
+
+    if (data.recurrence === 'none') {
+      createReservationMutation.mutate(reservationData);
+    } else if (data.recurrence === 'daily' && data.reservationEndDate) {
+      const reservations = generateRecurringReservations(data.reservationDate, data.reservationEndDate, 1, reservationData);
+      reservations.forEach(reservation => {
+        createReservationMutation.mutate(reservation);
+      });
+    } else if (data.recurrence === 'weekly' && data.reservationEndDate) {
+      const reservations = generateRecurringReservations(data.reservationDate, data.reservationEndDate, 7, reservationData);
+      console.log('weekly reservations: ', reservations)
+      reservations.forEach(reservation => {
+        createReservationMutation.mutate(reservation);
+      });
+    } else {
+      console.error('Invalid recurrence or missing end date');
+    }
+
   }
 
   return (
@@ -51,15 +128,19 @@ const AdminCreateReservationDialog = () => {
         <Grid item lg={12}>
           <FormControl fullWidth>
             <LocalizationProvider localeText={fiFI.components.MuiLocalizationProvider.defaultProps.localeText} dateAdapter={AdapterDayjs}>
-              <DatePicker
-                autoComplete="reservationDate"
+              <Controller
                 name="reservationDate"
-                required
-                format="DD/MM/YYYY"
-                slotProps={{ textField: { fullWidth: true }}}
-                id="reservationDate"
-                label="Varauksen päivämäärä*"
-              { ...register("reservationDate") }
+                control={control}
+                defaultValue={dayjs()}
+                render={({ field: { value, ...rest } }) => (
+                  <DatePicker
+                    {...rest}
+                    value={value}
+                    label="Varauksen päivämäärä*"
+                    renderInput={(params) => <TextField {...params} fullWidth />}
+                    format="DD/MM/YYYY"
+                  />
+                )}
               />
             </LocalizationProvider>
           </FormControl>
@@ -69,15 +150,25 @@ const AdminCreateReservationDialog = () => {
         <Grid item lg={6}>
           <FormControl fullWidth>
             <LocalizationProvider localeText={fiFI.components.MuiLocalizationProvider.defaultProps.localeText} dateAdapter={AdapterDayjs}>
-              <TimePicker
+
+              <Controller
+                name="startTime"
                 label="Aloitusaika*"
-                name="startTime"
-                required
-                fullWidth
-                ampm={false}
-                defaultValue={dayjs()}
-                { ...register("startTime") }
+                control={control}
+
+                defaultValue={ dayjs() }
+                render={({ field: { value, ...rest } }) => (
+                  <TimePicker
+                    {...rest}
+                    value={value}
+                    label="Aloitusaika*"
+                    ampm={false}
+                    defaultValue={dayjs()}
+                    renderInput={(params) => <TextField {...params} fullWidth />}
+                  />
+                )}
               />
+
             </LocalizationProvider>
           </FormControl>
         </Grid>
@@ -85,15 +176,24 @@ const AdminCreateReservationDialog = () => {
         <Grid item lg={6}>
           <FormControl fullWidth>
             <LocalizationProvider localeText={fiFI.components.MuiLocalizationProvider.defaultProps.localeText} dateAdapter={AdapterDayjs}>
-              <TimePicker
+
+              <Controller
+                name="endTime"
                 label="Lopetusaika*"
-                name="startTime"
-                required
-                fullWidth
-                ampm={false}
-                defaultValue={dayjs()}
-                { ...register("endTime") }
+                control={control}
+                defaultValue={ dayjs() }
+                render={({ field: { value, ...rest } }) => (
+                  <TimePicker
+                    {...rest}
+                    value={value}
+                    label="Lopetusaika*"
+                    ampm={false}
+                    defaultValue={dayjs()}
+                    renderInput={(params) => <TextField {...params} fullWidth />}
+                  />
+                )}
               />
+
             </LocalizationProvider>
           </FormControl>
         </Grid>
@@ -104,12 +204,12 @@ const AdminCreateReservationDialog = () => {
             <Select
               labelId="group-size-label"
               id="group-size-select"
-              name="groupSize"
+              name="reservationGroupSize"
               required
               fullWidth
               label="Ryhmän koko"
               defaultValue={1}
-              { ...register("groupSize") }
+              { ...register("reservationGroupSize") }
             >
               {
                 Array.from({ length: 100 }).map((_, index) => (
@@ -134,9 +234,11 @@ const AdminCreateReservationDialog = () => {
               defaultValue="Vihreä lohikäärme"
               { ...register("classroom") }
             >
-              <MenuItem value="Vihreä lohikäärme">Vihreä lohikäärme</MenuItem>
-              <MenuItem value="Punainen panda">Punainen panda</MenuItem>
-              <MenuItem value="Sininen siili">Sininen siili</MenuItem>
+            {
+              rooms.map((room, index) => {
+                return <MenuItem key={`menu-item-${room.number}`} value={room}>{room.number}</MenuItem>
+              })
+            }
             </Select>
           </FormControl>
         </Grid>
@@ -154,16 +256,16 @@ const AdminCreateReservationDialog = () => {
               defaultValue={"Älä toista"}
               { ...register("recurrence") }
             >
-              <MenuItem value="Älä toista">Älä toista</MenuItem>
-              <MenuItem value="Päivittäin">Päivittäin</MenuItem>
-              <MenuItem value="Viikottain">Viikottain</MenuItem>
+              <MenuItem value="none">Älä toista</MenuItem>
+              <MenuItem value="daily">Päivittäin</MenuItem>
+              <MenuItem value="weekly">Viikottain</MenuItem>
             </Select>
           </FormControl>
         </Grid>
 
         { /* IF RESERVATION IS RECURRING */ }
         {
-          watch("recurrence") !== "Älä toista" && (
+          watch("recurrence") !== "none" && (
             <>
             
               <Grid item lg={12}>
@@ -235,6 +337,8 @@ const AdminCreateReservationDialog = () => {
             </>
           )
         }
+
+
 
         <Grid item lg={12}>
           <FormControl fullWidth>
