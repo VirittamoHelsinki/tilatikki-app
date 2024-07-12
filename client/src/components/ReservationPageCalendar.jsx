@@ -6,6 +6,7 @@ import moment from 'moment';
 import ReservationDialog from './ReservationDialog';
 
 import Calendar from './Calendar';
+import { fetchRoomById } from '../api/rooms';
 
 const ReservationPageCalendar = ({ data }) => {
   // Store ids in state
@@ -33,12 +34,19 @@ const ReservationPageCalendar = ({ data }) => {
 
   // When a user clicks a block, get its data and open the modal
   // for editing purposes
-  const calendarBlockClickFn = (reservationData) => {
-    console.log(reservationData);
+  const calendarBlockClickFn = async (reservationData) => {
+    const room = await fetchRoomById(reservationData.room);
+
+    setReservationDialogDefaultData({
+      room,
+      date: reservationData.date,
+      startTime: reservationData.startTime,
+      endTime: reservationData.endTime,
+    })
   }
 
   // This is called when a user is in the daily view and clicks "luo uusi varaus"
-  const calendarNewReservationFn = (date, gridRow) => {
+  const calendarNewReservationFn = async (date, gridRow) => {
     // Calculate time of day from the "luo uusi varaus" element's gridRow
     const [ start, end ] = gridRow.split(" / ").map((value) => Number(value) - 1) // -1 because gridRow is 1-based
     const startHour = Math.floor(start / 4)
@@ -49,12 +57,12 @@ const ReservationPageCalendar = ({ data }) => {
 
     const startTime = `${startHour}:${startMinute}`
     const endTime = `${endHour}:${endMinute}`
+    
 
-    console.log(startTime, endTime);
-    setReservationDialogDefaultData({ date: date.toDate(), startTime, endTime })
+    const room = calendarRoom
+    setReservationDialogDefaultData({ room, date: date.toDate(), startTime, endTime })
   }
   
-
   const numbersToWord = [
     "Yksi", "Kaksi", "Kolmi", "Neli", "Viisi", "Kuusi", "Seitsen", "Kahdeksan", "Yhdeksän", "Kymmenen"
   ]
@@ -80,8 +88,6 @@ const ReservationPageCalendar = ({ data }) => {
     }
   })
     
-  
-
   return (
     <>
       {
@@ -90,9 +96,15 @@ const ReservationPageCalendar = ({ data }) => {
             roomId={room._id}
             roomNumber={room.number}
             capacity={room.capacity}
-            groupsize={5}
+            groupsize={0} // CURRENTLY REVERSED SPOTS IN A ROOM
             onClose={() => setReservationDialogDefaultData(null)}
             isOpen={!!newReservationDialogDefaultData}
+            filterValues={{
+              selectedGroupSize: 0, // HOW MANY SPOTS A USER WANTS IN A ROOM
+              selectedDate: newReservationDialogDefaultData.date,
+              startingTime: newReservationDialogDefaultData.startTime,
+              endingTime: newReservationDialogDefaultData.endTime,
+            }}
           />
         )
       }
