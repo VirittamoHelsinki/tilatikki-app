@@ -30,7 +30,6 @@ const CreateReservationForm = ({
   }, [])
 
   const handleReservationSwitchChange = () => setReservationHasExceptions(!reservationHasExceptions);
-
   const handleDisableSubmitButton = () => setDisableSubmitButton(!disableSubmitButton)
 
   useEffect(() => {

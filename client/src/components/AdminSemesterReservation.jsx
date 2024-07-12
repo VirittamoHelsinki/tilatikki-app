@@ -9,19 +9,13 @@ import { useForm } from "react-hook-form"
 
 const AdminSemesterReservation = () => {
   const { data: schoolData } = useAllSchoolsQuery()
-
-  console.log(schoolData);
-  
-
-  const { watch, register } = useForm({
+  const { watch, register, resetField } = useForm({
     defaultValues: {
       school: null,
       building: null,
     }
   })
 
-  const [ selectedSchool, setSelectedSchool ] = useState(null)
-  const [ selectedBuilding, setSelectedBuilding ] = useState(null)
   const [ reservations, setReservations ] = useState([])
 
   console.log("WATCH", watch("school"), watch("building"));
@@ -40,19 +34,25 @@ const AdminSemesterReservation = () => {
             endTime: reservation.endTime,
           }
         })
+        .filter((revervation) => {
+          return watch("building").floors.some((floor) => floor.rooms.some((room) => room._id === revervation.room))
+        })
 
       setReservations(fetchedReservations)
       console.log('Fetched reservations:', fetchedReservations);
     }
     
+    setReservations([])
     if (watch("school") && watch("building")) {
       console.log("USE EFFECT", watch("school"), watch("building"));
       fetchReservations()
-    } else {
-      setReservations([])
     }
     
   }, [ watch("school"), watch("building") ])
+
+  useEffect(() => {
+    resetField("building")
+  }, [ watch("school") ])
 
   if (!schoolData) {
     return <p>loading... :P</p>
