@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, CssBaseline, Box, Typography, Grid, TextField, Button, Link, FormControlLabel, Checkbox, Input, Divider, Snackbar } from '@mui/material';
+import { Container, CssBaseline, Box, Typography, Grid, TextField, Button, Link, FormControlLabel, Checkbox, Input, Divider, Snackbar, Alert } from '@mui/material';
 import { useForm } from 'react-hook-form';
 
 import { getCookie, setCookie } from '../utils/Cookies';
@@ -7,12 +7,12 @@ import { fetchUserDataByEmail, updateUser, updateUserPassword } from '../api/use
 
 
 const UserInformation = () => {
-  const [ userDataError, setUserDataError ] = useState('');
-  const [ currentPasswordError, setCurrentPasswordError ] = useState('');
-  const [ newPasswordError, setNewPasswordError ] = useState('');
-  const [ passwordMatchError, setPasswordMatchError ] = useState('');
+  const [userDataError, setUserDataError] = useState('');
+  const [currentPasswordError, setCurrentPasswordError] = useState('');
+  const [newPasswordError, setNewPasswordError] = useState('');
+  const [passwordMatchError, setPasswordMatchError] = useState('');
 
-  const [ snackbarMessage, setSnackbarMessage ] = useState('');
+  const [snackbarMessage, setSnackbarMessage] = useState('');
 
   const userDataForm = useForm({
     defaultValues: async () => {
@@ -59,7 +59,7 @@ const UserInformation = () => {
     if (newPassword === "") {
       return setNewPasswordError("Salasana ei voi olla tyhjä.")
     }
-    
+
     setPasswordMatchError('');
 
     const email = getCookie('UserEmail');
@@ -90,21 +90,27 @@ const UserInformation = () => {
     })
 
     return () => subscription.unsubscribe();
-  }, [ passwordDataForm ]);
+  }, [passwordDataForm]);
 
   return (
     <Typography variant="body1" component="div" sx={{ width: '1000px' }}>
 
       <Snackbar
-        open={!!snackbarMessage}
+        open={snackbarOpen}
+        autoHideDuration={4000}
         onClose={handleSnackbarClose}
-        autoHideDuration={6000}
-        message={snackbarMessage}
-        key={"snackbar-" + snackbarMessage}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      />
+      >
+        <Alert
+          onClose={handleSnackbarClose}
+          severity="success"
+          sx={{ width: '100%' }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
 
-      <Box component="div"  sx={{ mb: 3 }}>
+      <Box component="div" sx={{ mb: 3 }}>
         <Typography component="h1" variant="h5">
           Käyttäjätiedot
         </Typography>
@@ -129,7 +135,7 @@ const UserInformation = () => {
           <Grid container spacing={2}>
             <Grid item lg={6}>
               <TextField
-                InputLabelProps={{ shrink: true }} 
+                InputLabelProps={{ shrink: true }}
                 autoComplete="name"
                 name="name"
                 required
@@ -143,7 +149,7 @@ const UserInformation = () => {
             </Grid>
             <Grid item lg={6}>
               <TextField
-                InputLabelProps={{ shrink: true }} 
+                InputLabelProps={{ shrink: true }}
                 autoComplete="surname"
                 name="surname"
                 required
@@ -157,7 +163,7 @@ const UserInformation = () => {
             </Grid>
             <Grid item xs={6}>
               <TextField
-                InputLabelProps={{ shrink: true }} 
+                InputLabelProps={{ shrink: true }}
                 required
                 fullWidth
                 id="email"
@@ -173,9 +179,9 @@ const UserInformation = () => {
           <Button
             type="submit"
             variant="contained"
-            sx={{ 
+            sx={{
               textTransform: 'none',
-              mt: 3, 
+              mt: 3,
               mb: 2,
               backgroundColor: '#18181B', // Change this to your desired color
               '&:hover': {
@@ -254,9 +260,9 @@ const UserInformation = () => {
           <Button
             type="submit"
             variant="contained"
-            sx={{ 
+            sx={{
               textTransform: 'none',
-              mt: 3, 
+              mt: 3,
               mb: 2,
               backgroundColor: '#18181B', // Change this to your desired color
               '&:hover': {
@@ -268,7 +274,7 @@ const UserInformation = () => {
           </Button>
         </Box>
       </Box>
-      
+
 
     </Typography>
   );

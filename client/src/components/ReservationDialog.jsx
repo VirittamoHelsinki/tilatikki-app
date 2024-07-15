@@ -4,12 +4,14 @@ import {
 	DialogContent,
 	ThemeProvider,
 	createTheme,
+	Snackbar,
+	IconButton,
+	Alert
 } from '@mui/material';
 import { useCreateReservationMutation } from '../api/reservations';
 import { getCookie } from '../utils/Cookies';
 import { fetchUserDataByEmail } from '../api/userApi';
 import CreateReservationForm from '../components/CreateReservationForm';
-
 
 const theme = createTheme({
 	palette: {
@@ -41,7 +43,9 @@ const theme = createTheme({
 
 const ReservationDialog = ({ roomId, isOpen, onClose, roomNumber, capacity, groupsize, filterValues }) => {
 	const [groupSize, setGroupSize] = useState(null);
-	const [user, setUser] = useState({})
+	const [user, setUser] = useState({});
+	const [snackbarOpen, setSnackbarOpen] = useState(false);
+	const [snackbarMessage, setSnackbarMessage] = useState('');
 
 	const createReservationMutation = useCreateReservationMutation();
 
@@ -50,7 +54,7 @@ const ReservationDialog = ({ roomId, isOpen, onClose, roomNumber, capacity, grou
 		if (email) {
 			fetchUserDataByEmail(email)
 				.then(userData => {
-					setUser(userData)
+					setUser(userData);
 				})
 				.catch(error => {
 					console.error('Error fetching user data:', error);
@@ -58,14 +62,23 @@ const ReservationDialog = ({ roomId, isOpen, onClose, roomNumber, capacity, grou
 		}
 	}, []);
 
-
 	const handleGroupSizeChange = (event) => {
 		setGroupSize(event.target.value);
 	};
 
+	const handleCloseSnackbar = () => {
+		setSnackbarOpen(false);
+	};
+
+	const handleDialogClose = () => {
+		onClose();
+		setSnackbarMessage('Varaus on tehty onnistuneesti!');
+		setSnackbarOpen(true);
+	};
+
 	return (
 		<ThemeProvider theme={theme}>
-			<Dialog open={isOpen} onClose={onClose} maxWidth="sm" fullWidth>
+			<Dialog open={isOpen} onClose={handleDialogClose} maxWidth="sm" fullWidth>
 				<DialogContent>
 					<CreateReservationForm
 						createReservationMutation={createReservationMutation}
@@ -76,12 +89,26 @@ const ReservationDialog = ({ roomId, isOpen, onClose, roomNumber, capacity, grou
 						groupsize={groupsize}
 						capacity={capacity}
 						user={user}
-						onClose={onClose}
+						onClose={handleDialogClose}
 						filterValues={filterValues}
 					/>
-
 				</DialogContent>
 			</Dialog>
+
+			<Snackbar
+				open={snackbarOpen}
+				autoHideDuration={4000}
+				onClose={handleCloseSnackbar}
+				anchorOrigin={{ vertical: "top", horizontal: "center" }}
+			>
+				<Alert
+					onClose={handleCloseSnackbar}
+					severity="success"
+					sx={{ width: '100%' }}
+				>
+					{snackbarMessage}
+				</Alert>
+			</Snackbar>
 		</ThemeProvider>
 	);
 };

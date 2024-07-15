@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import Box from '@mui/material/Box';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { fiFI } from '@mui/x-data-grid/locales';
-import { Typography, Divider } from '@mui/material';
+import { Typography, Divider, Snackbar, Alert, Box } from '@mui/material';
 import DeleteDialogUsers from './DeleteDialogUsers';
-import Snackbar from '@mui/material/Snackbar';
 import EditUsers from './EditUsers';
 import { fetchAllUsers } from '../api/userApi';
 import { deleteUser } from '../api/userApi';
@@ -156,9 +154,16 @@ const UserProfiles = () => {
         open={snackbarOpen}
         autoHideDuration={4000}
         onClose={handleSnackbarClose}
-        message={snackbarMessage}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      />
+      >
+        <Alert
+          onClose={handleSnackbarClose}
+          severity="success"
+          sx={{ width: '100%' }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
       <Typography component="h1" variant="h5">
         Käyttäjät
       </Typography>
