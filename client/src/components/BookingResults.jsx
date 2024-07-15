@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ReservationCard from './ReservationCard'; // Make sure this path is correct
-import { Box, Button } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import { fetchUserDataByEmail } from '../api/userApi';
 import { fetchTotalPeopleReserved } from '../api/rooms';
 import { getCookie } from '../utils/Cookies';
@@ -110,7 +110,7 @@ const BookingResults = ({ classrooms, filterValues }) => {
 
 	return (
 		<Box>
-			<h3>Huoneet</h3>
+			<Typography variant="h6">Vapaat tilat ja varaukset</Typography>
 			{Object.keys(classrooms).length > 0 && (
 				<>
 					<Box display="flex" justifyContent="center" mb={2}>
