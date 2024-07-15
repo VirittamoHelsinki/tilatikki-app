@@ -174,6 +174,7 @@ const UserInformation = () => {
             type="submit"
             variant="contained"
             sx={{ 
+              textTransform: 'none',
               mt: 3, 
               mb: 2,
               backgroundColor: '#18181B', // Change this to your desired color
@@ -254,6 +255,7 @@ const UserInformation = () => {
             type="submit"
             variant="contained"
             sx={{ 
+              textTransform: 'none',
               mt: 3, 
               mb: 2,
               backgroundColor: '#18181B', // Change this to your desired color

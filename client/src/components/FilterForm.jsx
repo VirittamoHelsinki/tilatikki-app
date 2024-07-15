@@ -572,6 +572,7 @@ const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) 
 
 				<Button variant="contained" type="submit" onClick={checkRequired}
 					sx={{
+						textTransform: 'none',
 						backgroundColor: '#18181B',
 						marginTop: '25px',
 						marginBottom: '5px',

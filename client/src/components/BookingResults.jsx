@@ -116,6 +116,7 @@ const BookingResults = ({ classrooms, filterValues }) => {
 					<Box display="flex" justifyContent="center" mb={2}>
 						<Button onClick={() => handleFilterChange('reservations')} variant={filterMode === 'reservations' ? 'contained' : 'outlined'}
 							sx={{
+								textTransform: 'none',
 								backgroundColor: filterMode === 'reservations' ? '#0f172A' : 'transparent',
 								color: filterMode === 'reservations' ? '#FFFFFF' : '#0f172A',
 								borderColor: '#0f172A',
@@ -128,6 +129,7 @@ const BookingResults = ({ classrooms, filterValues }) => {
 						</Button>
 						<Button onClick={() => handleFilterChange('free')} variant={filterMode === 'free' ? 'contained' : 'outlined'}
 							sx={{
+								textTransform: 'none',
 								backgroundColor: filterMode === 'free' ? '#0f172A' : 'transparent',
 								color: filterMode === 'free' ? '#FFFFFF' : '#0f172A',
 								borderColor: '#0f172A',
@@ -205,6 +207,7 @@ const BookingResults = ({ classrooms, filterValues }) => {
 					<Box display="flex" justifyContent="space-between" mt={2}>
 						<Button onClick={handlePreviousPage} disabled={currentPage === 0}
 							sx={{
+								textTransform: 'none',
 								backgroundColor: '#0f172A',
 								color: '#FFFFFF',
 								'&:hover': {
@@ -222,6 +225,7 @@ const BookingResults = ({ classrooms, filterValues }) => {
 							onClick={handleNextPage}
 							disabled={currentPage >= Math.ceil(filteredClassrooms.length / itemsPerPage) - 1}
 							sx={{
+								textTransform: 'none',
 								backgroundColor: '#0f172A',
 								color: '#FFFFFF',
 								'&:hover': {

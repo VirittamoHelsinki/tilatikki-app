@@ -41,6 +41,7 @@ const SettingsPage = () => {
                     variant="contained"
                     onClick={() => swapPermission()}
                     sx={{
+                        textTransform: 'none',
                         mt: 3,
                         mb: 4,
                         backgroundColor: '#18181B',
@@ -130,7 +131,7 @@ const SettingsPage = () => {
                                             },
                                         }}
                                     >
-                                        <ListItemText primary="Oma varaushistoria" />
+                                        <ListItemText primary="Omat varaukset" />
                                     </ListItem>
                                 </>
                             )}

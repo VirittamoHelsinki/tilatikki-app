@@ -106,7 +106,6 @@ const CreateReservationForm = ({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Box sx={{ marginTop: 0, marginBottom: 0 }}>
@@ -376,7 +375,7 @@ const CreateReservationForm = ({
             sx={{
               mt: 3,
               mb: 2,
-              textTransform: "initial",
+              textTransform: 'none',
               backgroundColor: '#18181B', // Change this to your desired color
               '&:hover': {
                 backgroundColor: '#2b2b2b' // Change this to a lighter shade of your color

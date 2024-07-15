@@ -153,7 +153,7 @@ const ReservationPage = () => {
         <Grid item>
           <Button
             onClick={() => setSelectedComponent('pohjakarttanäkymä')}
-            sx={{ color: 'black', padding: '6px 10px', 'borderRadius': '6px', backgroundColor: selectedComponent === 'pohjakarttanäkymä' ? 'white' : 'transparent', 'fontWeight': 500 }}
+            sx={{  textTransform: 'none', color: 'black', padding: '6px 10px', 'borderRadius': '6px', backgroundColor: selectedComponent === 'pohjakarttanäkymä' ? 'white' : 'transparent', 'fontWeight': 500 }}
           >
             Pohjakarttanäkymä
           </Button>
@@ -161,7 +161,7 @@ const ReservationPage = () => {
         <Grid item>
           <Button
             onClick={() => setSelectedComponent('kalenterinäkymä')}
-            sx={{ color: 'black', padding: '6px 10px', 'borderRadius': '6px', backgroundColor: selectedComponent === 'kalenterinäkymä' ? 'white' : 'transparent', 'fontWeight': 500 }}
+            sx={{  textTransform: 'none', color: 'black', padding: '6px 10px', 'borderRadius': '6px', backgroundColor: selectedComponent === 'kalenterinäkymä' ? 'white' : 'transparent', 'fontWeight': 500 }}
           >
             Kalenterinäkymä
           </Button>
