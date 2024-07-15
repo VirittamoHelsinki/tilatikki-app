@@ -21,6 +21,12 @@ const columns = (handleClickOpen) => [
     editable: false,
   },
   {
+    field: 'varaus',
+    headerName: 'Varauksen nimi',
+    width: 220,
+    editable: false,
+  },
+  {
     field: 'toistuva',
     headerName: 'Toistuva',
     width: 140,
@@ -141,6 +147,7 @@ const ReservationHistory = () => {
             reservationid: reservation._id,
             id: index + 1,
             opetustila: room.number || 'N/A',
+            varaus: reservation.purpose,
             toistuva: toistuvaValue,
             päivämäärä,
             aikaväli: reservation.startTime + " - " + reservation.endTime,
@@ -277,6 +284,7 @@ const ReservationHistory = () => {
           open={open}
           handleClose={handleClose}
           handleDelete={handleDeleteConfirmed}
+          reservationName={selectedRow.varaus}
           course={selectedRow.opettaja}
           roomName={selectedRow.opetustila}
           date={selectedRow.päivämäärä}

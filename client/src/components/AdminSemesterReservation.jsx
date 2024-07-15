@@ -6,29 +6,23 @@ import { useAllSchoolsQuery } from "../api/schools"
 import moment from "moment"
 import AdminCreateReservationDialog from "./AdminCreateReservationDialog"
 import { useForm } from "react-hook-form"
+import dayjs from "dayjs"
 
 const AdminSemesterReservation = () => {
   const { data: schoolData } = useAllSchoolsQuery()
-
-  console.log(schoolData);
-  
-
-  const { watch, register } = useForm({
+  const { watch, register, resetField } = useForm({
     defaultValues: {
       school: null,
       building: null,
     }
   })
 
-  const [ selectedSchool, setSelectedSchool ] = useState(null)
-  const [ selectedBuilding, setSelectedBuilding ] = useState(null)
+  const [ reservationDialogDefaultData, setReservationDialogDefaultData ] = useState(null)
   const [ reservations, setReservations ] = useState([])
 
-  console.log("WATCH", watch("school"), watch("building"));
-
   useEffect(() => {
-    console.log("USE EFFECT");
     const fetchReservations = async () => {
+      // Map to change format for reservations to fit calendar
       const fetchedReservations = (await getReservations())
         .map(reservation => {
           return {
@@ -40,22 +34,51 @@ const AdminSemesterReservation = () => {
             endTime: reservation.endTime,
           }
         })
+        .filter((revervation) => {
+          return watch("building").floors.some((floor) => floor.rooms.some((room) => room._id === revervation.room))
+        })
 
       setReservations(fetchedReservations)
       console.log('Fetched reservations:', fetchedReservations);
     }
     
+    setReservations([])
     if (watch("school") && watch("building")) {
       console.log("USE EFFECT", watch("school"), watch("building"));
       fetchReservations()
-    } else {
-      setReservations([])
     }
     
   }, [ watch("school"), watch("building") ])
 
+  useEffect(() => {
+    resetField("building")
+  }, [ watch("school") ])
+
+  const rooms = watch("building")?.floors.flatMap((floor) => floor.rooms) || []
+
+  // This is called when a user is in the daily view and clicks "luo uusi varaus"
+  const calendarNewReservationFn = async (date, gridRow) => {
+    // Calculate time of day from the "luo uusi varaus" element's gridRow
+    const [ start, end ] = gridRow.split(" / ").map((value) => Number(value) - 1) // -1 because gridRow is 1-based
+    const startHour = Math.floor(start / 4)
+    const startMinute = ((start % 4) * 15).toString().padEnd(2, "0")
+
+    const endHour = Math.floor(end / 4)
+    const endMinute = ((end % 4) * 15).toString().padEnd(2, "0")
+
+    const startTime = (`${startHour}:${startMinute}`)
+    const endTime = (`${endHour}:${endMinute}`)
+
+    
+    setReservationDialogDefaultData({
+      reservationDate: dayjs(date.toDate()),
+      startTime: dayjs(`1970-01-01T${startTime.split(':').map(part => part.padStart(2, '0')).join(':')}`),
+      endTime:  dayjs(`1970-01-01T${endTime.split(':').map(part => part.padStart(2, '0')).join(':')}`),
+    })
+  }
+
   if (!schoolData) {
-    return <p>loading... :P</p>
+    return <p>loading...</p>
   }
 
   return (
@@ -129,7 +152,11 @@ const AdminSemesterReservation = () => {
             </Grid>
 
 
-            <AdminCreateReservationDialog />
+            <AdminCreateReservationDialog
+              rooms={rooms}
+              reservationDialogDefaultData={reservationDialogDefaultData}
+              disabled={ !!!watch("building") }
+            />
           </Grid>
 
         </Box>
@@ -140,7 +167,7 @@ const AdminSemesterReservation = () => {
 
 
       <Box>
-        <Calendar calendarData={reservations} />
+        <Calendar calendarData={reservations} onNewReservationFn={calendarNewReservationFn}  />
       </Box>
     </Box>  
     
