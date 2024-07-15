@@ -7,6 +7,9 @@ import TilaTikkiLogoWhite from '../images/logo-white.svg';
 const RegisterPage = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [confirmPasswordError, setConfirmPasswordError] = useState('');
   const [error, setError] = useState('');
   let navigate = useNavigate();
 
@@ -20,8 +23,28 @@ const RegisterPage = () => {
       password: formData.get('password'),
     };
 
+    // Reset errors
+    setEmailError('');
+    setPasswordError('');
+    setConfirmPasswordError('');
+    setError('');
+
+    // Validate email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(userData.email)) {
+      setEmailError('Sähköposti ei ole sopiva');
+      return;
+    }
+
+    // Validate password (example: must be at least 6 characters and include a number)
+    const passwordRegex = /^(?=.*[0-9])(?=.*[A-Za-z]).{6,}$/;
+    if (!passwordRegex.test(userData.password)) {
+      setPasswordError('Salasanan tulee olla vähintään 6 merkkiä pitkä ja sisältää numero');
+      return;
+    }
+
     if (userData.password !== confirmPassword) {
-      setError('Passwords do not match');
+      setConfirmPasswordError('Passwords do not match');
       return;
     }
 
@@ -41,6 +64,7 @@ const RegisterPage = () => {
       navigate('/login');
     } catch (error) {
       console.error('Error signing up:', error.message);
+      setError('Failed to sign up. Please try again.');
     }
   };
 
@@ -64,7 +88,7 @@ const RegisterPage = () => {
         <Typography component="h1" variant="h5">
           Rekisteröidy
         </Typography>
-        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3, width: '80%'}}>
+        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3, width: '80%' }}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={10} md={8} lg={6}>
               <TextField
@@ -96,6 +120,8 @@ const RegisterPage = () => {
                 label="Sähköposti"
                 name="email"
                 autoComplete="email"
+                error={!!emailError}
+                helperText={emailError}
               />
             </Grid>
             <Grid item xs={12}>
@@ -109,6 +135,8 @@ const RegisterPage = () => {
                 autoComplete="new-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                error={!!passwordError}
+                helperText={passwordError}
               />
             </Grid>
             <Grid item xs={12}>
@@ -122,20 +150,27 @@ const RegisterPage = () => {
                 autoComplete="new-password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
+                error={!!confirmPasswordError}
+                helperText={confirmPasswordError}
               />
             </Grid>
           </Grid>
+          {error && (
+            <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+              {error}
+            </Typography>
+          )}
           <Button
             type="submit"
             fullWidth
             variant="contained"
-            sx={{ 
-              mt: 3, 
+            sx={{
+              mt: 3,
               mb: 2,
               textTransform: 'none',
-              backgroundColor: '#18181B', // Change this to your desired color
+              backgroundColor: '#18181B',
               '&:hover': {
-                backgroundColor: '#2b2b2b' // Change this to a lighter shade of your color
+                backgroundColor: '#2b2b2b'
               }
             }}
           >
