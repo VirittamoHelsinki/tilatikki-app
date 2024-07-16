@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "react-query";
-const API_URL = "http://localhost:5050";
+const API_URL = "https://tilatikki-app-server.onrender.com";
 
 // Create a new reservation
 export const createReservation = async (reservationData) => {
