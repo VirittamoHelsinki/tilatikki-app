@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ReservationCard from './ReservationCard'; // Make sure this path is correct
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, Typography, Grid } from '@mui/material';
 import { fetchUserDataByEmail } from '../api/userApi';
 import { fetchTotalPeopleReserved } from '../api/rooms';
 import { getCookie } from '../utils/Cookies';
@@ -113,39 +113,56 @@ const BookingResults = ({ classrooms, filterValues }) => {
 			<Typography variant="h6">Vapaat tilat ja varaukset</Typography>
 			{Object.keys(classrooms).length > 0 && (
 				<>
-					<Box display="flex" justifyContent="center" mb={2}>
-						<Button onClick={() => handleFilterChange('reservations')} variant={filterMode === 'reservations' ? 'contained' : 'outlined'}
-							sx={{
-								textTransform: 'none',
-								backgroundColor: filterMode === 'reservations' ? '#0f172A' : 'transparent',
-								color: filterMode === 'reservations' ? '#FFFFFF' : '#0f172A',
-								borderColor: '#0f172A',
-								'&:hover': {
-									backgroundColor: filterMode === 'reservations' ? '#0f172A' : '#e0e0e0',
-								},
-							}}
-						>
-							Omat Varaukset
-						</Button>
-						<Button onClick={() => handleFilterChange('free')} variant={filterMode === 'free' ? 'contained' : 'outlined'}
-							sx={{
-								textTransform: 'none',
-								backgroundColor: filterMode === 'free' ? '#0f172A' : 'transparent',
-								color: filterMode === 'free' ? '#FFFFFF' : '#0f172A',
-								borderColor: '#0f172A',
-								'&:hover': {
-									backgroundColor: filterMode === 'free' ? '#0f172A' : '#e0e0e0',
-								},
-							}}
-						>
-							Vapaat
-						</Button>
-					</Box>
+					<div
+						container
+						direction="row"
+						justifyContent="start"
+						style={{
+							flexDirection: 'row',
+							display: 'flex',
+							backgroundColor: '#f2f5f9',
+							padding: '6px',
+							gap: '6px',
+							borderRadius: '10px',
+							marginTop: '10px',
+							marginBottom: '10px',
+						}}
+					>
+							<Button
+								onClick={() => handleFilterChange('reservations')}
+								sx={{
+									flexGrow: '2',
+									textTransform: 'none',
+									color: 'black',
+									padding: '6px 10px',
+									borderRadius: '6px',
+									backgroundColor: filterMode === 'reservations' ? 'white' : 'transparent',
+									fontWeight: 500,
+								}}
+							>
+								Omat Varaukset
+							</Button>
+
+
+							<Button
+								onClick={() => handleFilterChange('free')}
+								sx={{
+									flexGrow: '2',
+									textTransform: 'none',
+									color: 'black',
+									padding: '6px 10px',
+									borderRadius: '6px',
+									backgroundColor: filterMode === 'free' ? 'white' : 'transparent',
+									fontWeight: 500,
+								}}
+							>
+								Vapaat tilat
+							</Button>
+					</div>
 					<Box sx={{ maxHeight: '500px', overflowY: 'auto' }}>
 						{paginatedClassrooms.map(([key, value]) => {
 							// Filter the reservations from the classrooms
 							const filteredUserReservations = value.reservations.filter(reservation => reservation.user._id === user._id);
-
 							const matchRoom = partiallyFreeRooms.filter((room) => room._id === value._id)
 							return (
 								<React.Fragment key={key}>
