@@ -209,11 +209,15 @@ const ReservationPage = () => {
                   <ToggleButton value="buildingB">Rakennus B</ToggleButton>
                 </ToggleButtonGroup> */}
                 <Box>
+                {!isFilterApplied && (
+                <Typography variant="h6">Hakemalla tiloja pohjakarttanäkymä tulee näkyviin</Typography>
+                  )}
                   {isFilterApplied && (
                     <FloorPlan
                       floorData={filteredClassrooms}
                       roomProps={passFloorPlanProps(filteredClassrooms).roomProps}
                       floorNumber={passFloorPlanProps(filteredClassrooms).floorNumber}
+                      filterValues={filterValues}
                     />
                   )}
                 </Box>

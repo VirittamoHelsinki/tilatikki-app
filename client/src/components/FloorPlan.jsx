@@ -3,7 +3,7 @@ import '../styles/FloorPlan.css';
 import MapTooltip from './MapTooltip';
 import ReservationDialog from './ReservationDialog';
 
-const FloorPlan5 = ({ floorData, roomProps, floorNumber }) => {
+const FloorPlan5 = ({ floorData, roomProps, floorNumber, filterValues }) => {
   const [hoveredRoom, setHoveredRoom] = useState(null);
   const [hoveredRoomCapacity, setHoveredRoomCapacity] = useState(0);
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
@@ -117,9 +117,9 @@ const FloorPlan5 = ({ floorData, roomProps, floorNumber }) => {
             width={roomProps[roomNumber].width}
             height={roomProps[roomNumber].height}
             fill={getRoomColor(roomNumber)}
-            onMouseEnter={(e) => handleMouseEnter(e, roomNumber, floorData[roomProps[roomNumber].i].capacity)}
+            onMouseEnter={(e) => isRoomInFloorData(roomNumber) && handleMouseEnter(e, roomNumber, floorData[roomProps[roomNumber].i].capacity)}
             onMouseLeave={handleMouseLeave}
-            onClick={() => handleOpenDialog(floorData[roomProps[roomNumber].i].id, roomNumber, floorData[roomProps[roomNumber].i].capacity)}
+            onClick={() => handleOpenDialog(floorData[roomProps[roomNumber].i]._id, roomNumber, floorData[roomProps[roomNumber].i].capacity)}
             className="room"
             style={{ cursor: 'pointer' }}
           />
@@ -144,6 +144,7 @@ const FloorPlan5 = ({ floorData, roomProps, floorNumber }) => {
         capacity={reservationData.capacity}
         groupsize={reservationData.groupsize}
         creator={reservationData.creator}
+        filterValues={filterValues}
       />
     </div>
   );
