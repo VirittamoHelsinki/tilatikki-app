@@ -463,7 +463,7 @@ const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) 
 					<FormControl fullWidth>
 						<InputLabel id="starttime-select-label" shrink>
 							Aloitusaika
-							<Tooltip title={<div style={{ fontSize: "18px" }}>Varauksen aloitusaika</div>} placement='top'>
+							<Tooltip title={<div style={{ fontSize: "18px" }}>Huomioithan, että aloitus- ja lopetusaika tarkoittavat opetustunnin aloitus- ja lopetusaikaa.</div>} placement='top'>
 								<InfoIcon />
 							</Tooltip>
 						</InputLabel>
@@ -489,7 +489,7 @@ const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) 
 					<FormControl fullWidth>
 						<InputLabel id="endtime-select-label" shrink>
 							Lopetusaika
-							<Tooltip title={<div style={{ fontSize: "18px" }}>Varauksen lopetusaika</div>} placement='top'>
+							<Tooltip title={<div style={{ fontSize: "18px" }}>Huomioithan, että aloitus- ja lopetusaika tarkoittavat opetustunnin aloitus- ja lopetusaikaa.</div>} placement='top'>
 								<InfoIcon />
 							</Tooltip>
 						</InputLabel>
