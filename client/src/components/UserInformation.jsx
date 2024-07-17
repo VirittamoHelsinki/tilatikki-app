@@ -11,7 +11,7 @@ const UserInformation = () => {
   const [currentPasswordError, setCurrentPasswordError] = useState('');
   const [newPasswordError, setNewPasswordError] = useState('');
   const [passwordMatchError, setPasswordMatchError] = useState('');
-
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
 
   const userDataForm = useForm({
@@ -24,6 +24,7 @@ const UserInformation = () => {
   const passwordDataForm = useForm();
 
   const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
     setSnackbarMessage('');
   }
 
