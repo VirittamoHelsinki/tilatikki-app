@@ -14,6 +14,21 @@ import 'dayjs/locale/de';
 import {clearButtonStyle} from '../styles/filterformStyles';
 import InfoIcon from '@mui/icons-material/Info';
 
+
+const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) => {
+	const [selectedBuildings, setSelectedBuildings] = useState([]);
+	const [availableFloors, setAvailableFloors] = useState([1]);
+	const [selectedFloor, setSelectedFloor] = useState('');
+	const [startingTime, setStartingTime] = useState('');
+	const [endingTime, setEndingTime] = useState('');
+	const [selectedGroupSize, setSelectedGroupSize] = useState('');
+	const [classroom, setClassroom] = useState('');
+	const [availableClassrooms, setAvailableClassrooms] = useState([]);
+	const [selectedDate, setSelectedDate] = useState(null);
+	const [required, setRequired] = useState(false);
+	const [requiredEndTime, setRequiredEndTime] = useState(false);
+
+
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -38,22 +53,25 @@ const timeSlots = [
 	'23:00', '23:15', '23:30'
 ];
 
-const groupSizes = Array.from({ length: 100 }, (_, index) => (index) + 1);
+	// return the biggest classroom's capacity as maxvalue for groupsize
+	const maxClassroomCapacity = (schoolData) => {
+		if (selectedBuildings) {
+			return Math.max(...selectedBuildings.flatMap(building =>
+				building.floors.flatMap(floor =>
+				  floor.rooms.map(room => room.capacity)
+				)
+			  ));
+		}
+		else {
+			return Math.max(...schoolData.buildings.flatMap(building =>
+				building.floors.flatMap(floor =>
+					floor.rooms.map(room => room.capacity)
+				)
+			));
+		}
+	};
 
-
-
-const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) => {
-	const [selectedBuildings, setSelectedBuildings] = useState([]);
-	const [availableFloors, setAvailableFloors] = useState([1]);
-	const [selectedFloor, setSelectedFloor] = useState('');
-	const [startingTime, setStartingTime] = useState('');
-	const [endingTime, setEndingTime] = useState('');
-	const [selectedGroupSize, setSelectedGroupSize] = useState('');
-	const [classroom, setClassroom] = useState('');
-	const [availableClassrooms, setAvailableClassrooms] = useState([]);
-	const [selectedDate, setSelectedDate] = useState(null);
-	const [required, setRequired] = useState(false);
-	const [requiredEndTime, setRequiredEndTime] = useState(false);
+	const groupSizes = Array.from({ length: maxClassroomCapacity(schoolData) }, (_, index) => (index) + 1);
 
 	const handleSelectedBuildings = (event) => {
 		const {
@@ -188,7 +206,7 @@ const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) 
 		return time >= startTime && time < endTime;
 	}
 
-	// calculate rooms every timeslots occupancies to see if its full/partly free
+	// calculate total occupancy for every timeslot for a room
 	const createRoomTimeslotOccupancy = (room, selectedDay) => {
 		const roomTimeslots = [];
 
@@ -359,7 +377,7 @@ const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) 
 
 	useEffect(() => {
 		console.log('schoolData', schoolData);
-		console.log('schoolData floor', schoolData.buildings[0].floors[0]._id);
+		console.log('schoolData floor_id', schoolData.buildings[0].floors[0]._id);
 		const maxFloorValue = selectedBuildings.reduce((max, building) =>
 			Object.keys(building.floors).length > max ? Object.keys(building.floors).length : max, 1
 		)
