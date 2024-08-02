@@ -25,8 +25,6 @@ const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) 
 	const [classroom, setClassroom] = useState('');
 	const [availableClassrooms, setAvailableClassrooms] = useState([]);
 	const [selectedDate, setSelectedDate] = useState(null);
-	const [required, setRequired] = useState(false);
-	const [requiredEndTime, setRequiredEndTime] = useState(false);
 
 
 const ITEM_HEIGHT = 48;
@@ -83,7 +81,6 @@ const timeSlots = [
 			schoolData.buildings.find((building) => building.name === name)
 		);
 		setSelectedBuildings(selectedBuildingObjects);
-		setRequired(false);
 	};
 
 	const handleSelectedFloor = (event) => {
@@ -102,7 +99,6 @@ const timeSlots = [
 
 	const handleEndingTime = (e) => {
 		setEndingTime(e.target.value);
-		setRequiredEndTime(false);
 	}
 
 	const handleGroupSize = (e) => {
@@ -351,12 +347,6 @@ const timeSlots = [
 		}
 	};
 
-	const checkRequired = () => {
-		if (startingTime && !endingTime) {
-			setRequiredEndTime(true);
-		}
-	}
-
 	const resetStates = () => {
 		setSelectedBuildings([]);
 		setAvailableFloors([1]);
@@ -367,8 +357,6 @@ const timeSlots = [
 		setClassroom('');
 		setAvailableClassrooms([]);
 		setSelectedDate(null);
-		setRequired(false);
-		setRequiredEndTime(false);
 	}
 
 	const handleStartingDateChange = (newDate) => {
@@ -402,6 +390,7 @@ const timeSlots = [
 				{schoolData.name}
 			</Typography>
 			<Typography variant="subtitle1" gutterBottom>
+				{/* school-intro instead of address */}
 				{schoolData.address}
 			</Typography>
 
@@ -481,7 +470,7 @@ const timeSlots = [
 					<FormControl fullWidth>
 						<InputLabel id="starttime-select-label" shrink>
 							Aloitusaika
-							<Tooltip title={<div style={{ fontSize: "18px" }}>Huomioithan, että aloitus- ja lopetusaika tarkoittavat opetustunnin aloitus- ja lopetusaikaa.</div>} placement='top'>
+							<Tooltip title={<div style={{ fontSize: "16px" }}>Huomioithan, että aloitus- ja lopetusaika tarkoittavat opetustunnin aloitus- ja lopetusaikaa.</div>} placement='top'>
 								<InfoIcon />
 							</Tooltip>
 						</InputLabel>
@@ -507,7 +496,7 @@ const timeSlots = [
 					<FormControl fullWidth>
 						<InputLabel id="endtime-select-label" shrink>
 							Lopetusaika
-							<Tooltip title={<div style={{ fontSize: "18px" }}>Huomioithan, että aloitus- ja lopetusaika tarkoittavat opetustunnin aloitus- ja lopetusaikaa.</div>} placement='top'>
+							<Tooltip title={<div style={{ fontSize: "16px" }}>Huomioithan, että aloitus- ja lopetusaika tarkoittavat opetustunnin aloitus- ja lopetusaikaa.</div>} placement='top'>
 								<InfoIcon />
 							</Tooltip>
 						</InputLabel>
@@ -588,7 +577,7 @@ const timeSlots = [
 					</FormControl>
 				</Box>
 
-				<Button variant="contained" type="submit" onClick={checkRequired}
+				<Button variant="contained" type="submit"
 					sx={{
 						textTransform: 'none',
 						backgroundColor: '#18181B',
