@@ -27,6 +27,15 @@ const TimelineFilterForm = ({ schoolData, form }) => {
   const selectedFloor = form.watch("floor")
   const selectedDate = form.watch("date")
 
+  // Set floor to first floor of building whenever building changes
+  // setValue doesn't seem to work?
+  useEffect(() => {
+    const building = buildings.find((building) => building._id === selectedBuilding)
+    const firstFloor = building?.floors.find((floor) => floor.number === 1)
+    
+    form.setValue("floor", firstFloor?._id)
+  }, [ selectedBuilding ])
+
   console.log({ selectedBuilding, selectedFloor, selectedDate });
   
 
@@ -109,7 +118,7 @@ const TimelineFilterForm = ({ schoolData, form }) => {
                 {
                   selectedBuilding
                   && buildings.find((building) => building._id === selectedBuilding).floors.map((floor, index) => (
-                    <SelectItem value={floor._id}>{index + 1}. kerros</SelectItem>
+                    <SelectItem value={floor._id}>{floor.number}. kerros</SelectItem>
                   ))
                 }
               </SelectContent>
