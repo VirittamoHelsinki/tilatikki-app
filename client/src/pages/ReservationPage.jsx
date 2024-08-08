@@ -166,6 +166,14 @@ const ReservationPage = () => {
             Kalenterinäkymä
           </Button>
         </Grid>
+        <Grid item>
+          <Button
+            onClick={() => setSelectedComponent('aikajananäkymä')}
+            sx={{  textTransform: 'none', color: 'black', padding: '6px 10px', 'borderRadius': '6px', backgroundColor: selectedComponent === 'aikajananäkymä' ? 'white' : 'transparent', 'fontWeight': 500 }}
+          >
+            Aikajananäkymä
+          </Button>
+        </Grid>
       </Grid>
 
       <Container maxWidth="" style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '20px' }}>
