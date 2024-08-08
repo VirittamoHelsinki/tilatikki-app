@@ -1,11 +1,10 @@
 import { useForm } from "react-hook-form"
 
-import { setDefaultOptions, format } from "date-fns"
+import { setDefaultOptions } from "date-fns"
 import { fi } from "date-fns/locale"
 import { useEffect, useRef } from "react"
 
 import dayjs from "dayjs"
-import { FormControl, Grid, InputLabel, MenuItem, Select, TextField } from "@mui/material"
 import TimelineFilterForm from "./TimelineFilterForm"
 
 
