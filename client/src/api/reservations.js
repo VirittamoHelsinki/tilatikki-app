@@ -61,6 +61,31 @@ export const deleteReservation = async (reservationId) => {
   }
 };
 
+export const updateReservation = async (reservationId, updatedData) => {
+  try {
+    console.log(`Updating reservation with ID: ${reservationId}`, updatedData);
+    const response = await fetch(`${API_URL}/reservations/${reservationId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedData),
+    });
+
+    const responseData = await response.json();
+
+    if (!response.ok) {
+      console.error("Server response:", responseData);
+      throw new Error("Failed to update reservation");
+    }
+
+    return responseData;
+  } catch (error) {
+    console.error("Update reservation error:", error);
+    throw error;
+  }
+};
+
 export const useCreateReservationMutation = () => {
   const queryClient = useQueryClient();
 
@@ -73,4 +98,22 @@ export const useCreateReservationMutation = () => {
       console.error("Create reservation mutation error:", error);
     },
   });
+};
+
+export const useUpdateReservationMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    ({ reservationId, updatedData }) =>
+      updateReservation(reservationId, updatedData),
+    {
+      onSuccess: () => {
+        // Invalidate and refetch reservations query or related queries if necessary
+        queryClient.invalidateQueries("reservations");
+      },
+      onError: (error) => {
+        console.error("Update reservation mutation error:", error);
+      },
+    },
+  );
 };

@@ -97,7 +97,7 @@ const ReservationCard = ({ roomId, roomNumber, purpose, status, capacity, reserv
 				</Card>
 			</ButtonBase>
 			<ReservationDialog isOpen={isOpen} onClose={handleCloseDialog} roomId={roomId} roomNumber={roomNumber}
-				capacity={capacity} groupsize={groupsize} creator={creator} filterValues={filterValues} />
+				capacity={capacity} groupsize={groupsize} creator={creator} filterValues={filterValues} status={status} />
 		</>
 	);
 };
