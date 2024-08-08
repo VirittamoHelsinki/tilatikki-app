@@ -13,18 +13,19 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import 'dayjs/locale/de';
 import {clearButtonStyle} from '../styles/filterformStyles';
 import InfoIcon from '@mui/icons-material/Info';
+import dayjs from 'dayjs';
 
 
 const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) => {
-	const [selectedBuildings, setSelectedBuildings] = useState([]);
+	const [selectedBuildings, setSelectedBuildings] = useState([schoolData.buildings[0]]);
 	const [availableFloors, setAvailableFloors] = useState([1]);
-	const [selectedFloor, setSelectedFloor] = useState('');
-	const [startingTime, setStartingTime] = useState('');
-	const [endingTime, setEndingTime] = useState('');
-	const [selectedGroupSize, setSelectedGroupSize] = useState('');
+	const [selectedFloor, setSelectedFloor] = useState(schoolData.buildings[0].floors[0].number);
+	const [startingTime, setStartingTime] = useState('10:00');
+	const [endingTime, setEndingTime] = useState('11:00');
+	const [selectedGroupSize, setSelectedGroupSize] = useState(1);
 	const [classroom, setClassroom] = useState('');
 	const [availableClassrooms, setAvailableClassrooms] = useState([]);
-	const [selectedDate, setSelectedDate] = useState(null);
+	const [selectedDate, setSelectedDate] = useState(dayjs());
 
 
 const ITEM_HEIGHT = 48;
