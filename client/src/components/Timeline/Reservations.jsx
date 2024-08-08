@@ -5,7 +5,8 @@ import { fi } from "date-fns/locale"
 import { useEffect, useRef } from "react"
 
 import dayjs from "dayjs"
-// import TimelineFilterForm from "./TimelineFilterForm"
+import { FormControl, Grid, InputLabel, MenuItem, Select, TextField } from "@mui/material"
+import TimelineFilterForm from "./TimelineFilterForm"
 
 
 const TimelineItem = ({ timeStart, timeEnd, unavailable }) => {
@@ -36,7 +37,7 @@ const TimelineItem = ({ timeStart, timeEnd, unavailable }) => {
 
 
 const Timeline = () => {
-  const form = useForm()
+  const form = useForm({});
 
   const timelineContainerRef = useRef(null)
   const timeIndicatorRef = useRef(null)
@@ -71,16 +72,17 @@ const Timeline = () => {
   }, [ timelineContainerRef, timeIndicatorRef ])
 
   return (
-    <div className="col-span-10">
+    <div className="col-span-10 ml-5 mt-10">
       <div className="flex flex-col gap-2">
 
         <p className="text-4xl font-bold mb-3">Varausnäkymä</p>
 
         {/* Filter */}
-        {/* <TimelineFilterForm form={form} /> */}
+        <TimelineFilterForm form={form} />
 
 
-        <p className="text-3xl font-medium mb-3">13. Huhtikuuta, 2024</p>
+
+        <p className="text-3xl font-medium mt-6 mb-3">13. Huhtikuuta, 2024</p>
 
         <div className="grid grid-cols-12 overflow-hidden">
 
