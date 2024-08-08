@@ -11,7 +11,7 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import FloorPlan from '../components/FloorPlan';
 import Calendar from '../components/Calendar';
 import ReservationPageCalendar from '../components/ReservationPageCalendar';
-import ReservationsPage from '../components/Timeline/Reservations';
+import ReservationsPage from '@/components/Timeline';
 
 const ReservationPage = () => {
   const [filteredClassrooms, setFilteredClassrooms] = useState([]);

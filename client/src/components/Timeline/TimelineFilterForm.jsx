@@ -19,7 +19,12 @@ import { useEffect, useRef } from "react"
 
 import dayjs from "dayjs"
 
-const TimelineFilterForm = ({ form }) => {
+const TimelineFilterForm = ({ schoolData, form }) => {
+
+  const buildings = schoolData.buildings
+
+
+
   return (
     <FormProvider {...form}>
     <div className="grid grid-cols-4 gap-5 mb-5">
@@ -37,9 +42,13 @@ const TimelineFilterForm = ({ form }) => {
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                <SelectItem value="Rakennus A">Rakennus A</SelectItem>
-                <SelectItem value="Rakennus B">Rakennus B</SelectItem>
-                <SelectItem value="Rakennus C">Rakennus C</SelectItem>
+
+                {
+                  buildings.map((building) => (
+                    <SelectItem value={building._id}>{building.name}</SelectItem>
+                  ))
+                }
+
               </SelectContent>
             </Select>
           </FormItem>

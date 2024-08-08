@@ -6,6 +6,8 @@ import { useEffect, useRef } from "react"
 
 import dayjs from "dayjs"
 import TimelineFilterForm from "./TimelineFilterForm"
+import { useSchoolQuery } from "@/api/schools"
+import { useParams } from "react-router-dom"
 
 
 const TimelineItem = ({ timeStart, timeEnd, unavailable }) => {
@@ -36,6 +38,9 @@ const TimelineItem = ({ timeStart, timeEnd, unavailable }) => {
 
 const Timeline = () => {
   const form = useForm({});
+
+  const { id } = useParams()
+  const { data, error, isLoading } = useSchoolQuery(id);  
 
   const timelineContainerRef = useRef(null)
   const timeIndicatorRef = useRef(null)
@@ -69,16 +74,18 @@ const Timeline = () => {
     }
   }, [ timelineContainerRef, timeIndicatorRef ])
 
+  if (isLoading) {
+    return <p>please wait</p>
+  }
+
   return (
     <div className="col-span-10 ml-5 mt-10">
       <div className="flex flex-col gap-2">
 
-        <p className="text-4xl font-bold mb-3">Varausnäkymä</p>
+        <p className="text-4xl font-bold mb-3">{ data.name } - Varausnäkymä</p>
 
         {/* Filter */}
-        <TimelineFilterForm form={form} />
-
-
+        <TimelineFilterForm schoolData={data} form={form} />
 
         <p className="text-3xl font-medium mt-6 mb-3">13. Huhtikuuta, 2024</p>
 
