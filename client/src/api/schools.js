@@ -1,6 +1,6 @@
 // api/schools.js
 import { useQuery } from 'react-query';
-const API_URL = 'http://localhost:5050';
+const API_URL = 'https://tilatikki-app-server.onrender.com';
 
 // Fetch all schools
 export const fetchAllSchools = async () => {

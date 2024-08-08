@@ -4,10 +4,9 @@ import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import RepeatIcon from '@mui/icons-material/Repeat';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Typography, Divider } from '@mui/material';
+import { Typography, Divider, Snackbar, Alert } from '@mui/material';
 import { fiFI } from '@mui/x-data-grid/locales';
 import DeleteDialog from './DeleteDialog';
-import Snackbar from '@mui/material/Snackbar';
 import { getReservations, deleteReservation } from '../api/reservations';
 import { fetchRoomById } from '../api/rooms';
 
@@ -15,6 +14,12 @@ const columns = (handleClickOpen) => [
   {
     field: 'opetustila',
     headerName: 'Opetustila',
+    width: 220,
+    editable: false,
+  },
+  {
+    field: 'varaus',
+    headerName: 'Varauksen nimi',
     width: 220,
     editable: false,
   },
@@ -118,8 +123,6 @@ const ReservationHistoryAdmin = () => {
           const päivämäärä = reservation.reservationDate
             ? formatDate(reservation.reservationDate)
             : 'N/A';
-
-
           const isSpecificString = reservation.recurrence === 'none';
           const toistuvaValue = isSpecificString ? false : true;
 
@@ -127,6 +130,7 @@ const ReservationHistoryAdmin = () => {
             reservationid: reservation._id,
             id: index + 1,
             opetustila: room.number || 'N/A',
+            varaus: reservation.purpose,
             toistuva: toistuvaValue,
             päivämäärä,
             aikaväli: reservation.startTime + " - " + reservation.endTime,
@@ -189,12 +193,19 @@ const ReservationHistoryAdmin = () => {
   return (
     <>
       <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={4000}
-        onClose={handleSnackbarClose}
-        message={snackbarMessage}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      />
+				open={snackbarOpen}
+				autoHideDuration={4000}
+				onClose={handleSnackbarClose}
+				anchorOrigin={{ vertical: "top", horizontal: "center" }}
+			>
+				<Alert
+					onClose={handleSnackbarClose}
+					severity="success"
+					sx={{ width: '100%' }}
+				>
+					{snackbarMessage}
+				</Alert>
+			</Snackbar>
       <Typography component="h1" variant="h5">
         Varaukset
       </Typography>
@@ -262,7 +273,8 @@ const ReservationHistoryAdmin = () => {
           open={open}
           handleClose={handleClose}
           handleDelete={handleDeleteConfirmed}
-          course={selectedRow.opettaja}
+          reservationName={selectedRow.varaus}
+          teacher={selectedRow.opettaja}
           roomName={selectedRow.opetustila}
           date={selectedRow.päivämäärä}
           hours={selectedRow.aikaväli}

@@ -30,7 +30,6 @@ const CreateReservationForm = ({
   }, [])
 
   const handleReservationSwitchChange = () => setReservationHasExceptions(!reservationHasExceptions);
-
   const handleDisableSubmitButton = () => setDisableSubmitButton(!disableSubmitButton)
 
   useEffect(() => {
@@ -40,6 +39,7 @@ const CreateReservationForm = ({
   const onSubmit = (data) => {
     data = {
       ...data,
+
       startTime: data.startTime.format("HH:mm"),
       endTime: data.endTime.format("HH:mm")
     }
@@ -106,7 +106,6 @@ const CreateReservationForm = ({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Box sx={{ marginTop: 0, marginBottom: 0 }}>
@@ -190,6 +189,7 @@ const CreateReservationForm = ({
                 name="startTime"
                 label="Aloitusaika*"
                 control={control}
+
                 defaultValue={
                   filterValues.startingTime
                     ? dayjs(`1970-01-01T${filterValues.startingTime.split(':').map(part => part.padStart(2, '0')).join(':')}`)
@@ -375,7 +375,7 @@ const CreateReservationForm = ({
             sx={{
               mt: 3,
               mb: 2,
-              textTransform: "initial",
+              textTransform: 'none',
               backgroundColor: '#18181B', // Change this to your desired color
               '&:hover': {
                 backgroundColor: '#2b2b2b' // Change this to a lighter shade of your color

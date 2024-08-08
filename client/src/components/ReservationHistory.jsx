@@ -4,10 +4,9 @@ import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import RepeatIcon from '@mui/icons-material/Repeat';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Typography, Divider } from '@mui/material';
+import { Typography, Divider, Snackbar, Alert } from '@mui/material';
 import { fiFI } from '@mui/x-data-grid/locales';
 import DeleteDialog from './DeleteDialog';
-import Snackbar from '@mui/material/Snackbar';
 import { fetchRoomById } from '../api/rooms';
 import { fetchUserDataByEmail } from '../api/userApi';
 import { getCookie } from '../utils/Cookies';
@@ -18,6 +17,12 @@ const columns = (handleClickOpen) => [
     field: 'opetustila',
     headerName: 'Opetustila',
     width: 180,
+    editable: false,
+  },
+  {
+    field: 'varaus',
+    headerName: 'Varauksen nimi',
+    width: 220,
     editable: false,
   },
   {
@@ -141,6 +146,7 @@ const ReservationHistory = () => {
             reservationid: reservation._id,
             id: index + 1,
             opetustila: room.number || 'N/A',
+            varaus: reservation.purpose,
             toistuva: toistuvaValue,
             päivämäärä,
             aikaväli: reservation.startTime + " - " + reservation.endTime,
@@ -203,12 +209,19 @@ const ReservationHistory = () => {
   return (
     <>
       <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={4000}
-        onClose={handleSnackbarClose}
-        message={snackbarMessage}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      />
+				open={snackbarOpen}
+				autoHideDuration={4000}
+				onClose={handleSnackbarClose}
+				anchorOrigin={{ vertical: "top", horizontal: "center" }}
+			>
+				<Alert
+					onClose={handleSnackbarClose}
+					severity="success"
+					sx={{ width: '100%' }}
+				>
+					{snackbarMessage}
+				</Alert>
+			</Snackbar>
       <Typography component="h1" variant="h5">
         Omat varaukset
       </Typography>
@@ -277,6 +290,7 @@ const ReservationHistory = () => {
           open={open}
           handleClose={handleClose}
           handleDelete={handleDeleteConfirmed}
+          reservationName={selectedRow.varaus}
           course={selectedRow.opettaja}
           roomName={selectedRow.opetustila}
           date={selectedRow.päivämäärä}

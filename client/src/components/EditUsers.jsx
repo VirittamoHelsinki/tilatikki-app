@@ -42,9 +42,6 @@ export default function EditUsers({ name, email, role, otherTeacher, onClose }) 
         admin: roleName,
       };
 
-      console.log(updatedData[0] + "XSSSSSS")
-      console.log(email + "kfkefkekfk")
-
       const { message, user: updatedUser } = await updateUser(email, updatedData);
 
       // Update form fields or state based on the updated user data if needed
