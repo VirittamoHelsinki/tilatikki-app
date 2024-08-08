@@ -11,6 +11,7 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import FloorPlan from '../components/FloorPlan';
 import Calendar from '../components/Calendar';
 import ReservationPageCalendar from '../components/ReservationPageCalendar';
+import ReservationsPage from '../components/Timeline/Reservations';
 
 const ReservationPage = () => {
   const [filteredClassrooms, setFilteredClassrooms] = useState([]);
@@ -236,6 +237,10 @@ const ReservationPage = () => {
 
         {
           selectedComponent === "kalenterinäkymä" && <ReservationPageCalendar data={data} />
+        }
+
+        {
+          selectedComponent === "aikajananäkymä" && <ReservationsPage />
         }
 
       </Container>

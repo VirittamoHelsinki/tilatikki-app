@@ -5,7 +5,7 @@ import { fi } from "date-fns/locale"
 import { useEffect, useRef } from "react"
 
 import dayjs from "dayjs"
-import TimelineFilterForm from "@/components/TimelineFilterForm"
+// import TimelineFilterForm from "./TimelineFilterForm"
 
 
 const TimelineItem = ({ timeStart, timeEnd, unavailable }) => {
@@ -77,7 +77,7 @@ const Timeline = () => {
         <p className="text-4xl font-bold mb-3">Varausnäkymä</p>
 
         {/* Filter */}
-        <TimelineFilterForm form={form} />
+        {/* <TimelineFilterForm form={form} /> */}
 
 
         <p className="text-3xl font-medium mb-3">13. Huhtikuuta, 2024</p>
