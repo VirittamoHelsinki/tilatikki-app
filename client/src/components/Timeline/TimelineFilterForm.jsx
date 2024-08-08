@@ -23,59 +23,16 @@ const TimelineFilterForm = ({ schoolData, form }) => {
 
   const buildings = schoolData.buildings
 
+  const selectedBuilding = form.watch("building")
+  const selectedFloor = form.watch("floor")
+  const selectedDate = form.watch("date")
 
+  console.log({ selectedBuilding, selectedFloor, selectedDate });
+  
 
   return (
     <FormProvider {...form}>
     <div className="grid grid-cols-4 gap-5 mb-5">
-
-      <FormField
-        control={form.control}
-        name="building"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Rakennus*</FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value} required={true}>
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Valitse rakennus" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-
-                {
-                  buildings.map((building) => (
-                    <SelectItem value={building._id}>{building.name}</SelectItem>
-                  ))
-                }
-
-              </SelectContent>
-            </Select>
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="floor"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Kerros*</FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value} required={true}>
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Valitse kerros" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                <SelectItem value="1. kerros">1. kerros</SelectItem>
-                <SelectItem value="2. kerros">2. kerros</SelectItem>
-                <SelectItem value="3. kerros">3. kerros</SelectItem>
-              </SelectContent>
-            </Select>
-          </FormItem>
-        )}
-      />
 
       <FormField
         control={form.control}
@@ -109,6 +66,58 @@ const TimelineFilterForm = ({ schoolData, form }) => {
           </FormItem>
         )}
       />
+
+      <FormField
+        control={form.control}
+        name="building"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Rakennus*</FormLabel>
+            <Select onValueChange={field.onChange} defaultValue={field.value} required={true}>
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder="Valitse rakennus" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+
+                {
+                  buildings.map((building) => (
+                    <SelectItem value={building._id}>{building.name}</SelectItem>
+                  ))
+                }
+
+              </SelectContent>
+            </Select>
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="floor"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Kerros*</FormLabel>
+            <Select onValueChange={field.onChange} defaultValue={field.value} required={true} disabled={!selectedBuilding}>
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder="Valitse kerros" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                {
+                  selectedBuilding
+                  && buildings.find((building) => building._id === selectedBuilding).floors.map((floor, index) => (
+                    <SelectItem value={floor._id}>{index + 1}. kerros</SelectItem>
+                  ))
+                }
+              </SelectContent>
+            </Select>
+          </FormItem>
+        )}
+      />
+
 
 
     </div>
