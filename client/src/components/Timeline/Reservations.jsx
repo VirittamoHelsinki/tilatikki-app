@@ -16,25 +16,24 @@ const TimelineItem = ({ timeStart, timeEnd, unavailable }) => {
   const columnStart = (from[0] * 4 + Math.floor(from[1] / 15) + 1)
   const columnEnd = (to[0] * 4 + Math.floor(to[1] / 15) + 1)
 
-  const str = `${columnStart} / span ${columnEnd - columnStart}`
+  const gridColumnValueString = `${columnStart} / span ${columnEnd - columnStart}`
 
   if (unavailable) {
     return (
-      <div className="bg-gray-200 rounded-md w-full py-1 px-2 flex flex-col justify-center items-center warning" style={{ gridColumn: str }}>
+      <div className="bg-gray-200 rounded-md w-full py-1 px-2 flex flex-col justify-center items-center warning" style={{ gridColumn: gridColumnValueString }}>
         {/* <p className="text-ms uppercase font-medium text-black" style={{ position: "sticky", left: "10px" }}>Ei varattavissa</p> */}
       </div>
     )
   }
   
   return (
-    <div className="bg-blue-100 rounded-md w-full py-1 px-2 select-none hover:cursor-pointer hover:bg-blue-200" style={{ gridColumn: str }}>
+    <div className="bg-blue-100 rounded-md w-full py-1 px-2 select-none hover:cursor-pointer hover:bg-blue-200" style={{ gridColumn: gridColumnValueString }}>
       <p className="font-semibold text-sm">Otso Kontio</p>
       <p className="text-xs">{timeStart} - {timeEnd}</p>
       <p className="text-xs max-w-full whitespace-nowrap text-ellipses overflow-hidden"><i>varauksen tarkoitus</i></p>
     </div>
   )
 }
-
 
 const Timeline = () => {
   const form = useForm({});
@@ -47,7 +46,7 @@ const Timeline = () => {
 
   useEffect(() => {
     const onScroll = () => {
-      const { scrollLeft, scrollWidth, clientWidth } = timelineContainerRef.current
+      const { scrollLeft, scrollWidth } = timelineContainerRef.current
 
       const time = dayjs().format("HH:mm")
       const [ hours, minutes ] = time.toString().split(":")
