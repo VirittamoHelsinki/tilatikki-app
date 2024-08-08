@@ -82,7 +82,7 @@ const Timeline = () => {
 
         <p className="text-3xl font-medium mb-3">13. Huhtikuuta, 2024</p>
 
-        <div className="grid grid-cols-12">
+        <div className="grid grid-cols-12 overflow-hidden">
 
           <div className="details col-span-2 grid" style={{ gridTemplateRows: `repeat(6, 70px)` }}>
             <div className="flex flex-col justify-center py-2">
