@@ -56,7 +56,7 @@ const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) 
 	const [availableFloors, setAvailableFloors] = useState([1]);
 	const [selectedFloor, setSelectedFloor] = useState(schoolData.buildings[0].floors[0].number);
 	const [startingTime, setStartingTime] = useState(getNextAvailableStartingtime);
-	const [endingTime, setEndingTime] = useState(getEndingTime(getNextAvailableStartingtime));
+	const [endingTime, setEndingTime] = useState('');
 	const [selectedGroupSize, setSelectedGroupSize] = useState(1);
 	const [classroom, setClassroom] = useState('');
 	const [availableClassrooms, setAvailableClassrooms] = useState([]);
@@ -405,7 +405,9 @@ const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) 
 			handleAvailableClassrooms();
 		}
 		setClassroom('');
-		setEndingTime(getEndingTime(startingTime));
+		if (!endingTime) {
+			setEndingTime(getEndingTime(startingTime));
+		}
 	}, [selectedBuildings, selectedFloor]);
 
 	return (
