@@ -14,7 +14,7 @@ import "moment/dist/locale/fi"
 moment.locale("fi")
 
 
-const TimelineItem = ({ timeStart, timeEnd, unavailable, user, label }) => {
+const TimelineItem = ({ timeStart, timeEnd, unavailable, user, label, fullHeight }) => {
   const from = timeStart.split(":").map(v => parseInt(v))
   const to = timeEnd.split(":").map(v => parseInt(v))
 
@@ -35,8 +35,14 @@ const TimelineItem = ({ timeStart, timeEnd, unavailable, user, label }) => {
   }
   
   return (
-    <div className="bg-blue-100 rounded-md w-full select-none hover:z-10 hover:cursor-pointer hover:bg-blue-200 overflow-hidden hover:overflow-visible relative" style={{ gridColumn: gridColumnValueString }}>
-      <div className="bg-inherit py-1 px-2 rounded-md absolute min-w-full top-0 left-0">
+    <div 
+      className="bg-blue-100 rounded-md w-full select-none hover:z-10 hover:cursor-pointer hover:bg-blue-200 overflow-hidden hover:overflow-visible relative hover:scale-110"
+      style={{
+        gridColumn: gridColumnValueString,
+        gridRow: fullHeight ? "1 / -1" : "auto",
+      }}
+    >
+      <div className="bg-inherit py-[2px] px-2 rounded-md absolute min-w-full top-0 left-0">
         <p className="font-semibold whitespace-nowrap text-sm bg-inherit max-w-max">{user.name} {user.surname}</p>
         <p className="text-xs bg-inherit">{timeStart} - {timeEnd}</p>
         <p className="text-xs max-w-full whitespace-nowrap text-ellipses overflow-hidden bg-inherit"><i>{label}</i></p>
@@ -50,7 +56,10 @@ const TimelineContainer = ({
   showRoomInformation = true,
 }) => {
   return (
-    <div className="timeline-container grid max-w-full overflow-x-auto" style={{ gridTemplateColumns: "auto 1fr", gridTemplateRows: `repeat(${rooms.length}, 1fr)` }}>
+    <div
+      className="timeline-container grid max-w-full overflow-x-auto"
+      style={{ gridTemplateColumns: "auto 1fr", gridTemplateRows: `repeat(${rooms.length}, 1fr)` }}
+    >
       {
         rooms.map((room) => (
           <>
@@ -67,7 +76,10 @@ const TimelineContainer = ({
             <div className="timelines col-start-2 row-span-full border-2 rounded-lg h-full grid" style={{ gridTemplateRows: `repeat(${rooms.length}, 1fr)`} }>
               {
                 rooms?.map((room) => (
-                  <div className="grid gap-x-2 gap-y-1 p-1 [&:not(:last-child)]:border-b border-b-gray-200" style={{ gridTemplateRows: "1fr 1fr", gridTemplateColumns: `repeat(${24 * 4}, 1fr)`, width: `${24 * 4 * 30}px` }}>
+                  <div
+                    className="grid grid-flow-dense gap-x-2 gap-y-1 p-1 [&:not(:last-child)]:border-b border-b-gray-200" 
+                    style={{ gridTemplateRows: "1fr 1fr", gridTemplateColumns: `repeat(${24 * 4}, 1fr)`, width: `${24 * 4 * 30}px` }}
+                  >
                     <TimelineItem timeStart="00:00" timeEnd="05:00" unavailable/>
     
                     {
@@ -78,6 +90,7 @@ const TimelineContainer = ({
                           timeEnd={reservation.endTime}
                           label={reservation.purpose}
                           user={reservation.user}
+                          fullHeight={reservation.groupsize === room.capacity}
                         />
                       ))
                     }
@@ -97,7 +110,7 @@ const TimelineContainer = ({
 const TimelineX = () => {
   const form = useForm({
     defaultValues: {
-      date: new Date(),
+     date: moment().format("MM/DD/YYYY")
     },
   });
 
@@ -121,7 +134,6 @@ const TimelineX = () => {
 
   rooms = floor?.rooms.map((room) => {
     const reservations = room.reservations.filter((reservation) => {
-      console.log(">>>>>>>>>>>>", moment(reservation.reservationDate).isSame(moment(selectedDate)))
       return moment(reservation.reservationDate).isSame(moment(selectedDate))
     })
 
@@ -176,7 +188,7 @@ const TimelineX = () => {
         {/* Filter */}
         <TimelineFilterForm schoolData={data} form={form} />
 
-        <p className="text-3xl font-medium mt-6 mb-3">{ moment(selectedDate).format("LL") }</p>
+        <p className="text-3xl font-medium mt-6 mb-3">{ selectedDate && moment(selectedDate).format("LL") }</p>
 
         <TimelineContainer
           rooms={rooms}

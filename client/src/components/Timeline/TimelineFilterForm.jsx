@@ -108,7 +108,7 @@ const TimelineFilterForm = ({ schoolData, form }) => {
         render={({ field }) => (
           <FormItem>
             <FormLabel>Kerros*</FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value} required={true} disabled={!selectedBuilding}>
+            <Select onValueChange={field.onChange} defaultValue={field.value} required={true} value={selectedFloor} disabled={!selectedBuilding}>
               <FormControl>
                 <SelectTrigger>
                   <SelectValue placeholder="Valitse kerros" />
