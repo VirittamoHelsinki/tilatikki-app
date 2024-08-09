@@ -8,8 +8,6 @@ import { useState } from "react"
 import { useForm, Controller } from "react-hook-form"
 import PeopleIcon from '@mui/icons-material/People';
 
-
-
 const CreateReservationForm = ({
   createReservationMutation,
   roomNumber,
@@ -55,8 +53,8 @@ const CreateReservationForm = ({
         reservations.push({
           ...reservationData,
           reservationDate: currentDate,
-          startTime: data.startTime ? formatTime(data.startTime) : null,
-          endTime: data.endTime ? formatTime(data.endTime) : null,
+          startTime: data.startTime ? data.startTime : null,
+          endTime: data.endTime ? data.endTime : null,
         });
 
         currentDate = currentDate.add(interval, 'day');
@@ -273,15 +271,19 @@ const CreateReservationForm = ({
               <Grid item lg={12}>
                 <FormControl fullWidth>
                   <LocalizationProvider localeText={fiFI.components.MuiLocalizationProvider.defaultProps.localeText} dateAdapter={AdapterDayjs}>
-                    <DatePicker
-                      autoComplete="endDate"
-                      name="endDate"
-                      required
-                      format="DD/MM/YYYY"
-                      slotProps={{ textField: { fullWidth: true } }}
-                      id="endDate"
-                      label="Varauksen päättymispäivä*"
-                      {...register("endDate")}
+                    <Controller
+                      name="reservationEndDate"
+                      control={control}
+                      defaultValue={filterValues.selectedDate ? dayjs(filterValues.selectedDate) : null}
+                      render={({ field: { value, ...rest } }) => (
+                        <DatePicker
+                          {...rest}
+                          value={value}
+                          label="Varauksen päättymispäivämäärä*"
+                          renderInput={(params) => <TextField {...params} fullWidth />}
+                          format="DD/MM/YYYY"
+                        />
+                      )}
                     />
                   </LocalizationProvider>
                 </FormControl>
