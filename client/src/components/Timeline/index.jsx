@@ -10,7 +10,7 @@ import { useSchoolQuery } from "@/api/schools"
 import { useParams } from "react-router-dom"
 
 
-const TimelineItem = ({ timeStart, timeEnd, unavailable }) => {
+const TimelineItem = ({ timeStart, timeEnd, unavailable, user, label }) => {
   const from = timeStart.split(":").map(v => parseInt(v))
   const to = timeEnd.split(":").map(v => parseInt(v))
 
@@ -29,14 +29,73 @@ const TimelineItem = ({ timeStart, timeEnd, unavailable }) => {
   
   return (
     <div className="bg-blue-100 rounded-md w-full py-1 px-2 select-none hover:cursor-pointer hover:bg-blue-200" style={{ gridColumn: gridColumnValueString }}>
-      <p className="font-semibold text-sm">Otso Kontio</p>
+      <p className="font-semibold text-sm">{user.name} {user.surname}</p>
       <p className="text-xs">{timeStart} - {timeEnd}</p>
-      <p className="text-xs max-w-full whitespace-nowrap text-ellipses overflow-hidden"><i>varauksen tarkoitus</i></p>
+      <p className="text-xs max-w-full whitespace-nowrap text-ellipses overflow-hidden"><i>{label}</i></p>
     </div>
   )
 }
 
-const Timeline = () => {
+
+const Timeline = ({
+  timeStart = "00:00",
+  timeEnd = "24:00",
+  showRoomInformation = true,
+  room
+}) => {
+
+  if (!room) {
+    return <p>no room</p>
+  }
+
+  return (
+    <div className="timeline">
+      {
+        showRoomInformation && (
+          <div className="timeline__room-information flex flex-col justify-center py-2">
+            <p className="font-semibold text-xl">Huone {room.number}</p>
+            <p className="font-medium text-sm text-gray-400">{timeStart} - {timeEnd}</p>
+          </div>
+        )
+      }
+
+      <div className="timeline__view">
+
+      </div>
+    </div>
+  )
+}
+
+const TimelineContainer = ({
+  rooms = [],
+  showRoomInformation = true,
+}) => {
+  return (
+    <div className="timeline-container grid" style={{ gridTemplateColumns: "auto 1fr", gridTemplateRows: "repeat(auto, 1fr)" }}>
+      {
+        rooms.map((room, index) => (
+          <>
+            {
+              showRoomInformation && (
+                <div key={room._id} className={`timeline__room px-4 col-start-1 border-2 border-red-500`}>
+                  <div className="timeline__room-information flex flex-col justify-center py-2">
+                    <p className="font-semibold text-xl">Huone {room.number}</p>
+                    <p className="font-medium text-sm text-gray-400">00:00 - 24:00</p>
+                  </div>
+                </div>
+              )
+            }
+            <div className="timelines col-start-2 row-span-full border-2 h-full border-blue-500">
+
+            </div>
+          </>
+        ))
+      }
+    </div>
+  )
+}
+
+const TimelineX = () => {
   const form = useForm({});
 
   const { id } = useParams()
@@ -47,6 +106,20 @@ const Timeline = () => {
   const timeIndicatorContainer = useRef(null)
 
   setDefaultOptions({ locale: fi })  
+
+  console.log(data);
+
+
+  const selectedBuilding = form.watch("building")
+  const selectedFloor = form.watch("floor")
+  const selectedDate = form.watch("date")
+
+  const building = data.buildings.find((building) => building._id === selectedBuilding)
+  const floor = building?.floors.find((floor) => floor._id === selectedFloor)
+  const rooms = floor?.rooms
+
+  const room = rooms?.[0]
+  
 
   useEffect(() => {
     const onScroll = () => {
@@ -82,40 +155,30 @@ const Timeline = () => {
     <div className="col-span-10 ml-5 mt-10">
       <div className="flex flex-col gap-2">
 
-        <p className="text-4xl font-bold mb-3">{ data.name } - Varausnäkymä</p>
+        <p className="text-4xl font-bold mb-3">Aikajananäkymä - { data.name }</p>
 
         {/* Filter */}
         <TimelineFilterForm schoolData={data} form={form} />
 
         <p className="text-3xl font-medium mt-6 mb-3">13. Huhtikuuta, 2024</p>
 
-        <div className="grid grid-cols-12 overflow-hidden">
+        <TimelineContainer
+          rooms={rooms}
+        />
 
-          <div className="details col-span-2 grid" style={{ gridTemplateRows: `repeat(6, 70px)` }}>
-            <div className="flex flex-col justify-center py-2">
-              <p className="font-semibold text-xl">Huone 101</p>
-              <p className="font-medium text-sm text-gray-400">06:00 - 21:00</p>
-            </div>
-            <div className="flex flex-col justify-center py-2">
-              <p className="font-semibold text-xl">Huone 102</p>
-              <p className="font-medium text-sm text-gray-400">06:00 - 21:00</p>
-            </div>
-            <div className="flex flex-col justify-center py-2">
-              <p className="font-semibold text-xl">Huone 103</p>
-              <p className="font-medium text-sm text-gray-400">06:00 - 21:00</p>
-            </div>
-            <div className="flex flex-col justify-center py-2">
-              <p className="font-semibold text-xl">Huone 104</p>
-              <p className="font-medium text-sm text-gray-400">06:00 - 21:00</p>
-            </div>
-            <div className="flex flex-col justify-center py-2">
-              <p className="font-semibold text-xl">Huone 105</p>
-              <p className="font-medium text-sm text-gray-400">06:00 - 21:00</p>
-            </div>
-            <div className="flex flex-col justify-center py-2">
-              <p className="font-semibold text-xl">Auditorio</p>
-              <p className="font-medium text-sm text-gray-400">08:00 - 16:30</p>
-            </div>
+        {/* <div className="grid grid-cols-12 overflow-hidden">
+
+          <div className="details col-span-2 grid" style={{ gridTemplateRows: `repeat(auto, 70px)` }}>
+
+            {
+              // Render room names on the left
+              rooms?.map((room) => (
+                <div className="flex flex-col justify-center py-2">
+                  <p className="font-semibold text-xl">Huone {room.number}</p>
+                  <p className="font-medium text-sm text-gray-400">00:00 - 24:00</p>
+                </div>
+              ))
+            }
 
           </div>
 
@@ -129,62 +192,33 @@ const Timeline = () => {
               </div>
             </div>
 
-            <div ref={timelineContainerRef} className="overflow-x-scroll grid" style={{ gridTemplateRows: `repeat(6, 70px)` }}>
-              <div className="grid gap-2 p-1 border-b border-b-gray-200" style={{ gridTemplateColumns: `repeat(${24 * 4}, 1fr)`, width: `${24 * 4 * 30}px` }}>
-                <TimelineItem timeStart="00:00" timeEnd="06:00" unavailable/>
-
-                <TimelineItem timeStart="06:00" timeEnd="07:30" />
-                <TimelineItem timeStart="07:45" timeEnd="12:00" />
-                <TimelineItem timeStart="14:00" timeEnd="15:30" />
-                
-                <TimelineItem timeStart="21:00" timeEnd="24:00" unavailable/>
-              </div>
-              <div className="grid gap-2 p-1 border-b border-b-gray-200" style={{ gridTemplateColumns: `repeat(${24 * 4}, 1fr)`, width: `${24 * 4 * 30}px` }}>
-                <TimelineItem timeStart="00:00" timeEnd="06:00" unavailable/>
-                <TimelineItem timeStart="06:30" timeEnd="08:00" />
-                <TimelineItem timeStart="08:00" timeEnd="12:00" />
-                <TimelineItem timeStart="12:30" timeEnd="13:45" />
-                <TimelineItem timeStart="16:30" timeEnd="20:15" />
-                
-                <TimelineItem timeStart="21:00" timeEnd="24:00" unavailable/>
-              </div>
-              <div className="grid gap-2 p-1 border-b border-b-gray-200" style={{ gridTemplateColumns: `repeat(${24 * 4}, 1fr)`, width: `${24 * 4 * 30}px` }}>
-                <TimelineItem timeStart="00:00" timeEnd="06:00" unavailable/>
-                <TimelineItem timeStart="08:15" timeEnd="09:30" />
-                <TimelineItem timeStart="10:00" timeEnd="11:00" />
-                <TimelineItem timeStart="13:00" timeEnd="16:30" />
-                
-                <TimelineItem timeStart="21:00" timeEnd="24:00" unavailable/>
-              </div>
-              <div className="grid gap-2 p-1 border-b border-b-gray-200" style={{ gridTemplateColumns: `repeat(${24 * 4}, 1fr)`, width: `${24 * 4 * 30}px` }}>
-                <TimelineItem timeStart="00:00" timeEnd="06:00" unavailable/>
-                <TimelineItem timeStart="06:00" timeEnd="07:30" />
-                <TimelineItem timeStart="07:45" timeEnd="12:00" />
-                <TimelineItem timeStart="14:00" timeEnd="15:30" />
-
-                <TimelineItem timeStart="21:00" timeEnd="24:00" unavailable/>
-              </div>
-              <div className="grid gap-2 p-1 border-b border-b-gray-200" style={{ gridTemplateColumns: `repeat(${24 * 4}, 1fr)`, width: `${24 * 4 * 30}px` }}>
-                <TimelineItem timeStart="00:00" timeEnd="06:00" unavailable/>
-                <TimelineItem timeStart="06:30" timeEnd="08:00" />
-                <TimelineItem timeStart="08:00" timeEnd="12:00" />
-                <TimelineItem timeStart="12:30" timeEnd="13:45" />
-                <TimelineItem timeStart="16:30" timeEnd="20:15" />
-
-                <TimelineItem timeStart="21:00" timeEnd="24:00" unavailable/>
-              </div>
-              <div className="grid gap-2 p-1" style={{ gridTemplateColumns: `repeat(${24 * 4}, 1fr)`, width: `${24 * 4 * 30}px` }}>
-                <TimelineItem timeStart="00:00" timeEnd="08:00" unavailable/>
-                <TimelineItem timeStart="08:15" timeEnd="09:30" />
-                <TimelineItem timeStart="10:00" timeEnd="11:00" />
-                <TimelineItem timeStart="13:00" timeEnd="16:30" />
-
-                <TimelineItem timeStart="16:30" timeEnd="24:00" unavailable/>
-              </div>
+            <div ref={timelineContainerRef} className="overflow-x-scroll grid" style={{ gridTemplateRows: `repeat(auto, 70px)` }}>
+              {
+                // Thesse are the actual timelines
+                rooms?.map((room) => (
+                  <div className="grid gap-2 p-1 border-b border-b-gray-200" style={{ gridTemplateColumns: `repeat(${24 * 4}, 1fr)`, width: `${24 * 4 * 30}px` }}>
+                    <TimelineItem timeStart="00:00" timeEnd="05:00" unavailable/>
+    
+                    {
+                      // Reservations inside the timeline
+                      room.reservations.map((reservation) => (
+                        <TimelineItem
+                          timeStart={reservation.startTime}
+                          timeEnd={reservation.endTime}
+                          label={reservation.purpose}
+                          user={reservation.user}
+                        />
+                      ))
+                    }
+                    
+                    <TimelineItem timeStart="20:00" timeEnd="24:00" unavailable/>
+                  </div>
+                ))
+              }
             </div>
           </div>
 
-      </div>
+        </div> */}
 
 
       </div>
@@ -197,7 +231,7 @@ const ReservationsPage = () => {
   return (
     <div className="grid grid-cols-10 gap-2">
       {/* <Filter /> */}
-      <Timeline />
+      <TimelineX />
 
     </div>
   )
