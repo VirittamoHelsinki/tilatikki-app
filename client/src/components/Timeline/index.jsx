@@ -35,8 +35,8 @@ const TimelineItem = ({ timeStart, timeEnd, unavailable, user, label }) => {
   }
   
   return (
-    <div className="bg-blue-100 rounded-md w-full py-1 px-2 select-none hover:cursor-pointer hover:bg-blue-200" style={{ gridColumn: gridColumnValueString }}>
-      <p className="font-semibold text-sm">{user.name} {user.surname}</p>
+    <div className="bg-blue-100 rounded-md w-full py-1 px-2 select-none hover:cursor-pointer hover:bg-blue-200 max-h-[70px] overflow-hidden" style={{ gridColumn: gridColumnValueString }}>
+      <p className="font-semibold whitespace-nowrap text-sm">{user.name} {user.surname}</p>
       <p className="text-xs">{timeStart} - {timeEnd}</p>
       <p className="text-xs max-w-full whitespace-nowrap text-ellipses overflow-hidden"><i>{label}</i></p>
     </div>
@@ -65,7 +65,7 @@ const TimelineContainer = ({
             <div className="timelines col-start-2 row-span-full border-2 rounded-lg h-full grid" style={{ gridTemplateRows: `repeat(${rooms.length}, 1fr)`} }>
               {
                 rooms?.map((room) => (
-                  <div className="grid gap-x-2 gap-y-1 p-1 [&:not(:last-child)]:border-b border-b-gray-200" style={{ gridTemplateRows: "1fr 1fr", gridTemplateColumns: `repeat(${24 * 4}, 1fr)`, width: `${24 * 4 * 30}px` }}>
+                  <div className="grid gap-x-2 gap-y-1 p-1 [&:not(:last-child)]:border-b border-b-gray-200" style={{ gridTemplateRows: "auto auto", gridTemplateColumns: `repeat(${24 * 4}, 1fr)`, width: `${24 * 4 * 30}px` }}>
                     <TimelineItem timeStart="00:00" timeEnd="05:00" unavailable/>
     
                     {
