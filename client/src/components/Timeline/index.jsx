@@ -108,14 +108,14 @@ const TimelineContainer = ({
 }
 
 const TimelineX = () => {
+  const { id } = useParams()
+  const { data, error, isLoading } = useSchoolQuery(id);  
   const form = useForm({
     defaultValues: {
-     date: moment().format("MM/DD/YYYY") // ??
+      date: moment().format("MM/DD/YYYY") // ??
     },
   });
 
-  const { id } = useParams()
-  const { data, error, isLoading } = useSchoolQuery(id);  
 
   const timelineContainerRef = useRef(null)
   const timeIndicatorRef = useRef(null)
