@@ -35,8 +35,8 @@ const TimelineItem = ({ timeStart, timeEnd, unavailable, user, label }) => {
   }
   
   return (
-    <div className="bg-blue-100 rounded-md h-40 w-full select-none hover:z-10 hover:cursor-pointer hover:bg-blue-200 max-h-[60px] overflow-hidden hover:overflow-visible relative" style={{ gridColumn: gridColumnValueString }}>
-      <div className="bg-inherit py-1 px-2 rounded-md absolute top-0 left-0">
+    <div className="bg-blue-100 rounded-md w-full select-none hover:z-10 hover:cursor-pointer hover:bg-blue-200 overflow-hidden hover:overflow-visible relative" style={{ gridColumn: gridColumnValueString }}>
+      <div className="bg-inherit py-1 px-2 rounded-md absolute w-full top-0 left-0">
         <p className="font-semibold whitespace-nowrap text-sm bg-inherit max-w-max">{user.name} {user.surname}</p>
         <p className="text-xs bg-inherit">{timeStart} - {timeEnd}</p>
         <p className="text-xs max-w-full whitespace-nowrap text-ellipses overflow-hidden bg-inherit"><i>{label}</i></p>
@@ -56,7 +56,7 @@ const TimelineContainer = ({
           <>
             {
               showRoomInformation && (
-                <div key={room._id} className={`timeline__room px-4 col-start-1 min-w-40 sticky left-0 bg-white`}>
+                <div key={room._id} className={`timeline__room px-4 col-start-1 min-w-40 z-20 sticky left-0 bg-white`}>
                   <div className="timeline__room-information flex flex-col justify-center py-2">
                     <p className="font-semibold text-xl">Huone {room.number}</p>
                     <p className="font-medium text-sm text-gray-400">00:00 - 24:00</p>
@@ -67,7 +67,7 @@ const TimelineContainer = ({
             <div className="timelines col-start-2 row-span-full border-2 rounded-lg h-full grid" style={{ gridTemplateRows: `repeat(${rooms.length}, 1fr)`} }>
               {
                 rooms?.map((room) => (
-                  <div className="grid gap-x-2 gap-y-1 p-1 [&:not(:last-child)]:border-b border-b-gray-200" style={{ gridTemplateRows: "auto auto", gridTemplateColumns: `repeat(${24 * 4}, 1fr)`, width: `${24 * 4 * 30}px` }}>
+                  <div className="grid gap-x-2 gap-y-1 p-1 [&:not(:last-child)]:border-b border-b-gray-200" style={{ gridTemplateRows: "1fr 1fr", gridTemplateColumns: `repeat(${24 * 4}, 1fr)`, width: `${24 * 4 * 30}px` }}>
                     <TimelineItem timeStart="00:00" timeEnd="05:00" unavailable/>
     
                     {
