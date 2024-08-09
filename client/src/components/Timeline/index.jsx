@@ -21,7 +21,10 @@ const TimelineItem = ({ timeStart, timeEnd, unavailable, user, label }) => {
 
   if (unavailable) {
     return (
-      <div className="bg-gray-200 rounded-md w-full py-1 px-2 flex flex-col justify-center items-center warning" style={{ gridColumn: gridColumnValueString }}>
+      <div
+        className="bg-gray-200 rounded-md warning"
+        style={{ gridColumn: gridColumnValueString, gridRow: "1 / -1" }}
+      >
         {/* <p className="text-ms uppercase font-medium text-black" style={{ position: "sticky", left: "10px" }}>Ei varattavissa</p> */}
       </div>
     )
@@ -36,42 +39,12 @@ const TimelineItem = ({ timeStart, timeEnd, unavailable, user, label }) => {
   )
 }
 
-
-const Timeline = ({
-  timeStart = "00:00",
-  timeEnd = "24:00",
-  showRoomInformation = true,
-  room
-}) => {
-
-  if (!room) {
-    return <p>no room</p>
-  }
-
-  return (
-    <div className="timeline">
-      {
-        showRoomInformation && (
-          <div className="timeline__room-information flex flex-col justify-center py-2">
-            <p className="font-semibold text-xl">Huone {room.number}</p>
-            <p className="font-medium text-sm text-gray-400">{timeStart} - {timeEnd}</p>
-          </div>
-        )
-      }
-
-      <div className="timeline__view">
-
-      </div>
-    </div>
-  )
-}
-
 const TimelineContainer = ({
   rooms = [],
   showRoomInformation = true,
 }) => {
   return (
-    <div className="timeline-container grid" style={{ gridTemplateColumns: "auto 1fr", gridTemplateRows: "repeat(auto, 1fr)" }}>
+    <div className="timeline-container grid" style={{ gridTemplateColumns: "auto 1fr", gridTemplateRows: `repeat(${rooms.length}, 1fr)` }}>
       {
         rooms.map((room, index) => (
           <>
@@ -85,8 +58,28 @@ const TimelineContainer = ({
                 </div>
               )
             }
-            <div className="timelines col-start-2 row-span-full border-2 h-full border-blue-500">
-
+            <div className="timelines col-start-2 row-span-full border-2 h-full border-blue-500 grid" style={{ gridTemplateRows: `repeat(${rooms.length}, 1fr)`} }>
+              {
+                rooms?.map((room) => (
+                  <div className="grid gap-x-2 gap-y-1 p-1 border-b border-b-gray-200" style={{ gridTemplateRows: "auto auto", gridTemplateColumns: `repeat(${24 * 4}, 1fr)`, width: `${24 * 4 * 30}px` }}>
+                    <TimelineItem timeStart="00:00" timeEnd="05:00" unavailable/>
+    
+                    {
+                      // Reservations inside the timeline
+                      room.reservations.map((reservation) => (
+                        <TimelineItem
+                          timeStart={reservation.startTime}
+                          timeEnd={reservation.endTime}
+                          label={reservation.purpose}
+                          user={reservation.user}
+                        />
+                      ))
+                    }
+                    
+                    <TimelineItem timeStart="20:00" timeEnd="24:00" unavailable/>
+                  </div>
+                ))
+              }
             </div>
           </>
         ))
