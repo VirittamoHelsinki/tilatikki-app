@@ -4,12 +4,14 @@ import { setDefaultOptions } from "date-fns"
 import { fi } from "date-fns/locale"
 import { useEffect, useRef } from "react"
 
-import dayjs from "dayjs"
 import TimelineFilterForm from "./TimelineFilterForm"
 import { useSchoolQuery } from "@/api/schools"
 import { useParams } from "react-router-dom"
 
-import "dayjs/locale/fi"
+import moment from "moment"
+import "moment/dist/locale/fi"
+
+moment.locale("fi")
 
 
 const TimelineItem = ({ timeStart, timeEnd, unavailable, user, label }) => {
@@ -46,13 +48,13 @@ const TimelineContainer = ({
   showRoomInformation = true,
 }) => {
   return (
-    <div className="timeline-container grid" style={{ gridTemplateColumns: "auto 1fr", gridTemplateRows: `repeat(${rooms.length}, 1fr)` }}>
+    <div className="timeline-container grid max-w-full overflow-x-auto" style={{ gridTemplateColumns: "auto 1fr", gridTemplateRows: `repeat(${rooms.length}, 1fr)` }}>
       {
         rooms.map((room, index) => (
           <>
             {
               showRoomInformation && (
-                <div key={room._id} className={`timeline__room px-4 col-start-1 min-w-40`}>
+                <div key={room._id} className={`timeline__room px-4 col-start-1 min-w-40 sticky left-0 bg-white`}>
                   <div className="timeline__room-information flex flex-col justify-center py-2">
                     <p className="font-semibold text-xl">Huone {room.number}</p>
                     <p className="font-medium text-sm text-gray-400">00:00 - 24:00</p>
@@ -63,7 +65,7 @@ const TimelineContainer = ({
             <div className="timelines col-start-2 row-span-full border-2 rounded-lg h-full grid" style={{ gridTemplateRows: `repeat(${rooms.length}, 1fr)`} }>
               {
                 rooms?.map((room) => (
-                  <div className="grid gap-x-2 gap-y-1 p-1 [&:not(:last-child)]:border-b border-b-gray-200" style={{ gridTemplateRows: "auto auto", gridTemplateColumns: `repeat(${24 * 4}, 1fr)`, width: `${24 * 4 * 30}px` }}>
+                  <div className="grid gap-x-2 gap-y-1 p-1 [&:not(:last-child)]:border-b border-b-gray-200" style={{ gridTemplateRows: "1fr 1fr", gridTemplateColumns: `repeat(${24 * 4}, 1fr)`, width: `${24 * 4 * 30}px` }}>
                     <TimelineItem timeStart="00:00" timeEnd="05:00" unavailable/>
     
                     {
@@ -101,7 +103,6 @@ const TimelineX = () => {
   const timeIndicatorContainer = useRef(null)
 
   setDefaultOptions({ locale: fi })
-  dayjs().locale("fi") // TODO: fix
 
   const selectedBuilding = form.watch("building")
   const selectedFloor = form.watch("floor")
@@ -109,9 +110,25 @@ const TimelineX = () => {
 
   const building = data.buildings.find((building) => building._id === selectedBuilding)
   const floor = building?.floors.find((floor) => floor._id === selectedFloor)
-  const rooms = floor?.rooms
 
-  const room = rooms?.[0]
+  let rooms = floor?.rooms
+
+  rooms = floor?.rooms.map((room) => {
+    const reservations = room.reservations.filter((reservation) => {
+      console.log(">>>>>>>>>>>>", moment(reservation.reservationDate).isSame(moment(selectedDate)))
+      return moment(reservation.reservationDate).isSame(moment(selectedDate))
+    })
+
+    return {
+      ...room,
+      reservations,
+    }
+  })
+  
+  console.log(data);
+  
+
+  // Filter away irrelevant reservations
   
 
   useEffect(() => {
@@ -153,67 +170,11 @@ const TimelineX = () => {
         {/* Filter */}
         <TimelineFilterForm schoolData={data} form={form} />
 
-        <p className="text-3xl font-medium mt-6 mb-3">{ dayjs(selectedDate).format("D. MMMM, YYYY") }</p>
+        <p className="text-3xl font-medium mt-6 mb-3">{ moment(selectedDate).format("LL") }</p>
 
         <TimelineContainer
           rooms={rooms}
         />
-
-        {/* <div className="grid grid-cols-12 overflow-hidden">
-
-          <div className="details col-span-2 grid" style={{ gridTemplateRows: `repeat(auto, 70px)` }}>
-
-            {
-              // Render room names on the left
-              rooms?.map((room) => (
-                <div className="flex flex-col justify-center py-2">
-                  <p className="font-semibold text-xl">Huone {room.number}</p>
-                  <p className="font-medium text-sm text-gray-400">00:00 - 24:00</p>
-                </div>
-              ))
-            }
-
-          </div>
-
-          <div className="border-r border-l timelines col-span-10 relative grid">
-            <div ref={timeIndicatorContainer} className="absolute h-full" style={{ pointerEvents: "none", width: `${24 * 4 * 30}px` }}>
-              <div
-                ref={timeIndicatorRef}
-                className="absolute w-[2px] h-full rounded-full bg-red-400"
-                style={{ left: "0%", top: "0px", transform: "translateX(-50%)", pointerEvents: "none" }}
-              >
-              </div>
-            </div>
-
-            <div ref={timelineContainerRef} className="overflow-x-scroll grid" style={{ gridTemplateRows: `repeat(auto, 70px)` }}>
-              {
-                // Thesse are the actual timelines
-                rooms?.map((room) => (
-                  <div className="grid gap-2 p-1 border-b border-b-gray-200" style={{ gridTemplateColumns: `repeat(${24 * 4}, 1fr)`, width: `${24 * 4 * 30}px` }}>
-                    <TimelineItem timeStart="00:00" timeEnd="05:00" unavailable/>
-    
-                    {
-                      // Reservations inside the timeline
-                      room.reservations.map((reservation) => (
-                        <TimelineItem
-                          timeStart={reservation.startTime}
-                          timeEnd={reservation.endTime}
-                          label={reservation.purpose}
-                          user={reservation.user}
-                        />
-                      ))
-                    }
-                    
-                    <TimelineItem timeStart="20:00" timeEnd="24:00" unavailable/>
-                  </div>
-                ))
-              }
-            </div>
-          </div>
-
-        </div> */}
-
-
       </div>
 
     </div>
