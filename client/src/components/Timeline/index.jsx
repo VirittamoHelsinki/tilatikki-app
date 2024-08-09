@@ -140,13 +140,7 @@ const Timeline = () => {
       ...room,
       reservations,
     }
-  })
-  
-  console.log(data);
-  
-
-  // Filter away irrelevant reservations
-  
+  }) 
 
   useEffect(() => {
     const onScroll = () => {
