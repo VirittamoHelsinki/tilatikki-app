@@ -95,7 +95,11 @@ const TimelineContainer = ({
 }
 
 const TimelineX = () => {
-  const form = useForm({});
+  const form = useForm({
+    defaultValues: {
+      date: new Date(),
+    },
+  });
 
   const { id } = useParams()
   const { data, error, isLoading } = useSchoolQuery(id);  
