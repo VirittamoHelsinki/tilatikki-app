@@ -198,4 +198,12 @@ const Timeline = () => {
   )
 }
 
-export default Timeline
+const TimelinePage = () => {
+  return (
+    <div className="grid grid-cols-10 gap-2">
+      <Timeline />
+    </div>
+  )
+}
+
+export default TimelinePage
