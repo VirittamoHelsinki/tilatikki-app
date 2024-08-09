@@ -35,10 +35,12 @@ const TimelineItem = ({ timeStart, timeEnd, unavailable, user, label }) => {
   }
   
   return (
-    <div className="bg-blue-100 rounded-md w-full py-1 px-2 select-none hover:cursor-pointer hover:bg-blue-200 max-h-[70px] overflow-hidden" style={{ gridColumn: gridColumnValueString }}>
-      <p className="font-semibold whitespace-nowrap text-sm">{user.name} {user.surname}</p>
-      <p className="text-xs">{timeStart} - {timeEnd}</p>
-      <p className="text-xs max-w-full whitespace-nowrap text-ellipses overflow-hidden"><i>{label}</i></p>
+    <div className="bg-blue-100 rounded-md h-40 w-full select-none hover:z-10 hover:cursor-pointer hover:bg-blue-200 max-h-[60px] overflow-hidden hover:overflow-visible relative" style={{ gridColumn: gridColumnValueString }}>
+      <div className="bg-inherit py-1 px-2 rounded-md absolute top-0 left-0">
+        <p className="font-semibold whitespace-nowrap text-sm bg-inherit max-w-max">{user.name} {user.surname}</p>
+        <p className="text-xs bg-inherit">{timeStart} - {timeEnd}</p>
+        <p className="text-xs max-w-full whitespace-nowrap text-ellipses overflow-hidden bg-inherit"><i>{label}</i></p>
+      </div>
     </div>
   )
 }
