@@ -7,8 +7,9 @@ import dayjs from "dayjs"
 import { useState } from "react"
 import { useForm, Controller } from "react-hook-form"
 import PeopleIcon from '@mui/icons-material/People';
+import { useDeleteReservationMutation } from '../api/reservations';
 
-const CreateReservationForm = ({
+const UpdateReservationForm = ({
   updateReservationMutation,
   reservationId,
   roomNumber,
@@ -24,10 +25,14 @@ const CreateReservationForm = ({
   const [reservationHasExceptions, setReservationHasExceptions] = useState(false);
 
   const handleReservationSwitchChange = () => setReservationHasExceptions(!reservationHasExceptions);
+  const deleteReservationMutation = useDeleteReservationMutation();
 
-  useEffect(() => {
-    console.log('filter values: ', filterValues)
-  }, [])
+  const handleDelete = () => {
+    if (window.confirm('Are you sure you want to delete this reservation?')) {
+      deleteReservationMutation.mutate(reservationId);
+    }
+    onClose();
+  };
 
   const onSubmit = (data) => {
     data = {
@@ -36,8 +41,6 @@ const CreateReservationForm = ({
       startTime: data.startTime.format("HH:mm"),
       endTime: data.endTime.format("HH:mm")
     }
-
-    console.log('data: ', data)
 
     const generateRecurringReservations = (baseDate, endDate, interval, reservationData) => {
       let currentDate = dayjs(baseDate);
@@ -59,11 +62,10 @@ const CreateReservationForm = ({
     }
 
 
-    const reservationData = {
-      userId: user._id, // userId
+    const updatedData = {
+      userId: user._id,
       reservationId: reservationId,
       reservationDate: data.reservationDate ? data.reservationDate : null,
-      reservationEndDate: data.endDate ? data.reservationEndDate : null,
       startTime: data.startTime,
       endTime: data.endTime,
       purpose: data.reservationName, // string
@@ -73,18 +75,15 @@ const CreateReservationForm = ({
       additionalInfo: data.additionalInfo
     }
 
-
-    console.log('reservationData: ', reservationData)
-
     if (data.recurrence === 'none') {
-      updateReservationMutation.mutate(reservationData);
+      updateReservationMutation.mutate({ reservationId, updatedData });
     } else if (data.recurrence === 'daily' && data.reservationEndDate) {
-      const reservations = generateRecurringReservations(data.reservationDate, data.reservationEndDate, 1, reservationData);
+      const reservations = generateRecurringReservations(data.reservationDate, data.reservationEndDate, 1, updatedData);
       reservations.forEach(reservation => {
         updateReservationMutation.mutate(reservation);
       });
     } else if (data.recurrence === 'weekly' && data.reservationEndDate) {
-      const reservations = generateRecurringReservations(data.reservationDate, data.reservationEndDate, 7, reservationData);
+      const reservations = generateRecurringReservations(data.reservationDate, data.reservationEndDate, 7, updatedData);
       console.log('weekly reservations: ', reservations)
       reservations.forEach(reservation => {
         updateReservationMutation.mutate(reservation);
@@ -132,15 +131,15 @@ const CreateReservationForm = ({
 
         <Grid item lg={12}>
           <FormControl fullWidth margin="dense">
-            <InputLabel id="group-size-label">Ryhmän koko (max. {capacity - groupsize} oppilasta)</InputLabel>
+            <InputLabel id="group-size-label">Ryhmän koko (max. {capacity} oppilasta)</InputLabel>
             <Select
               labelId="group-size-label"
-              defaultValue={filterValues.selectedGroupSize && filterValues.selectedGroupSize <= (capacity - groupsize) ? filterValues.selectedGroupSize : null}
+              defaultValue={groupsize}
               id="group-size"
-              label={`Ryhmän koko (max. ${capacity - groupsize} oppilasta)`}  // Ensure the label is also set in the Select
+              label={`Ryhmän koko (max. ${capacity} oppilasta)`}  // Ensure the label is also set in the Select
               {...register("reservationGroupSize")}
             >
-              {[...Array(capacity - groupsize).keys()].map((index) => {
+              {[...Array(capacity).keys()].map((index) => {
                 const size = index + 1; // Shift the range to start from 1
                 return (
                   <MenuItem key={size} value={size}>
@@ -369,7 +368,7 @@ const CreateReservationForm = ({
 
         <Grid item lg={4}>
           <Button
-            type="submit"
+            onClick={handleDelete}
             variant="contained"
             sx={{
               mt: 1,
@@ -377,8 +376,8 @@ const CreateReservationForm = ({
               textTransform: 'none',
               backgroundColor: '#B21010', // Change this to your desired color
               '&:hover': {
-                backgroundColor: '#B21010' // Change this to a lighter shade of your color
-              }
+                backgroundColor: '#B21010', // Change this to a lighter shade of your color
+              },
             }}
           >
             Poista varaus
@@ -390,4 +389,4 @@ const CreateReservationForm = ({
   );
 }
 
-export default CreateReservationForm;
+export default UpdateReservationForm;

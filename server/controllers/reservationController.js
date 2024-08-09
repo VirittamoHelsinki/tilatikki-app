@@ -72,9 +72,10 @@ exports.getReservationById = async (req, res) => {
 exports.updateReservationById = async (req, res) => {
   try {
     const reservationId = req.params.id;
+    console.log("reservationId: ", reservationId);
 
     const updatedReservationData = {
-      name: req.body.name,
+      purpose: req.body.purpose,
       reservationDate: req.body.reservationDate,
       groupsize: req.body.groupsize,
       time: req.body.reservationdate,
@@ -83,6 +84,8 @@ exports.updateReservationById = async (req, res) => {
       recurrence: req.body.recurrence,
       additionalInfo: req.body.additionalInfo,
     };
+
+    console.log("updatedReservationData: ", updatedReservationData);
 
     const reservation = await Reservation.findByIdAndUpdate(
       reservationId,

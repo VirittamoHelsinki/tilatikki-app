@@ -1,5 +1,8 @@
 import { useMutation, useQueryClient } from "react-query";
-const API_URL = "https://tilatikki-app-server.onrender.com";
+const dev = true;
+const API_URL = dev
+  ? "http://localhost:5050"
+  : "https://tilatikki-app-server.onrender.com";
 
 // Create a new reservation
 export const createReservation = async (reservationData) => {
@@ -116,4 +119,18 @@ export const useUpdateReservationMutation = () => {
       },
     },
   );
+};
+
+export const useDeleteReservationMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation(deleteReservation, {
+    onSuccess: () => {
+      // Invalidate and refetch reservations to reflect the changes in the UI
+      queryClient.invalidateQueries("reservations");
+    },
+    onError: (error) => {
+      console.error("Delete reservation mutation error:", error);
+    },
+  });
 };
