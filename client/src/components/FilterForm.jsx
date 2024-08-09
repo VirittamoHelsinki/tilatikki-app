@@ -405,7 +405,7 @@ const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) 
 			handleAvailableClassrooms();
 		}
 		setClassroom('');
-		if (!endingTime) {
+		if (!endingTime && startingTime) {
 			setEndingTime(getEndingTime(startingTime));
 		}
 	}, [selectedBuildings, selectedFloor]);
