@@ -107,7 +107,7 @@ const TimelineContainer = ({
   )
 }
 
-const TimelineX = () => {
+const Timeline = () => {
   const { id } = useParams()
   const { data, error, isLoading } = useSchoolQuery(id);  
   const form = useForm({
@@ -115,7 +115,6 @@ const TimelineX = () => {
       date: moment().format("MM/DD/YYYY") // ??
     },
   });
-
 
   const timelineContainerRef = useRef(null)
   const timeIndicatorRef = useRef(null)
@@ -199,14 +198,4 @@ const TimelineX = () => {
   )
 }
 
-const ReservationsPage = () => {
-  return (
-    <div className="grid grid-cols-10 gap-2">
-      {/* <Filter /> */}
-      <TimelineX />
-
-    </div>
-  )
-}
-
-export default ReservationsPage
+export default Timeline
