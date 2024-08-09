@@ -50,7 +50,7 @@ const TimelineContainer = ({
   return (
     <div className="timeline-container grid max-w-full overflow-x-auto" style={{ gridTemplateColumns: "auto 1fr", gridTemplateRows: `repeat(${rooms.length}, 1fr)` }}>
       {
-        rooms.map((room, index) => (
+        rooms.map((room) => (
           <>
             {
               showRoomInformation && (
