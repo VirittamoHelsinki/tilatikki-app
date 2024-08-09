@@ -50,7 +50,7 @@ const TimelineContainer = ({
           <>
             {
               showRoomInformation && (
-                <div key={room._id} className={`timeline__room px-4 col-start-1 border-2 border-red-500`}>
+                <div key={room._id} className={`timeline__room px-4 col-start-1 min-w-40`}>
                   <div className="timeline__room-information flex flex-col justify-center py-2">
                     <p className="font-semibold text-xl">Huone {room.number}</p>
                     <p className="font-medium text-sm text-gray-400">00:00 - 24:00</p>
@@ -58,7 +58,7 @@ const TimelineContainer = ({
                 </div>
               )
             }
-            <div className="timelines col-start-2 row-span-full border-2 h-full border-blue-500 grid" style={{ gridTemplateRows: `repeat(${rooms.length}, 1fr)`} }>
+            <div className="timelines col-start-2 row-span-full border-2 rounded-lg h-full grid" style={{ gridTemplateRows: `repeat(${rooms.length}, 1fr)`} }>
               {
                 rooms?.map((room) => (
                   <div className="grid gap-x-2 gap-y-1 p-1 border-b border-b-gray-200" style={{ gridTemplateRows: "auto auto", gridTemplateColumns: `repeat(${24 * 4}, 1fr)`, width: `${24 * 4 * 30}px` }}>
