@@ -51,8 +51,8 @@ const UpdateReservationForm = ({
         reservations.push({
           ...reservationData,
           reservationDate: currentDate,
-          startTime: data.startTime ? formatTime(data.startTime) : null,
-          endTime: data.endTime ? formatTime(data.endTime) : null,
+          startTime: data.startTime ? data.startTime : null,
+          endTime: data.endTime ? data.endTime : null,
         });
 
         currentDate = currentDate.add(interval, 'day');
@@ -66,6 +66,7 @@ const UpdateReservationForm = ({
       userId: user._id,
       reservationId: reservationId,
       reservationDate: data.reservationDate ? data.reservationDate : null,
+      reservationEndDate: data.endDate ? data.reservationEndDate : null,
       startTime: data.startTime,
       endTime: data.endTime,
       purpose: data.reservationName, // string
@@ -266,15 +267,19 @@ const UpdateReservationForm = ({
               <Grid item lg={12}>
                 <FormControl fullWidth>
                   <LocalizationProvider localeText={fiFI.components.MuiLocalizationProvider.defaultProps.localeText} dateAdapter={AdapterDayjs}>
-                    <DatePicker
-                      autoComplete="endDate"
-                      name="endDate"
-                      required
-                      format="DD/MM/YYYY"
-                      slotProps={{ textField: { fullWidth: true } }}
-                      id="endDate"
-                      label="Varauksen päättymispäivä*"
-                      {...register("endDate")}
+                    <Controller
+                      name="reservationEndDate"
+                      control={control}
+                      defaultValue={filterValues.selectedDate ? dayjs(filterValues.selectedDate) : null}
+                      render={({ field: { value, ...rest } }) => (
+                        <DatePicker
+                          {...rest}
+                          value={value}
+                          label="Varauksen päättymispäivämäärä*"
+                          renderInput={(params) => <TextField {...params} fullWidth />}
+                          format="DD/MM/YYYY"
+                        />
+                      )}
                     />
                   </LocalizationProvider>
                 </FormControl>
@@ -283,6 +288,7 @@ const UpdateReservationForm = ({
               <Grid item lg={12}>
                 <FormControlLabel control={<Switch onChange={handleReservationSwitchChange} />} label="Varauksessa on poikkeuksia" />
               </Grid>
+
 
               { /* EXCEPTIONS */}
               {
