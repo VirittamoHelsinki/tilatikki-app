@@ -9,6 +9,8 @@ import TimelineFilterForm from "./TimelineFilterForm"
 import { useSchoolQuery } from "@/api/schools"
 import { useParams } from "react-router-dom"
 
+import "dayjs/locale/fi"
+
 
 const TimelineItem = ({ timeStart, timeEnd, unavailable, user, label }) => {
   const from = timeStart.split(":").map(v => parseInt(v))
@@ -61,7 +63,7 @@ const TimelineContainer = ({
             <div className="timelines col-start-2 row-span-full border-2 rounded-lg h-full grid" style={{ gridTemplateRows: `repeat(${rooms.length}, 1fr)`} }>
               {
                 rooms?.map((room) => (
-                  <div className="grid gap-x-2 gap-y-1 p-1 border-b border-b-gray-200" style={{ gridTemplateRows: "auto auto", gridTemplateColumns: `repeat(${24 * 4}, 1fr)`, width: `${24 * 4 * 30}px` }}>
+                  <div className="grid gap-x-2 gap-y-1 p-1 [&:not(:last-child)]:border-b border-b-gray-200" style={{ gridTemplateRows: "auto auto", gridTemplateColumns: `repeat(${24 * 4}, 1fr)`, width: `${24 * 4 * 30}px` }}>
                     <TimelineItem timeStart="00:00" timeEnd="05:00" unavailable/>
     
                     {
@@ -98,10 +100,8 @@ const TimelineX = () => {
   const timeIndicatorRef = useRef(null)
   const timeIndicatorContainer = useRef(null)
 
-  setDefaultOptions({ locale: fi })  
-
-  console.log(data);
-
+  setDefaultOptions({ locale: fi })
+  dayjs().locale("fi") // TODO: fix
 
   const selectedBuilding = form.watch("building")
   const selectedFloor = form.watch("floor")
@@ -153,7 +153,7 @@ const TimelineX = () => {
         {/* Filter */}
         <TimelineFilterForm schoolData={data} form={form} />
 
-        <p className="text-3xl font-medium mt-6 mb-3">13. Huhtikuuta, 2024</p>
+        <p className="text-3xl font-medium mt-6 mb-3">{ dayjs(selectedDate).format("D. MMMM, YYYY") }</p>
 
         <TimelineContainer
           rooms={rooms}

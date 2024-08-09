@@ -27,6 +27,9 @@ const TimelineFilterForm = ({ schoolData, form }) => {
   const selectedFloor = form.watch("floor")
   const selectedDate = form.watch("date")
 
+  console.log(selectedDate);
+  
+
   // Set floor to first floor of building whenever building changes
   // setValue doesn't seem to work?
   useEffect(() => {
