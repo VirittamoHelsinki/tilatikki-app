@@ -192,7 +192,7 @@ const Timeline = () => {
     <div className="col-span-10 ml-5 mt-10">
       <div className="flex flex-col gap-2">
 
-        <p className="text-4xl font-bold mb-3">Aikajananäkymä - { data.name }</p>
+        <p className="text-4xl font-bold mb-3">{ data.name }</p>
 
         {/* Filter */}
         <TimelineFilterForm schoolData={data} form={form} />
