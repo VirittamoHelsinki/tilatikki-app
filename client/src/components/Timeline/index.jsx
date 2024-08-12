@@ -26,7 +26,7 @@ const TimelineItem = ({ timeStart, timeEnd, unavailable, user, label, fullHeight
   if (unavailable) {
     return (
       <div
-        className="bg-gray-200 rounded-md warning"
+        className="bg-gray-200 z-10 rounded-md warning"
         style={{ gridColumn: gridColumnValueString, gridRow: "1 / -1" }}
       >
         {/* <p className="text-ms uppercase font-medium text-black" style={{ position: "sticky", left: "10px" }}>Ei varattavissa</p> */}
@@ -82,7 +82,15 @@ const TimelineContainer = ({
               )
             }
             <div className="timelines col-start-2 row-span-full rounded-lg grid" style={{ gridTemplateRows: `30px repeat(${rooms.length}, 1fr)`} }>
-              <div className="timelines__timestamps grid items-center justify-center sticky top-0 bg-white z-20 border-b-2" style={{ gridTemplateColumns: "repeat(24, 1fr)"}}>
+              <div className="timelines__timestamps grid items-center justify-center sticky top-0 bg-white z-20 border-b-2 relative" style={{ gridTemplateColumns: "repeat(24, 1fr)"}}>
+                <div className="timelines__timestamp-lines absolute w-full h-full grid" style={{ gridTemplateColumns: "repeat(24, 1fr" }}>
+                  {
+                    Array.from({ length: 24 }).map(() => (
+                      <div className="border-r border-gray-100"> </div>
+                    ))
+                  }
+                </div>
+
                 {
                   Array.from({ length: 24 }).map((_, index) => (
                     <p className="text-center bg-white">{ `${index.toString().padStart(2, "0")}:00` } </p>
@@ -90,12 +98,21 @@ const TimelineContainer = ({
                 }
               </div>
 
+
               {
                 rooms?.map((room) => (
                   <div
-                    className="grid grid-flow-dense gap-x-2 gap-y-1 p-1 [&:not(:last-child)]:border-b border-b-gray-200" 
+                    className="grid grid-flow-dense gap-x-2 gap-y-1 p-1 relative [&:not(:last-child)]:border-b border-b-gray-200" 
                     style={{ gridTemplateRows: "1fr 1fr", gridTemplateColumns: `repeat(${24 * 4}, 1fr)`, width: `${24 * 4 * 30}px` }}
                   >
+                    <div className="timelines__timestamp-lines absolute w-full h-full grid" style={{ gridTemplateColumns: "repeat(24, 1fr" }}>
+                      {
+                        Array.from({ length: 24 }).map(() => (
+                          <div className="border-r border-gray-100"> </div>
+                        ))
+                      }
+                    </div>
+                    
                     <TimelineItem timeStart="00:00" timeEnd="05:00" unavailable/>
     
                     {
