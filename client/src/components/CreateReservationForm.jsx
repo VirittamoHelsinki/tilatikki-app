@@ -7,6 +7,7 @@ import dayjs from "dayjs"
 import { useState } from "react"
 import { useForm, Controller } from "react-hook-form"
 import PeopleIcon from '@mui/icons-material/People';
+import { v4 as uuid } from "uuid"
 
 const CreateReservationForm = ({
   createReservationMutation,
@@ -63,11 +64,14 @@ const CreateReservationForm = ({
       return reservations;
     }
 
+    const reservationGroupId = uuid();
+    console.log('reservation group id: ', reservationGroupId)
 
     const reservationData = {
       userId: user._id, // userId
       reservationDate: data.reservationDate ? data.reservationDate : null,
       reservationEndDate: data.endDate ? data.reservationEndDate : null,
+      reservationGroupId: reservationGroupId,
       startTime: data.startTime,
       endTime: data.endTime,
       purpose: data.reservationName, // string

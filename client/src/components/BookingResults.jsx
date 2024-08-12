@@ -171,6 +171,7 @@ const BookingResults = ({ classrooms, filterValues }) => {
 											<ReservationCard
 												key={reservation._id}
 												reservationId={reservation._id}
+												reservationGroupId={reservation.reservationGroupId}
 												roomId={reservation.room}
 												roomNumber={value.number}
 												purpose={reservation.purpose}

@@ -42,7 +42,7 @@ const theme = createTheme({
 	},
 });
 
-const ReservationDialog = ({ roomId, isOpen, onClose, roomNumber, capacity, groupsize, filterValues, status, reservationId }) => {
+const ReservationDialog = ({ roomId, isOpen, onClose, roomNumber, capacity, groupsize, filterValues, status, reservationId, reservationGroupId }) => {
 	const [groupSize, setGroupSize] = useState(null);
 	const [user, setUser] = useState({});
 	const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -98,6 +98,7 @@ const ReservationDialog = ({ roomId, isOpen, onClose, roomNumber, capacity, grou
 							updateReservationMutation={updateReservationMutation}
 							roomNumber={roomNumber}
 							reservationId={reservationId}
+							reservationGroupId={reservationGroupId}
 							roomId={roomId}
 							reservationGroupSize={groupSize}
 							handleGroupSizeChange={handleGroupSizeChange}
