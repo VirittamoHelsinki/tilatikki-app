@@ -210,7 +210,7 @@ const Timeline = () => {
 
 const TimelinePage = () => {
   return (
-    <div className="grid grid-cols-10 gap-2 mb-[1000px]">
+    <div className="grid grid-cols-10 gap-2">
       <Timeline />
     </div>
   )
