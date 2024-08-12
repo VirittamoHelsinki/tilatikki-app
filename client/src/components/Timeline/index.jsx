@@ -64,7 +64,7 @@ const TimelineContainer = ({
 }) => {
   return (
     <div
-      className="timeline-container grid max-w-full overflow-auto max-h-[500px]"
+      className="timeline-container grid max-w-full overflow-auto max-h-[600px]"
       style={{ gridTemplateColumns: "auto 1fr", gridTemplateRows: `30px repeat(${rooms.length}, 1fr)` }}
     >
       <div className="bg-white z-30 w-full h-full sticky left-0 border-r-2">{ /* empty div to fill the first row */}</div>
@@ -83,14 +83,6 @@ const TimelineContainer = ({
             }
             <div className="timelines col-start-2 row-span-full rounded-lg grid" style={{ gridTemplateRows: `30px repeat(${rooms.length}, 1fr)`} }>
               <div className="timelines__timestamps grid items-center justify-center top-0 bg-white z-20 border-b-2 sticky" style={{ gridTemplateColumns: "repeat(24, 1fr)"}}>
-                <div className="timelines__timestamp-lines absolute w-full h-full grid" style={{ gridTemplateColumns: "repeat(24, 1fr" }}>
-                  {
-                    Array.from({ length: 24 }).map(() => (
-                      <div className="border-r border-gray-100"> </div>
-                    ))
-                  }
-                </div>
-
                 {
                   Array.from({ length: 23 }).map((_, index) => (
                     <p
@@ -107,7 +99,7 @@ const TimelineContainer = ({
               {
                 rooms?.map((room) => (
                   <div
-                    className="grid grid-flow-dense gap-x-2 gap-y-1 p-1 relative [&:not(:last-child)]:border-b border-b-gray-200" 
+                    className="grid grid-flow-dense gap-x-2 gap-y-1 p-1 relative [&:not(:last-child)]:border-b border-b-gray-200 min-h-16" 
                     style={{ gridTemplateRows: "1fr 1fr", gridTemplateColumns: `repeat(${24 * 4}, 1fr)`, width: `${24 * 4 * 30}px` }}
                   >
                     <div className="timelines__timestamp-lines absolute w-full h-full grid" style={{ gridTemplateColumns: "repeat(24, 1fr" }}>
@@ -153,6 +145,10 @@ const Timeline = () => {
       date: moment().format("MM/DD/YYYY") // ??
     },
   });
+
+  const timelineContainerRef = useRef(null)
+  const timeIndicatorRef = useRef(null)
+  const timeIndicatorContainer = useRef(null)
 
   setDefaultOptions({ locale: fi })
 
