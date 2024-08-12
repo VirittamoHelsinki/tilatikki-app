@@ -33,13 +33,20 @@ const TimelineItem = ({ timeStart, timeEnd, unavailable, user, label, fullHeight
       </div>
     )
   }
+
+  const backgroundColor = fullHeight
+    ? "#EA7272"
+    : "#F4BD89";
   
   return (
     <div 
-      className="bg-blue-100 rounded-md w-full select-none hover:z-10 hover:cursor-pointer hover:bg-blue-200 overflow-hidden hover:overflow-visible relative hover:scale-110"
+      className="rounded-md w-full select-none hover:z-10 hover:cursor-pointer overflow-hidden hover:overflow-visible relative hover:scale-110"
       style={{
         gridColumn: gridColumnValueString,
         gridRow: fullHeight ? "1 / -1" : "auto",
+        backgroundColor,
+        transition: "all 0.05s linear",
+        transformOrigin: "center center"
       }}
     >
       <div className="bg-inherit py-[2px] px-2 rounded-md absolute min-w-full top-0 left-0">
