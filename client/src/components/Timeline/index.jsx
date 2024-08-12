@@ -40,7 +40,7 @@ const TimelineItem = ({ timeStart, timeEnd, unavailable, user, label, fullHeight
   
   return (
     <div 
-      className="rounded-md w-full select-none hover:z-10 hover:cursor-pointer overflow-hidden hover:overflow-visible relative hover:scale-110"
+      className="rounded-md w-full select-none hover:z-10 hover:cursor-pointer overflow-hidden hover:overflow-visible relative"
       style={{
         gridColumn: gridColumnValueString,
         gridRow: fullHeight ? "1 / -1" : "auto",
@@ -49,7 +49,7 @@ const TimelineItem = ({ timeStart, timeEnd, unavailable, user, label, fullHeight
         transformOrigin: "center center"
       }}
     >
-      <div className="bg-inherit py-[2px] px-2 rounded-md absolute min-w-full top-0 left-0">
+      <div className="bg-inherit py-[2px] px-2 rounded-md absolute min-w-full top-0 left-0 transition-shadow hover:shadow-xl">
         <p className="font-semibold whitespace-nowrap text-sm bg-inherit max-w-max">{user.name} {user.surname}</p>
         <p className="text-xs bg-inherit">{timeStart} - {timeEnd}</p>
         <p className="text-xs max-w-full whitespace-nowrap text-ellipses overflow-hidden bg-inherit"><i>{label}</i></p>
