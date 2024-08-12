@@ -154,10 +154,6 @@ const Timeline = () => {
     },
   });
 
-  const timelineContainerRef = useRef(null)
-  const timeIndicatorRef = useRef(null)
-  const timeIndicatorContainer = useRef(null)
-
   setDefaultOptions({ locale: fi })
 
   const selectedBuilding = form.watch("building")
@@ -179,32 +175,6 @@ const Timeline = () => {
       reservations,
     }
   }) 
-
-  useEffect(() => {
-    const onScroll = () => {
-      const { scrollLeft, scrollWidth } = timelineContainerRef.current
-
-      const time = dayjs().format("HH:mm")
-      const [ hours, minutes ] = time.toString().split(":")
-      const dayPercentage = (hours / 24) + (minutes / 60 / 24)         
-
-      timeIndicatorRef.current.style.left = `${dayPercentage * scrollWidth}px`
-      timeIndicatorContainer.current.style.left = `-${scrollLeft}px`
-    }
-
-
-    if (timelineContainerRef.current && timeIndicatorRef.current) { 
-      onScroll()
-
-      timelineContainerRef.current.addEventListener("scroll", onScroll)
-    }
-
-    return () => {
-      if (timelineContainerRef.current) {
-        timelineContainerRef.current.removeEventListener("scroll", onScroll)
-      }
-    }
-  }, [ timelineContainerRef, timeIndicatorRef ])
 
   if (isLoading) {
     return <p>please wait</p>
