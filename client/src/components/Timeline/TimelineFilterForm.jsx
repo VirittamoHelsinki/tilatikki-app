@@ -23,8 +23,14 @@ const TimelineFilterForm = ({ schoolData, form }) => {
   const selectedFloor = form.watch("floor")
   const selectedDate = form.watch("date")
 
+  
+  useEffect(() => {
+    
+    const building = buildings[0]
+    form.setValue("building", building?._id)  
+  }, [])
+
   // Set floor to first floor of building whenever building changes
-  // setValue doesn't seem to work?
   useEffect(() => {
     const building = buildings.find((building) => building._id === selectedBuilding)
     const firstFloor = building?.floors.find((floor) => floor.number === 1)
@@ -78,7 +84,7 @@ const TimelineFilterForm = ({ schoolData, form }) => {
         render={({ field }) => (
           <FormItem>
             <FormLabel>Rakennus*</FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value} required={true}>
+            <Select onValueChange={field.onChange} defaultValue={field.value} value={selectedBuilding} required={true}>
               <FormControl>
                 <SelectTrigger>
                   <SelectValue placeholder="Valitse rakennus" />
