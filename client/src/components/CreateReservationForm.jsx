@@ -70,7 +70,7 @@ const CreateReservationForm = ({
     const reservationData = {
       userId: user._id, // userId
       reservationDate: data.reservationDate ? data.reservationDate : null,
-      reservationEndDate: data.endDate ? data.reservationEndDate : null,
+      reservationEndDate: data.reservationEndDate ? data.reservationEndDate : null,
       reservationGroupId: reservationGroupId,
       startTime: data.startTime,
       endTime: data.endTime,

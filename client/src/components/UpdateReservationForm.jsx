@@ -77,6 +77,7 @@ const UpdateReservationForm = ({
       reservationId: reservationId,
       reservationDate: data.reservationDate ? data.reservationDate : null,
       reservationEndDate: data.endDate ? data.reservationEndDate : null,
+      reservationGroupId: reservationGroupId,
       startTime: data.startTime,
       endTime: data.endTime,
       purpose: data.reservationName, // string
