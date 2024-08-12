@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form"
 
 import { setDefaultOptions } from "date-fns"
 import { fi } from "date-fns/locale"
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 
 import TimelineFilterForm from "./TimelineFilterForm"
 import { useSchoolQuery } from "@/api/schools"
@@ -26,7 +26,7 @@ const TimelineItem = ({ timeStart, timeEnd, unavailable, user, label, fullHeight
   if (unavailable) {
     return (
       <div
-        className="bg-gray-200 z-10 rounded-md warning"
+        className="bg-gray-200 z-10 rounded-md warning pointer-events-none"
         style={{ gridColumn: gridColumnValueString, gridRow: "1 / -1" }}
       >
         {/* <p className="text-ms uppercase font-medium text-black" style={{ position: "sticky", left: "10px" }}>Ei varattavissa</p> */}
@@ -40,6 +40,7 @@ const TimelineItem = ({ timeStart, timeEnd, unavailable, user, label, fullHeight
   
   return (
     <div 
+      onMouseMove={(event) => event.stopPropagation()}
       className="rounded-md w-full select-none hover:z-10 hover:cursor-pointer overflow-hidden hover:overflow-visible relative"
       style={{
         gridColumn: gridColumnValueString,
@@ -58,10 +59,63 @@ const TimelineItem = ({ timeStart, timeEnd, unavailable, user, label, fullHeight
   )
 }
 
+let trackStart = 0
+
 const TimelineContainer = ({
   rooms = [],
   showRoomInformation = true,
 }) => {
+
+  const [ trackingMouse, setTrackingMouse ] = useState(false)
+  const [ trackStart, setTrackStart ] = useState(-1)
+  const [ indicator, setIndicator ] = useState(null)
+
+  const onMouseDown = (event) => {
+    const target = event.target
+    const indicatorElement = target.querySelector(".new-reservation-indicator")
+
+    const rect = target.getBoundingClientRect();
+    const blockPosition = (event.clientX - rect.left);
+
+    indicatorElement.style.display = "block"
+    indicatorElement.style.left = `${blockPosition}px`
+    indicatorElement.style.width = `${0}px`
+
+    setIndicator(indicatorElement)
+    setTrackStart(blockPosition)
+    setTrackingMouse(true)
+  }
+
+  const onMouseUp = (event) => {
+    // open modal here
+    setTrackStart(0)
+    setTrackingMouse(false)
+    setIndicator(null)
+  }
+
+  const onMouseMove = (event) => {
+    if (!trackingMouse) {
+      return
+    }
+
+    const target = event.target
+
+    const rect = target.getBoundingClientRect();
+    const blockSize = (event.clientX - trackStart - rect.left);
+
+    if (blockSize > 0) {
+      indicator.style.width = `${blockSize}px`
+    } else {
+      indicator.style.left = `${trackStart - Math.abs(blockSize)}px`
+      indicator.style.width = `${Math.abs(blockSize)}px`
+    }
+
+  }
+
+  const stopEventPropagation = (event) => {
+    event.stopPropagation()
+  }
+
   return (
     <div
       className="timeline-container grid max-w-full overflow-auto max-h-[600px]"
@@ -96,16 +150,19 @@ const TimelineContainer = ({
               </div>
 
 
-              {
+              { /* TIMELINE ITEM CONTAINER (this is the "actual" timeline */
                 rooms?.map((room) => (
                   <div
                     className="grid grid-flow-dense gap-x-2 gap-y-1 p-1 relative [&:not(:last-child)]:border-b border-b-gray-200 min-h-16" 
                     style={{ gridTemplateRows: "1fr 1fr", gridTemplateColumns: `repeat(${24 * 4}, 1fr)`, width: `${24 * 4 * 30}px` }}
+                    onMouseDown={onMouseDown}
+                    onMouseUp={onMouseUp}
+                    onMouseMove={onMouseMove}
                   >
-                    <div className="timelines__timestamp-lines absolute w-full h-full grid" style={{ gridTemplateColumns: "repeat(24, 1fr" }}>
+                    <div className="timelines__timestamp-lines absolute w-full h-full grid pointer-events-none" style={{ gridTemplateColumns: "repeat(24, 1fr" }}>
                       {
                         Array.from({ length: 24 }).map(() => (
-                          <div className="border-r border-gray-100"> </div>
+                          <div className="border-r border-gray-100 pointer-events-none"> </div>
                         ))
                       }
                     </div>
@@ -126,6 +183,10 @@ const TimelineContainer = ({
                     }
                     
                     <TimelineItem timeStart="20:00" timeEnd="24:00" unavailable/>
+
+                    <div className="new-reservation-indicator absolute h-full bg-green-200 w-20 rounded-md pointer-events-none hidden">
+                      <p></p>
+                    </div>
                   </div>
                 ))
               }
