@@ -7,8 +7,9 @@ import dayjs from "dayjs"
 import { useState } from "react"
 import { useForm, Controller } from "react-hook-form"
 import PeopleIcon from '@mui/icons-material/People';
-import { useDeleteReservationMutation } from '../api/reservations';
+import { useDeleteReservationByGroupIdMutation, useDeleteReservationMutation } from '../api/reservations';
 import { useCreateReservationMutation } from '../api/reservations';
+import { v4 as uuid } from "uuid"
 
 const UpdateReservationForm = ({
   updateReservationMutation,
@@ -28,6 +29,7 @@ const UpdateReservationForm = ({
 
   const handleReservationSwitchChange = () => setReservationHasExceptions(!reservationHasExceptions);
   const deleteReservationMutation = useDeleteReservationMutation();
+  const deleteReservationByGroupIdMutation = useDeleteReservationByGroupIdMutation();
   const createReservationMutation = useCreateReservationMutation();
 
   const handleDelete = () => {
@@ -37,14 +39,13 @@ const UpdateReservationForm = ({
     onClose();
   };
 
-  const handleRecurringDeletion = async () => {
+  const handleRecurringDeletion = () => {
     // Delete all reservations with the same reservationGroupId
-    if (window.confirm('This is a recurring reservation. Do you want to delete all associated reservations?')) {
-      await deleteReservationMutation.mutateAsync({ reservationGroupId });
-    }
+    console.log('reservation group id in update: ', reservationGroupId)
+    deleteReservationByGroupIdMutation.mutate(reservationGroupId)
   };
 
-  const onSubmit = async (data) => {
+  const onSubmit = (data) => {
     data = {
       ...data,
 
@@ -77,7 +78,7 @@ const UpdateReservationForm = ({
       reservationId: reservationId,
       reservationDate: data.reservationDate ? data.reservationDate : null,
       reservationEndDate: data.endDate ? data.reservationEndDate : null,
-      reservationGroupId: reservationGroupId,
+      reservationGroupId: uuid(),
       startTime: data.startTime,
       endTime: data.endTime,
       purpose: data.reservationName, // string
@@ -89,19 +90,20 @@ const UpdateReservationForm = ({
 
     if (data.recurrence === 'none') {
       updateReservationMutation.mutate({ reservationId, updatedData });
+      handleRecurringDeletion();
     } else if (data.recurrence === 'daily' && data.reservationEndDate) {
-      await handleRecurringDeletion();
       const reservations = generateRecurringReservations(data.reservationDate, data.reservationEndDate, 1, updatedData);
       reservations.forEach(reservation => {
         createReservationMutation.mutate(reservation);
       });
+      handleRecurringDeletion();
     } else if (data.recurrence === 'weekly' && data.reservationEndDate) {
-      await handleRecurringDeletion();
       const reservations = generateRecurringReservations(data.reservationDate, data.reservationEndDate, 7, updatedData);
       console.log('weekly reservations: ', reservations)
       reservations.forEach(reservation => {
         createReservationMutation.mutate(reservation);
       });
+      handleRecurringDeletion();
     } else {
       console.error('Invalid recurrence or missing end date');
     }

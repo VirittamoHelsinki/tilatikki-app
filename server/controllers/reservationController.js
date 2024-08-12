@@ -79,6 +79,8 @@ exports.updateReservationById = async (req, res) => {
     const updatedReservationData = {
       purpose: req.body.purpose,
       reservationDate: req.body.reservationDate,
+      reservationEndDate: req.body.reservationEndDate,
+      reservationGroupId: req.body.reservationGroupId,
       groupsize: req.body.groupsize,
       time: req.body.reservationdate,
       startTime: req.body.startTime,
@@ -159,6 +161,43 @@ exports.deleteReservation = async (req, res) => {
 
     res.status(200).json({ message: "Reservation deleted successfully" });
   } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.deleteReservationByGroupId = async (req, res) => {
+  try {
+    // Find all reservations with the given reservationGroupId
+    console.log("group id: ", req.params.id);
+    const reservations = await Reservation.find({
+      reservationGroupId: req.params.id,
+    });
+
+    if (!reservations || reservations.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No reservations found for this group ID" });
+    }
+
+    // Loop through each reservation and perform necessary deletions
+    for (const reservation of reservations) {
+      // Remove reservation from the corresponding room
+      await Room.findByIdAndUpdate(reservation.room, {
+        $pull: { reservations: reservation._id },
+      });
+
+      // Remove reservation from the user's reservations
+      await User.findByIdAndUpdate(reservation.user, {
+        $pull: { reservations: reservation._id },
+      });
+
+      // Delete the reservation
+      await Reservation.findByIdAndDelete(reservation._id);
+    }
+
+    res.status(200).json({ message: "Reservations deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting reservations by group ID:", error);
     res.status(500).json({ error: error.message });
   }
 };
