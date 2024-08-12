@@ -64,15 +64,16 @@ const TimelineContainer = ({
 }) => {
   return (
     <div
-      className="timeline-container grid max-w-full overflow-x-auto"
-      style={{ gridTemplateColumns: "auto 1fr", gridTemplateRows: `repeat(${rooms.length}, 1fr)` }}
+      className="timeline-container grid max-w-full overflow-auto max-h-[500px]"
+      style={{ gridTemplateColumns: "auto 1fr", gridTemplateRows: `30px repeat(${rooms.length}, 1fr)` }}
     >
+      <div className="bg-white border-r-2 z-30 w-full h-full sticky left-0">{ /* empty div to fill the first row */}</div>
       {
         rooms.map((room) => (
           <>
             {
               showRoomInformation && (
-                <div key={room._id} className={`timeline__room px-4 col-start-1 min-w-40 z-20 sticky left-0 bg-white`}>
+                <div key={room._id} className={`timeline__room px-4 col-start-1 min-w-40 z-30 sticky left-0 bg-white border-r-2`}>
                   <div className="timeline__room-information flex flex-col justify-center py-2">
                     <p className="font-semibold text-xl">Huone {room.number}</p>
                     <p className="font-medium text-sm text-gray-400">00:00 - 24:00</p>
@@ -80,7 +81,15 @@ const TimelineContainer = ({
                 </div>
               )
             }
-            <div className="timelines col-start-2 row-span-full border-2 rounded-lg h-full grid" style={{ gridTemplateRows: `repeat(${rooms.length}, 1fr)`} }>
+            <div className="timelines col-start-2 row-span-full rounded-lg grid" style={{ gridTemplateRows: `30px repeat(${rooms.length}, 1fr)`} }>
+              <div className="timelines__timestamps grid items-center justify-center sticky top-0 bg-white z-20 border-b-2" style={{ gridTemplateColumns: "repeat(24, 1fr)"}}>
+                {
+                  Array.from({ length: 24 }).map((_, index) => (
+                    <p className="text-center bg-white">{ `${index.toString().padStart(2, "0")}:00` } </p>
+                  ))
+                }
+              </div>
+
               {
                 rooms?.map((room) => (
                   <div
@@ -201,7 +210,7 @@ const Timeline = () => {
 
 const TimelinePage = () => {
   return (
-    <div className="grid grid-cols-10 gap-2">
+    <div className="grid grid-cols-10 gap-2 mb-[1000px]">
       <Timeline />
     </div>
   )
