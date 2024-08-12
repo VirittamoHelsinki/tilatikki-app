@@ -67,7 +67,7 @@ const TimelineContainer = ({
       className="timeline-container grid max-w-full overflow-auto max-h-[500px]"
       style={{ gridTemplateColumns: "auto 1fr", gridTemplateRows: `30px repeat(${rooms.length}, 1fr)` }}
     >
-      <div className="bg-white border-r-2 z-30 w-full h-full sticky left-0">{ /* empty div to fill the first row */}</div>
+      <div className="bg-white z-30 w-full h-full sticky left-0 border-r-2">{ /* empty div to fill the first row */}</div>
       {
         rooms.map((room) => (
           <>
@@ -76,13 +76,13 @@ const TimelineContainer = ({
                 <div key={room._id} className={`timeline__room px-4 col-start-1 min-w-40 z-30 sticky left-0 bg-white border-r-2`}>
                   <div className="timeline__room-information flex flex-col justify-center py-2">
                     <p className="font-semibold text-xl">Huone {room.number}</p>
-                    <p className="font-medium text-sm text-gray-400">00:00 - 24:00</p>
+                    <p className="font-medium text-sm text-gray-400">05:00 - 20:00</p>
                   </div>
                 </div>
               )
             }
             <div className="timelines col-start-2 row-span-full rounded-lg grid" style={{ gridTemplateRows: `30px repeat(${rooms.length}, 1fr)`} }>
-              <div className="timelines__timestamps grid items-center justify-center sticky top-0 bg-white z-20 border-b-2 relative" style={{ gridTemplateColumns: "repeat(24, 1fr)"}}>
+              <div className="timelines__timestamps grid items-center justify-center top-0 bg-white z-20 border-b-2 sticky" style={{ gridTemplateColumns: "repeat(24, 1fr)"}}>
                 <div className="timelines__timestamp-lines absolute w-full h-full grid" style={{ gridTemplateColumns: "repeat(24, 1fr" }}>
                   {
                     Array.from({ length: 24 }).map(() => (
@@ -92,8 +92,13 @@ const TimelineContainer = ({
                 </div>
 
                 {
-                  Array.from({ length: 24 }).map((_, index) => (
-                    <p className="text-center bg-white">{ `${index.toString().padStart(2, "0")}:00` } </p>
+                  Array.from({ length: 23 }).map((_, index) => (
+                    <p
+                      className="text-center bg-white translate-x-[-50%]"
+                      style={{ gridColumn: index+2 }}
+                    >
+                      { `${(index+1).toString().padStart(2, "0")}:00` }
+                    </p>
                   ))
                 }
               </div>
