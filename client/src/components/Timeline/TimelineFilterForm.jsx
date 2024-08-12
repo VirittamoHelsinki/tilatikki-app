@@ -1,11 +1,9 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { FormProvider, useForm } from "react-hook-form"
+import { FormProvider } from "react-hook-form"
 
-import { FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from "@/components/ui/form"
+import { FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Input } from "@/components/ui/input"
-import { setDefaultOptions, format } from "date-fns"
-import { CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react"
+import { format } from "date-fns"
+import { CalendarIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
@@ -15,9 +13,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { fi } from "date-fns/locale"
-import { useEffect, useRef } from "react"
-
-import dayjs from "dayjs"
+import { useEffect } from "react"
 
 const TimelineFilterForm = ({ schoolData, form }) => {
 
