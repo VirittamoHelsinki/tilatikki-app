@@ -64,6 +64,29 @@ export const deleteReservation = async (reservationId) => {
   }
 };
 
+export const deleteReservationByGroupId = async (reservationGroupId) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/reservationsByGroupId/${reservationGroupId}`,
+      {
+        method: "DELETE",
+      },
+    );
+
+    const responseData = await response.json();
+
+    if (!response.ok) {
+      console.error("Server response:", responseData);
+      throw new Error("Failed to delete reservation");
+    }
+
+    return responseData;
+  } catch (error) {
+    console.error("Delete reservation error: ", error);
+    throw error;
+  }
+};
+
 export const updateReservation = async (reservationId, updatedData) => {
   try {
     console.log(`Updating reservation with ID: ${reservationId}`, updatedData);
@@ -125,6 +148,20 @@ export const useDeleteReservationMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation(deleteReservation, {
+    onSuccess: () => {
+      // Invalidate and refetch reservations to reflect the changes in the UI
+      queryClient.invalidateQueries("reservations");
+    },
+    onError: (error) => {
+      console.error("Delete reservation mutation error:", error);
+    },
+  });
+};
+
+export const useDeleteReservationByGroupIdMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation(deleteReservationByGroupId, {
     onSuccess: () => {
       // Invalidate and refetch reservations to reflect the changes in the UI
       queryClient.invalidateQueries("reservations");

@@ -7,11 +7,14 @@ import dayjs from "dayjs"
 import { useState } from "react"
 import { useForm, Controller } from "react-hook-form"
 import PeopleIcon from '@mui/icons-material/People';
-import { useDeleteReservationMutation } from '../api/reservations';
+import { useDeleteReservationByGroupIdMutation, useDeleteReservationMutation } from '../api/reservations';
+import { useCreateReservationMutation } from '../api/reservations';
+import { v4 as uuid } from "uuid"
 
 const UpdateReservationForm = ({
   updateReservationMutation,
   reservationId,
+  reservationGroupId,
   roomNumber,
   roomId,
   capacity,
@@ -26,12 +29,20 @@ const UpdateReservationForm = ({
 
   const handleReservationSwitchChange = () => setReservationHasExceptions(!reservationHasExceptions);
   const deleteReservationMutation = useDeleteReservationMutation();
+  const deleteReservationByGroupIdMutation = useDeleteReservationByGroupIdMutation();
+  const createReservationMutation = useCreateReservationMutation();
 
   const handleDelete = () => {
     if (window.confirm('Are you sure you want to delete this reservation?')) {
       deleteReservationMutation.mutate(reservationId);
     }
     onClose();
+  };
+
+  const handleRecurringDeletion = () => {
+    // Delete all reservations with the same reservationGroupId
+    console.log('reservation group id in update: ', reservationGroupId)
+    deleteReservationByGroupIdMutation.mutate(reservationGroupId)
   };
 
   const onSubmit = (data) => {
@@ -51,8 +62,8 @@ const UpdateReservationForm = ({
         reservations.push({
           ...reservationData,
           reservationDate: currentDate,
-          startTime: data.startTime ? formatTime(data.startTime) : null,
-          endTime: data.endTime ? formatTime(data.endTime) : null,
+          startTime: data.startTime ? data.startTime : null,
+          endTime: data.endTime ? data.endTime : null,
         });
 
         currentDate = currentDate.add(interval, 'day');
@@ -66,6 +77,8 @@ const UpdateReservationForm = ({
       userId: user._id,
       reservationId: reservationId,
       reservationDate: data.reservationDate ? data.reservationDate : null,
+      reservationEndDate: data.endDate ? data.reservationEndDate : null,
+      reservationGroupId: uuid(),
       startTime: data.startTime,
       endTime: data.endTime,
       purpose: data.reservationName, // string
@@ -77,17 +90,20 @@ const UpdateReservationForm = ({
 
     if (data.recurrence === 'none') {
       updateReservationMutation.mutate({ reservationId, updatedData });
+      handleRecurringDeletion();
     } else if (data.recurrence === 'daily' && data.reservationEndDate) {
       const reservations = generateRecurringReservations(data.reservationDate, data.reservationEndDate, 1, updatedData);
       reservations.forEach(reservation => {
-        updateReservationMutation.mutate(reservation);
+        createReservationMutation.mutate(reservation);
       });
+      handleRecurringDeletion();
     } else if (data.recurrence === 'weekly' && data.reservationEndDate) {
       const reservations = generateRecurringReservations(data.reservationDate, data.reservationEndDate, 7, updatedData);
       console.log('weekly reservations: ', reservations)
       reservations.forEach(reservation => {
-        updateReservationMutation.mutate(reservation);
+        createReservationMutation.mutate(reservation);
       });
+      handleRecurringDeletion();
     } else {
       console.error('Invalid recurrence or missing end date');
     }
@@ -266,15 +282,19 @@ const UpdateReservationForm = ({
               <Grid item lg={12}>
                 <FormControl fullWidth>
                   <LocalizationProvider localeText={fiFI.components.MuiLocalizationProvider.defaultProps.localeText} dateAdapter={AdapterDayjs}>
-                    <DatePicker
-                      autoComplete="endDate"
-                      name="endDate"
-                      required
-                      format="DD/MM/YYYY"
-                      slotProps={{ textField: { fullWidth: true } }}
-                      id="endDate"
-                      label="Varauksen päättymispäivä*"
-                      {...register("endDate")}
+                    <Controller
+                      name="reservationEndDate"
+                      control={control}
+                      defaultValue={filterValues.selectedDate ? dayjs(filterValues.selectedDate) : null}
+                      render={({ field: { value, ...rest } }) => (
+                        <DatePicker
+                          {...rest}
+                          value={value}
+                          label="Varauksen päättymispäivämäärä*"
+                          renderInput={(params) => <TextField {...params} fullWidth />}
+                          format="DD/MM/YYYY"
+                        />
+                      )}
                     />
                   </LocalizationProvider>
                 </FormControl>
@@ -283,6 +303,7 @@ const UpdateReservationForm = ({
               <Grid item lg={12}>
                 <FormControlLabel control={<Switch onChange={handleReservationSwitchChange} />} label="Varauksessa on poikkeuksia" />
               </Grid>
+
 
               { /* EXCEPTIONS */}
               {
