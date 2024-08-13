@@ -1,6 +1,25 @@
 import TimelineItem from "./TimelineItem"
 
-const Timeline = ({ room }) => {
+const Timeline = ({
+  room,
+  handleOpenNewReservationModal,
+  handleOpenEditReservationModal,
+}) => {
+
+  // handleModal functions may not exist,
+  // so wrap then in a function and only
+  // call them if they exist
+  const safeHandleOpenNewReservationModal = () => {
+    if (handleOpenNewReservationModal) {
+      handleOpenNewReservationModal()
+    }
+  }
+
+  const safeHandleOpenEditReservationModal = () => {
+    if (handleOpenEditReservationModal) {
+      handleOpenEditReservationModal()
+    }
+  }
 
   const onMouseDown = () => {
 
@@ -41,6 +60,7 @@ const Timeline = ({ room }) => {
             label={reservation.purpose}
             user={reservation.user}
             fullHeight={reservation.groupsize === room.capacity}
+            onClick={safeHandleOpenEditReservationModal}
           />
         ))
       }

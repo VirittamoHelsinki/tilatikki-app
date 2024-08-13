@@ -107,7 +107,13 @@ const TimelineContainer = ({
               </div>
 
               { /* TIMELINE ITEM CONTAINER (this is the "actual" timeline */
-                rooms?.map((room) => <Timeline room={room} />)
+                rooms?.map((room) => (
+                  <Timeline
+                    room={room}
+                    handleOpenNewReservationModal={handleOpenNewReservationModal}
+                    handleOpenEditReservationModal={handleOpenEditReservationModal}
+                  />
+                ))
               }
             </div>
           </>

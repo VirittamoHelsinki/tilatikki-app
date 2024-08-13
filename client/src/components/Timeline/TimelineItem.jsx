@@ -1,4 +1,12 @@
-const TimelineItem = ({ timeStart, timeEnd, unavailable, user, label, fullHeight }) => {
+const TimelineItem = ({
+  timeStart,
+  timeEnd,
+  unavailable,
+  user,
+  label,
+  fullHeight,
+  onClick,
+}) => {
   const from = timeStart.split(":").map(v => parseInt(v))
   const to = timeEnd.split(":").map(v => parseInt(v))
 
@@ -24,6 +32,7 @@ const TimelineItem = ({ timeStart, timeEnd, unavailable, user, label, fullHeight
   
   return (
     <div 
+      onClick={onClick}
       onMouseMove={(event) => event.stopPropagation()}
       className="rounded-md w-full select-none hover:z-10 hover:cursor-pointer overflow-hidden hover:overflow-visible relative"
       style={{
