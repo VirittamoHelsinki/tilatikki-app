@@ -23,8 +23,49 @@ const Timeline = ({
     }
   }
 
-  const onMouseClick = () => {
+  const overlaps = (time) => {
+    /*
+      return 0: no overlap
+      return 1: partial overlap, can still reserve
+      return 2: found two reservations in one spot or one full
+    */
+    const timestampToMinutes = (timeStamp) => {
+      const [ hours, minutes ] = timeStamp.split(":").map((num) => Number(num))
+      return hours * 60 + minutes;
+    }
+
+    const { capacity, reservations } = room;
+
+    let overlapSize = 0;
+    for (const { startTime, endTime, groupsize } of reservations) {
+      const potentialOverlapSizeIncrease = capacity === groupsize ? 2 : 1;
+
+      const a = timestampToMinutes(time);
+      const b = timestampToMinutes(startTime);
+      const c = timestampToMinutes(endTime);
+      if (a >= b && a <= c) {
+        overlapSize += potentialOverlapSizeIncrease;
+      }
+    }
+
+    return overlapSize;
+  }
+
+  const onMouseClick = (event) => {
     safeHandleOpenNewReservationModal()
+
+    const element = newReservationIndicatorRef.current;
+    const target = event.target;
+
+    const mouseX = event.clientX;
+    const targetWidth = target.offsetWidth;
+    const targetLeft = target.getBoundingClientRect().left;
+
+    const mouseRelativeToTarget = (mouseX - targetLeft) / targetWidth
+    const hour = Math.floor(mouseRelativeToTarget * 24)
+    const minute = (Math.floor(mouseRelativeToTarget * 24 * 4) % 4) * 15
+
+    console.log(hour + ":" + minute);
   }
 
   const onMouseDown = () => {
@@ -46,14 +87,41 @@ const Timeline = ({
     const targetLeft = target.getBoundingClientRect().left;
 
     const mouseRelativeToTarget = (mouseX - targetLeft) / targetWidth
+    const from = [ Math.floor(mouseRelativeToTarget * 24 * 4) / 4,  0 ]
+    const to = [ Math.ceil(mouseRelativeToTarget * 24), 0 ]
 
-    console.log(mouseRelativeToTarget)
-    element.style.left = `${mouseRelativeToTarget * targetWidth}px`
+    const columnStart = (from[0] * 4 + Math.floor(from[1] / 15) + 1)
+    const columnEnd = (to[0] * 4 + Math.floor(to[1] / 15) + 1)
+    const gridColumnValueString = `${columnStart} / span ${1}`
+
+    console.log(columnStart, columnEnd)
+    //element.style.left = `${mouseRelativeToTarget * targetWidth}px`
+
+    // Check for overlap
+    const hour = Math.floor(mouseRelativeToTarget * 24)
+    const minute = Math.floor(mouseRelativeToTarget * 24 * 60) % 60
+    const overlap = overlaps(`${hour}:${minute}`)
+
+    if (overlap < 2) {
+      element.style.display = "flex";
+    } else {
+      element.style.display = "none"
+    }
+
+    if (overlap === 1) {
+      element.style.gridRow = "2 / span 1"
+    }
+
+    if (overlap === 0) {
+      element.style.gridRow = "1 / span 2"
+    }
+    
+    element.style.gridColumn = gridColumnValueString
   }
 
   const onMouseEnter = () => {
     if (!newReservationIndicatorRef.current) return;
-    newReservationIndicatorRef.current.style.display = "block";
+    newReservationIndicatorRef.current.style.display = "flex";
   }
 
   const onMouseLeave = () => {
@@ -63,12 +131,12 @@ const Timeline = ({
 
   return (
     <div
-      className="grid grid-flow-dense gap-x-2 gap-y-1 p-1 relative [&:not(:last-child)]:border-b border-b-gray-200 min-h-16" 
+      className="grid grid-flow-dense gap-x-2 gap-y-1 p-1 relative [&:not(:last-child)]:border-b border-b-gray-200 min-h-16 hover:cursor-pointer"
       style={{ gridTemplateRows: "1fr 1fr", gridTemplateColumns: `repeat(${24 * 4}, 1fr)`, width: `${24 * 4 * 30}px` }}
       onClick={onMouseClick}
+      onMouseMove={onMouseMove}
       onMouseDown={onMouseDown}
       onMouseUp={onMouseUp}
-      onMouseMove={onMouseMove}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
@@ -78,7 +146,7 @@ const Timeline = ({
       >
         {
           Array.from({ length: 24 }).map(() => (
-            <div className="border-r border-gray-100"></div>
+            <div className="border-r border-gray-100 pointer-events-none"></div>
           ))
         }
       </div>
@@ -103,9 +171,10 @@ const Timeline = ({
 
       <div
         ref={newReservationIndicatorRef}
-        className="new-reservation-indicator absolute left-[30%] h-full bg-green-200 w-20 rounded-md pointer-events-none hidden"
+        onMouseMove={(event) => event.stopPropagation()}
+        className="new-reservation-indicator pointer-events-none h-full w-full z-50 bg-green-300 rounded-md hidden flex-col justify-center items-center select-none"
       >
-        <p>Luo uusi varaus</p>
+        {/* <p className="font-bold text-center text-sm">Luo uusi varaus</p> */}
       </div>
     </div>
   );
