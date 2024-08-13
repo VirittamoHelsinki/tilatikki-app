@@ -172,8 +172,9 @@ const Timeline = ({
       <div
         ref={newReservationIndicatorRef}
         onMouseMove={(event) => event.stopPropagation()}
-        className="new-reservation-indicator pointer-events-none h-full w-full z-50 bg-green-300 rounded-md hidden flex-col justify-center items-center select-none"
+        className="new-reservation-indicator pointer-events-none h-full w-full  bg-green-300 rounded-md hidden flex-col justify-center items-center select-none"
       >
+        <p className="text-white font-bold">+</p>
         {/* <p className="font-bold text-center text-sm">Luo uusi varaus</p> */}
       </div>
     </div>
