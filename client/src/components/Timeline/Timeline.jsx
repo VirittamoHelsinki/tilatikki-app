@@ -64,6 +64,8 @@ const Timeline = ({
     const mouseRelativeToTarget = (mouseX - targetLeft) / targetWidth
     const hour = Math.floor(mouseRelativeToTarget * 24)
     const minute = (Math.floor(mouseRelativeToTarget * 24 * 4) % 4) * 15
+
+    // hour:minute to ./index.jsx
   }
 
   const onMouseDown = () => {
