@@ -6,6 +6,7 @@ const TimelineItem = ({
   label,
   fullHeight,
   onClick,
+  reservationPurpose,
 }) => {
   const from = timeStart.split(":").map(v => parseInt(v))
   const to = timeEnd.split(":").map(v => parseInt(v))
@@ -44,8 +45,10 @@ const TimelineItem = ({
       }}
     >
       <div className="bg-inherit py-[2px] px-2 rounded-md absolute min-w-full top-0 left-0 transition-shadow hover:shadow-xl">
-        <p className="font-semibold whitespace-nowrap text-sm bg-inherit max-w-max">{user.name} {user.surname}</p>
+        <p className="font-semibold whitespace-nowrap text-sm bg-inherit max-w-max">{reservationPurpose}</p>
+
         <p className="text-xs bg-inherit">{timeStart} - {timeEnd}</p>
+        <p className="text-xs max-w-full whitespace-nowrap text-ellipses overflow-hidden bg-inherit">{user.name} {user.surname}</p>
         <p className="text-xs max-w-full whitespace-nowrap text-ellipses overflow-hidden bg-inherit"><i>{label}</i></p>
       </div>
     </div>

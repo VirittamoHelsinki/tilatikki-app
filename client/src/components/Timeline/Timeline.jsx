@@ -64,8 +64,6 @@ const Timeline = ({
     const mouseRelativeToTarget = (mouseX - targetLeft) / targetWidth
     const hour = Math.floor(mouseRelativeToTarget * 24)
     const minute = (Math.floor(mouseRelativeToTarget * 24 * 4) % 4) * 15
-
-    console.log(hour + ":" + minute);
   }
 
   const onMouseDown = () => {
@@ -93,9 +91,6 @@ const Timeline = ({
     const columnStart = (from[0] * 4 + Math.floor(from[1] / 15) + 1)
     const columnEnd = (to[0] * 4 + Math.floor(to[1] / 15) + 1)
     const gridColumnValueString = `${columnStart} / span ${1}`
-
-    console.log(columnStart, columnEnd)
-    //element.style.left = `${mouseRelativeToTarget * targetWidth}px`
 
     // Check for overlap
     const hour = Math.floor(mouseRelativeToTarget * 24)
@@ -161,6 +156,7 @@ const Timeline = ({
             timeEnd={reservation.endTime}
             label={reservation.purpose}
             user={reservation.user}
+            reservationPurpose={reservation.purpose}
             fullHeight={reservation.groupsize === room.capacity}
             onClick={safeHandleOpenEditReservationModal}
           />
