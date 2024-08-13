@@ -11,6 +11,7 @@ import { useParams } from "react-router-dom";
 
 import moment from "moment";
 import "moment/dist/locale/fi";
+import Dialog from "../Dialog";
 
 moment.locale("fi");
 
@@ -133,17 +134,17 @@ const TimelinePage = () => {
     },
   });
 
-  const [ showNewReservationModal, setShowNewReservationModal ] = useState(false);
-  const [ showEditReservationModal, setShowEditReservationModal ] = useState(false);
+  const [ showNewReservationModal, setShowNewReservationModal ] = useState(null);
+  const [ showEditReservationModal, setShowEditReservationModal ] = useState(null);
 
   setDefaultOptions({ locale: fi });
 
-  const handleOpenNewReservationModal = () => {
-    setShowNewReservationModal(true);
+  const handleOpenNewReservationModal = (room) => {
+    setShowNewReservationModal(room);
   }
 
-  const handleOpenEditReservationModal = () => {
-    setShowEditReservationModal(true);
+  const handleOpenEditReservationModal = (room) => {
+    setShowEditReservationModal(room);
   }
 
   const selectedBuilding = form.watch("building");
@@ -170,27 +171,45 @@ const TimelinePage = () => {
     return <p>please wait</p>
   }
 
+  console.log(showNewReservationModal);
+  
+
   return (
-    <div className="grid grid-cols-10 gap-2">
-      <div className="col-span-10 ml-5 mt-10">
-        <div className="flex flex-col gap-2">
+    <>
 
-          <p className="text-4xl font-bold mb-3">{ data.name }</p>
+      {
+          <Dialog
+            isOpen={!!showNewReservationModal}
+            onOpenChange={setShowNewReservationModal}
+            title={"A1234"}
+            description={"Opetustila, jossa on tilaa 100 opiskelijalle."}
+          >
+            <p>hiii :D</p>
+          </Dialog>
+        
+      }
 
-          {/* Filter */}
-          <TimelineFilterForm schoolData={data} form={form} />
+      <div className="grid grid-cols-10 gap-2">
+        <div className="col-span-10 ml-5 mt-10">
+          <div className="flex flex-col gap-2">
 
-          <p className="text-3xl font-medium mt-6 mb-3">{ selectedDate && moment(selectedDate).format("LL") }</p>
+            <p className="text-4xl font-bold mb-3">{ data.name }</p>
 
-          <TimelineContainer
-            rooms={rooms}
-            handleOpenNewReservationModal={handleOpenNewReservationModal}
-            handleOpenEditReservationModal={handleOpenEditReservationModal}
-          />
+            {/* Filter */}
+            <TimelineFilterForm schoolData={data} form={form} />
+
+            <p className="text-3xl font-medium mt-6 mb-3">{ selectedDate && moment(selectedDate).format("LL") }</p>
+
+            <TimelineContainer
+              rooms={rooms}
+              handleOpenNewReservationModal={handleOpenNewReservationModal}
+              handleOpenEditReservationModal={handleOpenEditReservationModal}
+              />
+          </div>
+
         </div>
-
       </div>
-    </div>
+    </>
   );
 }
 

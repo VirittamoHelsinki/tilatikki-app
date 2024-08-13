@@ -13,13 +13,13 @@ const Timeline = ({
   // call them if they exist
   const safeHandleOpenNewReservationModal = () => {
     if (handleOpenNewReservationModal) {
-      handleOpenNewReservationModal();
+      handleOpenNewReservationModal(room);
     }
   }
 
   const safeHandleOpenEditReservationModal = () => {
     if (handleOpenEditReservationModal) {
-      handleOpenEditReservationModal();
+      handleOpenEditReservationModal(room);
     }
   }
 
