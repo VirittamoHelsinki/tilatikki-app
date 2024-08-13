@@ -17,7 +17,6 @@ const CustomDialog = ({ isOpen, onOpenChange, title, description, children }) =>
         </DialogHeader>
 
         { children }  
-
       </DialogContent>
     </Dialog>
   )

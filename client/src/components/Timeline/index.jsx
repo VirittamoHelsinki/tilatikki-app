@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 
 import { setDefaultOptions } from "date-fns";
 import { fi } from "date-fns/locale";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import TimelineFilterForm from "./TimelineFilterForm";
 import Timeline from "./Timeline"
@@ -12,6 +12,11 @@ import { useParams } from "react-router-dom";
 import moment from "moment";
 import "moment/dist/locale/fi";
 import Dialog from "../Dialog";
+import { Label } from "@radix-ui/react-label";
+import { useCreateReservationMutation } from "@/api/reservations";
+import { fetchUserDataByEmail } from "@/api/userApi";
+import { getCookie } from "@/utils/Cookies";
+import NewReservationDialog from "../NewReservationDialog";
 
 moment.locale("fi");
 
@@ -136,6 +141,23 @@ const TimelinePage = () => {
 
   const [ showNewReservationModal, setShowNewReservationModal ] = useState(null);
   const [ showEditReservationModal, setShowEditReservationModal ] = useState(null);
+  const [user, setUser] = useState({});
+
+	const createReservationMutation = useCreateReservationMutation();
+
+	useEffect(() => {
+		const email = getCookie('UserEmail');
+		if (email) {
+			fetchUserDataByEmail(email)
+				.then(userData => {
+					setUser(userData);
+				})
+				.catch(error => {
+					console.error('Error fetching user data:', error);
+				});
+		}
+	}, []);
+
 
   setDefaultOptions({ locale: fi });
 
@@ -178,15 +200,11 @@ const TimelinePage = () => {
     <>
 
       {
-          <Dialog
-            isOpen={!!showNewReservationModal}
-            onOpenChange={setShowNewReservationModal}
-            title={"A1234"}
-            description={"Opetustila, jossa on tilaa 100 opiskelijalle."}
-          >
-            <p>hiii :D</p>
-          </Dialog>
-        
+        <NewReservationDialog
+          room={showNewReservationModal}
+          user={user}
+          onOpenChange={setShowNewReservationModal}
+        />
       }
 
       <div className="grid grid-cols-10 gap-2">
