@@ -40,34 +40,36 @@ const TimelineContainer = ({
     setTrackingMouse(true);
   }
 
-  const onMouseUp = () => {
-    // open modal here
-    setTrackStart(0);
-    setTrackingMouse(false);
-    setIndicator(null);
-  }
+  // Used for the click&drag reservation
+  // A little bit unfinished, so I commented it out
+  // const onMouseUp = () => {
+  //   // open modal here
+  //   setTrackStart(0);
+  //   setTrackingMouse(false);
+  //   setIndicator(null);
+  // }
 
-  const onMouseMove = (event) => {
-    if (!trackingMouse) {
-      return;
-    }
+  // const onMouseMove = (event) => {
+  //   if (!trackingMouse) {
+  //     return;
+  //   }
 
-    const target = event.target;
+  //   const target = event.target;
 
-    const rect = target.getBoundingClientRect();
-    const blockSize = (event.clientX - trackStart - rect.left);
+  //   const rect = target.getBoundingClientRect();
+  //   const blockSize = (event.clientX - trackStart - rect.left);
 
-    if (blockSize > 0) {
-      indicator.style.width = `${blockSize}px`;
-    } else {
-      indicator.style.left = `${trackStart - Math.abs(blockSize)}px`;
-      indicator.style.width = `${Math.abs(blockSize)}px`;
-    }
-  }
+  //   if (blockSize > 0) {
+  //     indicator.style.width = `${blockSize}px`;
+  //   } else {
+  //     indicator.style.left = `${trackStart - Math.abs(blockSize)}px`;
+  //     indicator.style.width = `${Math.abs(blockSize)}px`;
+  //   }
+  // }
 
-  const stopEventPropagation = (event) => {
-    event.stopPropagation();
-  }
+  // const stopEventPropagation = (event) => {
+  //   event.stopPropagation();
+  // }
 
   return (
     <div
