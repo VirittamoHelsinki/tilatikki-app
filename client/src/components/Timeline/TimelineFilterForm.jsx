@@ -23,9 +23,7 @@ const TimelineFilterForm = ({ schoolData, form }) => {
   const selectedFloor = form.watch("floor")
   const selectedDate = form.watch("date")
 
-  
-  useEffect(() => {
-    
+  useEffect(() => {    
     const building = buildings[0]
     form.setValue("building", building?._id)  
   }, [])
@@ -36,10 +34,7 @@ const TimelineFilterForm = ({ schoolData, form }) => {
     const firstFloor = building?.floors.find((floor) => floor.number === 1)
     
     form.setValue("floor", firstFloor?._id)
-  }, [ selectedBuilding ])
-
-  console.log({ selectedBuilding, selectedFloor, selectedDate });
-  
+  }, [ selectedBuilding ])  
 
   return (
     <FormProvider {...form}>
@@ -128,8 +123,6 @@ const TimelineFilterForm = ({ schoolData, form }) => {
           </FormItem>
         )}
       />
-
-
 
     </div>
   </FormProvider>
