@@ -5,7 +5,6 @@ import { fi } from "date-fns/locale";
 import { useState } from "react";
 
 import TimelineFilterForm from "./TimelineFilterForm";
-import TimelineItem from "./TimelineItem";
 import Timeline from "./Timeline"
 import { useSchoolQuery } from "@/api/schools";
 import { useParams } from "react-router-dom";
@@ -20,28 +19,30 @@ const TimelineContainer = ({
   showRoomInformation = true,
 }) => {
 
-  const [ trackingMouse, setTrackingMouse ] = useState(false);
-  const [ trackStart, setTrackStart ] = useState(-1);
-  const [ indicator, setIndicator ] = useState(null);
 
-  const onMouseDown = (event) => {
-    const target = event.target;
-    const indicatorElement = target.querySelector(".new-reservation-indicator");
-
-    const rect = target.getBoundingClientRect();
-    const blockPosition = (event.clientX - rect.left);
-
-    indicatorElement.style.display = "block";
-    indicatorElement.style.left = `${blockPosition}px`;
-    indicatorElement.style.width = `${0}px`;
-
-    setIndicator(indicatorElement);
-    setTrackStart(blockPosition);
-    setTrackingMouse(true);
-  }
 
   // Used for the click&drag reservation
   // A little bit unfinished, so I commented it out
+  // const [ trackingMouse, setTrackingMouse ] = useState(false);
+  // const [ trackStart, setTrackStart ] = useState(-1);
+  // const [ indicator, setIndicator ] = useState(null);
+
+  // const onMouseDown = (event) => {
+  //   const target = event.target;
+  //   const indicatorElement = target.querySelector(".new-reservation-indicator");
+
+  //   const rect = target.getBoundingClientRect();
+  //   const blockPosition = (event.clientX - rect.left);
+
+  //   indicatorElement.style.display = "block";
+  //   indicatorElement.style.left = `${blockPosition}px`;
+  //   indicatorElement.style.width = `${0}px`;
+
+  //   setIndicator(indicatorElement);
+  //   setTrackStart(blockPosition);
+  //   setTrackingMouse(true);
+  // }
+
   // const onMouseUp = () => {
   //   // open modal here
   //   setTrackStart(0);
