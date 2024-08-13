@@ -16,10 +16,10 @@ moment.locale("fi");
 
 const TimelineContainer = ({
   rooms = [],
+  handleOpenNewReservationModal,
+  handleOpenEditReservationModal,
   showRoomInformation = true,
 }) => {
-
-
 
   // Used for the click&drag reservation
   // A little bit unfinished, so I commented it out
@@ -127,7 +127,18 @@ const TimelinePage = () => {
     },
   });
 
+  const [ showNewReservationModal, setShowNewReservationModal ] = useState(false);
+  const [ showEditReservationModal, setShowEditReservationModal ] = useState(false);
+
   setDefaultOptions({ locale: fi });
+
+  const handleOpenNewReservationModal = () => {
+    setShowNewReservationModal(true);
+  }
+
+  const handleOpenEditReservationModal = () => {
+    setShowEditReservationModal(true);
+  }
 
   const selectedBuilding = form.watch("building");
   const selectedFloor = form.watch("floor");
@@ -167,6 +178,8 @@ const TimelinePage = () => {
 
           <TimelineContainer
             rooms={rooms}
+            handleOpenNewReservationModal={handleOpenNewReservationModal}
+            handleOpenEditReservationModal={handleOpenEditReservationModal}
           />
         </div>
 
