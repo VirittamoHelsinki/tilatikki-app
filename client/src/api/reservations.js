@@ -1,11 +1,14 @@
 import { useMutation, useQueryClient } from "react-query";
-const API_URL = "https://tilatikki-app-server.onrender.com";
+
+const dev = true;
+
+const API_URL = dev ? "http://localhost:5050" : "https://tilatikki-app-server.onrender.com";
 
 // Create a new reservation
 export const createReservation = async (reservationData) => {
   try {
     console.log("Creating reservation with data:", reservationData);
-    const response = await fetch(`${API_URL}/reservations/`, {
+    const response = await fetch(`${DEV_API_URL}/reservations/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
