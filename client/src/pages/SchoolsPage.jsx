@@ -3,7 +3,7 @@ import React from 'react';
 import { Container } from "@mui/material"
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
-import jatkasaariKoulu from '../images/jatkasaari-koulu.png';
+import jatkasaariKoulu from '../images/jatkasaari-koulu.jpeg';
 import pakilaKoulu from '../images/pakila-koulu.jpg';
 import { useAllSchoolsQuery } from '../api/schools';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
