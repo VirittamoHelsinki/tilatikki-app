@@ -156,7 +156,7 @@ const Timeline = ({
           <TimelineItem
             timeStart={reservation.startTime}
             timeEnd={reservation.endTime}
-            label={reservation.purpose}
+            label={reservation.additionalInfo}
             user={reservation.user}
             reservationPurpose={reservation.purpose}
             fullHeight={reservation.groupsize === room.capacity}
