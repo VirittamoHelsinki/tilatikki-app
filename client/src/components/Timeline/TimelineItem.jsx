@@ -36,7 +36,7 @@ const TimelineItem = ({
     <div
       onClick={onClick}
       onMouseMove={(event) => event.stopPropagation()}
-      className="rounded-md w-full select-none hover:z-50 hover:cursor-pointer overflow-hidden hover:overflow-visible relative bg-transparent"
+      className="rounded-md w-full select-none hover:z-10 hover:cursor-pointer overflow-hidden hover:overflow-visible relative bg-transparent"
       style={{
         gridColumn: gridColumnValueString,
         gridRow: fullHeight ? "1 / -1" : "auto",
@@ -44,7 +44,7 @@ const TimelineItem = ({
       }}
     >
       <div
-        className="py-[2px] px-2 rounded-md absolute min-w-full top-0 left-0 transition-shadow hover:shadow-xl z-50 "
+        className="py-[2px] px-2 rounded-md absolute min-w-full top-0 left-0 transition-shadow hover:shadow-xl"
         style={{
           backgroundColor: hidden ? "rgb(245, 245, 245)" : backgroundColor,
           color: hidden ? "rgb(190, 190, 190)" : "inherit",
