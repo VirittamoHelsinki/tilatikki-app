@@ -126,7 +126,7 @@ const Timeline = ({
   const onMouseLeave = () => {
     if (!newReservationIndicatorRef.current) return;
     newReservationIndicatorRef.current.style.display = "none";
-  }  
+  }
 
   return (
     <div

@@ -185,7 +185,7 @@ const TimelinePage = () => {
 
   rooms = floor?.rooms.map((room) => {
     const reservations = room.reservations.filter((reservation) => {
-      return moment(reservation.reservationDate).isSame(moment(selectedDate));
+      return moment(reservation.reservationDate).isSame(moment(selectedDate), "day");
     });
 
     return {
