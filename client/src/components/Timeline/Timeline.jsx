@@ -5,6 +5,8 @@ const Timeline = ({
   room,
   handleOpenNewReservationModal,
   handleOpenEditReservationModal,
+  highlightMode,
+  currentUser,
 }) => {
   const newReservationIndicatorRef = useRef(null);
 
@@ -112,7 +114,7 @@ const Timeline = ({
     if (overlap === 0) {
       element.style.gridRow = "1 / span 2"
     }
-    
+
     element.style.gridColumn = gridColumnValueString
   }
 
@@ -152,20 +154,25 @@ const Timeline = ({
 
       {
         // Reservations inside the timeline
-        room.reservations.map((reservation) => (
-          <TimelineItem
-            timeStart={reservation.startTime}
-            timeEnd={reservation.endTime}
-            label={reservation.additionalInfo}
-            user={reservation.user}
-            reservationPurpose={reservation.purpose}
-            fullHeight={reservation.groupsize === room.capacity}
-            onClick={safeHandleOpenEditReservationModal}
-          />
-        ))
+        room.reservations.map((reservation) => {
+          const userOwnsReservation = currentUser._id === reservation.user._id;
+
+          return (
+            <TimelineItem
+              timeStart={reservation.startTime}
+              timeEnd={reservation.endTime}
+              label={reservation.additionalInfo}
+              user={reservation.user}
+              reservationPurpose={reservation.purpose}
+              fullHeight={reservation.groupsize === room.capacity}
+              onClick={safeHandleOpenEditReservationModal}
+              hidden={!userOwnsReservation && highlightMode}
+            />
+          )
+        })
       }
 
-      <TimelineItem timeStart="20:00" timeEnd="24:00" unavailable/>
+      {/* <TimelineItem timeStart="20:00" timeEnd="24:00" unavailable/> */}
 
       <div
         ref={newReservationIndicatorRef}

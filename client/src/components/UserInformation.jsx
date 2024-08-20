@@ -25,7 +25,6 @@ const UserInformation = () => {
 
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
-    setSnackbarMessage('');
   }
 
   const handleUserDataSubmit = async (data) => {
@@ -39,9 +38,11 @@ const UserInformation = () => {
 
       // Re-set the userEmail cookie incase user updated their email.
       setCookie('UserEmail', updatedUser.email, 1);
+      setSnackbarOpen(true)
       setSnackbarMessage('Perustiedot päivitetty onnistuneesti!');
     } catch (error) {
       setSnackbarMessage('Jokin meni pieleen...');
+      setSnackbarOpen(true);
       console.error(error);
     }
   }
@@ -73,8 +74,10 @@ const UserInformation = () => {
       setCurrentPasswordError('');
       setNewPasswordError('');
       setSnackbarMessage('Salasana päivitetty onnistuneesti!');
+      setSnackbarOpen(true);
     } catch (error) {
       setCurrentPasswordError('Väärä salasana');
+      setSnackbarOpen(true);
     }
   }
 
