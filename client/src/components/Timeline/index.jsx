@@ -135,7 +135,8 @@ const TimelinePage = () => {
   const { data, error, isLoading } = useSchoolQuery(id);
   const form = useForm({
     defaultValues: {
-      date: moment().format("MM/DD/YYYY") // Requires date in this format
+      date: moment().format("MM/DD/YYYY"), // Requires date in this format,
+      highlightMode: false,
     },
   });
 
