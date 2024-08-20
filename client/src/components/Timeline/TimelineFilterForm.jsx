@@ -18,15 +18,11 @@ import { Switch } from "../ui/switch"
 import { Label } from "../ui/label"
 
 const TimelineFilterForm = ({ schoolData, form }) => {
-
   const buildings = schoolData.buildings
 
   const selectedBuilding = form.watch("building")
   const selectedFloor = form.watch("floor")
   const selectedDate = form.watch("date")
-
-  console.log("HIGHLIGHT MODE", form.watch("highlightMode"));
-  
 
   useEffect(() => {
     const building = buildings[0]

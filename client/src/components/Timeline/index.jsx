@@ -25,6 +25,8 @@ const TimelineContainer = ({
   handleOpenNewReservationModal,
   handleOpenEditReservationModal,
   showRoomInformation = true,
+  currentUser,
+  highlightMode,
 }) => {
 
   // Used for the click&drag reservation
@@ -118,6 +120,8 @@ const TimelineContainer = ({
                     room={room}
                     handleOpenNewReservationModal={handleOpenNewReservationModal}
                     handleOpenEditReservationModal={handleOpenEditReservationModal}
+                    currentUser={currentUser}
+                    highlightMode={highlightMode}
                   />
                 ))
               }
@@ -194,7 +198,7 @@ const TimelinePage = () => {
     return <p>please wait</p>
   }
 
-  console.log(showNewReservationModal);
+  console.log("USER", user);
   
 
   return (
@@ -223,7 +227,9 @@ const TimelinePage = () => {
               rooms={rooms}
               handleOpenNewReservationModal={handleOpenNewReservationModal}
               handleOpenEditReservationModal={handleOpenEditReservationModal}
-              />
+              highlightMode={form.watch("highlightMode")}
+              currentUser={user}
+            />
           </div>
 
         </div>
