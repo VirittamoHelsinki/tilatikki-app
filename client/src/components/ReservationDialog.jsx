@@ -8,10 +8,11 @@ import {
 	IconButton,
 	Alert
 } from '@mui/material';
-import { useCreateReservationMutation } from '../api/reservations';
+import { useCreateReservationMutation, useUpdateReservationMutation } from '../api/reservations';
 import { getCookie } from '../utils/Cookies';
 import { fetchUserDataByEmail } from '../api/userApi';
 import CreateReservationForm from '../components/CreateReservationForm';
+import UpdateReservationForm from '../components/UpdateReservationForm';
 
 const theme = createTheme({
 	palette: {
@@ -41,13 +42,14 @@ const theme = createTheme({
 	},
 });
 
-const ReservationDialog = ({ roomId, isOpen, onClose, roomNumber, capacity, groupsize, filterValues }) => {
+const ReservationDialog = ({ roomId, isOpen, onClose, roomNumber, capacity, groupsize, filterValues, status, reservationId, reservationGroupId }) => {
 	const [groupSize, setGroupSize] = useState(null);
 	const [user, setUser] = useState({});
 	const [snackbarOpen, setSnackbarOpen] = useState(false);
 	const [snackbarMessage, setSnackbarMessage] = useState('');
 
 	const createReservationMutation = useCreateReservationMutation();
+	const updateReservationMutation = useUpdateReservationMutation();
 
 	useEffect(() => {
 		const email = getCookie('UserEmail');
@@ -80,7 +82,7 @@ const ReservationDialog = ({ roomId, isOpen, onClose, roomNumber, capacity, grou
 		<ThemeProvider theme={theme}>
 			<Dialog open={isOpen} onClose={handleDialogClose} maxWidth="sm" fullWidth>
 				<DialogContent>
-					<CreateReservationForm
+					{status !== "Varattu" ? <CreateReservationForm
 						createReservationMutation={createReservationMutation}
 						roomNumber={roomNumber}
 						roomId={roomId}
@@ -91,7 +93,22 @@ const ReservationDialog = ({ roomId, isOpen, onClose, roomNumber, capacity, grou
 						user={user}
 						onClose={handleDialogClose}
 						filterValues={filterValues}
-					/>
+					/> :
+						<UpdateReservationForm
+							updateReservationMutation={updateReservationMutation}
+							roomNumber={roomNumber}
+							reservationId={reservationId}
+							reservationGroupId={reservationGroupId}
+							roomId={roomId}
+							reservationGroupSize={groupSize}
+							handleGroupSizeChange={handleGroupSizeChange}
+							groupsize={groupsize}
+							capacity={capacity}
+							user={user}
+							onClose={handleDialogClose}
+							filterValues={filterValues}
+						/>
+					}
 				</DialogContent>
 			</Dialog>
 
