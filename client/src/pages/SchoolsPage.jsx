@@ -46,7 +46,7 @@ const SchoolsPage = () => {
         <div className="grid xl:grid-cols-4 lg:grid-cols-3 gap-4">
           {
             cardData.map((card, index) => (
-              <Card className="hover:shadow-md" key={index}>
+              <Card className="hover:shadow-md cursor-pointer" key={index} onClick={() => handleCardClick(card.link)}>
                 <CardHeader>
                   <CardTitle>{ card.title }</CardTitle>
                   <CardDescription>{ card.description }</CardDescription>
