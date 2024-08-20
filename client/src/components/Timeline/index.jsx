@@ -198,9 +198,6 @@ const TimelinePage = () => {
     return <p>please wait</p>
   }
 
-  console.log("USER", user);
-  
-
   return (
     <>
 

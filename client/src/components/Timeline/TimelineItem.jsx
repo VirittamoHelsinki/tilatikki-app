@@ -31,9 +31,6 @@ const TimelineItem = ({
   const backgroundColor = fullHeight
     ? "#EA7272"
     : "#F4BD89";
-
-
-  console.log("HIDE", hidden);
     
   return (
     <div
