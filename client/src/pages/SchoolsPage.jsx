@@ -1,10 +1,12 @@
 import React from 'react';
-import { Container, Grid, Card, CardActionArea, CardContent, CardMedia, Typography } from '@mui/material';
+//import { Container, Grid, Card, CardActionArea, CardContent, CardMedia, Typography } from '@mui/material';
+import { Container } from "@mui/material"
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import jatkasaariKoulu from '../images/jatkasaari-koulu.png';
 import pakilaKoulu from '../images/pakila-koulu.jpg';
 import { useAllSchoolsQuery } from '../api/schools';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 const cardData = [
   {
@@ -40,31 +42,29 @@ const SchoolsPage = () => {
     <>
       <Header />
       <Container sx={{ marginTop: 4 }} maxWidth={false}>
-        <Grid justifyContent="flex-start" container spacing={4}> {/* Adjust justifyContent */}
-          {cardData.map((card, index) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-              <Card>
-                <CardActionArea onClick={() => handleCardClick(card.link)}>
-                  <CardContent >
-                    <Typography gutterBottom variant="h5" component="div">
-                      {card.title}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {card.description}
-                    </Typography>
-                    <CardMedia
-                      component="img"
-                      height="140"
-                      image={card.image}
-                      alt={card.title}
-                      sx={{ paddingTop: '24px' }}
-                    />
-                  </CardContent>
-                </CardActionArea>
+
+        <div className="grid xl:grid-cols-4 lg:grid-cols-3 gap-4">
+          {
+            cardData.map((card, index) => (
+              <Card className="hover:shadow-md" key={index}>
+                <CardHeader>
+                  <CardTitle>{ card.title }</CardTitle>
+                  <CardDescription>{ card.description }</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <img
+                    className="object-cover bg-gray-500 rounded-lg w-full"
+                    style={{ aspectRatio: "3 / 1" }}
+                    src={card.image}
+                    alt="school"
+                  />
+                </CardContent>
               </Card>
-            </Grid>
-          ))}
-        </Grid>
+            ))
+          }
+        </div>
+
+
       </Container>
     </>
   );
