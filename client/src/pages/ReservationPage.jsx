@@ -11,6 +11,7 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import FloorPlan from '../components/FloorPlan';
 import Calendar from '../components/Calendar';
 import ReservationPageCalendar from '../components/ReservationPageCalendar';
+import ReservationsPage from '@/components/Timeline';
 
 const ReservationPage = () => {
   const [filteredClassrooms, setFilteredClassrooms] = useState([]);
@@ -166,6 +167,14 @@ const ReservationPage = () => {
             Kalenterinäkymä
           </Button>
         </Grid>
+        <Grid item>
+          <Button
+            onClick={() => setSelectedComponent('aikajananäkymä')}
+            sx={{  textTransform: 'none', color: 'black', padding: '6px 10px', 'borderRadius': '6px', backgroundColor: selectedComponent === 'aikajananäkymä' ? 'white' : 'transparent', 'fontWeight': 500 }}
+          >
+            Aikajananäkymä
+          </Button>
+        </Grid>
       </Grid>
 
       <Container maxWidth="" style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '20px' }}>
@@ -228,6 +237,10 @@ const ReservationPage = () => {
 
         {
           selectedComponent === "kalenterinäkymä" && <ReservationPageCalendar data={data} />
+        }
+
+        {
+          selectedComponent === "aikajananäkymä" && <ReservationsPage />
         }
 
       </Container>

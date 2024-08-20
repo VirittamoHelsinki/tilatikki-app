@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.warning {
+  background: repeating-linear-gradient(
+    45deg,
+    rgb(240, 240, 240),
+    rgb(240, 240, 240) 10px,
+    rgb(230, 230, 230) 10px,
+    rgb(230, 230, 230) 20px
+  );
+
+  border: 1px solid rgba(220, 220, 220, 0.5);
+}

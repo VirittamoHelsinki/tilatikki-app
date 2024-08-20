@@ -13,17 +13,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import 'dayjs/locale/de';
 import {clearButtonStyle} from '../styles/filterformStyles';
 import InfoIcon from '@mui/icons-material/Info';
-
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-	PaperProps: {
-		style: {
-			maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-			width: 250,
-		},
-	},
-};
+import dayjs from 'dayjs';
 
 const timeSlots = [
 	'05:00', '05:15', '05:30', '05:45', '06:00', '06:15', '06:30', '06:45',
@@ -35,25 +25,74 @@ const timeSlots = [
 	'17:00', '17:15', '17:30', '17:45', '18:00', '18:15', '18:30', '18:45',
 	'19:00', '19:15', '19:30', '19:45', '20:00', '20:15', '20:30', '20:45',
 	'21:00', '21:15', '21:30', '21:45', '22:00', '22:15', '22:30', '22:45',
-	'23:00', '23:15', '23:30'
+	'23:00', '23:15', '23:30', '23:45'
 ];
 
-const groupSizes = Array.from({ length: 100 }, (_, index) => (index) + 1);
+const getNextAvailableStartingtime = () => {
+	const now = dayjs();
 
+	for (const time of timeSlots) {
+		const timeSlot = dayjs(time, 'HH:mm');
+		if (timeSlot.isAfter(now)) {
+		  return time;
+		}
+	  }
+	  return timeSlots[0];
+};
+
+const getEndingTime = (startingTime) => {
+	const startingIndex = timeSlots.indexOf(startingTime);
+	const endingIndex = startingIndex + 4;
+
+	if (endingIndex >= timeSlots.length) {
+		return '';
+	}
+	return timeSlots[endingIndex];
+};
 
 
 const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) => {
-	const [selectedBuildings, setSelectedBuildings] = useState([]);
+	const [selectedBuildings, setSelectedBuildings] = useState([schoolData.buildings[0]]);
 	const [availableFloors, setAvailableFloors] = useState([1]);
-	const [selectedFloor, setSelectedFloor] = useState('');
-	const [startingTime, setStartingTime] = useState('');
+	const [selectedFloor, setSelectedFloor] = useState(schoolData.buildings[0].floors[0].number);
+	const [startingTime, setStartingTime] = useState(getNextAvailableStartingtime);
 	const [endingTime, setEndingTime] = useState('');
-	const [selectedGroupSize, setSelectedGroupSize] = useState('');
+	const [selectedGroupSize, setSelectedGroupSize] = useState(1);
 	const [classroom, setClassroom] = useState('');
 	const [availableClassrooms, setAvailableClassrooms] = useState([]);
-	const [selectedDate, setSelectedDate] = useState(null);
-	const [required, setRequired] = useState(false);
-	const [requiredEndTime, setRequiredEndTime] = useState(false);
+	const [selectedDate, setSelectedDate] = useState(dayjs());
+
+
+	const ITEM_HEIGHT = 48;
+	const ITEM_PADDING_TOP = 8;
+	const MenuProps = {
+		PaperProps: {
+			style: {
+				maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+				width: 250,
+			},
+		},
+	};
+
+	// return the biggest classroom's capacity as maxvalue for groupsize
+	const maxClassroomCapacity = (schoolData) => {
+		if (selectedBuildings) {
+			return Math.max(...selectedBuildings.flatMap(building =>
+				building.floors.flatMap(floor =>
+				  floor.rooms.map(room => room.capacity)
+				)
+			  ));
+		}
+		else {
+			return Math.max(...schoolData.buildings.flatMap(building =>
+				building.floors.flatMap(floor =>
+					floor.rooms.map(room => room.capacity)
+				)
+			));
+		}
+	};
+
+	const groupSizes = Array.from({ length: maxClassroomCapacity(schoolData) }, (_, index) => (index) + 1);
 
 	const handleSelectedBuildings = (event) => {
 		const {
@@ -65,7 +104,6 @@ const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) 
 			schoolData.buildings.find((building) => building.name === name)
 		);
 		setSelectedBuildings(selectedBuildingObjects);
-		setRequired(false);
 	};
 
 	const handleSelectedFloor = (event) => {
@@ -84,7 +122,6 @@ const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) 
 
 	const handleEndingTime = (e) => {
 		setEndingTime(e.target.value);
-		setRequiredEndTime(false);
 	}
 
 	const handleGroupSize = (e) => {
@@ -188,7 +225,7 @@ const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) 
 		return time >= startTime && time < endTime;
 	}
 
-	// calculate rooms every timeslots occupancies to see if its full/partly free
+	// calculate total occupancy for every timeslot for a room
 	const createRoomTimeslotOccupancy = (room, selectedDay) => {
 		const roomTimeslots = [];
 
@@ -333,12 +370,6 @@ const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) 
 		}
 	};
 
-	const checkRequired = () => {
-		if (startingTime && !endingTime) {
-			setRequiredEndTime(true);
-		}
-	}
-
 	const resetStates = () => {
 		setSelectedBuildings([]);
 		setAvailableFloors([1]);
@@ -349,8 +380,6 @@ const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) 
 		setClassroom('');
 		setAvailableClassrooms([]);
 		setSelectedDate(null);
-		setRequired(false);
-		setRequiredEndTime(false);
 	}
 
 	const handleStartingDateChange = (newDate) => {
@@ -359,7 +388,7 @@ const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) 
 
 	useEffect(() => {
 		console.log('schoolData', schoolData);
-		console.log('schoolData floor', schoolData.buildings[0].floors[0]._id);
+		console.log('schoolData floor_id', schoolData.buildings[0].floors[0]._id);
 		const maxFloorValue = selectedBuildings.reduce((max, building) =>
 			Object.keys(building.floors).length > max ? Object.keys(building.floors).length : max, 1
 		)
@@ -376,6 +405,9 @@ const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) 
 			handleAvailableClassrooms();
 		}
 		setClassroom('');
+		if (!endingTime && startingTime) {
+			setEndingTime(getEndingTime(startingTime));
+		}
 	}, [selectedBuildings, selectedFloor]);
 
 	return (
@@ -384,6 +416,7 @@ const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) 
 				{schoolData.name}
 			</Typography>
 			<Typography variant="subtitle1" gutterBottom>
+				{/* school-intro instead of address */}
 				{schoolData.address}
 			</Typography>
 
@@ -463,7 +496,7 @@ const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) 
 					<FormControl fullWidth>
 						<InputLabel id="starttime-select-label" shrink>
 							Aloitusaika
-							<Tooltip title={<div style={{ fontSize: "18px" }}>Huomioithan, että aloitus- ja lopetusaika tarkoittavat opetustunnin aloitus- ja lopetusaikaa.</div>} placement='top'>
+							<Tooltip title={<div style={{ fontSize: "16px" }}>Huomioithan, että aloitus- ja lopetusaika tarkoittavat opetustunnin aloitus- ja lopetusaikaa.</div>} placement='top'>
 								<InfoIcon />
 							</Tooltip>
 						</InputLabel>
@@ -489,7 +522,7 @@ const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) 
 					<FormControl fullWidth>
 						<InputLabel id="endtime-select-label" shrink>
 							Lopetusaika
-							<Tooltip title={<div style={{ fontSize: "18px" }}>Huomioithan, että aloitus- ja lopetusaika tarkoittavat opetustunnin aloitus- ja lopetusaikaa.</div>} placement='top'>
+							<Tooltip title={<div style={{ fontSize: "16px" }}>Huomioithan, että aloitus- ja lopetusaika tarkoittavat opetustunnin aloitus- ja lopetusaikaa.</div>} placement='top'>
 								<InfoIcon />
 							</Tooltip>
 						</InputLabel>
@@ -570,7 +603,7 @@ const FilterForm = ({ onClassroomChange, schoolData, onApply, onFilterChange }) 
 					</FormControl>
 				</Box>
 
-				<Button variant="contained" type="submit" onClick={checkRequired}
+				<Button variant="contained" type="submit"
 					sx={{
 						textTransform: 'none',
 						backgroundColor: '#18181B',

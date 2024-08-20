@@ -1,4 +1,11 @@
 import { useQuery } from "react-query";
+<<<<<<< HEAD
+=======
+const dev = true;
+const API_URL = dev
+  ? "http://localhost:5050"
+  : "https://tilatikki-app-server.onrender.com";
+>>>>>>> 0d3dfe7e568b925db4935efc03d6832a49bdcf44
 
 const dev = true;
 

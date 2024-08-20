@@ -128,36 +128,36 @@ const BookingResults = ({ classrooms, filterValues }) => {
 							marginBottom: '10px',
 						}}
 					>
-							<Button
-								onClick={() => handleFilterChange('reservations')}
-								sx={{
-									flexGrow: '2',
-									textTransform: 'none',
-									color: 'black',
-									padding: '6px 10px',
-									borderRadius: '6px',
-									backgroundColor: filterMode === 'reservations' ? 'white' : 'transparent',
-									fontWeight: 500,
-								}}
-							>
-								Omat Varaukset
-							</Button>
+						<Button
+							onClick={() => handleFilterChange('reservations')}
+							sx={{
+								flexGrow: '2',
+								textTransform: 'none',
+								color: 'black',
+								padding: '6px 10px',
+								borderRadius: '6px',
+								backgroundColor: filterMode === 'reservations' ? 'white' : 'transparent',
+								fontWeight: 500,
+							}}
+						>
+							Omat Varaukset
+						</Button>
 
 
-							<Button
-								onClick={() => handleFilterChange('free')}
-								sx={{
-									flexGrow: '2',
-									textTransform: 'none',
-									color: 'black',
-									padding: '6px 10px',
-									borderRadius: '6px',
-									backgroundColor: filterMode === 'free' ? 'white' : 'transparent',
-									fontWeight: 500,
-								}}
-							>
-								Vapaat tilat
-							</Button>
+						<Button
+							onClick={() => handleFilterChange('free')}
+							sx={{
+								flexGrow: '2',
+								textTransform: 'none',
+								color: 'black',
+								padding: '6px 10px',
+								borderRadius: '6px',
+								backgroundColor: filterMode === 'free' ? 'white' : 'transparent',
+								fontWeight: 500,
+							}}
+						>
+							Vapaat tilat
+						</Button>
 					</div>
 					<Box sx={{ maxHeight: '500px', overflowY: 'auto' }}>
 						{paginatedClassrooms.map(([key, value]) => {
@@ -170,6 +170,8 @@ const BookingResults = ({ classrooms, filterValues }) => {
 										filteredUserReservations.map((reservation) => (
 											<ReservationCard
 												key={reservation._id}
+												reservationId={reservation._id}
+												reservationGroupId={reservation.reservationGroupId}
 												roomId={reservation.room}
 												roomNumber={value.number}
 												purpose={reservation.purpose}
