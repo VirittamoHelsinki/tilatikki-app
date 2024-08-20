@@ -25,6 +25,8 @@ const TimelineContainer = ({
   handleOpenNewReservationModal,
   handleOpenEditReservationModal,
   showRoomInformation = true,
+  currentUser,
+  highlightMode,
 }) => {
 
   // Used for the click&drag reservation
@@ -118,6 +120,8 @@ const TimelineContainer = ({
                     room={room}
                     handleOpenNewReservationModal={handleOpenNewReservationModal}
                     handleOpenEditReservationModal={handleOpenEditReservationModal}
+                    currentUser={currentUser}
+                    highlightMode={highlightMode}
                   />
                 ))
               }
@@ -135,7 +139,8 @@ const TimelinePage = () => {
   const { data, error, isLoading } = useSchoolQuery(id);
   const form = useForm({
     defaultValues: {
-      date: moment().format("MM/DD/YYYY") // Requires date in this format
+      date: moment().format("MM/DD/YYYY"), // Requires date in this format,
+      highlightMode: false,
     },
   });
 
@@ -180,7 +185,7 @@ const TimelinePage = () => {
 
   rooms = floor?.rooms.map((room) => {
     const reservations = room.reservations.filter((reservation) => {
-      return moment(reservation.reservationDate).isSame(moment(selectedDate));
+      return moment(reservation.reservationDate).isSame(moment(selectedDate), "day");
     });
 
     return {
@@ -192,9 +197,6 @@ const TimelinePage = () => {
   if (isLoading) {
     return <p>please wait</p>
   }
-
-  console.log(showNewReservationModal);
-  
 
   return (
     <>
@@ -222,7 +224,9 @@ const TimelinePage = () => {
               rooms={rooms}
               handleOpenNewReservationModal={handleOpenNewReservationModal}
               handleOpenEditReservationModal={handleOpenEditReservationModal}
-              />
+              highlightMode={form.watch("highlightMode")}
+              currentUser={user}
+            />
           </div>
 
         </div>

@@ -14,31 +14,32 @@ import {
 } from "@/components/ui/popover"
 import { fi } from "date-fns/locale"
 import { useEffect } from "react"
+import { Switch } from "../ui/switch"
+import { Label } from "../ui/label"
 
 const TimelineFilterForm = ({ schoolData, form }) => {
-
   const buildings = schoolData.buildings
 
   const selectedBuilding = form.watch("building")
   const selectedFloor = form.watch("floor")
   const selectedDate = form.watch("date")
 
-  useEffect(() => {    
+  useEffect(() => {
     const building = buildings[0]
-    form.setValue("building", building?._id)  
+    form.setValue("building", building?._id)
   }, [])
 
   // Set floor to first floor of building whenever building changes
   useEffect(() => {
     const building = buildings.find((building) => building._id === selectedBuilding)
     const firstFloor = building?.floors.find((floor) => floor.number === 1)
-    
+
     form.setValue("floor", firstFloor?._id)
-  }, [ selectedBuilding ])  
+  }, [ selectedBuilding ])
 
   return (
     <FormProvider {...form}>
-    <div className="grid grid-cols-4 gap-5 mb-5">
+    <div className="grid grid-cols-4 grid-rows-2 gap-5 mb-5">
 
       <FormField
         control={form.control}
@@ -123,6 +124,22 @@ const TimelineFilterForm = ({ schoolData, form }) => {
           </FormItem>
         )}
       />
+
+      <div className="col-start-1 row-start-2">
+        <FormField
+          control={form.control}
+          name="highlightMode"
+          render={({ field }) => (
+            <FormItem>
+              <div className="flex items-center space-x-2">
+                <Switch id="highlight-own-reservations" checked={field.value} onCheckedChange={field.onChange}/>
+                <Label htmlFor="highlight-own-reservations">Näytä omat varaukset</Label>
+              </div>
+            </FormItem>
+          )}
+        />
+
+      </div>
 
     </div>
   </FormProvider>
