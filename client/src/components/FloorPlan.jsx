@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../styles/FloorPlan.css';
 import MapTooltip from './MapTooltip';
 import ReservationDialog from './ReservationDialog';
+import { fetchTotalPeopleReserved } from '../api/rooms';
 
-const FloorPlan5 = ({ floorData, roomProps, floorNumber, filterValues }) => {
+const FloorPlan = ({ floorData, roomProps, floorNumber, filterValues }) => {
   const [hoveredRoom, setHoveredRoom] = useState(null);
   const [hoveredRoomCapacity, setHoveredRoomCapacity] = useState(0);
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
@@ -15,6 +16,53 @@ const FloorPlan5 = ({ floorData, roomProps, floorNumber, filterValues }) => {
     groupsize: 0,
     creator: ''
   });
+
+  const [freeRooms, setFreeRooms] = useState([]);
+  const [partiallyFreeRooms, setPartiallyFreeRooms] = useState([]);
+  const [reservedRooms, setReservedRooms] = useState([]);
+
+  useEffect(() => {
+    const fetchRoomData = async () => {
+			const calculateTotalPeopleInTimeSlot = async (roomId) => {
+				const totalPeople = filterValues.selectedDate && filterValues.startingTime && filterValues.endingTime ? await fetchTotalPeopleReserved(roomId, filterValues.selectedDate, filterValues.startingTime, filterValues.endingTime) : null;
+        console.log('totalPeople', totalPeople);
+				return totalPeople ? totalPeople.totalPeople : null;
+			};
+
+
+
+			// Temporary arrays to hold the rooms
+			const freeRoomsTemp = [];
+			const partiallyFreeRoomsTemp = [];
+			const reservedRoomsTemp = [];
+
+			// Loop through the classrooms and classify them based on the total people
+			for (const room of floorData) {
+				const total = await calculateTotalPeopleInTimeSlot(room._id);
+        console.log('room._id', room._id, room.number);
+				if (total === null) {
+					return;
+				}
+
+				if (total === 0) {
+					freeRoomsTemp.push({ ...room, total: total });
+				} else if (total > 0 && total < room.capacity) {
+					partiallyFreeRoomsTemp.push({ ...room, total: total });
+				} else {
+					reservedRoomsTemp.push({ ...room, total: total });
+				}
+			}
+
+			// Set the state with the classified rooms
+			setFreeRooms(freeRoomsTemp);
+			setPartiallyFreeRooms(partiallyFreeRoomsTemp);
+			setReservedRooms(reservedRoomsTemp);
+		};
+
+    if (filterValues.selectedDate && filterValues.startingTime && filterValues.endingTime) {
+      fetchRoomData();
+    }
+  }, [floorData, filterValues, fetchTotalPeopleReserved]);
 
   const handleOpenDialog = (roomId, roomNumber, capacity) => {
     setReservationData({ ...reservationData, roomId, roomNumber, capacity });
@@ -28,9 +76,23 @@ const FloorPlan5 = ({ floorData, roomProps, floorNumber, filterValues }) => {
   const isRoomInFloorData = (roomNumber) => {
     return floorData.some(room => room.number === roomNumber);
   };
-
   const getRoomColor = (roomNumber) => {
-    return isRoomInFloorData(roomNumber) ? '#94D0AD' : '#EA7272';
+    const freeRoom = freeRooms.find(room => room.number === roomNumber);
+    if (freeRoom) {
+      return '#94D0AD';
+    }
+  
+    const partiallyFreeRoom = partiallyFreeRooms.find(room => room.number === roomNumber);
+    if (partiallyFreeRoom) {
+      return '#F4BD89'; 
+    }
+  
+    const reservedRoom = reservedRooms.find(room => room.number === roomNumber);
+    if (reservedRoom) {
+      return '#EA7272'; 
+    }
+  
+    return '#EA7272';
   };
 
   const handleMouseEnter = (event, roomNumber, roomCapacity) => {
@@ -150,4 +212,4 @@ const FloorPlan5 = ({ floorData, roomProps, floorNumber, filterValues }) => {
   );
 };
 
-export default FloorPlan5;
+export default FloorPlan;
