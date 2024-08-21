@@ -27,7 +27,8 @@ import { fi } from "date-fns/locale"
 import { format } from "date-fns"
 import { DialogFooter } from "./ui/dialog";
 import { Textarea } from "./ui/textarea";
-import { useCreateReservationMutation } from "@/api/reservations";
+import { getReservationById, useCreateReservationMutation } from "@/api/reservations";
+import { useEffect } from "react";
 
 const EditReservationDialog = ({
   reservationId = "6687ca640231a8f3b98190ff",
@@ -35,6 +36,22 @@ const EditReservationDialog = ({
 }) => {
   const createReservationMutation = useCreateReservationMutation()
   const form = useForm({ })
+
+
+
+  useEffect(() => {
+    const fetchReservationData = async () => {
+      const reservationData = await getReservationById(reservationId);
+      console.log("RESERVATION DATA", reservationData);
+      
+    }
+
+    fetchReservationData();
+  }, [ reservationId ])
+
+
+
+
 
   const availableStartTimes = Array.from({ length: 24 * 4 }).map((_, index) => (
     Math.floor(index / 4).toString().padStart(2, "0")
