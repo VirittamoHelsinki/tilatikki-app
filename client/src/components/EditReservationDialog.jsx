@@ -325,12 +325,12 @@ const EditReservationDialog = ({
                 </FormItem>
               )}
             />
-
-            <DialogFooter className="mt-4">
-            <Button className="mr-auto" type="submit">Tallenna muutokset</Button>
-            <Button className="mr-auto" type="submit">Poista varaus</Button>
-            </DialogFooter>
           </form>
+
+          <DialogFooter className="mt-4 flex flex-row ">
+            <Button type="submit">Tallenna muutokset</Button>
+            <Button className="bg-red-700 hover:bg-red-600" type="submit">Poista varaus</Button>
+          </DialogFooter>
         </Form>
 
 
