@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "react-query";
-const dev = true;
+const API_URL = import.meta.env.VITE_API_URL;
 
-const API_URL = dev ? "http://localhost:5050" : "https://tilatikki-app-server.onrender.com";
+console.log("API", API_URL);
 
 
 // Create a new reservation
