@@ -17,6 +17,7 @@ import { useCreateReservationMutation } from "@/api/reservations";
 import { fetchUserDataByEmail } from "@/api/userApi";
 import { getCookie } from "@/utils/Cookies";
 import NewReservationDialog from "../NewReservationDialog";
+import EditReservationDialog from "../EditReservationDialog";
 
 moment.locale("fi");
 
@@ -200,6 +201,14 @@ const TimelinePage = () => {
 
   return (
     <>
+
+      {
+        true && (
+          <EditReservationDialog
+            onOpenChange={() => {}}
+          />
+        )
+      }
 
       {
         <NewReservationDialog
