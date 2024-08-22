@@ -1,13 +1,15 @@
-import React, { useEffect } from 'react';
-import { Box, Grid, Typography, Checkbox, TextField, MenuItem, Select, FormControl, InputLabel, Button, FormControlLabel, Switch } from "@mui/material"
-import { DatePicker, LocalizationProvider, TimePicker } from "@mui/x-date-pickers"
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
-import { fiFI } from "@mui/x-date-pickers/locales"
-import dayjs from "dayjs"
-import { useState } from "react"
-import { useForm, Controller } from "react-hook-form"
+import React, { useEffect, useState } from 'react';
+import {
+  Box, Grid, Typography, Checkbox, TextField, MenuItem, Select,
+  FormControl, InputLabel, Button, FormControlLabel, Switch
+} from "@mui/material";
+import { DatePicker, LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { fiFI } from "@mui/x-date-pickers/locales";
+import dayjs from "dayjs";
+import { useForm, Controller } from "react-hook-form";
 import PeopleIcon from '@mui/icons-material/People';
-import { v4 as uuid } from "uuid"
+import { v4 as uuid } from "uuid";
 
 const CreateReservationForm = ({
   createReservationMutation,
@@ -18,93 +20,55 @@ const CreateReservationForm = ({
   user,
   onClose,
   filterValues,
+  setSnackbarMessage,  // Add this prop
+  setSnackbarOpen      // Add this prop
 }) => {
-  const { control, register, handleSubmit, watch } = useForm()
-
+  const { control, register, handleSubmit, watch } = useForm();
   const [reservationHasExceptions, setReservationHasExceptions] = useState(false);
   const [disableSubmitButton, setDisableSubmitButton] = useState(false);
 
   useEffect(() => {
-    groupsize > 0 && groupsize < capacity && setDisableSubmitButton(true)
-  }, [])
+    groupsize > 0 && groupsize < capacity && setDisableSubmitButton(true);
+  }, []);
 
   const handleReservationSwitchChange = () => setReservationHasExceptions(!reservationHasExceptions);
-  const handleDisableSubmitButton = () => setDisableSubmitButton(!disableSubmitButton)
-
-  useEffect(() => {
-    console.log('filter values: ', filterValues)
-  }, [])
+  const handleDisableSubmitButton = () => setDisableSubmitButton(!disableSubmitButton);
 
   const onSubmit = (data) => {
     data = {
       ...data,
-
       startTime: data.startTime.format("HH:mm"),
       endTime: data.endTime.format("HH:mm")
-    }
-
-    console.log('data: ', data)
-
-    const generateRecurringReservations = (baseDate, endDate, interval, reservationData) => {
-      let currentDate = dayjs(baseDate);
-      const end = dayjs(endDate);
-      const reservations = [];
-
-      while (currentDate.isBefore(end) || currentDate.isSame(end, 'day')) {
-        reservations.push({
-          ...reservationData,
-          reservationDate: currentDate,
-          startTime: data.startTime ? data.startTime : null,
-          endTime: data.endTime ? data.endTime : null,
-        });
-
-        currentDate = currentDate.add(interval, 'day');
-      }
-
-      return reservations;
-    }
+    };
 
     const reservationGroupId = uuid();
-    console.log('reservation group id: ', reservationGroupId)
-
     const reservationData = {
-      userId: user._id, // userId
+      userId: user._id,
       reservationDate: data.reservationDate ? data.reservationDate : null,
       reservationEndDate: data.reservationEndDate ? data.reservationEndDate : null,
       reservationGroupId: reservationGroupId,
       startTime: data.startTime,
       endTime: data.endTime,
-      purpose: data.reservationName, // string
-      roomId: roomId, // roomId
-      groupsize: data.reservationGroupSize, // integer
+      purpose: data.reservationName,
+      roomId: roomId,
+      groupsize: data.reservationGroupSize,
       recurrence: data.recurrence ? data.recurrence : 'none',
       additionalInfo: data.additionalInfo
-    }
+    };
 
-
-    console.log('reservationData: ', reservationData)
-
-    if (data.recurrence === 'none') {
-      createReservationMutation.mutate(reservationData);
-    } else if (data.recurrence === 'daily' && data.reservationEndDate) {
-      const reservations = generateRecurringReservations(data.reservationDate, data.reservationEndDate, 1, reservationData);
-      reservations.forEach(reservation => {
-        createReservationMutation.mutate(reservation);
-      });
-    } else if (data.recurrence === 'weekly' && data.reservationEndDate) {
-      const reservations = generateRecurringReservations(data.reservationDate, data.reservationEndDate, 7, reservationData);
-      console.log('weekly reservations: ', reservations)
-      reservations.forEach(reservation => {
-        createReservationMutation.mutate(reservation);
-      });
-    } else {
-      console.error('Invalid recurrence or missing end date');
-    }
-
-    onClose();
-  }
-
-  console.log(watch("startTime"));
+    createReservationMutation.mutate(reservationData, {
+      onSuccess: () => {
+        setSnackbarMessage('Varaus tehty onnistuneesti!');  // Set success message
+        setSnackbarOpen(true);                   // Open snackbar
+        onClose();                               // Close the dialog
+      },
+      onError: (error) => {
+        console.error('Error creating reservation:', error);
+        setSnackbarMessage('Varauksen tekeminen epäonnistui.');  // Set error message
+        setSnackbarOpen(true);                                   // Open snackbar
+      }
+    });
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
