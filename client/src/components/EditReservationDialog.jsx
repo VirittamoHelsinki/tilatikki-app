@@ -32,6 +32,7 @@ import { useEffect, useState } from "react";
 
 import useUser from "@/utils/useUser";
 import { v4 as uuid } from "uuid";
+import dayjs from "dayjs";
 
 
 const EditReservationDialog = ({
@@ -82,9 +83,10 @@ const EditReservationDialog = ({
     onOpenChange(false);
   }
 
-  const handleDelete = () => {
+  const handleDelete = (event) => {
+    event.stopPropagation()
     if (window.confirm('Are you sure you want to delete this reservation?')) {
-      //deleteReservationMutation.mutate(reservationId);
+      deleteReservationMutation.mutate(reservationId);
     }
     onClose();
   };
@@ -96,6 +98,7 @@ const EditReservationDialog = ({
   };
 
   const onSubmit = (data) => {
+    console.log("SUBMIT????");
     const generateRecurringReservations = (baseDate, endDate, interval, reservationData) => {
       let currentDate = dayjs(baseDate);
       const end = dayjs(endDate);
@@ -138,14 +141,14 @@ const EditReservationDialog = ({
     if (data.recurrence === 'none') {
       updateReservationMutation.mutate({ reservationId, updatedData });
       //handleRecurringDeletion(reservationData.reservationGroupId);
-    } else if (data.recurrence === 'daily' && data.reservationEndDate) {
-      const reservations = generateRecurringReservations(data.reservationDate, data.reservationEndDate, 1, updatedData);
+    } else if (data.recurrence === 'daily' && updatedData.reservationEndDate) {
+      const reservations = generateRecurringReservations(updatedData.reservationDate, updatedData.reservationEndDate, 1, updatedData);
       reservations.forEach(reservation => {
         createReservationMutation.mutate(reservation);
       });
       handleRecurringDeletion(reservationData.reservationGroupId);
-    } else if (data.recurrence === 'weekly' && data.reservationEndDate) {
-      const reservations = generateRecurringReservations(data.reservationDate, data.reservationEndDate, 7, updatedData);
+    } else if (data.recurrence === 'weekly' && updatedData.reservationEndDate) {
+      const reservations = generateRecurringReservations(updatedData.reservationDate, updatedData.reservationEndDate, 7, updatedData);
       console.log('weekly reservations: ', reservations)
       reservations.forEach(reservation => {
         createReservationMutation.mutate(reservation);
@@ -384,6 +387,7 @@ const EditReservationDialog = ({
             <DialogFooter className="mt-4 flex flex-row sm:justify-start">
               <Button type="submit">Tallenna muutokset</Button>
               <Button
+                type="button"
                 onClick={handleDelete}
                 className="bg-red-700 hover:bg-red-600"
               >
