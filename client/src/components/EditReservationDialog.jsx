@@ -118,9 +118,6 @@ const EditReservationDialog = ({
       return reservations;
     }
 
-    console.log(reservationData.room._id);
-
-
     const updatedData = {
       userId: user._id,
       reservationId: reservationId,
@@ -135,8 +132,6 @@ const EditReservationDialog = ({
       recurrence: data.recurrence ? data.recurrence : 'none',
       additionalInfo: data.additionalInfo
     }
-
-    console.log(updatedData);
 
     if (data.recurrence === 'none') {
       updateReservationMutation.mutate({ reservationId, updatedData });
@@ -161,7 +156,7 @@ const EditReservationDialog = ({
     onClose();
   }
 
-  if (!reservationData) return <p>loading</p>
+  if (!reservationData) return null
   const room = reservationData.room
   
   return (
