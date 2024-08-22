@@ -82,7 +82,6 @@ exports.updateReservationById = async (req, res) => {
       reservationEndDate: req.body.reservationEndDate,
       reservationGroupId: req.body.reservationGroupId,
       groupsize: req.body.groupsize,
-      time: req.body.reservationdate,
       startTime: req.body.startTime,
       endTime: req.body.endTime,
       recurrence: req.body.recurrence,
@@ -97,9 +96,14 @@ exports.updateReservationById = async (req, res) => {
       { new: true, runValidators: true },
     );
 
+    console.log("DOES THIs EXIST", reservation);
+
     if (!reservation) {
+      console.log("RESERVATION NOT FOUND");
       return res(404).json({ message: "Reservation not found" });
     }
+
+    console.log("SUCCESS");
 
     res.status(200).json(reservation);
   } catch (error) {

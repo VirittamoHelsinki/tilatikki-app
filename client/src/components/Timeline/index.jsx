@@ -18,6 +18,7 @@ import { fetchUserDataByEmail } from "@/api/userApi";
 import { getCookie } from "@/utils/Cookies";
 import NewReservationDialog from "../NewReservationDialog";
 import EditReservationDialog from "../EditReservationDialog";
+import useUser from "@/utils/useUser";
 
 moment.locale("fi");
 
@@ -30,7 +31,7 @@ const TimelineContainer = ({
   highlightMode,
 }) => {
 
-  
+
 
   return (
     <div
@@ -98,23 +99,10 @@ const TimelinePage = () => {
 
   const [ showNewReservationModal, setShowNewReservationModal ] = useState(null);
   const [ showEditReservationModal, setShowEditReservationModal ] = useState(null);
-  const [user, setUser] = useState({});
+  const [ reservationToEdit, setReservationToEdit ] = useState(null);
+  const user = useUser();
 
 	const createReservationMutation = useCreateReservationMutation();
-
-	useEffect(() => {
-		const email = getCookie('UserEmail');
-		if (email) {
-			fetchUserDataByEmail(email)
-				.then(userData => {
-					setUser(userData);
-				})
-				.catch(error => {
-					console.error('Error fetching user data:', error);
-				});
-		}
-	}, []);
-
 
   setDefaultOptions({ locale: fi });
 
@@ -122,8 +110,9 @@ const TimelinePage = () => {
     setShowNewReservationModal(room);
   }
 
-  const handleOpenEditReservationModal = (room) => {
-    setShowEditReservationModal(room);
+  const handleOpenEditReservationModal = (reservationId) => {
+    setShowEditReservationModal(true);
+    setReservationToEdit(reservationId);
   }
 
   const selectedBuilding = form.watch("building");
@@ -146,20 +135,15 @@ const TimelinePage = () => {
     }
   });
 
-  if (isLoading) {
-    return <p>please wait</p>
-  }
 
   return (
     <>
 
-      {
-        true && (
-          <EditReservationDialog
-            onOpenChange={() => {}}
-          />
-        )
-      }
+      <EditReservationDialog
+        reservationId={reservationToEdit}
+        open={showEditReservationModal}
+        onOpenChange={setShowEditReservationModal}
+      />
 
       {
         <NewReservationDialog

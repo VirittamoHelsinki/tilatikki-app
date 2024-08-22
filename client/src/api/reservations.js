@@ -152,6 +152,7 @@ export const useUpdateReservationMutation = () => {
     {
       onSuccess: () => {
         // Invalidate and refetch reservations query or related queries if necessary
+        console.log("WTF IS GOING ON");
         queryClient.invalidateQueries("reservations");
       },
       onError: (error) => {

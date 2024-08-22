@@ -28,6 +28,9 @@ import { format } from "date-fns"
 import { DialogFooter } from "./ui/dialog";
 import { Textarea } from "./ui/textarea";
 import { useCreateReservationMutation } from "@/api/reservations";
+import { v4 as uuid } from "uuid"
+import dayjs from "dayjs";
+
 
 const NewReservationDialog = ({
   room,
@@ -64,11 +67,12 @@ const NewReservationDialog = ({
       const reservations = [];
 
       while (currentDate.isBefore(end) || currentDate.isSame(end, 'day')) {
+        console.log("HAHAHA", currentDate, end, currentDate.isBefore(end), currentDate.isSame(end, 'day'));
         reservations.push({
           ...reservationData,
           reservationDate: currentDate,
-          startTime: data.startTime ? formatTime(data.startTime) : null,
-          endTime: data.endTime ? formatTime(data.endTime) : null,
+          startTime: data.startTime ? (data.startTime) : null,
+          endTime: data.endTime ? (data.endTime) : null,
         });
 
         currentDate = currentDate.add(interval, 'day');
@@ -78,10 +82,12 @@ const NewReservationDialog = ({
     }
 
 
+    const reservationGroupId = uuid();
     const reservationData = {
       userId: user._id, // userId
       reservationDate: data.date ? data.date : null,
       reservationEndDate: data.endDate ? data.endDate : null,
+      reservationGroupId: reservationGroupId,
       startTime: data.startTime,
       endTime: data.endTime,
       purpose: data.reservationName, // string
@@ -96,15 +102,16 @@ const NewReservationDialog = ({
 
     if (data.recurrence === 'none') {
       createReservationMutation.mutate(reservationData);
-    } else if (data.recurrence === 'daily' && data.reservationEndDate) {
-      const reservations = generateRecurringReservations(data.reservationDate, data.reservationEndDate, 1, reservationData);
+    } else if (reservationData.recurrence === 'daily' && reservationData.reservationEndDate) {
+      const reservations = generateRecurringReservations(reservationData.reservationDate, reservationData.reservationEndDate, 1, reservationData);
       reservations.forEach(reservation => {
+        console.log("daily reservation", reservation);
         createReservationMutation.mutate(reservation);
       });
-    } else if (data.recurrence === 'weekly' && data.reservationEndDate) {
-      const reservations = generateRecurringReservations(data.reservationDate, data.reservationEndDate, 7, reservationData);
-      console.log('weekly reservations: ', reservations)
+    } else if (reservationData.recurrence === 'weekly' && reservationData.reservationEndDate) {
+      const reservations = generateRecurringReservations(reservationData.reservationDate, reservationData.reservationEndDate, 7, reservationData);
       reservations.forEach(reservation => {
+        console.log('weekly reservations: ', reservation)
         createReservationMutation.mutate(reservation);
       });
     } else {
