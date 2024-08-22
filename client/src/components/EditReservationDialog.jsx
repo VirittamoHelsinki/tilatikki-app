@@ -27,7 +27,7 @@ import { fi } from "date-fns/locale"
 import { format } from "date-fns"
 import { DialogFooter } from "./ui/dialog";
 import { Textarea } from "./ui/textarea";
-import { getReservationById, useCreateReservationMutation } from "@/api/reservations";
+import { getReservationById, useCreateReservationMutation, useDeleteReservationByGroupIdMutation, useDeleteReservationMutation } from "@/api/reservations";
 import { useEffect, useState } from "react";
 import { getCookie } from "@/utils/Cookies";
 import { fetchUserDataByEmail } from "@/api/userApi";
@@ -43,6 +43,7 @@ const EditReservationDialog = ({
   const userData = useUser();
 
 
+
   useEffect(() => {
     const fetchReservationData = async () => {
       const reservationData = await getReservationById(reservationId);
@@ -54,7 +55,7 @@ const EditReservationDialog = ({
       form.setValue("startTime", reservationData.startTime);
       form.setValue("endTime", reservationData.endTime);
       form.setValue("recurrence", reservationData.recurrence);
-      //form.setValue("endDate", reservationData.purpose);
+      form.setValue("endDate", reservationData.reservationEndDate || null);
       form.setValue("additionalInfo", reservationData.additionalInfo);
 
       setReservationData(reservationData);
@@ -63,30 +64,99 @@ const EditReservationDialog = ({
     fetchReservationData();
   }, [ reservationId ])
 
-
-
-  console.log(form.watch());
-  
-
-
-
   const availableStartTimes = Array.from({ length: 24 * 4 }).map((_, index) => (
     Math.floor(index / 4).toString().padStart(2, "0")
     + ":"
     + ((index % 4) * 15).toString().padStart(2, "0")
   ))
 
+  const [reservationHasExceptions, setReservationHasExceptions] = useState(false);
+  const handleReservationSwitchChange = () => setReservationHasExceptions(!reservationHasExceptions);
+  const deleteReservationMutation = useDeleteReservationMutation();
+  const deleteReservationByGroupIdMutation = useDeleteReservationByGroupIdMutation();
+  const createReservationMutation = useCreateReservationMutation();
+
+  const handleDelete = () => {
+    if (window.confirm('Are you sure you want to delete this reservation?')) {
+      deleteReservationMutation.mutate(reservationId);
+    }
+    onClose();
+  };
+
+  const handleRecurringDeletion = () => {
+    // Delete all reservations with the same reservationGroupId
+    console.log('reservation group id in update: ', reservationGroupId)
+    deleteReservationByGroupIdMutation.mutate(reservationGroupId)
+  };
+
   const onSubmit = (data) => {
-    onOpenChange(null);
+    data = {
+      ...data,
+
+      startTime: data.startTime.format("HH:mm"),
+      endTime: data.endTime.format("HH:mm")
+    }
+
+    const generateRecurringReservations = (baseDate, endDate, interval, reservationData) => {
+      let currentDate = dayjs(baseDate);
+      const end = dayjs(endDate);
+      const reservations = [];
+
+      while (currentDate.isBefore(end) || currentDate.isSame(end, 'day')) {
+        reservations.push({
+          ...reservationData,
+          reservationDate: currentDate,
+          startTime: data.startTime ? data.startTime : null,
+          endTime: data.endTime ? data.endTime : null,
+        });
+
+        currentDate = currentDate.add(interval, 'day');
+      }
+
+      return reservations;
+    }
+
+
+    const updatedData = {
+      userId: user._id,
+      reservationId: reservationId,
+      reservationDate: data.reservationDate ? data.reservationDate : null,
+      reservationEndDate: data.endDate ? data.reservationEndDate : null,
+      reservationGroupId: uuid(),
+      startTime: data.startTime,
+      endTime: data.endTime,
+      purpose: data.reservationName, // string
+      roomId: roomId, // roomId
+      groupsize: data.reservationGroupSize, // integer
+      recurrence: data.recurrence ? data.recurrence : 'none',
+      additionalInfo: data.additionalInfo
+    }
+
+    if (data.recurrence === 'none') {
+      updateReservationMutation.mutate({ reservationId, updatedData });
+      handleRecurringDeletion();
+    } else if (data.recurrence === 'daily' && data.reservationEndDate) {
+      const reservations = generateRecurringReservations(data.reservationDate, data.reservationEndDate, 1, updatedData);
+      reservations.forEach(reservation => {
+        createReservationMutation.mutate(reservation);
+      });
+      handleRecurringDeletion();
+    } else if (data.recurrence === 'weekly' && data.reservationEndDate) {
+      const reservations = generateRecurringReservations(data.reservationDate, data.reservationEndDate, 7, updatedData);
+      console.log('weekly reservations: ', reservations)
+      reservations.forEach(reservation => {
+        createReservationMutation.mutate(reservation);
+      });
+      handleRecurringDeletion();
+    } else {
+      console.error('Invalid recurrence or missing end date');
+    }
+
+    onClose();
   }
 
   if (!reservationData) return <p>loading</p>
-
-  console.log(reservationData);
-
   const room = reservationData.room
-
-  console.log("???????????", room);
   
   
 
@@ -308,13 +378,18 @@ const EditReservationDialog = ({
                   </FormControl>
                 </FormItem>
               )}
-            />
-          </form>
+              />
 
-          <DialogFooter className="mt-4 flex flex-row sm:justify-start">
-            <Button type="submit">Tallenna muutokset</Button>
-            <Button className="bg-red-700 hover:bg-red-600" type="submit">Poista varaus</Button>
-          </DialogFooter>
+            <DialogFooter className="mt-4 flex flex-row sm:justify-start">
+              <Button type="submit">Tallenna muutokset</Button>
+              <Button
+                onClick={handleDelete}
+                className="bg-red-700 hover:bg-red-600"
+              >
+                Poista varaus
+              </Button>
+            </DialogFooter>
+          </form>
         </Form>
 
 
