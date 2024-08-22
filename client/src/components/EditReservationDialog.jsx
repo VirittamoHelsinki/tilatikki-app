@@ -28,28 +28,45 @@ import { format } from "date-fns"
 import { DialogFooter } from "./ui/dialog";
 import { Textarea } from "./ui/textarea";
 import { getReservationById, useCreateReservationMutation } from "@/api/reservations";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { getCookie } from "@/utils/Cookies";
+import { fetchUserDataByEmail } from "@/api/userApi";
+
+import useUser from "@/utils/useUser";
 
 const EditReservationDialog = ({
   reservationId = "6687ca640231a8f3b98190ff",
   onOpenChange,
 }) => {
-  const createReservationMutation = useCreateReservationMutation()
-  const form = useForm({ })
-
+  const form = useForm({ });
+  const [ reservationData, setReservationData ] = useState(false);
+  const userData = useUser();
 
 
   useEffect(() => {
     const fetchReservationData = async () => {
       const reservationData = await getReservationById(reservationId);
       console.log("RESERVATION DATA", reservationData);
-      
+
+      form.setValue("reservationName", reservationData.purpose);
+      form.setValue("groupSize", reservationData.groupsize);
+      form.setValue("date", reservationData.reservationDate);
+      form.setValue("startTime", reservationData.startTime);
+      form.setValue("endTime", reservationData.endTime);
+      form.setValue("recurrence", reservationData.recurrence);
+      //form.setValue("endDate", reservationData.purpose);
+      form.setValue("additionalInfo", reservationData.additionalInfo);
+
+      setReservationData(reservationData);
     }
 
     fetchReservationData();
   }, [ reservationId ])
 
 
+
+  console.log(form.watch());
+  
 
 
 
@@ -60,75 +77,25 @@ const EditReservationDialog = ({
   ))
 
   const onSubmit = (data) => {
-    data = {
-      ...data,
-    }
-
-    console.log('data: ', data)
-
-    const generateRecurringReservations = (baseDate, endDate, interval, reservationData) => {
-      let currentDate = dayjs(baseDate);
-      const end = dayjs(endDate);
-      const reservations = [];
-
-      while (currentDate.isBefore(end) || currentDate.isSame(end, 'day')) {
-        reservations.push({
-          ...reservationData,
-          reservationDate: currentDate,
-          startTime: data.startTime ? formatTime(data.startTime) : null,
-          endTime: data.endTime ? formatTime(data.endTime) : null,
-        });
-
-        currentDate = currentDate.add(interval, 'day');
-      }
-
-      return reservations;
-    }
-
-
-    /* const reservationData = {
-      userId: user._id, // userId
-      reservationDate: data.date ? data.date : null,
-      reservationEndDate: data.endDate ? data.endDate : null,
-      startTime: data.startTime,
-      endTime: data.endTime,
-      purpose: data.reservationName, // string
-      roomId: room._id, // roomId
-      groupsize: data.groupSize, // integer
-      recurrence: data.recurrence ? data.recurrence : 'none',
-      additionalInfo: data.additionalInfo
-    }
-
-
-    console.log('reservationData: ', reservationData)
-
-    if (data.recurrence === 'none') {
-      createReservationMutation.mutate(reservationData);
-    } else if (data.recurrence === 'daily' && data.reservationEndDate) {
-      const reservations = generateRecurringReservations(data.reservationDate, data.reservationEndDate, 1, reservationData);
-      reservations.forEach(reservation => {
-        createReservationMutation.mutate(reservation);
-      });
-    } else if (data.recurrence === 'weekly' && data.reservationEndDate) {
-      const reservations = generateRecurringReservations(data.reservationDate, data.reservationEndDate, 7, reservationData);
-      console.log('weekly reservations: ', reservations)
-      reservations.forEach(reservation => {
-        createReservationMutation.mutate(reservation);
-      });
-    } else {
-      console.error('Invalid recurrence or missing end date');
-    } */
-
     onOpenChange(null);
   }
 
+  if (!reservationData) return <p>loading</p>
+
+  console.log(reservationData);
+
+  const room = reservationData.room
+
+  console.log("???????????", room);
+  
+  
 
   return (
     <Dialog
       isOpen={true}
       onOpenChange={onOpenChange}
-      title={`Huone ${"###"}`}
-      description={`Opetustila, jossa on tilaa ${"###"} opiskelijalle.`}
+      title={`Huone ${reservationData.room.number}`}
+      description={`Opetustila, jossa on tilaa ${room.capacity} opiskelijalle.`}
     >
       <div className="flex flex-col gap-3">
 
@@ -140,12 +107,12 @@ const EditReservationDialog = ({
             <path d="M16 3.12988C16.8604 3.35018 17.623 3.85058 18.1676 4.55219C18.7122 5.2538 19.0078 6.11671 19.0078 7.00488C19.0078 7.89305 18.7122 8.75596 18.1676 9.45757C17.623 10.1592 16.8604 10.6596 16 10.8799" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
 
-          <p>0 / {"###"}</p>
+          <p>0 / {room.capacity}</p>
         </div>
 
         <div>
           <Label>Varauksen tekijä</Label>
-          <p className="text-sm text-gray-400">käyttäjän nimi</p>
+          <p className="text-sm text-gray-400">{userData.name} {userData.surname}</p>
         </div>
 
         <Form { ...form }>
@@ -172,7 +139,7 @@ const EditReservationDialog = ({
               control={form.control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Ryhmän koko* (max. {"###"} oppilasta)</FormLabel>
+                  <FormLabel>Ryhmän koko* (max. {room.capacity} oppilasta)</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
@@ -248,11 +215,11 @@ const EditReservationDialog = ({
                 control={form.control}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Aloitusaika*</FormLabel>
+                    <FormLabel>Lopetusaika*</FormLabel>
                     <FormControl>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <SelectTrigger>
-                          <SelectValue placeholder="12:00" />
+                          <SelectValue placeholder="00:00" />
                         </SelectTrigger>
                         <SelectContent>
                           {

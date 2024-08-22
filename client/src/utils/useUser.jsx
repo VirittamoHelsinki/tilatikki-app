@@ -1,9 +1,9 @@
 import { fetchUserDataByEmail } from "@/api/userApi";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getCookie } from "./Cookies";
 
 const useUser = () => {
-  const [ user, setUser ] = useState(null);
+  const [ user, setUser ] = useState({});
   
   useEffect(() => {
     const email = getCookie('UserEmail');
