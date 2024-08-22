@@ -1,12 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-	Dialog,
-	DialogContent,
-	ThemeProvider,
-	createTheme,
-	Snackbar,
-	IconButton,
-	Alert
+	Dialog, DialogContent, ThemeProvider, createTheme, Snackbar, Alert
 } from '@mui/material';
 import { useCreateReservationMutation, useUpdateReservationMutation } from '../api/reservations';
 import { getCookie } from '../utils/Cookies';
@@ -17,7 +11,7 @@ import UpdateReservationForm from '../components/UpdateReservationForm';
 const theme = createTheme({
 	palette: {
 		primary: {
-			main: '#000000', // set primary color to black
+			main: '#000000',
 		},
 	},
 	components: {
@@ -25,7 +19,7 @@ const theme = createTheme({
 			styleOverrides: {
 				root: {
 					'&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-						borderColor: '#000000', // black border when focused
+						borderColor: '#000000',
 					},
 				},
 			},
@@ -34,7 +28,7 @@ const theme = createTheme({
 			styleOverrides: {
 				root: {
 					'&.Mui-focused': {
-						color: '#000000', // black label when focused
+						color: '#000000',
 					},
 				},
 			},
@@ -72,28 +66,26 @@ const ReservationDialog = ({ roomId, isOpen, onClose, roomNumber, capacity, grou
 		setSnackbarOpen(false);
 	};
 
-	const handleDialogClose = () => {
-		onClose();
-		setSnackbarMessage('Varaus on tehty onnistuneesti!');
-		setSnackbarOpen(true);
-	};
-
 	return (
 		<ThemeProvider theme={theme}>
-			<Dialog open={isOpen} onClose={handleDialogClose} maxWidth="sm" fullWidth>
+			<Dialog open={isOpen} onClose={onClose} maxWidth="sm" fullWidth>
 				<DialogContent>
-					{status !== "Varattu" ? <CreateReservationForm
-						createReservationMutation={createReservationMutation}
-						roomNumber={roomNumber}
-						roomId={roomId}
-						reservationGroupSize={groupSize}
-						handleGroupSizeChange={handleGroupSizeChange}
-						groupsize={groupsize}
-						capacity={capacity}
-						user={user}
-						onClose={handleDialogClose}
-						filterValues={filterValues}
-					/> :
+					{status !== "Varattu" ? (
+						<CreateReservationForm
+							createReservationMutation={createReservationMutation}
+							roomNumber={roomNumber}
+							roomId={roomId}
+							reservationGroupSize={groupSize}
+							handleGroupSizeChange={handleGroupSizeChange}
+							groupsize={groupsize}
+							capacity={capacity}
+							user={user}
+							onClose={onClose}
+							filterValues={filterValues}
+							setSnackbarMessage={setSnackbarMessage}  // Pass the function here
+							setSnackbarOpen={setSnackbarOpen}        // Pass the function here
+						/>
+					) : (
 						<UpdateReservationForm
 							updateReservationMutation={updateReservationMutation}
 							roomNumber={roomNumber}
@@ -105,10 +97,10 @@ const ReservationDialog = ({ roomId, isOpen, onClose, roomNumber, capacity, grou
 							groupsize={groupsize}
 							capacity={capacity}
 							user={user}
-							onClose={handleDialogClose}
+							onClose={onClose}
 							filterValues={filterValues}
 						/>
-					}
+					)}
 				</DialogContent>
 			</Dialog>
 
