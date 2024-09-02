@@ -7,22 +7,21 @@ import ReservationHistoryAdmin from '../components/ReservationHistoryAdmin';
 import Header from '../components/Header';
 import Calendar from '../components/Calendar';
 import AdminSemesterReservation from '../components/AdminSemesterReservation';
+import useUser from '@/utils/useUser';
 
 const SettingsPage = () => {
     const [selectedComponent, setSelectedComponent] = useState(null);
     const [admin, setAdmin] = useState(true);
+    const user = useUser()
 
 
     const handleNavigation = (component) => {
         setSelectedComponent(component);
     };
 
-    const swapPermission = () => {
-        if (admin) {
-            setAdmin(false);
-        }
-        else setAdmin(true)
-    }
+    // const toggleAdminView = () => {
+    //     setAdmin((oldValue) => !oldValue)
+    // }
 
     return (
         <>
@@ -37,9 +36,9 @@ const SettingsPage = () => {
                         : "Tällä sivulla voit muokata omia käyttäjätietojasi sekä tarkastella varaushistoriaasi."
                     }
                 </Typography>
-                <Button
+                {/* <Button
                     variant="contained"
-                    onClick={() => swapPermission()}
+                    onClick={() => toggleAdminView()}
                     sx={{
                         textTransform: 'none',
                         mt: 3,
@@ -51,7 +50,7 @@ const SettingsPage = () => {
                     }}
                 >
                     Vaihda adminin ja opettajan välillä
-                </Button>
+                </Button> */}
                 <Divider sx={{ marginBottom: 4 }} />
                 <Box sx={{ display: 'flex' }}>
                     <Box sx={{ width: '200px', marginRight: 4 }}>
@@ -59,7 +58,7 @@ const SettingsPage = () => {
                             Omat asetukset
                         </Typography>
                         <List component="nav">
-                            {admin ? (
+                            {user?.admin ? (
                                 <>
                                     <ListItem
                                         onClick={() => handleNavigation('UserInformation')}
@@ -138,7 +137,7 @@ const SettingsPage = () => {
                         </List>
                     </Box>
                     <Box sx={{ flex: 1 }}>
-                        {admin ? (
+                        {user?.admin ? (
                             <>
                                 {selectedComponent === 'UserInformation' && <UserInformation />}
                                 {selectedComponent === 'AdminSemesterReservation' && <AdminSemesterReservation />}
