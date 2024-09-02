@@ -7,6 +7,8 @@ import ReservationDialog from './ReservationDialog';
 
 import Calendar from './Calendar';
 import { fetchRoomById } from '../api/rooms';
+import NewReservationDialog from './NewReservationDialog';
+import EditReservationDialog from './EditReservationDialog';
 
 const ReservationPageCalendar = ({ data }) => {
   // Store ids in state
@@ -16,6 +18,12 @@ const ReservationPageCalendar = ({ data }) => {
 
   // State for displaying the reservationdialog modal
   const [ newReservationDialogDefaultData, setReservationDialogDefaultData ] = useState(null);
+
+  const [ showNewDialog, setShowNewDialog ] = useState(false);
+
+  const [ reservationToEdit, setReservationToEdit ] = useState(null);
+  const [ showEditDialog, setShowEditDialog ] = useState(false);
+
 
   useEffect(() => {
     const building = data.buildings.find((building) => building._id === calendarBuilding)
@@ -36,13 +44,8 @@ const ReservationPageCalendar = ({ data }) => {
   // for editing purposes
   const calendarBlockClickFn = async (reservationData) => {
     const room = await fetchRoomById(reservationData.room);
-
-    setReservationDialogDefaultData({
-      room,
-      date: reservationData.date,
-      startTime: reservationData.startTime,
-      endTime: reservationData.endTime,
-    })
+    setShowEditDialog(true);
+    setReservationToEdit(reservationData._id);
   }
 
   // This is called when a user is in the daily view and clicks "luo uusi varaus"
@@ -108,6 +111,12 @@ const ReservationPageCalendar = ({ data }) => {
           />
         )
       }
+
+      <EditReservationDialog
+        isOpen={showEditDialog}
+        onOpenChange={setShowEditDialog}
+        reservationId={reservationToEdit}
+      />
       <Box sx={{ width: '30%', padding: '20px', border: '1px solid #ddd', borderRadius: '4px' }}>
         <Typography sx={{ marginBottom: '20px', fontWeight: 'bold' }} variant="h5">{data.name}</Typography>
         <Typography sx={{ marginBottom: '40px' }}>{ descriptionString }</Typography>

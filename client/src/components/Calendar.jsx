@@ -1,4 +1,6 @@
 import { createRef, useEffect, useRef, useState } from "react"
+import EditReservationDialog from "./EditReservationDialog"
+import NewReservationDialog from "./NewReservationDialog"
 import "./Calendar.css"
 
 import moment from "moment"

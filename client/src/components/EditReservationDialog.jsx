@@ -118,6 +118,7 @@ const EditReservationDialog = ({
       return reservations;
     }
 
+
     const updatedData = {
       userId: user._id,
       reservationId: reservationId,
@@ -156,7 +157,7 @@ const EditReservationDialog = ({
     onClose();
   }
 
-  if (!reservationData) return null
+  if (!reservationData) return <p>loading</p>
   const room = reservationData.room
   
   return (
