@@ -17,6 +17,8 @@ import { useCreateReservationMutation } from "@/api/reservations";
 import { fetchUserDataByEmail } from "@/api/userApi";
 import { getCookie } from "@/utils/Cookies";
 import NewReservationDialog from "../NewReservationDialog";
+import EditReservationDialog from "../EditReservationDialog";
+import useUser from "@/utils/useUser";
 
 moment.locale("fi");
 
@@ -29,56 +31,7 @@ const TimelineContainer = ({
   highlightMode,
 }) => {
 
-  // Used for the click&drag reservation
-  // A little bit unfinished, so I commented it out
-  // const [ trackingMouse, setTrackingMouse ] = useState(false);
-  // const [ trackStart, setTrackStart ] = useState(-1);
-  // const [ indicator, setIndicator ] = useState(null);
 
-  // const onMouseDown = (event) => {
-  //   const target = event.target;
-  //   const indicatorElement = target.querySelector(".new-reservation-indicator");
-
-  //   const rect = target.getBoundingClientRect();
-  //   const blockPosition = (event.clientX - rect.left);
-
-  //   indicatorElement.style.display = "block";
-  //   indicatorElement.style.left = `${blockPosition}px`;
-  //   indicatorElement.style.width = `${0}px`;
-
-  //   setIndicator(indicatorElement);
-  //   setTrackStart(blockPosition);
-  //   setTrackingMouse(true);
-  // }
-
-  // const onMouseUp = () => {
-  //   // open modal here
-  //   setTrackStart(0);
-  //   setTrackingMouse(false);
-  //   setIndicator(null);
-  // }
-
-  // const onMouseMove = (event) => {
-  //   if (!trackingMouse) {
-  //     return;
-  //   }
-
-  //   const target = event.target;
-
-  //   const rect = target.getBoundingClientRect();
-  //   const blockSize = (event.clientX - trackStart - rect.left);
-
-  //   if (blockSize > 0) {
-  //     indicator.style.width = `${blockSize}px`;
-  //   } else {
-  //     indicator.style.left = `${trackStart - Math.abs(blockSize)}px`;
-  //     indicator.style.width = `${Math.abs(blockSize)}px`;
-  //   }
-  // }
-
-  // const stopEventPropagation = (event) => {
-  //   event.stopPropagation();
-  // }
 
   return (
     <div
@@ -146,23 +99,10 @@ const TimelinePage = () => {
 
   const [ showNewReservationModal, setShowNewReservationModal ] = useState(null);
   const [ showEditReservationModal, setShowEditReservationModal ] = useState(null);
-  const [user, setUser] = useState({});
+  const [ reservationToEdit, setReservationToEdit ] = useState(null);
+  const user = useUser();
 
 	const createReservationMutation = useCreateReservationMutation();
-
-	useEffect(() => {
-		const email = getCookie('UserEmail');
-		if (email) {
-			fetchUserDataByEmail(email)
-				.then(userData => {
-					setUser(userData);
-				})
-				.catch(error => {
-					console.error('Error fetching user data:', error);
-				});
-		}
-	}, []);
-
 
   setDefaultOptions({ locale: fi });
 
@@ -170,8 +110,9 @@ const TimelinePage = () => {
     setShowNewReservationModal(room);
   }
 
-  const handleOpenEditReservationModal = (room) => {
-    setShowEditReservationModal(room);
+  const handleOpenEditReservationModal = (reservationId) => {
+    setShowEditReservationModal(true);
+    setReservationToEdit(reservationId);
   }
 
   const selectedBuilding = form.watch("building");
@@ -194,12 +135,15 @@ const TimelinePage = () => {
     }
   });
 
-  if (isLoading) {
-    return <p>please wait</p>
-  }
 
   return (
     <>
+
+      <EditReservationDialog
+        reservationId={reservationToEdit}
+        open={showEditReservationModal}
+        onOpenChange={setShowEditReservationModal}
+      />
 
       {
         <NewReservationDialog

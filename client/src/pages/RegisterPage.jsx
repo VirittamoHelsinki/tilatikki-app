@@ -4,6 +4,8 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import LoggedIn from '../utils/LoggedIn';
 import TilaTikkiLogoWhite from '../images/logo-white.svg';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const RegisterPage = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -48,8 +50,9 @@ const RegisterPage = () => {
       return;
     }
 
+
     try {
-      const response = await fetch("http://localhost:5050/register", {
+      const response = await fetch(API_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

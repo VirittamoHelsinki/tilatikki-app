@@ -19,9 +19,9 @@ const Timeline = ({
     }
   }
 
-  const safeHandleOpenEditReservationModal = () => {
+  const safeHandleOpenEditReservationModal = (reservationId) => {
     if (handleOpenEditReservationModal) {
-      handleOpenEditReservationModal(room);
+      handleOpenEditReservationModal(reservationId);
     }
   }
 
@@ -165,7 +165,10 @@ const Timeline = ({
               user={reservation.user}
               reservationPurpose={reservation.purpose}
               fullHeight={reservation.groupsize === room.capacity}
-              onClick={safeHandleOpenEditReservationModal}
+              onClick={(event) => {
+                event.stopPropagation()
+                safeHandleOpenEditReservationModal(reservation._id)
+              }}
               hidden={!userOwnsReservation && highlightMode}
             />
           )
