@@ -104,6 +104,7 @@
   user-select: none;
   font-variant-numeric: tabular-nums;
   font-size: 0.8rem;
+  pointer-events: none;
 }
 
 .calendar__cell-number.today {
