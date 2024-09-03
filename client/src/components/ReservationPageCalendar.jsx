@@ -90,7 +90,7 @@ const ReservationPageCalendar = ({ data }) => {
   const reservations = room?.reservations.map(reservation => {
     return {
       ...reservation,
-      
+
       label: reservation.purpose,
       date: moment(reservation.reservationDate),
       startTime: reservation.startTime,
@@ -99,8 +99,7 @@ const ReservationPageCalendar = ({ data }) => {
   })
 
   console.log(newReservationDialogDefaultData);
-  
-    
+
   return (
     <>
       <EditReservationDialog
@@ -113,6 +112,7 @@ const ReservationPageCalendar = ({ data }) => {
         isOpen={showNewDialog}
         onOpenChange={setShowNewDialog}
         user={user}
+        defaultData={newReservationDialogDefaultData}
         room={newReservationDialogDefaultData?.room}
       />
 

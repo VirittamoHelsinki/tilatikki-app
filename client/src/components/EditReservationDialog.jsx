@@ -54,7 +54,7 @@ const EditReservationDialog = ({
       form.setValue("date", reservationData.reservationDate);
       form.setValue("startTime", reservationData.startTime);
       form.setValue("endTime", reservationData.endTime);
-      form.setValue("recurrence", reservationData.recurrence);
+      form.setValue("recurrence", reservationData.recurrence || "none");
       form.setValue("endDate", reservationData.reservationEndDate || null);
       form.setValue("additionalInfo", reservationData.additionalInfo);
 
@@ -311,9 +311,9 @@ const EditReservationDialog = ({
                 <FormItem>
                   <FormLabel>Toistuvuus*</FormLabel>
                   <FormControl>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Älä toista" />
+                        <SelectValue placeholder="none" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="none">Älä toista</SelectItem>

@@ -30,6 +30,7 @@ import { Textarea } from "./ui/textarea";
 import { useCreateReservationMutation } from "@/api/reservations";
 import { v4 as uuid } from "uuid"
 import dayjs from "dayjs";
+import { useEffect } from "react";
 
 
 const NewReservationDialog = ({
@@ -37,16 +38,19 @@ const NewReservationDialog = ({
   user,
   onOpenChange,
   isOpen,
+  defaultData,
 }) => {
   const createReservationMutation = useCreateReservationMutation()
-  const form = useForm({
-    defaultValues: {
-      startTime: "10:00",
-      endTime: "13:00",
-      groupSize: 1,
-      recurrence: "none",
+  const form = useForm()
+
+  useEffect(() => {
+    if (defaultData && isOpen) {
+      form.setValue("date", defaultData.date);
+      form.setValue("startTime", defaultData.startTime.padStart(5, "0"));
+      form.setValue("endTime", defaultData.endTime.padStart(5, "0"));
     }
-  })
+  }, [ defaultData, isOpen ])
+  
 
   const availableStartTimes = Array.from({ length: 24 * 4 }).map((_, index) => (
     Math.floor(index / 4).toString().padStart(2, "0")
@@ -225,7 +229,7 @@ const NewReservationDialog = ({
                   <FormItem>
                     <FormLabel>Aloitusaika*</FormLabel>
                     <FormControl>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <SelectTrigger>
                           <SelectValue placeholder="00:00" />
                         </SelectTrigger>
@@ -248,7 +252,7 @@ const NewReservationDialog = ({
                   <FormItem>
                     <FormLabel>Aloitusaika*</FormLabel>
                     <FormControl>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <SelectTrigger>
                           <SelectValue placeholder="12:00" />
                         </SelectTrigger>
@@ -273,9 +277,9 @@ const NewReservationDialog = ({
                 <FormItem>
                   <FormLabel>Toistuvuus*</FormLabel>
                   <FormControl>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Älä toista" />
+                        <SelectValue placeholder="none" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="none">Älä toista</SelectItem>
