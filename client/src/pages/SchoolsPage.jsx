@@ -41,7 +41,7 @@ const SchoolsPage = () => {
   return (
     <>
       <Header />
-      <Container sx={{ marginTop: 4 }} maxWidth={false}>
+      <Container maxWidth={false}>
 
         <div className="grid xl:grid-cols-4 lg:grid-cols-3 gap-4">
           {

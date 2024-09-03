@@ -51,7 +51,7 @@ const Header = () => {
   };
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: 'white', boxShadow: 'none'}}>
+    <AppBar position="static" sx={{ backgroundColor: 'white', boxShadow: 'none', paddingTop: "30px", paddingBottom: "30px", }}>
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <img onClick={handleClick} src={TilaTikkiLogo} alt="TilaTikki Logo" style={{ width: '189px', height: '100%', cursor: 'pointer'  }} />
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
