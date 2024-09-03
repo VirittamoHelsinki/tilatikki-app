@@ -157,7 +157,7 @@ const EditReservationDialog = ({
     onClose();
   }
 
-  if (!reservationData) return <p>loading</p>
+  if (!reservationData) return null
   const room = reservationData.room
   
   return (
