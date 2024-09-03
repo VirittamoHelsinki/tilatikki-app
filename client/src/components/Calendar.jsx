@@ -300,7 +300,11 @@ const Calendar = ({
 
   const nextMonth = date.clone().add({ month: 1 })
 
-  const firstDayOfCurrentMonth = moment([ date.year(), date.month(), 1 ]).day() - 1
+  let firstDayOfCurrentMonth = moment([ date.year(), date.month(), 1 ]).day() - 1
+  if (firstDayOfCurrentMonth < 0) firstDayOfCurrentMonth += 7
+
+  console.log({daysInLastMonth, firstDayOfCurrentMonth});
+
 
   // Previous month
   for (let dayNumber = (daysInLastMonth - firstDayOfCurrentMonth); dayNumber < daysInLastMonth; dayNumber++) {
