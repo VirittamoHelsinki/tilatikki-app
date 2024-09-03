@@ -52,7 +52,7 @@ const RegisterPage = () => {
 
 
     try {
-      const response = await fetch(API_URL, {
+      const response = await fetch(API_URL + "/register", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
