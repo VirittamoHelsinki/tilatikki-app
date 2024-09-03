@@ -312,15 +312,15 @@ const AdminCreateReservationDialog = ({ rooms, reservationDialogDefaultData, dis
                 </FormControl>
               </Grid>
         
-              <Grid item lg={12}>
+              {/* <Grid item lg={12}>
                 <FormControlLabel control={<Switch onChange={handleReservationSwitchChange}/>} label="Varauksessa on poikkeuksia" />
-              </Grid>
+              </Grid> */}
         
               { /* EXCEPTIONS */ }
               {
                 reservationHasExceptions ? (
                   <>
-                    <Grid item lg={12}>
+                    {/* <Grid item lg={12}>
                       <FormControl fullWidth>
                         <LocalizationProvider localeText={fiFI.components.MuiLocalizationProvider.defaultProps.localeText} dateAdapter={AdapterDayjs}>
                           <DatePicker
@@ -336,7 +336,7 @@ const AdminCreateReservationDialog = ({ rooms, reservationDialogDefaultData, dis
                         </LocalizationProvider>
                       </FormControl>
                     </Grid>
-        
+
                     <Grid item lg={12}>
                       <FormControl fullWidth>
                       <InputLabel id="exception-week-label">Poikkeavat viikot</InputLabel>
@@ -348,7 +348,7 @@ const AdminCreateReservationDialog = ({ rooms, reservationDialogDefaultData, dis
                           fullWidth
                           label="exception-week-label"
                           placeholder="Valitse viikot"
-                          
+
                           { ...register("exceptionDays") }
                         >
                           <MenuItem value="Vihreä lohikäärme">Vihreä lohikäärme</MenuItem>
@@ -356,7 +356,7 @@ const AdminCreateReservationDialog = ({ rooms, reservationDialogDefaultData, dis
                           <MenuItem value="Sininen siili">Sininen siili</MenuItem>
                         </Select>
                       </FormControl>
-                    </Grid>
+                    </Grid> */}
                   </>
                 ) : null
               }
