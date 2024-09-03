@@ -225,12 +225,6 @@ const Popup = ({ calendarData, date, close, handleBlockClickFn, handleNewReserva
 
 
 
-
-
-
-
-
-
 const Calendar = ({
   calendarData = [],
   onBlockClickFn = () => console.log("Default callback for clicking a block"),
@@ -302,9 +296,6 @@ const Calendar = ({
 
   let firstDayOfCurrentMonth = moment([ date.year(), date.month(), 1 ]).day() - 1
   if (firstDayOfCurrentMonth < 0) firstDayOfCurrentMonth += 7
-
-  console.log({daysInLastMonth, firstDayOfCurrentMonth});
-
 
   // Previous month
   for (let dayNumber = (daysInLastMonth - firstDayOfCurrentMonth); dayNumber < daysInLastMonth; dayNumber++) {
