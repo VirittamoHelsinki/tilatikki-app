@@ -43,7 +43,9 @@ const ReservationPageCalendar = ({ data }) => {
   // When a user clicks a block, get its data and open the modal
   // for editing purposes
   const calendarBlockClickFn = async (reservationData) => {
-    const room = await fetchRoomById(reservationData.room);
+    console.log(reservationData);
+    
+    //const room = await fetchRoomById(reservationData.room);
     setShowEditDialog(true);
     setReservationToEdit(reservationData._id);
   }

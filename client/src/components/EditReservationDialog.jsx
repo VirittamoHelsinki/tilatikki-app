@@ -37,12 +37,12 @@ import dayjs from "dayjs";
 
 const EditReservationDialog = ({
   reservationId,
-  open,
+  isOpen,
   onOpenChange,
 }) => {
   const form = useForm({ });
   const [ reservationData, setReservationData ] = useState(null);
-  const user = useUser();
+  const user = useUser();  
 
   useEffect(() => {
     const fetchReservationData = async () => {
@@ -162,7 +162,7 @@ const EditReservationDialog = ({
   
   return (
     <Dialog
-      isOpen={open}
+      isOpen={isOpen}
       onOpenChange={onOpenChange}
       title={`Huone ${reservationData.room.number}`}
       description={`Opetustila, jossa on tilaa ${room.capacity} opiskelijalle.`}

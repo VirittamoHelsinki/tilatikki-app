@@ -259,7 +259,7 @@ const Calendar = ({
       const weekY = calendarWeek.offsetTop
 
       const cellWidth = clickedCalendarCell.clientWidth
-      
+
       const calendarBodyWidth = calendarBody.clientWidth
       const calendarBodyHeight = calendarBody.clientHeight
 
