@@ -140,7 +140,7 @@ const BookingResults = ({ classrooms, filterValues }) => {
 								fontWeight: 500,
 							}}
 						>
-							Omat Varaukset
+							Omat varaukset
 						</Button>
 
 
@@ -182,6 +182,7 @@ const BookingResults = ({ classrooms, filterValues }) => {
 												startTime={reservation.startTime}
 												endTime={reservation.endTime}
 												groupsize={reservation.groupsize}
+												reservationName={reservation.purpose}
 												filterValues={filterValues}
 											/>
 										))

@@ -206,6 +206,7 @@ const FloorPlan = ({ floorData, roomProps, floorNumber, filterValues }) => {
         capacity={reservationData.capacity}
         groupsize={reservationData.groupsize}
         creator={reservationData.creator}
+        reservationName={reservationData.purpose}
         filterValues={filterValues}
       />
     </div>

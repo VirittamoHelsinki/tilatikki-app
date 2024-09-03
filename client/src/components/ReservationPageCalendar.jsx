@@ -9,6 +9,7 @@ import Calendar from './Calendar';
 import { fetchRoomById } from '../api/rooms';
 import NewReservationDialog from './NewReservationDialog';
 import EditReservationDialog from './EditReservationDialog';
+import useUser from '@/utils/useUser';
 
 const ReservationPageCalendar = ({ data }) => {
   // Store ids in state
@@ -23,6 +24,8 @@ const ReservationPageCalendar = ({ data }) => {
 
   const [ reservationToEdit, setReservationToEdit ] = useState(null);
   const [ showEditDialog, setShowEditDialog ] = useState(false);
+
+  const user = useUser();
 
 
   useEffect(() => {
@@ -43,7 +46,9 @@ const ReservationPageCalendar = ({ data }) => {
   // When a user clicks a block, get its data and open the modal
   // for editing purposes
   const calendarBlockClickFn = async (reservationData) => {
-    const room = await fetchRoomById(reservationData.room);
+    console.log(reservationData);
+    
+    //const room = await fetchRoomById(reservationData.room);
     setShowEditDialog(true);
     setReservationToEdit(reservationData._id);
   }
@@ -62,7 +67,9 @@ const ReservationPageCalendar = ({ data }) => {
     const endTime = `${endHour}:${endMinute}`
     
 
-    const room = calendarRoom
+    const room = await fetchRoomById(calendarRoom)
+
+    setShowNewDialog(true)
     setReservationDialogDefaultData({ room, date: date.toDate(), startTime, endTime })
   }
   
@@ -83,40 +90,32 @@ const ReservationPageCalendar = ({ data }) => {
   const reservations = room?.reservations.map(reservation => {
     return {
       ...reservation,
-      
+
       label: reservation.purpose,
       date: moment(reservation.reservationDate),
       startTime: reservation.startTime,
       endTime: reservation.endTime,
     }
   })
-    
+
+  console.log(newReservationDialogDefaultData);
+
   return (
     <>
-      {
-        newReservationDialogDefaultData && (
-          <ReservationDialog
-            roomId={room._id}
-            roomNumber={room.number}
-            capacity={room.capacity}
-            groupsize={0} // CURRENTLY REVERSED SPOTS IN A ROOM
-            onClose={() => setReservationDialogDefaultData(null)}
-            isOpen={!!newReservationDialogDefaultData}
-            filterValues={{
-              selectedGroupSize: 0, // HOW MANY SPOTS A USER WANTS IN A ROOM
-              selectedDate: newReservationDialogDefaultData.date,
-              startingTime: newReservationDialogDefaultData.startTime,
-              endingTime: newReservationDialogDefaultData.endTime,
-            }}
-          />
-        )
-      }
-
       <EditReservationDialog
         isOpen={showEditDialog}
         onOpenChange={setShowEditDialog}
         reservationId={reservationToEdit}
       />
+
+      <NewReservationDialog
+        isOpen={showNewDialog}
+        onOpenChange={setShowNewDialog}
+        user={user}
+        defaultData={newReservationDialogDefaultData}
+        room={newReservationDialogDefaultData?.room}
+      />
+
       <Box sx={{ width: '30%', padding: '20px', border: '1px solid #ddd', borderRadius: '4px' }}>
         <Typography sx={{ marginBottom: '20px', fontWeight: 'bold' }} variant="h5">{data.name}</Typography>
         <Typography sx={{ marginBottom: '40px' }}>{ descriptionString }</Typography>

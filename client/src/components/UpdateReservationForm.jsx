@@ -15,6 +15,7 @@ const UpdateReservationForm = ({
   updateReservationMutation,
   reservationId,
   reservationGroupId,
+  reservationName,
   roomNumber,
   roomId,
   capacity,
@@ -136,6 +137,7 @@ const UpdateReservationForm = ({
             <TextField
               autoComplete="reservationName"
               name="reservationName"
+              defaultValue={reservationName || ""}
               required
               fullWidth
               id="reservationName"

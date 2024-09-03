@@ -30,9 +30,6 @@ const TimelineContainer = ({
   currentUser,
   highlightMode,
 }) => {
-
-
-
   return (
     <div
       className="timeline-container grid max-w-full overflow-auto max-h-[600px]"
@@ -141,17 +138,17 @@ const TimelinePage = () => {
 
       <EditReservationDialog
         reservationId={reservationToEdit}
-        open={showEditReservationModal}
+        isOpen={showEditReservationModal}
         onOpenChange={setShowEditReservationModal}
       />
 
-      {
-        <NewReservationDialog
-          room={showNewReservationModal}
-          user={user}
-          onOpenChange={setShowNewReservationModal}
-        />
-      }
+      <NewReservationDialog
+        room={showNewReservationModal}
+        user={user}
+        isOpen={showNewReservationModal}
+        onOpenChange={setShowNewReservationModal}
+      />
+
 
       <div className="grid grid-cols-10 gap-2">
         <div className="col-span-10 ml-5 mt-10">

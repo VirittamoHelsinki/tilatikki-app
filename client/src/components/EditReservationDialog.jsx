@@ -37,7 +37,7 @@ import dayjs from "dayjs";
 
 const EditReservationDialog = ({
   reservationId,
-  open,
+  isOpen,
   onOpenChange,
 }) => {
   const form = useForm({ });
@@ -54,17 +54,17 @@ const EditReservationDialog = ({
       form.setValue("date", reservationData.reservationDate);
       form.setValue("startTime", reservationData.startTime);
       form.setValue("endTime", reservationData.endTime);
-      form.setValue("recurrence", reservationData.recurrence);
+      form.setValue("recurrence", reservationData.recurrence || "none");
       form.setValue("endDate", reservationData.reservationEndDate || null);
       form.setValue("additionalInfo", reservationData.additionalInfo);
 
       setReservationData(reservationData);
     }
 
-    if (reservationId) {
+    if (reservationId && isOpen) {
       fetchReservationData();
     }
-  }, [ reservationId ])
+  }, [ reservationId, isOpen ])
 
   const availableStartTimes = Array.from({ length: 24 * 4 }).map((_, index) => (
     Math.floor(index / 4).toString().padStart(2, "0")
@@ -157,15 +157,14 @@ const EditReservationDialog = ({
     onClose();
   }
 
-  if (!reservationData) return null
-  const room = reservationData.room
+  const room = reservationData?.room
   
   return (
     <Dialog
-      isOpen={open}
+      isOpen={isOpen}
       onOpenChange={onOpenChange}
-      title={`Huone ${reservationData.room.number}`}
-      description={`Opetustila, jossa on tilaa ${room.capacity} opiskelijalle.`}
+      title={`Huone ${reservationData?.room?.number || ""}`}
+      description={`Opetustila, jossa on tilaa ${room?.capacity} opiskelijalle.`}
     >
       <div className="flex flex-col gap-3">
 
@@ -177,7 +176,7 @@ const EditReservationDialog = ({
             <path d="M16 3.12988C16.8604 3.35018 17.623 3.85058 18.1676 4.55219C18.7122 5.2538 19.0078 6.11671 19.0078 7.00488C19.0078 7.89305 18.7122 8.75596 18.1676 9.45757C17.623 10.1592 16.8604 10.6596 16 10.8799" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
 
-          <p>0 / {room.capacity}</p>
+          <p>0 / {room?.capacity}</p>
         </div>
 
         <div>
@@ -209,7 +208,7 @@ const EditReservationDialog = ({
               control={form.control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Ryhmän koko* (max. {room.capacity} oppilasta)</FormLabel>
+                  <FormLabel>Ryhmän koko* (max. {room?.capacity} oppilasta)</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
@@ -264,7 +263,7 @@ const EditReservationDialog = ({
                   <FormItem>
                     <FormLabel>Aloitusaika*</FormLabel>
                     <FormControl>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <SelectTrigger>
                           <SelectValue placeholder="00:00" />
                         </SelectTrigger>
@@ -287,7 +286,7 @@ const EditReservationDialog = ({
                   <FormItem>
                     <FormLabel>Lopetusaika*</FormLabel>
                     <FormControl>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <SelectTrigger>
                           <SelectValue placeholder="00:00" />
                         </SelectTrigger>
@@ -312,9 +311,9 @@ const EditReservationDialog = ({
                 <FormItem>
                   <FormLabel>Toistuvuus*</FormLabel>
                   <FormControl>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Älä toista" />
+                        <SelectValue placeholder="none" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="none">Älä toista</SelectItem>

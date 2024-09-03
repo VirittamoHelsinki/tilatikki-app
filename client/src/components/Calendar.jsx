@@ -187,7 +187,6 @@ const Popup = ({ calendarData, date, close, handleBlockClickFn, handleNewReserva
             }
           </div>
 
-          
           <div className="test">
             <div className="day-calendar__blocks-background-container">
               {
@@ -259,7 +258,7 @@ const Calendar = ({
       const weekY = calendarWeek.offsetTop
 
       const cellWidth = clickedCalendarCell.clientWidth
-      
+
       const calendarBodyWidth = calendarBody.clientWidth
       const calendarBodyHeight = calendarBody.clientHeight
 
