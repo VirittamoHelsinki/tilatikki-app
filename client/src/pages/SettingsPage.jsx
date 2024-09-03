@@ -56,15 +56,23 @@ const SettingsPage = () => {
           <div className="flex flex-col">
             <p className="text-xl font-semibold mb-2">Omat asetukset</p>
             <NavigationButton label="Käyttäjätiedot" />
-            <NavigationButton label="Omat varaukset" />
+            {
+              !user?.admin && (
+                <NavigationButton label="Omat varaukset" />
+              )
+            }
           </div>
 
-          <div className="flex flex-col">
-            <p className="text-xl font-semibold mb-2">Admin</p>
-            <NavigationButton label="Lukukausivaraukset" />
-            <NavigationButton label="Käyttäjät" />
-            <NavigationButton label="Varaukset" />
-          </div>
+          {
+            user?.admin && (
+              <div className="flex flex-col">
+                <p className="text-xl font-semibold mb-2">Admin</p>
+                <NavigationButton label="Lukukausivaraukset" />
+                <NavigationButton label="Käyttäjät" />
+                <NavigationButton label="Varaukset" />
+              </div>
+            )
+          }
         </div>
 
 
