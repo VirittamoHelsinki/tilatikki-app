@@ -313,7 +313,7 @@ const EditReservationDialog = ({
                   <FormControl>
                     <Select onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
                       <SelectTrigger>
-                        <SelectValue placeholder="none" />
+                        <SelectValue placeholder="Älä toista" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="none">Älä toista</SelectItem>
