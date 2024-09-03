@@ -42,7 +42,7 @@ const EditReservationDialog = ({
 }) => {
   const form = useForm({ });
   const [ reservationData, setReservationData ] = useState(null);
-  const user = useUser();  
+  const user = useUser();
 
   useEffect(() => {
     const fetchReservationData = async () => {

@@ -187,7 +187,6 @@ const Popup = ({ calendarData, date, close, handleBlockClickFn, handleNewReserva
             }
           </div>
 
-          
           <div className="test">
             <div className="day-calendar__blocks-background-container">
               {

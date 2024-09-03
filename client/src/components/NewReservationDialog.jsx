@@ -35,8 +35,8 @@ import dayjs from "dayjs";
 const NewReservationDialog = ({
   room,
   user,
-  date,
-  onOpenChange
+  onOpenChange,
+  isOpen,
 }) => {
   const createReservationMutation = useCreateReservationMutation()
   const form = useForm({
@@ -117,13 +117,13 @@ const NewReservationDialog = ({
       console.error('Invalid recurrence or missing end date');
     }
 
-    onOpenChange(null);
+    onOpenChange(false);
   }
 
 
   return (
     <Dialog
-      isOpen={!!room}
+      isOpen={isOpen}
       onOpenChange={onOpenChange}
       title={`Huone ${room?.number}`}
       description={`Opetustila, jossa on tilaa ${room?.capacity} opiskelijalle.`}
