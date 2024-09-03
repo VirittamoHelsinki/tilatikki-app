@@ -225,12 +225,6 @@ const Popup = ({ calendarData, date, close, handleBlockClickFn, handleNewReserva
 
 
 
-
-
-
-
-
-
 const Calendar = ({
   calendarData = [],
   onBlockClickFn = () => console.log("Default callback for clicking a block"),
@@ -299,9 +293,10 @@ const Calendar = ({
   const daysInLastMonth = lastMonth.daysInMonth()
 
   const nextMonth = date.clone().add({ month: 1 })
- 
-  const firstDayOfCurrentMonth = moment([ date.year(), date.month(), 1 ]).day() - 1
-  
+
+  let firstDayOfCurrentMonth = moment([ date.year(), date.month(), 1 ]).day() - 1
+  if (firstDayOfCurrentMonth < 0) firstDayOfCurrentMonth += 7
+
   // Previous month
   for (let dayNumber = (daysInLastMonth - firstDayOfCurrentMonth); dayNumber < daysInLastMonth; dayNumber++) {
     calendarCells.push({
@@ -316,8 +311,8 @@ const Calendar = ({
       date: moment([ date.year(), date.month(), dayNumber + 1 ]),
       currentMonth: true,
     })
-  }  
-  
+  }
+
   // Next month
   const daysInPreviousAndCurrent = calendarCells.length
   for (let dayNumber = calendarCells.length; dayNumber < rows * columns; dayNumber++) {
@@ -330,7 +325,7 @@ const Calendar = ({
 
   const blocks = calendarData.map((data, index) => {
     return ({
-      element: (      
+      element: (
         <div
           key={`block-${data.label}-${index}`}
           className="block"
@@ -345,7 +340,7 @@ const Calendar = ({
       ),
       date: data.date,
     })
-  })  
+  })
 
   return (
 
@@ -388,7 +383,7 @@ const Calendar = ({
 
           {
             // Generate each row one by one
-            Array.from({ length: rows }).map((_, week) => {              
+            Array.from({ length: rows }).map((_, week) => {
               return (
                 <div key={`week-${week}`} className="calendar__week">
                   {
@@ -403,7 +398,7 @@ const Calendar = ({
                       const otherReservationsText = blocksToRender.length === 4
                         ? "+1 muu varaus"
                         : `+${blocksToRender.length - 3} muuta varausta`
-                      
+
                       return (
                         <div
                           key={`cell-${cellIndex}`}

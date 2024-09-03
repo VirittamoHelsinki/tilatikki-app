@@ -8,6 +8,7 @@ import { useForm, Controller } from "react-hook-form"
 import { useCreateReservationMutation } from "../api/reservations"
 import { getCookie } from "../utils/Cookies"
 import { fetchUserDataByEmail } from "../api/userApi"
+import useUser from "@/utils/useUser"
 
 const AdminCreateReservationDialog = ({ rooms, reservationDialogDefaultData, disabled }) => {
   const { register, handleSubmit, watch, control, setValue } = useForm({
@@ -18,22 +19,9 @@ const AdminCreateReservationDialog = ({ rooms, reservationDialogDefaultData, dis
   const createReservationMutation = useCreateReservationMutation();
 
   const [ reservationHasExceptions, setReservationHasExceptions ] = useState(false);
-  const [ user, setUser ] = useState({});
+  const user = useUser()
 
   const handleReservationSwitchChange = () => setReservationHasExceptions(!reservationHasExceptions);
-  
-  useEffect(() => {
-		const email = getCookie('UserEmail');
-		if (email) {
-			fetchUserDataByEmail(email)
-				.then(userData => {
-					setUser(userData)
-				})
-				.catch(error => {
-					console.error('Error fetching user data:', error);
-				});
-		}
-	}, []);
 
   useEffect(() => {
     if (reservationDialogDefaultData) {
@@ -76,8 +64,8 @@ const AdminCreateReservationDialog = ({ rooms, reservationDialogDefaultData, dis
         reservations.push({
           ...reservationData,
           reservationDate: currentDate,
-          startTime: data.startTime ? formatTime(data.startTime) : null,
-          endTime: data.endTime ? formatTime(data.endTime) : null,
+          startTime: data.startTime ? data.startTime : null,
+          endTime: data.endTime ? data.endTime : null,
         });
 
         currentDate = currentDate.add(interval, 'day');
@@ -90,7 +78,7 @@ const AdminCreateReservationDialog = ({ rooms, reservationDialogDefaultData, dis
     const reservationData = {
       userId: user._id, // userId
       reservationDate: data.reservationDate ? data.reservationDate : null,
-      reservationEndDate: data.endDate ? data.reservationEndDate : null,
+      reservationEndDate: data.reservationEndDate ? data.reservationEndDate : null,
       startTime: data.startTime,
       endTime: data.endTime,
       purpose: data.reservationName, // string
@@ -305,30 +293,34 @@ const AdminCreateReservationDialog = ({ rooms, reservationDialogDefaultData, dis
               <Grid item lg={12}>
                 <FormControl fullWidth>
                   <LocalizationProvider localeText={fiFI.components.MuiLocalizationProvider.defaultProps.localeText} dateAdapter={AdapterDayjs}>
-                    <DatePicker
-                      autoComplete="endDate"
-                      name="endDate"
-                      required
-                      format="DD/MM/YYYY"
-                      slotProps={{ textField: { fullWidth: true }}}
-                      id="endDate"
-                      label="Varauksen päättymispäivä*"
-                      disabled={disabled}
-                      { ...register("endDate") }
-                      />
-                    </LocalizationProvider>
+                    <Controller
+                      name="reservationEndDate"
+                      control={control}
+                      defaultValue={dayjs()}
+                      render={({ field: { value, ...rest } }) => (
+                        <DatePicker
+                          {...rest}
+                          value={value}
+                          label="Varauksen päättymispäivä*"
+                          disabled={disabled}
+                          renderInput={(params) => <TextField {...params} fullWidth />}
+                          format="DD/MM/YYYY"
+                        />
+                      )}
+                    />
+                  </LocalizationProvider>
                 </FormControl>
               </Grid>
         
-              <Grid item lg={12}>
+              {/* <Grid item lg={12}>
                 <FormControlLabel control={<Switch onChange={handleReservationSwitchChange}/>} label="Varauksessa on poikkeuksia" />
-              </Grid>
+              </Grid> */}
         
               { /* EXCEPTIONS */ }
               {
                 reservationHasExceptions ? (
                   <>
-                    <Grid item lg={12}>
+                    {/* <Grid item lg={12}>
                       <FormControl fullWidth>
                         <LocalizationProvider localeText={fiFI.components.MuiLocalizationProvider.defaultProps.localeText} dateAdapter={AdapterDayjs}>
                           <DatePicker
@@ -344,7 +336,7 @@ const AdminCreateReservationDialog = ({ rooms, reservationDialogDefaultData, dis
                         </LocalizationProvider>
                       </FormControl>
                     </Grid>
-        
+
                     <Grid item lg={12}>
                       <FormControl fullWidth>
                       <InputLabel id="exception-week-label">Poikkeavat viikot</InputLabel>
@@ -356,7 +348,7 @@ const AdminCreateReservationDialog = ({ rooms, reservationDialogDefaultData, dis
                           fullWidth
                           label="exception-week-label"
                           placeholder="Valitse viikot"
-                          
+
                           { ...register("exceptionDays") }
                         >
                           <MenuItem value="Vihreä lohikäärme">Vihreä lohikäärme</MenuItem>
@@ -364,7 +356,7 @@ const AdminCreateReservationDialog = ({ rooms, reservationDialogDefaultData, dis
                           <MenuItem value="Sininen siili">Sininen siili</MenuItem>
                         </Select>
                       </FormControl>
-                    </Grid>
+                    </Grid> */}
                   </>
                 ) : null
               }

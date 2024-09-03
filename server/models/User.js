@@ -26,7 +26,7 @@ const UserSchema = new mongoose.Schema({
   },
   admin: {
     type: Boolean,
-    default: true
+    default: false
   },
   reservations: [{ type: Schema.Types.ObjectId, ref: 'Reservation' }],
   building: {

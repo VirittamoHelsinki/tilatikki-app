@@ -300,16 +300,16 @@ const UpdateReservationForm = ({
                 </FormControl>
               </Grid>
 
-              <Grid item lg={12}>
+              {/* <Grid item lg={12}>
                 <FormControlLabel control={<Switch onChange={handleReservationSwitchChange} />} label="Varauksessa on poikkeuksia" />
-              </Grid>
+              </Grid> */}
 
 
               { /* EXCEPTIONS */}
               {
                 reservationHasExceptions ? (
                   <>
-                    <Grid item lg={10}>
+                    {/* <Grid item lg={10}>
                       <FormControl fullWidth>
                         <LocalizationProvider localeText={fiFI.components.MuiLocalizationProvider.defaultProps.localeText} dateAdapter={AdapterDayjs}>
                           <DatePicker
@@ -345,7 +345,7 @@ const UpdateReservationForm = ({
                           <MenuItem value="Sininen siili">Sininen siili</MenuItem>
                         </Select>
                       </FormControl>
-                    </Grid>
+                    </Grid> */}
                   </>
                 ) : null
               }

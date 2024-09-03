@@ -67,7 +67,6 @@ const NewReservationDialog = ({
       const reservations = [];
 
       while (currentDate.isBefore(end) || currentDate.isSame(end, 'day')) {
-        console.log("HAHAHA", currentDate, end, currentDate.isBefore(end), currentDate.isSame(end, 'day'));
         reservations.push({
           ...reservationData,
           reservationDate: currentDate,

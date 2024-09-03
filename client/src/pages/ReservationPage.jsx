@@ -21,11 +21,6 @@ const ReservationPage = () => {
 
   const [selectedComponent, setSelectedComponent] = React.useState('pohjakarttanäkymä');
 
-  // For calendarview (temporary)
-  const [calendarBuilding, setCalendarBuilding] = useState(null);
-  const [calendarFloor, setCalendarFloor] = useState(null);
-  const [calendarRoom, setCalendarRoom] = useState(null);
-
 
   const handleChange = (event, newFloor) => {
     setFloor(newFloor);
@@ -53,6 +48,8 @@ const ReservationPage = () => {
 
   const handleFilterValues = (newValues) => {
     setFilterValues(newValues);
+    console.log("HANDLE FILTER VALUES!!!!");
+    
   }
 
   const handleClassroomChange = (newClassrooms) => {
