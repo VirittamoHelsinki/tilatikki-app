@@ -5,26 +5,13 @@ import { useNavigate } from 'react-router-dom';
 import { getCookie, removeCookie } from '../utils/Cookies';
 import { fetchUserDataByEmail } from '../api/userApi';
 import TilaTikkiLogo from '../images/TilaTikki_logo.svg';
+import useUser from '@/utils/useUser';
 
 const Header = () => {
   const [anchorEl, setAnchorEl] = useState(null);
-  const [name, setName] = useState('');
-  const [surname, setSurname] = useState('');
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const email = getCookie('UserEmail');
-    if (email) {
-      fetchUserDataByEmail(email)
-        .then(userData => {
-          setName(userData.name);
-          setSurname(userData.surname);
-        })
-        .catch(error => {
-          console.error('Error fetching user data:', error);
-        });
-    }
-  }, []);
+  const user = useUser();
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -51,7 +38,7 @@ const Header = () => {
   };
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: 'white', boxShadow: 'none'}}>
+    <AppBar position="static" sx={{ backgroundColor: 'white', boxShadow: 'none', paddingTop: "30px", paddingBottom: "30px", }}>
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <img onClick={handleClick} src={TilaTikkiLogo} alt="TilaTikki Logo" style={{ width: '189px', height: '100%', cursor: 'pointer'  }} />
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -68,10 +55,10 @@ const Header = () => {
               src=""
               sx={{ width: 40, height: 40, marginRight: 2, backgroundColor: 'grey' }}
             >
-              {name.charAt(0)}{surname.charAt(0)}
+              {user?.name?.charAt(0)}{user?.surname?.charAt(0)}
             </Avatar>
             <Typography variant="body1" component="div" sx={{ color: 'black', marginRight: 2 }}>
-              {name}{" "}{surname}
+              {user?.name}{" "}{user?.surname}
             </Typography>
             <ExpandMoreIcon sx={{ color: 'black' }} />
           </IconButton>
