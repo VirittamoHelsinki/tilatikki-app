@@ -18,10 +18,11 @@ import AdminSemesterReservation from "../components/AdminSemesterReservation";
 import useUser from "@/utils/useUser";
 
 
-const NavigationButton = ({ label }) => {
+const NavigationButton = ({ label, ...rest }) => {
   return (
     <button
       className="rounded-lg px-4 py-2 text-left hover:bg-zinc-100"
+      { ...rest }
     >
       { label }
     </button>
@@ -52,119 +53,47 @@ const SettingsPage = () => {
         <Divider sx={{ marginTop: 4, marginBottom: 4 }} />
 
 
-        <div className="flex flex-col gap-4 w-[215px]">
-          <div className="flex flex-col">
-            <p className="text-xl font-semibold mb-2">Omat asetukset</p>
-            <NavigationButton label="Käyttäjätiedot" />
-            {
-              !user?.admin && (
-                <NavigationButton label="Omat varaukset" />
-              )
-            }
-          </div>
-
-          {
-            user?.admin && (
-              <div className="flex flex-col">
-                <p className="text-xl font-semibold mb-2">Admin</p>
-                <NavigationButton label="Lukukausivaraukset" />
-                <NavigationButton label="Käyttäjät" />
-                <NavigationButton label="Varaukset" />
-              </div>
-            )
-          }
-        </div>
-
 
 
         <Box sx={{ display: "flex" }}>
-          <Box sx={{ width: "200px", marginRight: 4 }}>
-            <Typography variant="h6" component="div" sx={{ marginBottom: 2 }}>
-              Omat asetukset
-            </Typography>
-            <List component="nav">
-              {user?.admin ? (
-                <>
-                  <ListItem
-                    onClick={() => handleNavigation("UserInformation")}
-                    sx={{
-                      cursor: "pointer",
-                      "&:hover": {
-                        backgroundColor: "rgba(0, 0, 0, 0.1)",
-                      },
-                    }}
-                  >
-                    <ListItemText primary="Käyttäjätiedot" />
-                  </ListItem>
-                  <Typography
-                    variant="h6"
-                    component="div"
-                    sx={{ marginBottom: 2, marginTop: 2 }}
-                  >
-                    Admin
-                  </Typography>
-                  <ListItem
-                    onClick={() => handleNavigation("AdminSemesterReservation")} // TÄHÄN NAVIGAATIO KALENTERIIN
-                    sx={{
-                      cursor: "pointer",
-                      "&:hover": {
-                        backgroundColor: "rgba(0, 0, 0, 0.1)",
-                      },
-                    }}
-                  >
-                    <ListItemText primary="Lukukausivaraukset" />
-                  </ListItem>
-                  <ListItem
-                    onClick={() => handleNavigation("UserProfiles")}
-                    sx={{
-                      cursor: "pointer",
-                      "&:hover": {
-                        backgroundColor: "rgba(0, 0, 0, 0.1)",
-                      },
-                    }}
-                  >
-                    <ListItemText primary="Käyttäjät" />
-                  </ListItem>
-                  <ListItem
-                    onClick={() => handleNavigation("ReservationHistoryAdmin")}
-                    sx={{
-                      cursor: "pointer",
-                      "&:hover": {
-                        backgroundColor: "rgba(0, 0, 0, 0.1)",
-                      },
-                    }}
-                  >
-                    <ListItemText primary="Varaukset" />
-                  </ListItem>
-                </>
-              ) : (
-                <>
-                  <ListItem
-                    onClick={() => handleNavigation("UserInformation")}
-                    sx={{
-                      cursor: "pointer",
-                      "&:hover": {
-                        backgroundColor: "rgba(0, 0, 0, 0.1)",
-                      },
-                    }}
-                  >
-                    <ListItemText primary="Käyttäjätiedot" />
-                  </ListItem>
-                  <ListItem
+          <div className="flex flex-col gap-4 w-[215px] mr-4">
+            <div className="flex flex-col">
+              <p className="text-xl font-semibold mb-2">Omat asetukset</p>
+              <NavigationButton
+                label="Käyttäjätiedot"
+                onClick={() => handleNavigation("UserInformation")}
+              />
+              {
+                !user?.admin && (
+                  <NavigationButton
+                    label="Omat varaukset"
                     onClick={() => handleNavigation("ReservationHistory")}
-                    sx={{
-                      cursor: "pointer",
-                      "&:hover": {
-                        backgroundColor: "rgba(0, 0, 0, 0.1)",
-                      },
-                    }}
-                  >
-                    <ListItemText primary="Omat varaukset" />
-                  </ListItem>
-                </>
-              )}
-            </List>
-          </Box>
+                  />
+                )
+              }
+            </div>
+
+            {
+              user?.admin && (
+                <div className="flex flex-col">
+                  <p className="text-xl font-semibold mb-2">Admin</p>
+                  <NavigationButton
+                    label="Lukukausivaraukset"
+                    onClick={() => handleNavigation("AdminSemesterReservation")}
+                  />
+                  <NavigationButton
+                    label="Käyttäjät"
+                    onClick={() => handleNavigation("UserProfiles")}
+                  />
+                  <NavigationButton
+                    label="Varaukset"
+                    onClick={() => handleNavigation("ReservationHistoryAdmin")}
+                  />
+                </div>
+              )
+            }
+          </div>
+          
           <Box sx={{ flex: 1 }}>
             {user?.admin ? (
               <>
