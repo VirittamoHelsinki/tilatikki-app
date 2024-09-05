@@ -250,7 +250,7 @@ const NewReservationDialog = ({
                 control={form.control}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Aloitusaika*</FormLabel>
+                    <FormLabel>Lopetusaika*</FormLabel>
                     <FormControl>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <SelectTrigger>

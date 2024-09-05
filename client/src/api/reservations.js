@@ -135,7 +135,7 @@ export const useCreateReservationMutation = () => {
   return useMutation(createReservation, {
     onSuccess: () => {
       // Invalidate and refetch reservations query or related queries if necessary
-      queryClient.invalidateQueries("reservations");
+      queryClient.invalidateQueries();
     },
     onError: (error) => {
       console.error("Create reservation mutation error:", error);
@@ -152,7 +152,7 @@ export const useUpdateReservationMutation = () => {
     {
       onSuccess: () => {
         // Invalidate and refetch reservations query or related queries if necessary
-        queryClient.invalidateQueries("reservations");
+        queryClient.invalidateQueries();
       },
       onError: (error) => {
         console.error("Update reservation mutation error:", error);
@@ -167,7 +167,7 @@ export const useDeleteReservationMutation = () => {
   return useMutation(deleteReservation, {
     onSuccess: () => {
       // Invalidate and refetch reservations to reflect the changes in the UI
-      queryClient.invalidateQueries("reservations");
+      queryClient.invalidateQueries();
     },
     onError: (error) => {
       console.error("Delete reservation mutation error:", error);
@@ -181,7 +181,7 @@ export const useDeleteReservationByGroupIdMutation = () => {
   return useMutation(deleteReservationByGroupId, {
     onSuccess: () => {
       // Invalidate and refetch reservations to reflect the changes in the UI
-      queryClient.invalidateQueries("reservations");
+      queryClient.invalidateQueries();
     },
     onError: (error) => {
       console.error("Delete reservation mutation error:", error);

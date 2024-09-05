@@ -136,7 +136,7 @@ const EditReservationDialog = ({
 
     if (data.recurrence === 'none') {
       updateReservationMutation.mutate({ reservationId, updatedData });
-      handleRecurringDeletion(reservationData.reservationGroupId);
+      //handleRecurringDeletion(reservationData.reservationGroupId);
     } else if (data.recurrence === 'daily' && updatedData.reservationEndDate) {
       const reservations = generateRecurringReservations(updatedData.reservationDate, updatedData.reservationEndDate, 1, updatedData);
       reservations.forEach(reservation => {
