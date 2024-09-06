@@ -150,7 +150,7 @@ const Timeline = ({
         }
       </div>
 
-      <TimelineItem timeStart="00:00" timeEnd="05:00" unavailable/>
+      {/* <TimelineItem timeStart="00:00" timeEnd="05:00" unavailable/> */}
 
       {
         // Reservations inside the timeline

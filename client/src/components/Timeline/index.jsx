@@ -44,7 +44,7 @@ const TimelineContainer = ({
                 <div key={room._id} className={`timeline__room px-4 col-start-1 min-w-40 z-30 sticky left-0 bg-white border-r-2`}>
                   <div className="timeline__room-information flex flex-col justify-center py-2">
                     <p className="font-semibold text-xl">Huone {room.number}</p>
-                    <p className="font-medium text-sm text-gray-400">05:00 - 24:00</p>
+                    <p className="font-medium text-sm text-gray-400">00:00 - 24:00</p>
                   </div>
                 </div>
               )
