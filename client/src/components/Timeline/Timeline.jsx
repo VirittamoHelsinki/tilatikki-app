@@ -64,6 +64,7 @@ const Timeline = ({
 
     const mouseRelativeToTarget = (mouseX - targetLeft) / targetWidth
 
+    // I'm sorry this is awful
     const startHour = Math.floor(mouseRelativeToTarget * 24)
     const startMinute = (Math.floor(mouseRelativeToTarget * 24 * 4) % 4) * 15
 
@@ -72,9 +73,6 @@ const Timeline = ({
 
     const startTime = (`${startHour.toString().padStart(2, "0")}:${startMinute.toString().padStart(2, "0")}`)
     const endTime = (`${endHour.toString().padStart(2, "0")}:${endMinute.toString().padStart(2, "0")}`)
-
-    console.log(startTime, endTime);
-    
 
     safeHandleOpenNewReservationModal({ startTime, endTime })
   }
