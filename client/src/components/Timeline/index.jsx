@@ -95,6 +95,11 @@ const TimelinePage = () => {
   });
 
   const [ showNewReservationModal, setShowNewReservationModal ] = useState(null);
+  const [ defaultTimeData, setDefaultTimeData ] = useState({
+    startTime: "00:00",
+    endTime: "01:00",
+  })
+
   const [ showEditReservationModal, setShowEditReservationModal ] = useState(null);
   const [ reservationToEdit, setReservationToEdit ] = useState(null);
   const user = useUser();
@@ -103,8 +108,9 @@ const TimelinePage = () => {
 
   setDefaultOptions({ locale: fi });
 
-  const handleOpenNewReservationModal = (room) => {
+  const handleOpenNewReservationModal = (room, timeData) => {
     setShowNewReservationModal(room);
+    setDefaultTimeData(timeData);
   }
 
   const handleOpenEditReservationModal = (reservationId) => {
@@ -149,8 +155,8 @@ const TimelinePage = () => {
         onOpenChange={setShowNewReservationModal}
         defaultData={{
           date: form.watch("date"),
-          // startTime,
-          // endTime,
+          startTime: defaultTimeData.startTime,
+          endTime: defaultTimeData.endTime,
         }}
       />
 
