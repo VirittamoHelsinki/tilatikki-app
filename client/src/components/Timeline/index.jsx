@@ -147,6 +147,11 @@ const TimelinePage = () => {
         user={user}
         isOpen={showNewReservationModal}
         onOpenChange={setShowNewReservationModal}
+        defaultData={{
+          date: form.watch("date"),
+          // startTime,
+          // endTime,
+        }}
       />
 
 

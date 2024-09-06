@@ -46,8 +46,8 @@ const NewReservationDialog = ({
   useEffect(() => {
     if (defaultData && isOpen) {
       form.setValue("date", defaultData.date);
-      form.setValue("startTime", defaultData.startTime.padStart(5, "0"));
-      form.setValue("endTime", defaultData.endTime.padStart(5, "0"));
+      form.setValue("startTime", defaultData.startTime?.padStart(5, "0"));
+      form.setValue("endTime", defaultData.endTime?.padStart(5, "0"));
       form.setValue("groupSize", 1);
       form.setValue("recurrence", "none");
     }
