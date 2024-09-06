@@ -48,7 +48,7 @@ const NewReservationDialog = ({
       form.setValue("date", defaultData.date);
       form.setValue("startTime", defaultData.startTime.padStart(5, "0"));
       form.setValue("endTime", defaultData.endTime.padStart(5, "0"));
-      form.setValue("groupsize", 1);
+      form.setValue("groupSize", 1);
       form.setValue("recurrence", "none");
     }
   }, [ defaultData, isOpen ])
@@ -293,7 +293,7 @@ const NewReservationDialog = ({
               />
 
             {
-              form.watch("recurrence") !== "none" && (
+              (form.watch("recurrence") && form.watch("recurrence") !== "none") && (
                 <FormField
                   control={form.control}
                   name="endDate"
