@@ -44,7 +44,7 @@ const TimelineContainer = ({
                 <div key={room._id} className={`timeline__room px-4 col-start-1 min-w-40 z-30 sticky left-0 bg-white border-r-2`}>
                   <div className="timeline__room-information flex flex-col justify-center py-2">
                     <p className="font-semibold text-xl">Huone {room.number}</p>
-                    <p className="font-medium text-sm text-gray-400">05:00 - 24:00</p>
+                    <p className="font-medium text-sm text-gray-400">00:00 - 24:00</p>
                   </div>
                 </div>
               )
@@ -95,6 +95,11 @@ const TimelinePage = () => {
   });
 
   const [ showNewReservationModal, setShowNewReservationModal ] = useState(null);
+  const [ defaultTimeData, setDefaultTimeData ] = useState({
+    startTime: "00:00",
+    endTime: "01:00",
+  })
+
   const [ showEditReservationModal, setShowEditReservationModal ] = useState(null);
   const [ reservationToEdit, setReservationToEdit ] = useState(null);
   const user = useUser();
@@ -103,8 +108,9 @@ const TimelinePage = () => {
 
   setDefaultOptions({ locale: fi });
 
-  const handleOpenNewReservationModal = (room) => {
+  const handleOpenNewReservationModal = (room, timeData) => {
     setShowNewReservationModal(room);
+    setDefaultTimeData(timeData);
   }
 
   const handleOpenEditReservationModal = (reservationId) => {
@@ -147,6 +153,11 @@ const TimelinePage = () => {
         user={user}
         isOpen={showNewReservationModal}
         onOpenChange={setShowNewReservationModal}
+        defaultData={{
+          date: form.watch("date"),
+          startTime: defaultTimeData.startTime,
+          endTime: defaultTimeData.endTime,
+        }}
       />
 
 

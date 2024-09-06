@@ -4,29 +4,16 @@ import { Box, Button, Typography, Grid } from '@mui/material';
 import { fetchUserDataByEmail } from '../api/userApi';
 import { fetchTotalPeopleReserved } from '../api/rooms';
 import { getCookie } from '../utils/Cookies';
+import useUser from '@/utils/useUser';
 
 
 const BookingResults = ({ classrooms, filterValues }) => {
 	const [currentPage, setCurrentPage] = useState(0);
 	const [filterMode, setFilterMode] = useState('free');
-	const [user, setUser] = useState({})
 	const [freeRooms, setFreeRooms] = useState([]);
 	const [partiallyFreeRooms, setPartiallyFreeRooms] = useState([]);
 	const [reservedRooms, setReservedRooms] = useState([]);
-
-
-	useEffect(() => {
-		const email = getCookie('UserEmail');
-		if (email) {
-			fetchUserDataByEmail(email)
-				.then(userData => {
-					setUser(userData)
-				})
-				.catch(error => {
-					console.error('Error fetching user data:', error);
-				});
-		}
-	}, []);
+	const user = useUser();
 
 	const itemsPerPage = 5;
 
@@ -51,7 +38,10 @@ const BookingResults = ({ classrooms, filterValues }) => {
 	useEffect(() => {
 		const setRooms = async () => {
 			const calculateTotalPeopleInTimeSlot = async (roomId) => {
-				const totalPeople = filterValues.selectedDate && filterValues.startingTime && filterValues.endingTime ? await fetchTotalPeopleReserved(roomId, filterValues.selectedDate, filterValues.startingTime, filterValues.endingTime) : null;
+				const totalPeople = (filterValues.selectedDate && filterValues.startingTime && filterValues.endingTime)
+					? await fetchTotalPeopleReserved(roomId, filterValues.selectedDate, filterValues.startingTime, filterValues.endingTime)
+					: null;
+
 				return totalPeople ? totalPeople.totalPeople : null;
 			};
 
@@ -159,7 +149,7 @@ const BookingResults = ({ classrooms, filterValues }) => {
 							Vapaat tilat
 						</Button>
 					</div>
-					<Box sx={{ maxHeight: '500px', overflowY: 'auto' }}>
+					<Box sx={{ maxHeight: '500px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '10px', }}>
 						{paginatedClassrooms.map(([key, value]) => {
 							// Filter the reservations from the classrooms
 							const filteredUserReservations = value.reservations.filter(reservation => reservation.user._id === user._id);

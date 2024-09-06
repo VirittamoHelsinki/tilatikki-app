@@ -13,9 +13,9 @@ const Timeline = ({
   // handleModal functions may not exist,
   // so wrap then in a function and only
   // call them if they exist
-  const safeHandleOpenNewReservationModal = () => {
+  const safeHandleOpenNewReservationModal = (timeData) => {
     if (handleOpenNewReservationModal) {
-      handleOpenNewReservationModal(room);
+      handleOpenNewReservationModal(room, timeData);
     }
   }
 
@@ -54,7 +54,6 @@ const Timeline = ({
   }
 
   const onMouseClick = (event) => {
-    safeHandleOpenNewReservationModal()
 
     const element = newReservationIndicatorRef.current;
     const target = event.target;
@@ -64,10 +63,18 @@ const Timeline = ({
     const targetLeft = target.getBoundingClientRect().left;
 
     const mouseRelativeToTarget = (mouseX - targetLeft) / targetWidth
-    const hour = Math.floor(mouseRelativeToTarget * 24)
-    const minute = (Math.floor(mouseRelativeToTarget * 24 * 4) % 4) * 15
 
-    // hour:minute to ./index.jsx
+    // I'm sorry this is awful
+    const startHour = Math.floor(mouseRelativeToTarget * 24)
+    const startMinute = (Math.floor(mouseRelativeToTarget * 24 * 4) % 4) * 15
+
+    const endMinute = (Math.floor(mouseRelativeToTarget * 24 * 4 + 1) % 4) * 15
+    const endHour = startMinute > endMinute ? startHour + 1 : startHour
+
+    const startTime = (`${startHour.toString().padStart(2, "0")}:${startMinute.toString().padStart(2, "0")}`)
+    const endTime = (`${endHour.toString().padStart(2, "0")}:${endMinute.toString().padStart(2, "0")}`)
+
+    safeHandleOpenNewReservationModal({ startTime, endTime })
   }
 
   const onMouseDown = () => {
@@ -150,7 +157,7 @@ const Timeline = ({
         }
       </div>
 
-      <TimelineItem timeStart="00:00" timeEnd="05:00" unavailable/>
+      {/* <TimelineItem timeStart="00:00" timeEnd="05:00" unavailable/> */}
 
       {
         // Reservations inside the timeline

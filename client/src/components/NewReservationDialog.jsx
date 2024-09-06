@@ -46,17 +46,18 @@ const NewReservationDialog = ({
   useEffect(() => {
     if (defaultData && isOpen) {
       form.setValue("date", defaultData.date);
-      form.setValue("startTime", defaultData.startTime.padStart(5, "0"));
-      form.setValue("endTime", defaultData.endTime.padStart(5, "0"));
+      form.setValue("startTime", defaultData.startTime?.padStart(5, "0"));
+      form.setValue("endTime", defaultData.endTime?.padStart(5, "0"));
+      form.setValue("groupSize", 1);
+      form.setValue("recurrence", "none");
     }
   }, [ defaultData, isOpen ])
-  
 
   const availableStartTimes = Array.from({ length: 24 * 4 }).map((_, index) => (
     Math.floor(index / 4).toString().padStart(2, "0")
     + ":"
     + ((index % 4) * 15).toString().padStart(2, "0")
-  ))
+  ));
 
   const onSubmit = (data) => {
     data = {
@@ -178,11 +179,10 @@ const NewReservationDialog = ({
                   <FormControl>
                     <Input
                       type="number"
-                      placeholder={1}
                       min={1}
-                      max={50}
+                      max={room?.capacity}
                       { ...field }
-                      />
+                    />
                   </FormControl>
                 </FormItem>
               )}
@@ -250,7 +250,7 @@ const NewReservationDialog = ({
                 control={form.control}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Aloitusaika*</FormLabel>
+                    <FormLabel>Lopetusaika*</FormLabel>
                     <FormControl>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <SelectTrigger>
@@ -277,9 +277,9 @@ const NewReservationDialog = ({
                 <FormItem>
                   <FormLabel>Toistuvuus*</FormLabel>
                   <FormControl>
-                    <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Älä toista" />
+                        <SelectValue value={field.value} />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="none">Älä toista</SelectItem>
@@ -293,7 +293,7 @@ const NewReservationDialog = ({
               />
 
             {
-              form.watch("recurrence") !== "none" && (
+              (form.watch("recurrence") && form.watch("recurrence") !== "none") && (
                 <FormField
                   control={form.control}
                   name="endDate"
