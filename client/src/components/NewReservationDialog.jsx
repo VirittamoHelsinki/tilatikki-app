@@ -180,7 +180,7 @@ const NewReservationDialog = ({
                     <Input
                       type="number"
                       min={1}
-                      max={50}
+                      max={room?.capacity}
                       { ...field }
                     />
                   </FormControl>

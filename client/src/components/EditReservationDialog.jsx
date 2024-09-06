@@ -214,7 +214,7 @@ const EditReservationDialog = ({
                       type="number"
                       placeholder={1}
                       min={1}
-                      max={50}
+                      max={room?.capacity}
                       { ...field }
                       />
                   </FormControl>
