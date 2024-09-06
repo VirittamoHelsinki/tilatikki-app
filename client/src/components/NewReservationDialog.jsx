@@ -48,6 +48,7 @@ const NewReservationDialog = ({
       form.setValue("date", defaultData.date);
       form.setValue("startTime", defaultData.startTime.padStart(5, "0"));
       form.setValue("endTime", defaultData.endTime.padStart(5, "0"));
+      form.setValue("groupsize", 1);
       form.setValue("recurrence", "none");
     }
   }, [ defaultData, isOpen ])
@@ -178,11 +179,10 @@ const NewReservationDialog = ({
                   <FormControl>
                     <Input
                       type="number"
-                      placeholder={1}
                       min={1}
                       max={50}
                       { ...field }
-                      />
+                    />
                   </FormControl>
                 </FormItem>
               )}
