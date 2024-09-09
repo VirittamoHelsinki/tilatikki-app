@@ -28,9 +28,18 @@ const TimelineItem = ({
     )
   }
 
+  const color = fullHeight
+    ? "#4E0D0D"
+    : "#5B3006";
+
   const backgroundColor = fullHeight
-    ? "#EA7272"
-    : "#F4BD89";
+    ? "#F9D3D3"
+    : "#FBE5D0";
+
+  const border = fullHeight
+    ? "1px solid #F6C0C0"
+    : "1px solid #F9DBBD";
+  
     
   return (
     <div
@@ -40,6 +49,8 @@ const TimelineItem = ({
       style={{
         gridColumn: gridColumnValueString,
         gridRow: fullHeight ? "1 / -1" : "auto",
+        color,
+        border,
         //display: hidden ? "none" : "block"
       }}
     >
