@@ -34,40 +34,86 @@ const CreateReservationForm = ({
   const handleReservationSwitchChange = () => setReservationHasExceptions(!reservationHasExceptions);
   const handleDisableSubmitButton = () => setDisableSubmitButton(!disableSubmitButton);
 
+
   const onSubmit = (data) => {
     data = {
       ...data,
+
       startTime: data.startTime.format("HH:mm"),
       endTime: data.endTime.format("HH:mm")
-    };
+    }
+
+    console.log('data: ', data)
+
+    const generateRecurringReservations = (baseDate, endDate, interval, reservationData) => {
+      let currentDate = dayjs(baseDate);
+      const end = dayjs(endDate);
+      const reservations = [];
+
+      while (currentDate.isBefore(end) || currentDate.isSame(end, 'day')) {
+        reservations.push({
+          ...reservationData,
+          reservationDate: currentDate,
+          startTime: data.startTime ? data.startTime : null,
+          endTime: data.endTime ? data.endTime : null,
+        });
+
+        currentDate = currentDate.add(interval, 'day');
+      }
+
+      return reservations;
+    }
 
     const reservationGroupId = uuid();
+    console.log('reservation group id: ', reservationGroupId)
+
     const reservationData = {
-      userId: user._id,
+      userId: user._id, // userId
       reservationDate: data.reservationDate ? data.reservationDate : null,
       reservationEndDate: data.reservationEndDate ? data.reservationEndDate : null,
       reservationGroupId: reservationGroupId,
       startTime: data.startTime,
       endTime: data.endTime,
-      purpose: data.reservationName,
-      roomId: roomId,
-      groupsize: data.reservationGroupSize,
+      purpose: data.reservationName, // string
+      roomId: roomId, // roomId
+      groupsize: data.reservationGroupSize, // integer
       recurrence: data.recurrence ? data.recurrence : 'none',
       additionalInfo: data.additionalInfo
-    };
+    }
 
-    createReservationMutation.mutate(reservationData, {
-      onSuccess: () => {
-        setSnackbarMessage('Varaus tehty onnistuneesti!');  // Set success message
-        setSnackbarOpen(true);                   // Open snackbar
-        onClose();                               // Close the dialog
-      },
-      onError: (error) => {
-        console.error('Error creating reservation:', error);
-        setSnackbarMessage('Varauksen tekeminen epäonnistui.');  // Set error message
-        setSnackbarOpen(true);                                   // Open snackbar
-      }
-    });
+
+    console.log('reservationData: ', reservationData)
+
+    const successFn = () => {
+      setSnackbarMessage('Varaus tehty onnistuneesti!');  // Set success message
+      setSnackbarOpen(true);                   // Open snackbar
+      onClose();                               // Close the dialog
+    }
+    
+    const errorFn = (error) => {
+      console.error('Error creating reservation:', error);
+      setSnackbarMessage('Varauksen tekeminen epäonnistui.');  // Set error message
+      setSnackbarOpen(true);                                   // Open snackbar
+    }
+
+    if (data.recurrence === 'none') {
+      createReservationMutation.mutate(reservationData, { onSuccess: successFn, onError: errorFn });
+    } else if (data.recurrence === 'daily' && data.reservationEndDate) {
+      const reservations = generateRecurringReservations(data.reservationDate, data.reservationEndDate, 1, reservationData);
+      reservations.forEach(reservation => {
+        createReservationMutation.mutate(reservationData, { onSuccess: successFn, onError: errorFn });
+      });
+    } else if (data.recurrence === 'weekly' && data.reservationEndDate) {
+      const reservations = generateRecurringReservations(data.reservationDate, data.reservationEndDate, 7, reservationData);
+      console.log('weekly reservations: ', reservations)
+      reservations.forEach(reservation => {
+        createReservationMutation.mutate(reservationData, { onSuccess: successFn, onError: errorFn });
+      });
+    } else {
+      console.error('Invalid recurrence or missing end date');
+    }
+
+    onClose();
   };
 
   return (
