@@ -10,7 +10,7 @@ import { getCookie } from "../utils/Cookies"
 import { fetchUserDataByEmail } from "../api/userApi"
 import useUser from "@/utils/useUser"
 
-const AdminCreateReservationDialog = ({ rooms, reservationDialogDefaultData, disabled }) => {
+const AdminCreateReservationDialog = ({ rooms, reservationDialogDefaultData, disabled, room }) => {
   const { register, handleSubmit, watch, control, setValue } = useForm({
     defaultValues: {
       recurrence: "none",
@@ -23,16 +23,13 @@ const AdminCreateReservationDialog = ({ rooms, reservationDialogDefaultData, dis
 
   const handleReservationSwitchChange = () => setReservationHasExceptions(!reservationHasExceptions);
 
+  console.log(">>>>>>>>>>", room);
+  
+
   useEffect(() => {
     if (reservationDialogDefaultData) {
 
       const { reservationDate, startTime, endTime } = reservationDialogDefaultData;
-
-      console.log(
-        typeof reservationDate, reservationDate,
-        typeof startTime, startTime,
-        typeof endTime, endTime,
-      )
 
       setValue("reservationDate", reservationDate);
       setValue("startTime", startTime);
@@ -43,14 +40,15 @@ const AdminCreateReservationDialog = ({ rooms, reservationDialogDefaultData, dis
     reservationDialogDefaultData?.reservationDate,
     reservationDialogDefaultData?.startTime,
     reservationDialogDefaultData?.endTime
-  ])  
+  ])
 
   const onSubmit = (data) => {
     data = {
       ...data,
 
       startTime: data.startTime.format("HH:mm"),
-      endTime: data.endTime.format("HH:mm")
+      endTime: data.endTime.format("HH:mm"),
+      room,
     }
 
     console.log('data: ', data)
@@ -74,7 +72,6 @@ const AdminCreateReservationDialog = ({ rooms, reservationDialogDefaultData, dis
       return reservations;
     }
 
-
     const reservationData = {
       userId: user._id, // userId
       reservationDate: data.reservationDate ? data.reservationDate : null,
@@ -82,11 +79,11 @@ const AdminCreateReservationDialog = ({ rooms, reservationDialogDefaultData, dis
       startTime: data.startTime,
       endTime: data.endTime,
       purpose: data.reservationName, // string
-      roomId: data.classroom._id, // roomId
+      roomId: data.room._id, // roomId
       groupsize: data.reservationGroupSize, // integer
       recurrence: data.recurrence ? data.recurrence : 'none',
       additionalInfo: data.additionalInfo
-    }    
+    }
 
     if (data.recurrence === 'none') {
       createReservationMutation.mutate(reservationData);
@@ -232,7 +229,7 @@ const AdminCreateReservationDialog = ({ rooms, reservationDialogDefaultData, dis
               { ...register("reservationGroupSize") }
             >
               {
-                Array.from({ length: 100 }).map((_, index) => (
+                Array.from({ length: room?.capacity }).map((_, index) => (
                   <MenuItem key={index} value={index + 1}>{index + 1}</MenuItem>
                 ))
               }
@@ -241,27 +238,27 @@ const AdminCreateReservationDialog = ({ rooms, reservationDialogDefaultData, dis
         </Grid>
 
         <Grid item lg={6}>
-          <FormControl fullWidth>
-          <InputLabel id="classroom-label">Opetustila*</InputLabel>
+          {/* <FormControl fullWidth>
+            <InputLabel id="room-label">Opetustila*</InputLabel>
             <Select
-              labelId="classroom-label"
-              id="classroom-select"
-              name="classroom"
+              labelId="room-label"
+              id="room-select"
+              name="room"
               required
               fullWidth
               label="Opetustila"
               placeholder="Valitse opetustila"
               defaultValue="Vihreä lohikäärme"
               disabled={disabled}
-              { ...register("classroom") }
+              { ...register("room") }
             >
             {
-              rooms.map((room, index) => {
+              rooms.map((room, _index) => {
                 return <MenuItem key={`menu-item-${room.number}`} value={room}>{room.number}</MenuItem>
               })
             }
             </Select>
-          </FormControl>
+          </FormControl> */}
         </Grid>
 
         <Grid item lg={12}>
@@ -383,13 +380,12 @@ const AdminCreateReservationDialog = ({ rooms, reservationDialogDefaultData, dis
           </FormControl>
         </Grid>
 
-        
-        <Grid item lg={4}>          
+        <Grid item lg={4}>
           <Button
             type="submit"
             variant="contained"
-            sx={{ 
-              mt: 3, 
+            sx={{
+              mt: 3,
               mb: 2,
               textTransform: 'none',
               backgroundColor: '#18181B', // Change this to your desired color
