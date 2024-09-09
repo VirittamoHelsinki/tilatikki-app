@@ -14,6 +14,7 @@ const AdminSemesterReservation = () => {
     defaultValues: {
       school: null,
       building: null,
+      room: null,
     }
   })
 
@@ -35,7 +36,7 @@ const AdminSemesterReservation = () => {
           }
         })
         .filter((revervation) => {
-          return watch("building").floors.some((floor) => floor.rooms.some((room) => room._id === revervation.room))
+          return watch("room")._id === revervation.room
         })
 
       setReservations(fetchedReservations)
@@ -43,16 +44,20 @@ const AdminSemesterReservation = () => {
     }
     
     setReservations([])
-    if (watch("school") && watch("building")) {
-      console.log("USE EFFECT", watch("school"), watch("building"));
+    if (watch("school") && watch("building") && watch("room")) {
       fetchReservations()
     }
     
-  }, [ watch("school"), watch("building") ])
+  }, [ watch("school"), watch("building"), watch("room") ])
 
   useEffect(() => {
     resetField("building")
+    resetField("room")
   }, [ watch("school") ])
+
+  useEffect(() => {
+    resetField("room")
+  }, [ watch("building") ])
 
   const rooms = watch("building")?.floors.flatMap((floor) => floor.rooms) || []
 
@@ -80,6 +85,9 @@ const AdminSemesterReservation = () => {
   if (!schoolData) {
     return <p>loading...</p>
   }
+
+  console.log(watch("building"));
+  
 
   return (
     <Box sx={{ display: "grid", gridTemplateColumns: "4fr 8fr", gap: "32px", }}>
@@ -147,6 +155,31 @@ const AdminSemesterReservation = () => {
               </FormControl>
             </Grid>
 
+
+            <Grid item lg={6}>
+              <FormControl fullWidth>
+                <InputLabel id="room-filter-label">Opetustilassa*</InputLabel>
+                <Select
+                  labelId="room-filter-label"
+                  id="room-filter"
+                  name="room"
+                  required
+                  fullWidth
+                  label="Opetustilassa"
+                  disabled={!watch("building")}
+                  { ...register("room") }
+                >
+                  {
+                    watch("building")?.floors.map((floor) => {
+                      return floor.rooms.map((room) => {
+                        return <MenuItem key={room._id} value={room}>{room.number}</MenuItem>
+                      })
+                    }).flat()
+                  }
+                </Select>
+              </FormControl>
+            </Grid>
+
             <Grid item lg={12}>
               <Divider />
             </Grid>
@@ -155,7 +188,8 @@ const AdminSemesterReservation = () => {
             <AdminCreateReservationDialog
               rooms={rooms}
               reservationDialogDefaultData={reservationDialogDefaultData}
-              disabled={ !!!watch("building") }
+              disabled={ !!!watch("room") }
+              room={watch("room")}
             />
           </Grid>
 
